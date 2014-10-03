@@ -1,0 +1,15 @@
+<!-- Partial html for scenarios view -->
+<body ng-app="lcaApp">
+<table>
+    <thead>
+    <tr><th>Name</th><th>Activity Level</th><th>Top Level Fragment</th></tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="scenario in scenarios">
+        <td>{{scenario.name}}</td>
+        <td>{{scenario.activityLevel}}</td>
+        <td>{{scenario.topLevelFragmentID}}></td>
+    </tr>
+    </tbody>
+</table>
+</body>
