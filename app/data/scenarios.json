@@ -1,0 +1,20 @@
+[
+  {
+    "scenarioID":0,
+    "topLevelFragmentID":8,
+    "activityLevel":3200,
+    "name":"Model Base Case"
+  },
+  {
+    "scenarioID":1,
+    "topLevelFragmentID":8,
+    "activityLevel":3200,
+    "name":"Default Scenario"
+  },
+  {
+    "scenarioID":2,
+    "topLevelFragmentID":8,
+    "activityLevel":3200,
+    "name":"Process Substitution"
+  }
+]
