@@ -31,7 +31,19 @@ Npm has been configured to automatically run bower. In command prompt, cd to thi
 npm install
 ```
 
-Behind the scenes this will also call `bower install`.  You should find that you have two new
+*Note: On Ubuntu, if you see
+```
+npm WARN This failure might be due to the use of legacy binary "node"
+```
+then you need to install 
+```
+nodejs-legacy
+```
+before you can use npm to install this project's dependencies.*
+
+```
+npm install
+``` calls `bower install`.  When it completes, you should find that you have two new
 folders in your project.
 
 * `node_modules` - contains the npm packages for the tools we need

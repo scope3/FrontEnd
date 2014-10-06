@@ -8,7 +8,7 @@ describe('lcaApp.scenarios module', function() {
 
     it('should ....', inject(function($controller) {
       //spec body
-      var view1Ctrl = $controller('scenariosCtrl');
+      var view1Ctrl = $controller('ScenarioListCtrl');
       expect(view1Ctrl).toBeDefined();
     }));
 

@@ -4,11 +4,11 @@ angular.module('lcaApp.scenarios', ['ngRoute'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/scenarios', {
-    templateUrl: '/scenarios.html',
-    controller: 'scenariosCtrl'
+    templateUrl: 'scenarios/scenarios.html',
+    controller: 'ScenarioListCtrl'
   });
 }])
 
-.controller('scenariosCtrl', [function() {
-
+.controller('ScenarioListCtrl', ['$scope', 'Scenario', function($scope, Scenario) {
+        $scope.scenarios = Scenario.query();
 }]);
