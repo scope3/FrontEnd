@@ -2,14 +2,18 @@
 
 describe('lcaApp.scenarios module', function() {
 
+  beforeEach(module('lcaApp.resourceServices'));
   beforeEach(module('lcaApp.scenarios'));
 
   describe('scenarios controller', function(){
 
-    it('should ....', inject(function($controller) {
+    it('should have some scenarios', inject(function($controller) {
       //spec body
-      var view1Ctrl = $controller('ScenarioListCtrl');
-      expect(view1Ctrl).toBeDefined();
+      var scope = {},
+          ctrl = $controller('ScenarioListCtrl', {$scope:scope});
+        expect(ctrl).toBeDefined();
+        expect(scope).toBeDefined();
+        expect(scope.scenarios).toBeDefined();
     }));
 
   });
