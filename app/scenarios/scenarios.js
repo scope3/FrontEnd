@@ -9,6 +9,14 @@ angular.module('lcaApp.scenarios', ['ngRoute'])
   });
 }])
 
-.controller('ScenarioListCtrl', ['$scope', 'Scenario', function($scope, Scenario) {
-        $scope.scenarios = Scenario.query();
+.controller('ScenarioListCtrl', ['$scope', 'ResourceService', function($scope, ResourceService) {
+    var scenarioResource = ResourceService.getScenarioResource(),
+        fragmentResource = ResourceService.getFragmentResource();
+
+        $scope.scenarios = scenarioResource.query( {}, function() {
+            $scope.scenarios.forEach( function(scenario) {
+                scenario.fragment = fragmentResource.get({fragmentId: scenario.topLevelFragmentID});
+            });
+        });
+
 }]);
