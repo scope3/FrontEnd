@@ -88,7 +88,7 @@ app/                    --> all of the source files for the application
     view2.js              --> the controller logic
     view2_test.js         --> tests of the controller
   services/             --> services directory
-    resources.js          --> resource service, communicates with back end
+    resource-service.js          --> resource service, communicates with back end
   app.js                --> main application module
   index.html            --> app layout file (the main html template file of the app)
   index-async.html      --> just like index.html, but loads js files asynchronously

@@ -6,7 +6,7 @@ angular.module('lcaApp', [
   'lcaApp.scenarios',
   'lcaApp.view2',
   'lcaApp.version',
-  'lcaApp.resourceServices'
+  'lcaApp.resources.service'
 ]).
 config(['$routeProvider', function($routeProvider) {
   $routeProvider.otherwise({redirectTo: '/scenarios'});

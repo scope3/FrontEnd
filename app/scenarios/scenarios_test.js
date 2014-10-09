@@ -2,7 +2,7 @@
 
 describe('lcaApp.scenarios module', function() {
 
-  beforeEach(module('lcaApp.resourceServices'));
+  beforeEach(module('lcaApp.resources.service'));
   beforeEach(module('lcaApp.scenarios'));
 
   describe('scenarios controller', function(){

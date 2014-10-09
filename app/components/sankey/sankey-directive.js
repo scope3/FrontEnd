@@ -1,8 +1,9 @@
 /**
  * Directive for reusable d3 sankey diagram
  */
-angular.module('lcaApp.directives', ['d3.sankey'])
-.directive('sankeyDiagram', ['sankeyService'], function(sankeyService) {
+angular.module('lcaApp.sankey.directive', ['d3.sankey'])
+.directive('sankeyDiagram', ['SankeyService', function(SankeyService) {
+
     function link(scope, element, attrs) {
 
         // TODO : make the following settings configurable
@@ -21,7 +22,7 @@ angular.module('lcaApp.directives', ['d3.sankey'])
             /**
              * sankey variables
              */
-            sankey = sankeyService
+            sankey = SankeyService
                 .nodeWidth(20)
                 .nodePadding(20)
                 .size([sankeyWidth, height]),
@@ -284,4 +285,4 @@ angular.module('lcaApp.directives', ['d3.sankey'])
         scope: { getNodeLabel: '&', getLinkTip: '&', selectedNode: '=', selectedLink: '=', data: '=' },
         link: link
     }
-});
+}]);
