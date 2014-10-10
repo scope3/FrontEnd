@@ -10,12 +10,12 @@ angular.module('lcaApp.scenarios', ['ngRoute'])
 }])
 
 .controller('ScenarioListCtrl', ['$scope', 'ResourceService', function($scope, ResourceService) {
-    var scenarioResource = ResourceService.getScenarioResource(),
-        fragmentResource = ResourceService.getFragmentResource();
+    var scenarioResource = ResourceService.getResource("scenario"),
+        fragmentResource = ResourceService.getResource("fragment");
 
         $scope.scenarios = scenarioResource.query( {}, function() {
             $scope.scenarios.forEach( function(scenario) {
-                scenario.fragment = fragmentResource.get({fragmentId: scenario.topLevelFragmentID});
+                scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID});
             });
         });
 

@@ -4,7 +4,8 @@
 angular.module('lcaApp', [
   'ngRoute',
   'lcaApp.scenarios',
-  'lcaApp.view2',
+  'lcaApp.fragment.sankey',
+  'lcaApp.sankey',
   'lcaApp.version',
   'lcaApp.resources.service'
 ]).

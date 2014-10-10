@@ -5,19 +5,26 @@ angular.module('lcaApp.resources.service', ['ngResource'])
     .factory('ResourceService', ['$resource',
         function($resource){
             var resourceService = {},
-                apiRoot = "http://localhost:60393/api/";    // Ideally, this would be in a config file.
-                                                            // No support for that built in to angular
-            resourceService.getScenarioResource = function () {
-                return $resource('components/resources/scenarios.json', {}, {
-                    query: {method: 'GET', isArray: true}
-                });
+                apiRoot = "http://localhost:60393/api/",
+                apiFragment = apiRoot + "fragments",
+                apiProcess = apiRoot + "processes",
+                apiScenario = apiRoot + "scenarios";
+
+            resourceService.ROUTES = {
+                "fragment" : apiRoot + "fragments/:fragmentID",
+                "fragmentFlow" : apiRoot + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
+                "fragmentFlowProperty" : apiRoot + "fragments/:fragmentID/flowproperties",
+                "process" : apiRoot + "processes",
+                "scenario" : "components/resources/scenarios.json"
             };
 
-            resourceService.getFragmentResource = function () {
-                var fragmentURL = apiRoot + "fragments/:fragmentId";
-                return $resource( fragmentURL, {}, {
-                    query: {method: 'GET', isArray: true}
-                });
+            resourceService.getResource = function( routeKey) {
+                if ( routeKey in this.ROUTES) {
+                    return $resource( this.ROUTES[routeKey], {}, {
+                        get: {method: 'GET', cache: true, isArray: false},
+                        query: {method: 'GET', cache: true, isArray: true}
+                    });
+                }
             };
 
             return resourceService;
