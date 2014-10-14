@@ -92,3 +92,14 @@ describe('Unit test sankey diagram directive', function() {
         //expect(element.html()).toNotContain("X");
     });
 });
+
+describe('Unit test d3.sankey service', function() {
+
+    // load modules
+    beforeEach(module('d3.sankey'));
+
+    // Test service availability
+    it('check the existence of SankeyService factory', inject(function(SankeyService) {
+        expect(SankeyService).toBeDefined();
+    }));
+});
