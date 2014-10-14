@@ -1,6 +1,6 @@
 'use strict';
 
-angular.module('lcaApp.scenarios', ['ngRoute'])
+angular.module('lcaApp.scenarios', ['ngRoute', 'lcaApp.resources.service', 'ngProgress.provider'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/scenarios', {
@@ -9,14 +9,25 @@ angular.module('lcaApp.scenarios', ['ngRoute'])
   });
 }])
 
-.controller('ScenarioListCtrl', ['$scope', 'ResourceService', function($scope, ResourceService) {
-    var scenarioResource = ResourceService.getResource("scenario"),
-        fragmentResource = ResourceService.getResource("fragment");
+.controller('ScenarioListCtrl', ['$scope', 'ResourceService', 'ngProgress',
+    function($scope, ResourceService, ngProgress ) {
+        var scenarioResource = ResourceService.getResource("scenario"),
+            fragmentResource = ResourceService.getResource("fragment");
 
-        $scope.scenarios = scenarioResource.query( {}, function() {
-            $scope.scenarios.forEach( function(scenario) {
-                scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID});
-            });
+        ngProgress.start();
+        //$timeout(ngProgress.complete(), 1000);
+        var scenarios = scenarioResource.query( {}, function() {
+            var curP = 50;
+            ngProgress.set(curP);
+            if (scenarios.length > 0) {
+                var increment = 50 / (scenarios.length);
+                scenarios.forEach(function (scenario) {
+                    scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID});
+                    curP += increment;
+                    ngProgress.set(curP);
+                });
+            }
+            $scope.scenarios = scenarios;
         });
-
+        ngProgress.complete();
 }]);

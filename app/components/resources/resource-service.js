@@ -5,10 +5,7 @@ angular.module('lcaApp.resources.service', ['ngResource'])
     .factory('ResourceService', ['$resource',
         function($resource){
             var resourceService = {},
-                apiRoot = "http://localhost:60393/api/",
-                apiFragment = apiRoot + "fragments",
-                apiProcess = apiRoot + "processes",
-                apiScenario = apiRoot + "scenarios";
+                apiRoot = "http://localhost:60393/api/";
 
             resourceService.ROUTES = {
                 "fragment" : apiRoot + "fragments/:fragmentID",

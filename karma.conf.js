@@ -9,6 +9,7 @@ module.exports = function(config){
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/d3/d3.js',
+      'app/bower_components/ngprogress/build/ngProgress.js',
       'app/components/**/*.js',
       'app/fragment-sankey/**/*.js',
       'app/scenarios/**/*.js'
