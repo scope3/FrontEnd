@@ -52,7 +52,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
          * @return string for node label
          */
         function getNodeLabel(n) {
-            scope.getNodeLabel({d: n});
+            return n.nodeName;
         }
 
         /**
@@ -61,15 +61,15 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
          * @return string for link tool tip
          */
         function getLinkTip(l) {
-            scope.getLinkTip({d: l});
+            return scope.linkDisplayValue({d: l});
         }
 
-        /**
-         * Get graph data from scope
-         * @param scope
-         */
-        function getData(scope) {
-            graph = scope.data;
+
+        function onGraphChanged(newVal, oldVal) {
+            if (newVal) {
+                graph = newVal;
+                drawSankey(true);
+            }
         }
 
         function restoreView() {
@@ -100,13 +100,10 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
                 .transition()
                 .style("stroke-opacity", function (l) {
                     return (
-                        (l.source.fragmentFlowID === node.fragmentFlowID || l.target.fragmentFlowID === node.fragmentFlowID) ?
+                        (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID) ?
                             0.5 : opacity.link);
                 });
 
-            scope.$apply(function(){
-                scope.selectedNode = node
-            });
         }
 
 
@@ -214,13 +211,13 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
         }
 
         prepareSvg(element[0]);
-        getData(scope);
-        drawSankey(true);
+        scope.$watch('graph', onGraphChanged);
+
     }
 
     return {
         restrict: 'E',
-        scope: { getNodeLabel: '&', getLinkTip: '&', selectedNode: '=', selectedLink: '=', data: '=' },
+        scope: { linkDisplayValue: '&', graph: '=' },
         link: link
     }
 }]);

@@ -1,0 +1,30 @@
+
+sankey-diagram text {
+    font: 10px sans-serif;
+}
+
+sankey-diagram .node text {
+    pointer-events: none;
+    text-shadow: 0 1px 0 #fff;
+}
+
+sankey-diagram .link {
+    fill: none;
+    stroke: #000;
+    stroke-opacity: .2;
+}
+
+sankey-diagram .link:hover {
+    stroke-opacity: .5;
+}
+
+sankey-diagram .node rect {
+    /*    cursor: pointer;*/
+    shape-rendering: crispEdges;
+    opacity: 1;
+    stroke-width:0;
+}
+
+sankey-diagram .node text {
+    text-shadow: 0 1px 0 #fff;
+}
