@@ -10,6 +10,7 @@
     "angular-mocks": "~1.2.x",
     "bootstrap": "~3.2",
     "d3": "~3",
+    "colorbrewer": null,
     "ngprogress": "1.0.7"
   }
 }

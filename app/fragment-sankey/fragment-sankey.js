@@ -18,10 +18,12 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             processResource = ResourceService.getResource("process"),
             ffpResource = ResourceService.getResource("fragmentFlowProperty"),
             ffResource = ResourceService.getResource("fragmentFlow"),
-            fragments = fragmentResource.query(setFragments, handleFailure),
-            processes = processResource.query(setProcesses, handleFailure),
-            flowProperties = ffpResource.query({fragmentID: fragmentID}, setFlowProperties, handleFailure),
-            fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID}, setFragmentFlows, handleFailure),
+            // Resource query results
+            fragments,
+            processes,
+            flowProperties,
+            fragmentFlows,
+            //
             graph = {},
             reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
             defaultFlowPropertyID = 23,
@@ -122,7 +124,6 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
                 "flowProperties" in $scope && "processes" in $scope) {
                 buildGraph();
                 $scope.graph = graph;
-                //$scope.$apply();
                 resume();
             }
         }
@@ -146,4 +147,11 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             $scope.processes = IdMapService.add("processID", processes);
             waitForOthers();
         }
+
+        $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
+        fragments = fragmentResource.query(setFragments, handleFailure);
+        processes = processResource.query(setProcesses, handleFailure);
+        flowProperties = ffpResource.query({fragmentID: fragmentID}, setFlowProperties, handleFailure);
+        fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID}, setFragmentFlows, handleFailure);
+
 }]);

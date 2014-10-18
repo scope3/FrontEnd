@@ -78,14 +78,14 @@ describe('Unit test sankey diagram directive', function() {
             {"flowID": 446, "nodeID": 179, "magnitude": 0.175463, "value": 0.17546300000001, "source": 26, "target": 28}
         ]};
 
-
+        $rootScope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
 
 
 }));
 
     it('Use the directive', function() {
         // Compile a piece of HTML containing the directive
-        var element = $compile("<sankey-diagram graph=\"graph\" link-display-value=\"d.magnitude\"></sankey-diagram>")($rootScope);
+        var element = $compile("<sankey-diagram graph=\"graph\" link-display-value=\"d.magnitude\" color=\"color\"></sankey-diagram>")($rootScope);
         // fire all the watches, so the scope expression {{1 + 1}} will be evaluated
         element.scope().$digest();
         // Check that the compiled element contains the templated content

@@ -169,15 +169,15 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
                 .style("opacity", 1);
             node.selectAll("rect")
                 .transition().duration(transitionTime)
-                .attr("height", function (d) {
-                    return Math.max(minNodeHeight, d.dy);
+                .attr("height", function (n) {
+                    return Math.max(minNodeHeight, n.dy);
                 })
                 .attr({
                     width: sankey.nodeWidth()
                 })
-                .style("fill", function (d) {
-                    d.color = color(d.nodeTypeID);
-                    return d.color;
+                .style("fill", function (n) {
+                    n.color = color(n[scope.color.property]);
+                    return n.color;
                 });
 
             node.on('mouseover', onMouseOverNode);
@@ -211,13 +211,15 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
         }
 
         prepareSvg(element[0]);
+        color.domain(scope.color.domain);
+        color.range(scope.color.range);
         scope.$watch('graph', onGraphChanged);
 
     }
 
     return {
         restrict: 'E',
-        scope: { linkDisplayValue: '&', graph: '=' },
+        scope: { linkDisplayValue: '&', graph: '=', color: '='},
         link: link
     }
 }]);

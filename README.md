@@ -68,35 +68,17 @@ Now browse to the app at `http://localhost:8000/app/index.html`.
 
 ## Directory Layout
 
-```
-app/                    --> all of the source files for the application
-  app.css               --> default stylesheet
-  components/           --> all app specific modules
-    version/              --> version related components (came with angular-seed)
-      version.js                 --> version module declaration and basic "version" value service
-      version_test.js            --> "version" value service tests
-      version-directive.js       --> custom directive that returns the current app version
-      version-directive_test.js  --> version directive tests
-      interpolate-filter.js      --> custom interpolation filter
-      interpolate-filter_test.js --> interpolate filter tests
-    resources/               --> contains resource service module for communication with web API
-    sankey/                  --> contains sankey module for creating sankey diagram    
-  scenarios/                --> the scenarios view template and logic
-    scenarios.html            --> the partial template
-    scenarios.js              --> the controller logic
-    scenarios_test.js         --> tests of the controller
-  view2/                --> the view2 view template and logic
-    view2.html            --> the partial template
-    fragment-sankey.js              --> the controller logic
-    fragment-sankey_test.js         --> tests of the controller
-  app.js                --> main application module
-  index.html            --> app layout file (the main html template file of the app)
-  index-async.html      --> just like index.html, but loads js files asynchronously
-karma.conf.js         --> config file for running unit tests with Karma
-e2e-tests/            --> end-to-end tests
-  protractor-conf.js    --> Protractor config file
-  scenarios.js          --> end-to-end scenarios to be run by Protractor
-```
+* app/                --> all of the source files for the application
+    * components/           --> shared modules
+        * idmap                 --> idmap service module
+        * version/              --> version related components (came with angular-seed)
+        * resources/               --> resource service module
+        * sankey/                  --> sankey diagram module   
+    * scenarios/                --> scenarios view and controller
+    * fragment-sankey/          --> fragment sankey view and controller
+* karma.conf.js         --> config file for running unit tests with Karma
+* e2e-tests/            --> end-to-end tests (not currently implemented)
+
 
 ## Testing
 
