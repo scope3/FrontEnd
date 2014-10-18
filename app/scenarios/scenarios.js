@@ -22,12 +22,14 @@ angular.module('lcaApp.scenarios', ['ngRoute', 'lcaApp.resources.service', 'ngPr
             if (scenarios.length > 0) {
                 var increment = 50 / (scenarios.length);
                 scenarios.forEach(function (scenario) {
-                    scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID});
-                    curP += increment;
-                    ngProgress.set(curP);
+                    scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID}, function () {
+                        curP += increment;
+                        ngProgress.set(curP)
+                    });
                 });
             }
             $scope.scenarios = scenarios;
+            IdMapService.add("scenarioID", scenarios);
         });
         ngProgress.complete();
 }]);
