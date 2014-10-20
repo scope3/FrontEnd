@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.idmap.service'])
+angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.resources.service',
+               'lcaApp.idmap.service', 'angularSpinner'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/fragment-sankey/:scenarioID/:fragmentID', {
@@ -9,9 +10,9 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
   });
 }])
 
-.controller('FragmentSankeyCtrl', ['$scope', '$routeParams', 'ResourceService', 'IdMapService',
+.controller('FragmentSankeyCtrl', ['$scope', '$routeParams', 'ResourceService', 'IdMapService', 'usSpinnerService',
 
-    function($scope, $routeParams, ResourceService, IdMapService) {
+    function($scope, $routeParams, ResourceService, IdMapService, usSpinnerService) {
         var fragmentID = $routeParams.fragmentID,
             scenarioID = $routeParams.scenarioID,
             fragmentResource = ResourceService.getResource("fragment"),
@@ -112,7 +113,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
         }
 
         function resume() {
-            // In the future, this will be used to reset progress indicator
+            usSpinnerService.stop("spinner-lca");
         }
 
         function handleFailure() {
@@ -123,8 +124,8 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             if ( "fragments" in $scope && "fragmentFlows" in $scope &&
                 "flowProperties" in $scope && "processes" in $scope) {
                 buildGraph();
-                $scope.graph = graph;
                 resume();
+                $scope.graph = graph;
             }
         }
 
@@ -148,6 +149,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             waitForOthers();
         }
 
+        usSpinnerService.spin("spinner-lca");
         $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
         fragments = fragmentResource.query(setFragments, handleFailure);
         processes = processResource.query(setProcesses, handleFailure);

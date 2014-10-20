@@ -7,7 +7,7 @@ describe('lcaApp.scenarios module', function() {
 
   describe('scenarios controller', function(){
 
-    xit('unit test scenarios, pending progress bar mockup', inject(function($controller) {
+    it('unit test scenarios', inject(function($controller) {
       //spec body
       var scope = {},
           ctrl = $controller('ScenarioListCtrl', {$scope:scope});

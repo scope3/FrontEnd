@@ -11,6 +11,7 @@
     "bootstrap": "~3.2",
     "d3": "~3",
     "colorbrewer": null,
-    "ngprogress": "1.0.7"
+    "ngprogress": "1.0.7",
+    "angular-spinner": null
   }
 }

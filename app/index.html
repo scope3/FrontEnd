@@ -10,13 +10,13 @@
   <meta name="description" content="">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.css">
-  <link rel="stylesheet" href="bower_components/ngprogress/ngProgress.css">
   <link rel="stylesheet" href="components/sankey/sankey.css">
   <link rel="stylesheet" href="app.css">
 </head>
 <body ng-app="lcaApp">
     <h3>Used Oil Life Cycle Assessment</h3>
     <ng-view></ng-view>
+    <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-lca"></span>
   <!-- In production use:
   <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
   -->
@@ -25,7 +25,8 @@
   <script src="bower_components/angular-resource/angular-resource.js"></script>
   <script src="bower_components/colorbrewer/colorbrewer.js"></script>
   <script src="bower_components/d3/d3.js"></script>
-  <script src="bower_components/ngprogress/build/ngProgress.js"></script>
+  <script src="bower_components/spin.js/spin.js"></script>
+  <script src="bower_components/angular-spinner/angular-spinner.js"></script>
   <script src="app.js"></script>
   <script src="components/idmap/idmap-service.js"></script>
   <script src="components/sankey/sankey.js"></script>
