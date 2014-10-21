@@ -1,11 +1,12 @@
-<h4>Used Oil LCA Flow Diagram</h4>
+<h4>Fragment Flow Diagram</h4>
 <fieldset>
     <p>
-        <label for="ptSelect">Flow Property Type</label>
-        <select ng-model="selectedFlowProperty" ng-options="value.name for (key, value) in flowProperties">
+        <label>Flow Property Type</label>
+        <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
+                ng-change="onFlowPropertyChange()">
         </select>
         <label id="unitLabel">Reference Unit:</label>
-        <span id="refUnitName"></span>
+        <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
     </p>
 </fieldset>
 <sankey-diagram graph="graph" link-display-value="d.magnitude" color="color"></sankey-diagram>

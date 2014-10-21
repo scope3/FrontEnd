@@ -12,6 +12,8 @@
     "d3": "~3",
     "colorbrewer": null,
     "ngprogress": "1.0.7",
-    "angular-spinner": null
+    "angular-spinner": null,
+    "normalize.css": null,
+    "array.prototype.find": null
   }
 }

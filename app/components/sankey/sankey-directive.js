@@ -67,8 +67,8 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
 
         function onGraphChanged(newVal, oldVal) {
             if (newVal) {
-                graph = newVal;
-                drawSankey(true);
+                graph = scope.graph;
+                drawSankey(graph["isNew"]);
             }
         }
 
@@ -213,7 +213,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey'])
         prepareSvg(element[0]);
         color.domain(scope.color.domain);
         color.range(scope.color.range);
-        scope.$watch('graph', onGraphChanged);
+        scope.$watch('graph.links', onGraphChanged);
 
     }
 
