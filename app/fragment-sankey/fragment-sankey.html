@@ -1,3 +1,12 @@
-<div>
-    <sankey-diagram graph="graph" link-display-value="d.magnitude" color="color"></sankey-diagram>
-</div>
+<h4>Used Oil LCA Flow Diagram</h4>
+<fieldset>
+    <p>
+        <label for="ptSelect">Flow Property Type</label>
+        <select ng-model="selectedFlowProperty" ng-options="value.name for (key, value) in flowProperties">
+        </select>
+        <label id="unitLabel">Reference Unit:</label>
+        <span id="refUnitName"></span>
+    </p>
+</fieldset>
+<sankey-diagram graph="graph" link-display-value="d.magnitude" color="color"></sankey-diagram>
+

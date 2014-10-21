@@ -140,7 +140,24 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
         }
 
         function setFlowProperties() {
-            $scope.flowProperties = IdMapService.add("flowPropertyID", flowProperties);
+            var flowPropertiesObject = IdMapService.add("flowPropertyID", flowProperties);
+            //
+            //  If the last flow property selection is not in the current list, reset to the default flow property,
+            //  if that is in the list. Otherwise, set to first element in resource payload.
+            //
+            if ( flowPropertiesObject) {
+                if ( !$scope.selectedFlowProperty ||
+                     !$scope.selectedFlowProperty.flowPropertyID in  $scope.flowProperties) {
+                    if (defaultFlowPropertyID in flowPropertiesObject) {
+                        $scope.selectedFlowProperty = flowPropertiesObject[defaultFlowPropertyID];
+                    } else {
+                        $scope.selectedFlowProperty = flowPropertiesObject[flowProperties[0].flowPropertyID];
+                    }
+                }
+            } else {
+                $scope.selectedFlowProperty = null;
+            }
+            $scope.flowProperties = flowPropertiesObject;
             waitForOthers();
         }
 
@@ -151,6 +168,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
 
         usSpinnerService.spin("spinner-lca");
         $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
+        $scope.selectedFlowProperty = null;
         fragments = fragmentResource.query(setFragments, handleFailure);
         processes = processResource.query(setProcesses, handleFailure);
         flowProperties = ffpResource.query({fragmentID: fragmentID}, setFlowProperties, handleFailure);
