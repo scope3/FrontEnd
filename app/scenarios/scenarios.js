@@ -32,22 +32,20 @@ angular.module('lcaApp.scenarios', ['ngRoute', 'lcaApp.resources.service', 'lcaA
         }
 
         usSpinnerService.spin("spinner-lca");
-        var scenarios = scenarioResource.query( {},
+        $scope.scenarios = scenarioResource.query( {},
             function() {
-                var total = scenarios.length,
+                var total = $scope.scenarios.length,
                     processed = 0;
                 if ( total > 0) {
-                    scenarios.forEach(function (scenario) {
-                        var fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID}, function () {
-                            scenario.fragment = fragment;
+                    $scope.scenarios.forEach(function (scenario) {
+                        scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID}, function () {
                             ++processed;
                             waitForOthers(processed, total);
                         }, fail);
                     });
                 }
-                IdMapService.add("scenarioID", scenarios);
+                IdMapService.add("scenarioID", $scope.scenarios);
                 resume();
-                $scope.scenarios = scenarios;
             }, fail);
 
 }]);
