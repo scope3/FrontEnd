@@ -1,13 +1,15 @@
 <h4>Fragment Flow Diagram</h4>
 <fieldset>
     <p>
-        <label>Flow Property Type</label>
-        <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
-                ng-change="onFlowPropertyChange()">
-        </select>
+        <label>Flow Property Type
+            <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
+                    ng-change="onFlowPropertyChange()">
+            </select>
+        </label>
         <label id="unitLabel">Reference Unit:</label>
         <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
     </p>
 </fieldset>
-<sankey-diagram graph="graph" link-display-value="d.magnitude" color="color"></sankey-diagram>
+<!--suppress HtmlUnknownTag -->
+<sankey-diagram graph="graph" color="color"></sankey-diagram>
 

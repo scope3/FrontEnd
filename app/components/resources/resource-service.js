@@ -2,16 +2,17 @@
  * Service to manage access to resources from web API or local storage
  */
 angular.module('lcaApp.resources.service', ['ngResource'])
-    .factory('ResourceService', ['$resource',
-        function($resource){
-            var resourceService = {},
-                apiRoot = "http://localhost:60393/api/";
+    .constant('API_ROOT', "http://localhost:60393/api/")
+    .factory('ResourceService', ['$resource', 'API_ROOT',
+        function($resource, API_ROOT){
+            var resourceService = {};
 
             resourceService.ROUTES = {
-                "fragment" : apiRoot + "fragments/:fragmentID",
-                "fragmentFlow" : apiRoot + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
-                "fragmentFlowProperty" : apiRoot + "fragments/:fragmentID/flowproperties",
-                "process" : apiRoot + "processes",
+                "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
+                "fragment" : API_ROOT + "fragments/:fragmentID",
+                "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
+                "fragmentFlowProperty" : API_ROOT + "fragments/:fragmentID/flowproperties",
+                "process" : API_ROOT + "processes",
                 "scenario" : "components/resources/scenarios.json"
             };
 
@@ -23,6 +24,6 @@ angular.module('lcaApp.resources.service', ['ngResource'])
                     });
                 }
             };
-
             return resourceService;
-   }]);
+        }
+    ]);

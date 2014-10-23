@@ -12,7 +12,7 @@ module.exports = function(config){
       'app/bower_components/d3/d3.js',
       'app/bower_components/spin.js/spin.js',
       'app/bower_components/angular-spinner/angular-spinner.js',
-      'bower_components/Array.prototype.find/index.js',
+      'app/bower_components/Array.prototype.find/index.js',
       'app/components/**/*.js',
       'app/fragment-sankey/**/*.js',
       'app/scenarios/**/*.js'

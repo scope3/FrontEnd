@@ -12,19 +12,22 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
 
 
 .controller('FragmentSankeyCtrl',
-    ['$scope', '$routeParams', 'ResourceService', 'IdMapService', 'usSpinnerService','$q',
-    function($scope, $routeParams, ResourceService, IdMapService, usSpinnerService, $q) {
+    ['$scope', '$routeParams', 'ResourceService', 'IdMapService', 'usSpinnerService','$q', '$window',
+    function($scope, $routeParams, ResourceService, IdMapService, usSpinnerService, $q, $window) {
         var fragmentID = $routeParams.fragmentID,
             scenarioID = $routeParams.scenarioID,
             fragmentResource = ResourceService.getResource("fragment"),
             processResource = ResourceService.getResource("process"),
             ffpResource = ResourceService.getResource("fragmentFlowProperty"),
             ffResource = ResourceService.getResource("fragmentFlow"),
+            flowResource = ResourceService.getResource("flowForFragment"),
             // Resource query results
             fragments,
             processes,
             flowProperties,
-            fragmentFlows = null,
+            fragmentFlows,
+            flows,
+            scenario,
             //
             graph = {},
             reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
@@ -69,9 +72,10 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
          * Get magnitude of link with a flow property
          * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}}  link
          * @param {Number}  flowPropertyID    flow property key
+         * @param {Number}  activityLevel    current scenario's activity level
          * @return {Number} The magnitude, if link has the flow property. Otherwise, null.
          */
-        function getMagnitude(link, flowPropertyID) {
+        function getMagnitude(link, flowPropertyID, activityLevel) {
             var magnitude = null, flowPropertyMagnitudes = [];
             if ("flowPropertyMagnitudes" in link) {
                 flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
@@ -83,7 +87,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
                     });
             }
             if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {
-                magnitude = flowPropertyMagnitudes[0].magnitude;
+                magnitude = flowPropertyMagnitudes[0].magnitude * activityLevel;
             }
             return magnitude;
         }
@@ -94,18 +98,26 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
          */
         function addGraphLink(element) {
             var link, parentIndex,
-                nodeIndex = reverseIndex[element.fragmentFlowID];
+                nodeIndex = reverseIndex[element.fragmentFlowID],
+                activityLevel = scenario["activityLevel"];
 
             if ("parentFragmentFlowID" in element) {
-                var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
-                    value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude;
+                var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
+                    value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
+                    flow = IdMapService.get("flowID", element.flowID),
+                    unit = $scope.selectedFlowProperty["referenceUnit"];
+                
                 parentIndex = reverseIndex[element.parentFragmentFlowID];
                 link = {
-                    flowID: element.flowID,
                     nodeID: element.fragmentFlowID,
-                    magnitude: magnitude,
                     value: value
                 };
+                if (magnitude) {
+                    link.magnitude = magnitude;
+                    link.toolTip = flow.name + " : " + magnitude.toPrecision(3) + " " + unit;
+                } else {
+                    link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
+                }
                 if (element.directionID === 1) {
                     link.source = nodeIndex;
                     link.target = parentIndex;
@@ -121,23 +133,24 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             usSpinnerService.stop("spinner-lca");
         }
 
-        function handleFailure() {
+        function handleFailure(errMsg) {
             stopWaiting();
+            $window.alert(errMsg);
         }
 
-        function processResources() {
+        function handleSuccess() {
+            setFlowProperties();
             IdMapService.add("fragmentFlowID", fragmentFlows);
+            IdMapService.add("flowID", flows);
             buildGraph(true);
             stopWaiting();
             $scope.graph = graph;
         }
 
         function setFragments() {
-            IdMapService.add("fragmentID", fragments);
+            // TODO: display fragment name in breadcrumb
         }
 
-        function setFragmentFlows() {
-        }
 
         function compareNames (a, b) {
             if (a.name > b.name) {
@@ -150,7 +163,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             return 0;
         }
         /**
-         * Callback for successful flow properties query
+         * Update scope with flow properties and select one
          */
         function setFlowProperties() {
             //
@@ -184,6 +197,37 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             IdMapService.add("processID", processes);
         }
 
+        function getRelatedObjects() {
+            fragments = fragmentResource.query(setFragments);
+            processes = processResource.query(setProcesses);
+            flowProperties = ffpResource.query({fragmentID: fragmentID});
+            fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID});
+            flows = flowResource.query({fragmentID: fragmentID});
+            $q.all([fragments.$promise, processes.$promise, flowProperties.$promise, fragmentFlows.$promise, flows.$promise])
+                .then(handleSuccess,
+                handleFailure);
+        }
+
+        function getSelectedScenario() {
+            scenario = IdMapService.get("scenarioID", scenarioID);
+            if (scenario) {
+                getRelatedObjects();
+            }
+            else {
+                // page was probably refreshed, need to query for resource
+                var scenarioResource = ResourceService.getResource("scenario");
+                scenarioResource.query( {},
+                    function(scenarios) {
+                        IdMapService.add("scenarioID", scenarios);
+                        scenario = IdMapService.get("scenarioID", scenarioID);
+                        if (scenario) {
+                            getRelatedObjects();
+                        } else {
+                            handleFailure("Invalid ScenarioID : " + scenarioID);
+                        }
+                    }, handleFailure);
+            }
+        }
 
         $scope.onFlowPropertyChange = function () {
             //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
@@ -194,10 +238,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
         usSpinnerService.spin("spinner-lca");
         $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
         $scope.selectedFlowProperty = null;
-        fragments = fragmentResource.query(setFragments);
-        processes = processResource.query(setProcesses);
-        flowProperties = ffpResource.query({fragmentID: fragmentID}, setFlowProperties);
-        fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID}, setFragmentFlows);
-        $q.all([fragments.$promise, processes.$promise, flowProperties.$promise, fragmentFlows.$promise])
-            .then( processResources, handleFailure());
+        if ( getSelectedScenario()) {
+
+        }
 }]);

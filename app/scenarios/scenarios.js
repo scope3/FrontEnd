@@ -1,6 +1,7 @@
 'use strict';
 
-angular.module('lcaApp.scenarios', ['ngRoute', 'lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
+angular.module('lcaApp.scenarios',
+    ['ngRoute', 'lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
 
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/scenarios', {
@@ -9,43 +10,44 @@ angular.module('lcaApp.scenarios', ['ngRoute', 'lcaApp.resources.service', 'lcaA
   });
 }])
 
-.controller('ScenarioListCtrl', ['$scope', 'ResourceService', 'IdMapService', 'usSpinnerService',
-    function($scope, ResourceService, IdMapService, usSpinnerService ) {
+.controller('ScenarioListCtrl', ['$scope', '$window', 'ResourceService', 'IdMapService', 'usSpinnerService',
+    function($scope, $window, ResourceService, IdMapService, usSpinnerService ) {
         var scenarioResource = ResourceService.getResource("scenario"),
             fragmentResource = ResourceService.getResource("fragment"),
             failure = false;
 
 
-        function resume() {
+        function stopWaiting() {
             usSpinnerService.stop("spinner-lca");
         }
 
-        function fail() {
+        function handleFailure(httpResponse) {
             failure = true;
-            resume();
-        }
-
-        function waitForOthers(processed, total) {
-            if ( failure || (processed === total)) {
-                resume();
-            }
+            stopWaiting();
+            $window.alert("Web API query failed. " + httpResponse);
         }
 
         usSpinnerService.spin("spinner-lca");
-        $scope.scenarios = scenarioResource.query( {},
-            function() {
-                var total = $scope.scenarios.length,
+        scenarioResource.query( {},
+            function(scenarios) {
+                var total = scenarios.length,
                     processed = 0;
                 if ( total > 0) {
+                    $scope.scenarios = scenarios;
+                    IdMapService.add("scenarioID", $scope.scenarios);
                     $scope.scenarios.forEach(function (scenario) {
-                        scenario.fragment = fragmentResource.get({fragmentID: scenario.topLevelFragmentID}, function () {
-                            ++processed;
-                            waitForOthers(processed, total);
-                        }, fail);
+                        if (!failure) {
+                            fragmentResource.get({fragmentID: scenario.topLevelFragmentID},
+                                function (f) {
+                                    scenario.fragment = f;
+                                    if (++processed === total) {
+                                        stopWaiting();
+                                    }
+                                },
+                                handleFailure);
+                        }
                     });
                 }
-                IdMapService.add("scenarioID", $scope.scenarios);
-                resume();
-            }, fail);
+            }, handleFailure);
 
 }]);
