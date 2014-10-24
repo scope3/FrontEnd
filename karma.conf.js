@@ -10,9 +10,9 @@ module.exports = function(config){
       'app/bower_components/angular-mocks/angular-mocks.js',
       'app/bower_components/colorbrewer/colorbrewer.js',
       'app/bower_components/d3/d3.js',
+      'app/bower_components/d3-tip/index.js',
       'app/bower_components/spin.js/spin.js',
       'app/bower_components/angular-spinner/angular-spinner.js',
-      'app/bower_components/Array.prototype.find/index.js',
       'app/components/**/*.js',
       'app/fragment-sankey/**/*.js',
       'app/scenarios/**/*.js'

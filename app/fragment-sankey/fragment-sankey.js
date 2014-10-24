@@ -2,7 +2,6 @@
 
 angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.resources.service',
                'lcaApp.idmap.service', 'angularSpinner'])
-
 .config(['$routeProvider', function($routeProvider) {
   $routeProvider.when('/fragment-sankey/:scenarioID/:fragmentID', {
     templateUrl: 'fragment-sankey/fragment-sankey.html',
@@ -16,8 +15,6 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
     function($scope, $routeParams, ResourceService, IdMapService, usSpinnerService, $q, $window) {
         var fragmentID = $routeParams.fragmentID,
             scenarioID = $routeParams.scenarioID,
-            fragmentResource = ResourceService.getResource("fragment"),
-            processResource = ResourceService.getResource("process"),
             ffpResource = ResourceService.getResource("fragmentFlowProperty"),
             ffResource = ResourceService.getResource("fragmentFlow"),
             flowResource = ResourceService.getResource("flowForFragment"),
@@ -28,10 +25,12 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             fragmentFlows,
             flows,
             scenario,
+            fragmentNodeTypes,
             //
             graph = {},
             reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
             baseValue = 1E-14;  // sankey link base value (replaces 0).
+
 
         /**
          * Build sankey graph from loaded data
@@ -43,25 +42,8 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             if (makeNew) {
                 reverseIndex = {};
                 graph.nodes = [];
-
                 // Add a node for every flow
-                fragmentFlows.forEach(
-                    /**
-                     * @param {{fragmentFlowID:number}} element
-                     */
-                     function (element) {
-                        var node = {
-                            nodeTypeID: element.nodeTypeID,
-                            nodeID: element.fragmentFlowID,
-                            nodeName: ""
-                            },
-                            fragFlow = IdMapService.get("fragmentFlowID", element.fragmentFlowID);
-
-                        if (fragFlow) {
-                            node.nodeName = fragFlow["shortName"];
-                        }
-                        reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
-                 });
+                fragmentFlows.forEach( addGraphNode);
             }
             // Add a link for every flow. source and target are indexes into nodes array.
             graph.links = [];
@@ -90,6 +72,38 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
                 magnitude = flowPropertyMagnitudes[0].magnitude * activityLevel;
             }
             return magnitude;
+        }
+
+        /**
+         * Add graph node for fragment flow element
+         * @param {{fragmentFlowID:number}} element
+         */
+        function addGraphNode(element) {
+            var node = {
+                    nodeTypeID: element.nodeTypeID,
+                    nodeID: element.fragmentFlowID,
+                    nodeName: "",
+                    toolTip: ""
+                },
+                fragFlow = IdMapService.get("fragmentFlowID", element.fragmentFlowID),
+                nodeType = IdMapService.get("nodeTypeID", element.nodeTypeID),
+                refObj;
+
+            if (fragFlow) {
+                node.nodeName = fragFlow["shortName"];
+            }
+            if (nodeType) {
+                node.toolTip = "<strong>" + nodeType.name + "</strong>";
+            }
+            if ("processID" in element) {
+                refObj = IdMapService.get("processID", element.processID);
+            } else if ("subFragmentID" in element) {
+                refObj = IdMapService.get("fragmentID", element.subFragmentID);
+            }
+            if ( refObj) {
+                node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
+            }
+            reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
         }
 
         /**
@@ -140,8 +154,11 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
 
         function handleSuccess() {
             setFlowProperties();
+            IdMapService.add("fragmentID", fragments);
             IdMapService.add("fragmentFlowID", fragmentFlows);
             IdMapService.add("flowID", flows);
+            IdMapService.add("nodeTypeID", fragmentNodeTypes);
+            IdMapService.add("processID", processes);
             buildGraph(true);
             stopWaiting();
             $scope.graph = graph;
@@ -193,22 +210,25 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             $scope.selectedFlowProperty = selectedFlowProperty;
         }
 
-        function setProcesses() {
-            IdMapService.add("processID", processes);
-        }
 
         function getRelatedObjects() {
+            var fragmentResource = ResourceService.getResource("fragment"),
+                processResource = ResourceService.getResource("process"),
+                ntResource =  ResourceService.getResource("nodeType");
+
             fragments = fragmentResource.query(setFragments);
-            processes = processResource.query(setProcesses);
+            processes = processResource.query();
             flowProperties = ffpResource.query({fragmentID: fragmentID});
             fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID});
             flows = flowResource.query({fragmentID: fragmentID});
-            $q.all([fragments.$promise, processes.$promise, flowProperties.$promise, fragmentFlows.$promise, flows.$promise])
+            fragmentNodeTypes = ntResource.query();
+            $q.all([fragments.$promise, processes.$promise, flowProperties.$promise, fragmentFlows.$promise, flows.$promise,
+                    fragmentNodeTypes.$promise])
                 .then(handleSuccess,
                 handleFailure);
         }
 
-        function getSelectedScenario() {
+        function getData() {
             scenario = IdMapService.get("scenarioID", scenarioID);
             if (scenario) {
                 getRelatedObjects();
@@ -238,7 +258,6 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
         usSpinnerService.spin("spinner-lca");
         $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
         $scope.selectedFlowProperty = null;
-        if ( getSelectedScenario()) {
+        getData();
 
-        }
 }]);

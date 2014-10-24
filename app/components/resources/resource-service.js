@@ -12,6 +12,7 @@ angular.module('lcaApp.resources.service', ['ngResource'])
                 "fragment" : API_ROOT + "fragments/:fragmentID",
                 "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
                 "fragmentFlowProperty" : API_ROOT + "fragments/:fragmentID/flowproperties",
+                "nodeType" : "components/resources/nodetypes.json",
                 "process" : API_ROOT + "processes",
                 "scenario" : "components/resources/scenarios.json"
             };

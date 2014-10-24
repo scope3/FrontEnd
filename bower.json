@@ -11,6 +11,8 @@
     "angular-mocks": "~1.2.x",
     "bootstrap": "~3.2",
     "d3": "~3",
+    "d3-plugins": null,
+    "d3-tip": null,
     "colorbrewer": null,
     "angular-spinner": null,
     "normalize.css": null,
