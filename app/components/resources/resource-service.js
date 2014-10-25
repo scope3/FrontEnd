@@ -1,12 +1,11 @@
 /**
  * Service to manage access to resources from web API or local storage
  */
-angular.module('lcaApp.resources.service', ['ngResource'])
+angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service' ])
     .constant('API_ROOT', "http://localhost:60393/api/")
-    .factory('ResourceService', ['$resource', 'API_ROOT',
-        function($resource, API_ROOT){
+    .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q',
+        function($resource, API_ROOT, IdMapService, $q){
             var resourceService = {};
-
             resourceService.ROUTES = {
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
                 "fragment" : API_ROOT + "fragments/:fragmentID",
@@ -25,6 +24,63 @@ angular.module('lcaApp.resources.service', ['ngResource'])
                     });
                 }
             };
+
+            resourceService.create = function( routeKey, idName) {
+                var svc =
+                    { resource: resourceService.getResource(routeKey),
+                      objects: null,
+                      idName: idName };
+
+                svc.load = function(filter) {
+                    var d = $q.defer();
+                    if (svc.objects) {
+                        d.resolve(svc.objects);
+                    } else {
+                        svc.objects = svc.resource.query( filter,
+                            function(objects) {
+                                IdMapService.add(svc.idName, objects);
+                                d.resolve(objects);
+                            },
+                            d.reject);
+                    }
+                    return d.promise;
+                };
+
+                svc.get = function(id) {
+                    var object = IdMapService.get(svc.idName, id);
+                    if (!object) {
+                        $q.when(svc.load()).then( function () {
+                            object = IdMapService.get(svc.idName, id);
+                        });
+                    }
+                    return object;
+                };
+
+                return svc;
+            };
+
+
+
             return resourceService;
+        }
+    ]);
+//
+// Factories using functional inheritance
+//
+angular.module('lcaApp.resources.service')
+    .factory('ScenarioService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("scenario", "scenarioID");
+        }
+    ]);
+
+angular.module('lcaApp.resources.service')
+    .factory('FragmentService', ['ResourceService',
+        function(ResourceService){
+            var svc = ResourceService.create("fragment", "fragmentID");
+            svc.loadOne = function(id) {
+                return svc.resource.get({fragmentID: id});
+            };
+            return svc;
         }
     ]);

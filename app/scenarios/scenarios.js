@@ -10,12 +10,10 @@ angular.module('lcaApp.scenarios',
   });
 }])
 
-.controller('ScenarioListCtrl', ['$scope', '$window', 'ResourceService', 'IdMapService', 'usSpinnerService',
-    function($scope, $window, ResourceService, IdMapService, usSpinnerService ) {
-        var scenarioResource = ResourceService.getResource("scenario"),
-            fragmentResource = ResourceService.getResource("fragment"),
-            failure = false;
-
+.controller('ScenarioListCtrl', ['$scope', '$window', 'usSpinnerService',
+        'ScenarioService', 'FragmentService', '$q',
+    function($scope, $window, usSpinnerService, ScenarioService, FragmentService, $q ) {
+        var failure = false;
 
         function stopWaiting() {
             usSpinnerService.stop("spinner-lca");
@@ -28,16 +26,15 @@ angular.module('lcaApp.scenarios',
         }
 
         usSpinnerService.spin("spinner-lca");
-        scenarioResource.query( {},
+        $q.when(ScenarioService.load()).then (
             function(scenarios) {
                 var total = scenarios.length,
                     processed = 0;
                 if ( total > 0) {
                     $scope.scenarios = scenarios;
-                    IdMapService.add("scenarioID", $scope.scenarios);
                     $scope.scenarios.forEach(function (scenario) {
                         if (!failure) {
-                            fragmentResource.get({fragmentID: scenario.topLevelFragmentID},
+                            $q.when(FragmentService.loadOne(scenario.topLevelFragmentID)).then(
                                 function (f) {
                                     scenario.fragment = f;
                                     if (++processed === total) {
