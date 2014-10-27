@@ -19,30 +19,25 @@ angular.module('lcaApp.scenarios',
             usSpinnerService.stop("spinner-lca");
         }
 
-        function handleFailure(httpResponse) {
-            failure = true;
-            stopWaiting();
-            $window.alert("Web API query failed. " + httpResponse);
+        function handleFailure(errMsg) {
+            if (!failure) {
+                failure = true;
+                stopWaiting();
+                $window.alert(errMsg);
+            }
         }
 
         usSpinnerService.spin("spinner-lca");
-        $q.when(ScenarioService.load()).then (
-            function(scenarios) {
-                var total = scenarios.length,
-                    processed = 0;
+        $q.all([ScenarioService.load(), FragmentService.load()]).then (
+            function() {
+                var scenarios = ScenarioService.objects,
+                    total = scenarios.length;
+
+                stopWaiting();
                 if ( total > 0) {
                     $scope.scenarios = scenarios;
                     $scope.scenarios.forEach(function (scenario) {
-                        if (!failure) {
-                            $q.when(FragmentService.loadOne(scenario.topLevelFragmentID)).then(
-                                function (f) {
-                                    scenario.fragment = f;
-                                    if (++processed === total) {
-                                        stopWaiting();
-                                    }
-                                },
-                                handleFailure);
-                        }
+                        scenario.fragment = FragmentService.get(scenario.topLevelFragmentID);
                     });
                 }
             }, handleFailure);

@@ -1,263 +1,241 @@
 'use strict';
 
 angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.resources.service',
-               'lcaApp.idmap.service', 'angularSpinner'])
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/fragment-sankey/:scenarioID/:fragmentID', {
-    templateUrl: 'fragment-sankey/fragment-sankey.html',
-    controller: 'FragmentSankeyCtrl'
-  });
-}])
+    'lcaApp.idmap.service', 'angularSpinner'])
+    .config(['$routeProvider', function ($routeProvider) {
+        $routeProvider.when('/fragment-sankey/:scenarioID/:fragmentID', {
+            templateUrl: 'fragment-sankey/fragment-sankey.html',
+            controller: 'FragmentSankeyCtrl'
+        });
+    }])
 
 
-.controller('FragmentSankeyCtrl',
-    ['$scope', '$routeParams', 'ResourceService', 'IdMapService', 'usSpinnerService','$q', '$window',
-    function($scope, $routeParams, ResourceService, IdMapService, usSpinnerService, $q, $window) {
-        var fragmentID = $routeParams.fragmentID,
-            scenarioID = $routeParams.scenarioID,
-            ffpResource = ResourceService.getResource("fragmentFlowProperty"),
-            ffResource = ResourceService.getResource("fragmentFlow"),
-            flowResource = ResourceService.getResource("flowForFragment"),
-            // Resource query results
-            fragments,
-            processes,
-            flowProperties,
-            fragmentFlows,
-            flows,
-            scenario,
-            fragmentNodeTypes,
+    .controller('FragmentSankeyCtrl',
+    ['$scope', '$routeParams', 'usSpinnerService', '$q', '$window',
+        'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
+        'FlowPropertyForFragmentService', 'NodeTypeService',
+        function ($scope, $routeParams, usSpinnerService, $q, $window,
+                  ScenarioService, FragmentService, FragmentFlowService, FlowForFragmentService, ProcessService,
+                  FlowPropertyForFragmentService, NodeTypeService) {
+            var fragmentID = $routeParams.fragmentID,
+                scenarioID = $routeParams.scenarioID,
+                scenario,
             //
-            graph = {},
-            reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
-            baseValue = 1E-14;  // sankey link base value (replaces 0).
+                graph = {},
+                reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
+                baseValue = 1E-14;  // sankey link base value (replaces 0).
 
 
-        /**
-         * Build sankey graph from loaded data
-         * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
-         */
-        function buildGraph(makeNew) {
-
-            graph.isNew = makeNew;
-            if (makeNew) {
-                reverseIndex = {};
-                graph.nodes = [];
-                // Add a node for every flow
-                fragmentFlows.forEach( addGraphNode);
-            }
-            // Add a link for every flow. source and target are indexes into nodes array.
-            graph.links = [];
-            fragmentFlows.forEach(addGraphLink);
-        }
-
-        /**
-         * Get magnitude of link with a flow property
-         * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}}  link
-         * @param {Number}  flowPropertyID    flow property key
-         * @param {Number}  activityLevel    current scenario's activity level
-         * @return {Number} The magnitude, if link has the flow property. Otherwise, null.
-         */
-        function getMagnitude(link, flowPropertyID, activityLevel) {
-            var magnitude = null, flowPropertyMagnitudes = [];
-            if ("flowPropertyMagnitudes" in link) {
-                flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
-                    /**
-                     * @param {{flowPropertyID:number}}  lm
-                     */
-                    function (lm) {
-                        return +lm.flowPropertyID === flowPropertyID;
-                    });
-            }
-            if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {
-                magnitude = flowPropertyMagnitudes[0].magnitude * activityLevel;
-            }
-            return magnitude;
-        }
-
-        /**
-         * Add graph node for fragment flow element
-         * @param {{fragmentFlowID:number}} element
-         */
-        function addGraphNode(element) {
-            var node = {
-                    nodeTypeID: element.nodeTypeID,
-                    nodeID: element.fragmentFlowID,
-                    nodeName: "",
-                    toolTip: ""
-                },
-                fragFlow = IdMapService.get("fragmentFlowID", element.fragmentFlowID),
-                nodeType = IdMapService.get("nodeTypeID", element.nodeTypeID),
-                refObj;
-
-            if (fragFlow) {
-                node.nodeName = fragFlow["shortName"];
-            }
-            if (nodeType) {
-                node.toolTip = "<strong>" + nodeType.name + "</strong>";
-            }
-            if ("processID" in element) {
-                refObj = IdMapService.get("processID", element.processID);
-            } else if ("subFragmentID" in element) {
-                refObj = IdMapService.get("fragmentID", element.subFragmentID);
-            }
-            if ( refObj) {
-                node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
-            }
-            reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
-        }
-
-        /**
-         * Add graph link for fragmentflow element
-         * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}} element
-         */
-        function addGraphLink(element) {
-            var link, parentIndex,
-                nodeIndex = reverseIndex[element.fragmentFlowID],
-                activityLevel = scenario["activityLevel"];
-
-            if ("parentFragmentFlowID" in element) {
-                var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
-                    value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
-                    flow = IdMapService.get("flowID", element.flowID),
-                    unit = $scope.selectedFlowProperty["referenceUnit"];
-                
-                parentIndex = reverseIndex[element.parentFragmentFlowID];
-                link = {
-                    nodeID: element.fragmentFlowID,
-                    value: value
-                };
-                if (magnitude) {
-                    link.magnitude = magnitude;
-                    link.toolTip = flow.name + " : " + magnitude.toPrecision(3) + " " + unit;
-                } else {
-                    link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
+            /**
+             * Build sankey graph from loaded data
+             * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
+             */
+            function buildGraph(makeNew) {
+                var fragmentFlows = FragmentFlowService.objects;
+                graph.isNew = makeNew;
+                if (makeNew) {
+                    reverseIndex = {};
+                    graph.nodes = [];
+                    // Add a node for every flow
+                    fragmentFlows.forEach(addGraphNode);
                 }
-                if (element.directionID === 1) {
-                    link.source = nodeIndex;
-                    link.target = parentIndex;
-                } else {
-                    link.source = parentIndex;
-                    link.target = nodeIndex;
+                // Add a link for every flow. source and target are indexes into nodes array.
+                graph.links = [];
+                fragmentFlows.forEach(addGraphLink);
+            }
+
+            /**
+             * Get magnitude of link with a flow property
+             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}}  link
+             * @param {Number}  flowPropertyID    flow property key
+             * @param {Number}  activityLevel    current scenario's activity level
+             * @return {Number} The magnitude, if link has the flow property. Otherwise, null.
+             */
+            function getMagnitude(link, flowPropertyID, activityLevel) {
+                var magnitude = null, flowPropertyMagnitudes = [];
+                if ("flowPropertyMagnitudes" in link) {
+                    flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
+                        /**
+                         * @param {{flowPropertyID:number}}  lm
+                         */
+                            function (lm) {
+                            return +lm.flowPropertyID === flowPropertyID;
+                        });
                 }
-                graph.links.push(link);
-            }
-        }
-
-        function stopWaiting() {
-            usSpinnerService.stop("spinner-lca");
-        }
-
-        function handleFailure(errMsg) {
-            stopWaiting();
-            $window.alert(errMsg);
-        }
-
-        function handleSuccess() {
-            setFlowProperties();
-            IdMapService.add("fragmentID", fragments);
-            IdMapService.add("fragmentFlowID", fragmentFlows);
-            IdMapService.add("flowID", flows);
-            IdMapService.add("nodeTypeID", fragmentNodeTypes);
-            IdMapService.add("processID", processes);
-            buildGraph(true);
-            stopWaiting();
-            $scope.graph = graph;
-        }
-
-        function setFragments() {
-            // TODO: display fragment name in breadcrumb
-        }
-
-
-        function compareNames (a, b) {
-            if (a.name > b.name) {
-                return 1;
-            }
-            if (a.name < b.name) {
-                return -1;
-            }
-            // a must be equal to b
-            return 0;
-        }
-        /**
-         * Update scope with flow properties and select one
-         */
-        function setFlowProperties() {
-            //
-            //  If the last flow property selection is not in the current list, reset to the default flow property,
-            //  if that is in the list. Otherwise, set to first element in resource payload.
-            //
-            var selectedFlowProperty = $scope.selectedFlowProperty;
-            flowProperties.sort( compareNames );
-            if ( flowProperties) {
-                if (selectedFlowProperty) {
-                    selectedFlowProperty = flowProperties.find( function(element) {
-                        return (element["flowPropertyID"] === selectedFlowProperty["flowPropertyID"]);
-                    });
+                if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {
+                    magnitude = flowPropertyMagnitudes[0].magnitude * activityLevel;
                 }
-                if ( !selectedFlowProperty ) {
-                    selectedFlowProperty = flowProperties.find( function(element) {
-                        return (element.name === "Mass");
-                    });
-                    if ( !selectedFlowProperty ) {
-                        selectedFlowProperty = flowProperties[0];
+                return magnitude;
+            }
+
+            /**
+             * Add graph node for fragment flow element
+             * @param {{fragmentFlowID:number}} element
+             */
+            function addGraphNode(element) {
+                var node = {
+                        nodeTypeID: element.nodeTypeID,
+                        nodeID: element.fragmentFlowID,
+                        nodeName: "",
+                        toolTip: ""
+                    },
+                    fragFlow = FragmentFlowService.get(element.fragmentFlowID),
+                    nodeType = NodeTypeService.get(element.nodeTypeID),
+                    refObj;
+
+                if (fragFlow) {
+                    node.nodeName = fragFlow["shortName"];
+                }
+                if (nodeType) {
+                    node.toolTip = "<strong>" + nodeType.name + "</strong>";
+                }
+                if ("processID" in element) {
+                    refObj = ProcessService.get(element.processID);
+                } else if ("subFragmentID" in element) {
+                    refObj = FragmentService.get(element.subFragmentID);
+                }
+                if (refObj) {
+                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
+                }
+                reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
+            }
+
+            /**
+             * Add graph link for fragmentflow element
+             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}} element
+             */
+            function addGraphLink(element) {
+                var link, parentIndex,
+                    nodeIndex = reverseIndex[element.fragmentFlowID],
+                    activityLevel = scenario["activityLevel"];
+
+                if ("parentFragmentFlowID" in element) {
+                    var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
+                        value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
+                        flow = FlowForFragmentService.get(element.flowID),
+                        unit = $scope.selectedFlowProperty["referenceUnit"];
+
+                    parentIndex = reverseIndex[element.parentFragmentFlowID];
+                    link = {
+                        nodeID: element.fragmentFlowID,
+                        value: value
+                    };
+                    if (magnitude) {
+                        link.magnitude = magnitude;
+                        link.toolTip = flow.name + " : " + magnitude.toPrecision(3) + " " + unit;
+                    } else {
+                        link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
                     }
+                    if (element.directionID === 1) {
+                        link.source = nodeIndex;
+                        link.target = parentIndex;
+                    } else {
+                        link.source = parentIndex;
+                        link.target = nodeIndex;
+                    }
+                    graph.links.push(link);
                 }
-            } else {
-                selectedFlowProperty = null;
             }
-            $scope.flowProperties = flowProperties;
-            $scope.selectedFlowProperty = selectedFlowProperty;
-        }
 
-
-        function getRelatedObjects() {
-            var fragmentResource = ResourceService.getResource("fragment"),
-                processResource = ResourceService.getResource("process"),
-                ntResource =  ResourceService.getResource("nodeType");
-
-            fragments = fragmentResource.query(setFragments);
-            processes = processResource.query();
-            flowProperties = ffpResource.query({fragmentID: fragmentID});
-            fragmentFlows = ffResource.query({scenarioID: scenarioID, fragmentID: fragmentID});
-            flows = flowResource.query({fragmentID: fragmentID});
-            fragmentNodeTypes = ntResource.query();
-            $q.all([fragments.$promise, processes.$promise, flowProperties.$promise, fragmentFlows.$promise, flows.$promise,
-                    fragmentNodeTypes.$promise])
-                .then(handleSuccess,
-                handleFailure);
-        }
-
-        function getData() {
-            scenario = IdMapService.get("scenarioID", scenarioID);
-            if (scenario) {
-                getRelatedObjects();
+            function stopWaiting() {
+                usSpinnerService.stop("spinner-lca");
             }
-            else {
-                // page was probably refreshed, need to query for resource
-                var scenarioResource = ResourceService.getResource("scenario");
-                scenarioResource.query( {},
-                    function(scenarios) {
-                        IdMapService.add("scenarioID", scenarios);
-                        scenario = IdMapService.get("scenarioID", scenarioID);
-                        if (scenario) {
-                            getRelatedObjects();
-                        } else {
-                            handleFailure("Invalid ScenarioID : " + scenarioID);
+
+            function handleFailure(errMsg) {
+                stopWaiting();
+                $window.alert(errMsg);
+            }
+
+            function handleSuccess() {
+                setFlowProperties();
+                buildGraph(true);
+                stopWaiting();
+                $scope.graph = graph;
+            }
+
+            function compareNames(a, b) {
+                if (a.name > b.name) {
+                    return 1;
+                }
+                if (a.name < b.name) {
+                    return -1;
+                }
+                // a must be equal to b
+                return 0;
+            }
+
+            /**
+             * Update scope with flow properties and select one
+             */
+            function setFlowProperties() {
+                //
+                //  If the last flow property selection is not in the current list, reset to the default flow property,
+                //  if that is in the list. Otherwise, set to first element in resource payload.
+                //
+                var selectedFlowProperty = $scope.selectedFlowProperty,
+                    flowProperties = FlowPropertyForFragmentService.objects;
+                flowProperties.sort(compareNames);
+                if (flowProperties) {
+                    if (selectedFlowProperty) {
+                        selectedFlowProperty = flowProperties.find(function (element) {
+                            return (element["flowPropertyID"] === selectedFlowProperty["flowPropertyID"]);
+                        });
+                    }
+                    if (!selectedFlowProperty) {
+                        selectedFlowProperty = flowProperties.find(function (element) {
+                            return (element.name === "Mass");
+                        });
+                        if (!selectedFlowProperty) {
+                            selectedFlowProperty = flowProperties[0];
                         }
-                    }, handleFailure);
+                    }
+                } else {
+                    selectedFlowProperty = null;
+                }
+                $scope.flowProperties = flowProperties;
+                $scope.selectedFlowProperty = selectedFlowProperty;
             }
-        }
 
-        $scope.onFlowPropertyChange = function () {
-            //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
-            buildGraph(false);
-            $scope.graph = graph;
-        };
 
-        usSpinnerService.spin("spinner-lca");
-        $scope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
-        $scope.selectedFlowProperty = null;
-        getData();
+            function getRelatedObjects() {
+                $q.all([FragmentService.load(), ProcessService.load(),
+                    FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
+                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
+                    FlowForFragmentService.load({fragmentID: fragmentID}),
+                    NodeTypeService.load()])
+                    .then(handleSuccess,
+                    handleFailure);
+            }
 
-}]);
+            function getData() {
+                scenario = ScenarioService.get(scenarioID);
+                if (scenario) {
+                    getRelatedObjects();
+                }
+                else {
+                    // perhaps page was refreshed
+                    $q.when(ScenarioService.load()).then(
+                        function() {
+                            scenario = ScenarioService.get(scenarioID);
+                            if (scenario) {
+                                getRelatedObjects();
+                            } else {
+                                handleFailure("Scenario with ID, " + scenarioID + ", not found.");
+                            }
+                        },
+                        handleFailure);
+                }
+            }
+
+            $scope.onFlowPropertyChange = function () {
+                //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
+                buildGraph(false);
+                $scope.graph = graph;
+            };
+
+            usSpinnerService.spin("spinner-lca");
+            $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
+            $scope.selectedFlowProperty = null;
+            getData();
+
+        }]);

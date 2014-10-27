@@ -27,10 +27,15 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
             resourceService.create = function( routeKey, idName) {
                 var svc =
-                    { resource: resourceService.getResource(routeKey),
-                      objects: null,
-                      idName: idName };
+                    { resource: resourceService.getResource(routeKey), // Instance of $resource
+                      objects: null,    // Query results
+                      idName: idName }; // Object ID property name
 
+                /**
+                 * Load resources using filter. Cache results using IdMapService
+                 * @param {Object} filter   Resource query filter
+                 * @returns promise of loaded resources
+                 */
                 svc.load = function(filter) {
                     var d = $q.defer();
                     if (svc.objects) {
@@ -41,25 +46,24 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                                 IdMapService.add(svc.idName, objects);
                                 d.resolve(objects);
                             },
-                            d.reject);
+                            function(err) {
+                                d.reject("Web API query failed. URL: " + err.config.url);
+                            })
                     }
                     return d.promise;
                 };
 
+                /**
+                 * Get loaded resource by object ID
+                 * @param id    Object ID value
+                 * @returns loaded resource, if found.
+                 */
                 svc.get = function(id) {
-                    var object = IdMapService.get(svc.idName, id);
-                    if (!object) {
-                        $q.when(svc.load()).then( function () {
-                            object = IdMapService.get(svc.idName, id);
-                        });
-                    }
-                    return object;
+                    return IdMapService.get(svc.idName, id);
                 };
 
                 return svc;
             };
-
-
 
             return resourceService;
         }
@@ -77,10 +81,42 @@ angular.module('lcaApp.resources.service')
 angular.module('lcaApp.resources.service')
     .factory('FragmentService', ['ResourceService',
         function(ResourceService){
-            var svc = ResourceService.create("fragment", "fragmentID");
-            svc.loadOne = function(id) {
-                return svc.resource.get({fragmentID: id});
-            };
-            return svc;
+            return ResourceService.create("fragment", "fragmentID");
+        }
+    ]);
+
+angular.module('lcaApp.resources.service')
+    .factory('ProcessService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("process", "processID");
+        }
+    ]);
+
+
+angular.module('lcaApp.resources.service')
+    .factory('FlowPropertyForFragmentService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("fragmentFlowProperty", "flowPropertyID");
+        }
+    ]);
+
+angular.module('lcaApp.resources.service')
+    .factory('FragmentFlowService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("fragmentFlow", "fragmentFlowID");
+        }
+    ]);
+
+angular.module('lcaApp.resources.service')
+    .factory('FlowForFragmentService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("flowForFragment", "flowID");
+        }
+    ]);
+
+angular.module('lcaApp.resources.service')
+    .factory('NodeTypeService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("nodeType", "nodeTypeID");
         }
     ]);
