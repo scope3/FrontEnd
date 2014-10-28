@@ -13,7 +13,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "fragmentFlowProperty" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "nodeType" : "components/resources/nodetypes.json",
                 "process" : API_ROOT + "processes",
-                "scenario" : "components/resources/scenarios.json"
+                "scenario" : API_ROOT + "scenarios"
             };
 
             resourceService.getResource = function( routeKey) {
@@ -27,7 +27,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
             resourceService.create = function( routeKey, idName) {
                 var svc =
-                    { resource: resourceService.getResource(routeKey), // Instance of $resource
+                    { loadFilter: null,
+                      resource: resourceService.getResource(routeKey), // Instance of $resource
                       objects: null,    // Query results
                       idName: idName }; // Object ID property name
 
@@ -38,9 +39,10 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                  */
                 svc.load = function(filter) {
                     var d = $q.defer();
-                    if (svc.objects) {
+                    if (filter === svc.loadFilter && svc.objects) {
                         d.resolve(svc.objects);
                     } else {
+                        svc.loadFilter = filter;
                         svc.objects = svc.resource.query( filter,
                             function(objects) {
                                 IdMapService.add(svc.idName, objects);
