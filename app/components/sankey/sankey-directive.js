@@ -69,6 +69,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             svg.selectAll(".link")
                 .transition()
                 .style("stroke-opacity", opacity.link);
+            TipService.hide();
         }
 
         /**
