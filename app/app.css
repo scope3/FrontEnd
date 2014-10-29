@@ -1,5 +1,6 @@
-/* app css stylesheet */
-
+/* app css stylesheet
+came with angular-seed
+currently unused
 .menu {
   list-style: none;
   border-bottom: 0.1em solid black;
@@ -28,3 +29,4 @@
   content: "";
   padding: 0;
 }
+*/
