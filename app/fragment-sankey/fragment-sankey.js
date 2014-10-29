@@ -1,25 +1,16 @@
 'use strict';
 
-angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.resources.service',
+angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service',
     'lcaApp.idmap.service', 'angularSpinner'])
-    .config(['$routeProvider', function ($routeProvider) {
-        $routeProvider.when('/fragment-sankey/:scenarioID/:fragmentID', {
-            templateUrl: 'fragment-sankey/fragment-sankey.html',
-            controller: 'FragmentSankeyCtrl'
-        });
-    }])
-
-
-    .controller('FragmentSankeyCtrl',
-    ['$scope', '$routeParams', 'usSpinnerService', '$q', '$window',
+.controller('FragmentSankeyCtrl',
+    ['$scope', '$stateParams', 'usSpinnerService', '$q', '$window',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'NodeTypeService',
-        function ($scope, $routeParams, usSpinnerService, $q, $window,
+        function ($scope, $stateParams, usSpinnerService, $q, $window,
                   ScenarioService, FragmentService, FragmentFlowService, FlowForFragmentService, ProcessService,
                   FlowPropertyForFragmentService, NodeTypeService) {
-            var fragmentID = $routeParams.fragmentID,
-                scenarioID = $routeParams.scenarioID,
-                scenario,
+            var fragmentID = $stateParams.fragmentID,
+                scenarioID = $stateParams.scenarioID,
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
@@ -107,7 +98,7 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             function addGraphLink(element) {
                 var link, parentIndex,
                     nodeIndex = reverseIndex[element.fragmentFlowID],
-                    activityLevel = scenario["activityLevel"];
+                    activityLevel = $scope.scenario["activityLevel"];
 
                 if ("parentFragmentFlowID" in element) {
                     var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
@@ -146,11 +137,30 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
                 $window.alert(errMsg);
             }
 
+            function updateBreadCrumb() {
+                var fragment = FragmentService.get(fragmentID);
+                if ( fragment) {
+                    $scope.fragmentName = fragment.name;
+                } else {
+                    $scope.fragmentName = "Invalid Fragment";
+                    handleFailure("Fragment with ID, " + fragmentID + ", not found.");
+                }
+                return fragment !== null;
+            }
+
             function handleSuccess() {
-                setFlowProperties();
-                buildGraph(true);
-                stopWaiting();
-                $scope.graph = graph;
+                $scope.scenario = ScenarioService.get(scenarioID);
+
+                if ($scope.scenario) {
+                    setFlowProperties();
+                    if ( updateBreadCrumb() ) {
+                        buildGraph(true);
+                        stopWaiting();
+                        $scope.graph = graph;
+                    }
+                } else {
+                    handleFailure("Scenario with ID," + scenarioID + ", not found.");
+                }
             }
 
             function compareNames(a, b) {
@@ -197,34 +207,14 @@ angular.module('lcaApp.fragment.sankey', ['ngRoute', 'lcaApp.sankey', 'lcaApp.re
             }
 
 
-            function getRelatedObjects() {
-                $q.all([FragmentService.load(), ProcessService.load(),
+            function getData() {
+                $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load(),
                     FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
                     FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
                     FlowForFragmentService.load({fragmentID: fragmentID}),
                     NodeTypeService.load()])
                     .then(handleSuccess,
                     handleFailure);
-            }
-
-            function getData() {
-                scenario = ScenarioService.get(scenarioID);
-                if (scenario) {
-                    getRelatedObjects();
-                }
-                else {
-                    // perhaps page was refreshed
-                    $q.when(ScenarioService.load()).then(
-                        function() {
-                            scenario = ScenarioService.get(scenarioID);
-                            if (scenario) {
-                                getRelatedObjects();
-                            } else {
-                                handleFailure("Scenario with ID, " + scenarioID + ", not found.");
-                            }
-                        },
-                        handleFailure);
-                }
             }
 
             $scope.onFlowPropertyChange = function () {

@@ -1,14 +1,7 @@
 'use strict';
 
 angular.module('lcaApp.scenarios',
-    ['ngRoute', 'lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
-
-.config(['$routeProvider', function($routeProvider) {
-  $routeProvider.when('/scenarios', {
-    templateUrl: 'scenarios/scenarios.html',
-    controller: 'ScenarioListCtrl'
-  });
-}])
+    ['lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
 
 .controller('ScenarioListCtrl', ['$scope', '$window', 'usSpinnerService',
         'ScenarioService', 'FragmentService', '$q',

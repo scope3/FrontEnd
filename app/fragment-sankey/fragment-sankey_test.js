@@ -6,11 +6,11 @@ describe('lcaApp.fragment.sankey module', function() {
 
   describe('fragment-sankey controller', function(){
 
-    it('should ....', inject(function($rootScope, $routeParams, $controller) {
+    it('should ....', inject(function($rootScope, $stateParams, $controller) {
       //spec body
         var scope = {},
             ctrl = $controller('FragmentSankeyCtrl', {$scope:scope});
-        $routeParams.fragmentID = 8;
+        $stateParams.fragmentID = 8;
       expect(ctrl).toBeDefined();
     }));
 

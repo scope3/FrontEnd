@@ -1,17 +1,23 @@
 'use strict';
 
-describe('lcaApp.scenarios module', function() {
+describe('lcaApp.scenarios module', function () {
 
-  beforeEach(module('lcaApp.scenarios'));
+    var scope, ctrl;
+
+    beforeEach(module('lcaApp.scenarios'));
+
+    beforeEach(inject(function ($controller, $rootScope) {
+            scope = $rootScope.$new();
+            ctrl = $controller('ScenarioListCtrl', {$scope: scope});
+        }
+    ));
 
 
-  describe('scenarios controller', function(){
+    it('scope and controller are defined', function () {
+        //spec body
+        expect(scope).toBeDefined();
+        expect(ctrl).toBeDefined();
+    });
 
-    it('unit test scenarios', inject(function($controller) {
-      //spec body
-      var scope = {},
-          ctrl = $controller('ScenarioListCtrl', {$scope:scope});
-    }));
 
-  });
 });

@@ -21,7 +21,8 @@
 
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-local-storage/dist/angular-local-storage.js"></script>
-    <script src="bower_components/angular-route/angular-route.js"></script>
+    <!--<script src="bower_components/angular-route/angular-route.js"></script>-->
+    <script src="bower_components/angular-ui-router/release/angular-ui-router.js"></script>
     <script src="bower_components/angular-resource/angular-resource.js"></script>
     <script src="bower_components/colorbrewer/colorbrewer.js"></script>
     <script src="bower_components/d3/d3.js"></script>
@@ -29,6 +30,8 @@
     <script src="bower_components/spin.js/spin.js"></script>
     <script src="bower_components/angular-spinner/angular-spinner.js"></script>
     <script src="bower_components/array.prototype.find/index.js"></script>
+    <!--<script src="bower_components/ng-breadcrumbs/dist/ng-breadcrumbs.js"></script>-->
+    <script src="bower_components/angular-breadcrumb/release/angular-breadcrumb.js"></script>
     <script src="app.js"></script>
     <script src="components/d3-tip/tip-service.js"></script>
     <script src="components/idmap/idmap-service.js"></script>
@@ -44,9 +47,9 @@
 
 </head>
 <body ng-app="lcaApp">
-
 <h3>Used Oil Life Cycle Assessment</h3>
-<ng-view></ng-view>
+<div ncy-breadcrumb></div>
+<div ui-view></div>
 <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-lca"></span>
 
 </body>

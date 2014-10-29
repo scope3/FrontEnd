@@ -5,10 +5,9 @@
     "dependencies": {
         "angular": "1.2.x",
         "angular-local-storage": null,
-        "angular-resource": "~1.2.x",
-        "angular-route": "1.2.x",
+        "angular-resource": "1.2.x",
         "angular-loader": "1.2.x",
-        "angular-mocks": "~1.2.x",
+        "angular-mocks": "1.2.x",
         "bootstrap": "~3.2",
         "d3": "~3",
         "d3-plugins": null,
@@ -16,6 +15,8 @@
         "colorbrewer": null,
         "angular-spinner": null,
         "normalize.css": null,
-        "array.prototype.find": null
+        "array.prototype.find": null,
+        "angular-ui-router": "0.2.11",
+        "angular-breadcrumb" : "0.2.x"
     }
 }
