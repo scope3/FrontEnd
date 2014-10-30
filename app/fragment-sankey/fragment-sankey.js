@@ -93,6 +93,7 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
 //                    node.toolTip = node.toolTip + "<p><a href='" + navState +  "'>" + refObj.name + "</a></p>";
                 }
                 if (refObj) {
+                    node.selectable = true;
                     node.toolTip = node.toolTip + "<p>" + refObj.name +
                         "</p><i><small>Click to navigate</small></i>";
                 }
@@ -146,29 +147,24 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                 $window.alert(errMsg);
             }
 
-            function updateBreadCrumb() {
-                var fragment = FragmentService.get(fragmentID);
-                if ( fragment) {
-                    $scope.fragmentName = fragment.name;
+            function visualizeFragment() {
+                $scope.fragment = FragmentService.get(fragmentID);
+                if ($scope.fragment) {
+                    setFlowProperties();
+                    buildGraph(true);
+                    stopWaiting();
+                    $scope.graph = graph;
                 } else {
-                    $scope.fragmentName = "Invalid Fragment";
-                    handleFailure("Fragment with ID, " + fragmentID + ", not found.");
+                    handleFailure("Invalid fragmentID: " + fragmentID);
                 }
-                return fragment !== null;
             }
 
             function handleSuccess() {
                 $scope.scenario = ScenarioService.get(scenarioID);
-                $scope.fragment = FragmentService.get(fragmentID);
-                if ($scope.scenario && $scope.fragment) {
-                    setFlowProperties();
-                    if ( updateBreadCrumb() ) {
-                        buildGraph(true);
-                        stopWaiting();
-                        $scope.graph = graph;
-                    }
+                if ($scope.scenario ) {
+                    visualizeFragment();
                 } else {
-                    handleFailure("Invalid URL parameters.");
+                    handleFailure("Invalid scenarioID: " + scenarioID);
                 }
             }
 
@@ -226,15 +222,35 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                     handleFailure);
             }
 
+            function getDataForFragment() {
+                $q.all([FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
+                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
+                    FlowForFragmentService.load({fragmentID: fragmentID})])
+                    .then(visualizeFragment,
+                    handleFailure);
+            }
+
             $scope.onFlowPropertyChange = function () {
                 //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
                 buildGraph(false);
                 $scope.graph = graph;
             };
 
+            function onNodeSelectionChange(newVal, oldVal) {
+                if (newVal) {
+                    var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
+                    if (newVal.nodeTypeID === 2) {
+                        fragmentID = fragmentFlow.subFragmentID;
+                        getDataForFragment();
+                    }
+                }
+            }
+
             usSpinnerService.spin("spinner-lca");
             $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;
+            $scope.selectedNode = null;
+            $scope.$watch("selectedNode", onNodeSelectionChange);
             getData();
 
         }]);
