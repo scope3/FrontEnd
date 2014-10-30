@@ -28,7 +28,7 @@ angular.module('lcaApp', [
                 }
             },
             data: {
-                ncyBreadcrumbLabel: 'Fragment: {{fragmentName}}'
+                ncyBreadcrumbLabel: 'Fragment Sankey Diagram'
             }
         });
     }]);

@@ -72,7 +72,8 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                     },
                     fragFlow = FragmentFlowService.get(element.fragmentFlowID),
                     nodeType = NodeTypeService.get(element.nodeTypeID),
-                    refObj;
+                    refObj //, navState
+                    ;
 
                 if (fragFlow) {
                     node.nodeName = fragFlow["shortName"];
@@ -82,12 +83,20 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                 }
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
+//                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
                 } else if ("subFragmentID" in element) {
                     refObj = FragmentService.get(element.subFragmentID);
+//                    navState = "scenarios.fragment({fragmentID: " + fragmentID +
+//                        ", scenarioID: " + scenarioID + "})";
+//                    node.toolTip = node.toolTip + "<p><a ui-sref='" + navState +  "'>" + refObj.name + "</a></p>";
+//                    navState = "#/scenarios/" + scenarioID + "/fragment-sankey/" + fragmentID;
+//                    node.toolTip = node.toolTip + "<p><a href='" + navState +  "'>" + refObj.name + "</a></p>";
                 }
                 if (refObj) {
-                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
+                    node.toolTip = node.toolTip + "<p>" + refObj.name +
+                        "</p><i><small>Click to navigate</small></i>";
                 }
+
                 reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
             }
 
@@ -150,8 +159,8 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
 
             function handleSuccess() {
                 $scope.scenario = ScenarioService.get(scenarioID);
-
-                if ($scope.scenario) {
+                $scope.fragment = FragmentService.get(fragmentID);
+                if ($scope.scenario && $scope.fragment) {
                     setFlowProperties();
                     if ( updateBreadCrumb() ) {
                         buildGraph(true);
@@ -159,7 +168,7 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                         $scope.graph = graph;
                     }
                 } else {
-                    handleFailure("Scenario with ID," + scenarioID + ", not found.");
+                    handleFailure("Invalid URL parameters.");
                 }
             }
 
