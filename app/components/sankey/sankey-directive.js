@@ -215,8 +215,8 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
         function prepareToolTip() {
             // Initialize tooltip plugin
             TipService
-                .offset([-10, -10])
-                .direction('ne')
+                .offset([-10, 0])
+                .direction('n')
                 .html(function (d) {
                     if ("toolTip" in d) {
                         return d["toolTip"];

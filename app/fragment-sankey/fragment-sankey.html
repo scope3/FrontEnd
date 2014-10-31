@@ -1,3 +1,4 @@
+<!-- Partial html for fragment sankey view -->
 <form>
     <p>
        <label>Scenario: </label>
@@ -5,6 +6,10 @@
     </p>
     <p>
         <label>Fragment: </label>
+        <span ng-repeat="parent in parentFragments">
+            <a ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
+             >
+        </span>
         <span>{{fragment.name}}</span>
     </p>
     <p>

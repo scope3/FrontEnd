@@ -1,14 +1,14 @@
 'use strict';
-
-angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service',
-    'lcaApp.idmap.service', 'angularSpinner'])
-.controller('FragmentSankeyCtrl',
-    ['$scope', '$stateParams', 'usSpinnerService', '$q', '$window',
+/* Controller for Fragment Sankey Diagram View */
+angular.module('lcaApp.fragment.sankey',
+                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
+    .controller('FragmentSankeyCtrl',
+        ['$scope', '$stateParams', 'usSpinnerService', '$q', '$window',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'NodeTypeService',
-        function ($scope, $stateParams, usSpinnerService, $q, $window,
-                  ScenarioService, FragmentService, FragmentFlowService, FlowForFragmentService, ProcessService,
-                  FlowPropertyForFragmentService, NodeTypeService) {
+        function ($scope, $stateParams, usSpinnerService, $q, $window, ScenarioService, FragmentService,
+                  FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
+                  NodeTypeService) {
             var fragmentID = $stateParams.fragmentID,
                 scenarioID = $stateParams.scenarioID,
             //
@@ -147,6 +147,9 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                 $window.alert(errMsg);
             }
 
+            /**
+             * Prepare fragment data for visualization
+             */
             function visualizeFragment() {
                 $scope.fragment = FragmentService.get(fragmentID);
                 if ($scope.fragment) {
@@ -159,15 +162,21 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                 }
             }
 
+            /**
+             * Function called after requests for resources have been fulfilled.
+             */
             function handleSuccess() {
                 $scope.scenario = ScenarioService.get(scenarioID);
-                if ($scope.scenario ) {
+                if ($scope.scenario) {
                     visualizeFragment();
                 } else {
                     handleFailure("Invalid scenarioID: " + scenarioID);
                 }
             }
 
+            /**
+             * Compare function used to sort array of objects by name
+             */
             function compareNames(a, b) {
                 if (a.name > b.name) {
                     return 1;
@@ -211,7 +220,9 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                 $scope.selectedFlowProperty = selectedFlowProperty;
             }
 
-
+            /**
+             * Get all data resources
+             */
             function getData() {
                 $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load(),
                     FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
@@ -222,6 +233,11 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                     handleFailure);
             }
 
+            /**
+             * Get data resources that are filtered by fragment.
+             * Called after fragment selection changes.
+             * If successful, visualize selected fragment.
+             */
             function getDataForFragment() {
                 $q.all([FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
                     FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
@@ -230,16 +246,39 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
                     handleFailure);
             }
 
+            /**
+             * Called when flow property selection changes.
+             * Updates existing sankey graph.
+             */
             $scope.onFlowPropertyChange = function () {
                 //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
                 buildGraph(false);
                 $scope.graph = graph;
             };
 
-            function onNodeSelectionChange(newVal, oldVal) {
+            /**
+             * Called when a parent fragment is selected from fragment breadcrumbs.
+             * Updates fragment breadcrumbs and gets new fragment data.
+             * @param fragment  Fragment selected
+             * @param index     Breadcrumb index
+             */
+            $scope.onParentFragmentSelected = function (fragment, index) {
+                $scope.parentFragments.splice(index);
+                fragmentID = fragment.fragmentID;
+                getDataForFragment();
+            };
+
+            /**
+             * Called when a node in sankey directive is selected.
+             * The node can represent either a fragment or a process.
+             * @param newVal    The selected node
+             */
+            function onNodeSelectionChange(newVal) {
                 if (newVal) {
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
                     if (newVal.nodeTypeID === 2) {
+                        $scope.parentFragments.push($scope.fragment);
+                        $scope.fragment = null;
                         fragmentID = fragmentFlow.subFragmentID;
                         getDataForFragment();
                     }
@@ -250,6 +289,9 @@ angular.module('lcaApp.fragment.sankey', ['ui.router', 'lcaApp.sankey', 'lcaApp.
             $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
+            $scope.parentFragments = [];
+            $scope.fragment = null;
+            $scope.scenario = null;
             $scope.$watch("selectedNode", onNodeSelectionChange);
             getData();
 
