@@ -6,15 +6,15 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
 
     function link(scope, element, attrs) {
 
-        // TODO : make the following settings configurable
         var margin = {
                 top: 10,
-                right: 20,
-                bottom: 30,
-                left: 20
+                right: 10,
+                bottom: 10,
+                left: 10
             },
-            width = 800 - margin.left - margin.right,   // diagram width
-            height = 650 - margin.top - margin.bottom,  // diagram height
+            parentElement = element[0],
+            width = parentElement.clientWidth - margin.left - margin.right,   // diagram width
+            height = parentElement.clientHeight - margin.top - margin.bottom,  // diagram height
             sankeyWidth = width - 150, // leave room for labels on right
             svg,
             color = d3.scale.ordinal(),
@@ -34,7 +34,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
         /**
          * Initial preparation of svg element.
          */
-        function prepareSvg(parentElement) {
+        function prepareSvg() {
 
             svg = d3.select(parentElement)
                 .append("svg")
@@ -231,7 +231,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             TipService.hide();
         }
 
-        prepareSvg(element[0]);
+        prepareSvg();
         color.domain(scope.color.domain);
         color.range(scope.color.range);
         scope.$watch('graph.links', onGraphChanged);

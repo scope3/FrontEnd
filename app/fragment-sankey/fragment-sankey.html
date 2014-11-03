@@ -1,27 +1,42 @@
 <!-- Partial html for fragment sankey view -->
-<form>
-    <p>
-       <label>Scenario: </label>
-       <span>{{scenario.name}}</span>
-    </p>
-    <p>
-        <label>Fragment: </label>
+
+<div class="row">
+    <div class="col-md-9">
+
+        <form>
+            <p>
+                <label>Scenario: </label>
+                <span>{{scenario.name}}</span>
+            </p>
+
+            <p>
+                <label>Fragment: </label>
         <span ng-repeat="parent in parentFragments">
-            <a ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
+            <a class="fragment-link" ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
              >
         </span>
-        <span>{{fragment.name}}</span>
-    </p>
-    <p>
-        <label>Flow Property Type
-            <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
-                    ng-change="onFlowPropertyChange()">
-            </select>
-        </label>
-        <label id="unitLabel">Reference Unit:</label>
-        <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
-    </p>
-</form>
-<!--suppress HtmlUnknownTag -->
-<sankey-diagram graph="graph" color="color" selected-node="selectedNode"></sankey-diagram>
+                <span>{{fragment.name}}</span>
+            </p>
+
+            <p>
+                <label>Flow Property Type </label>
+                    <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
+                            ng-change="onFlowPropertyChange()">
+                    </select>
+                <span>&nbsp;</span>
+                <label id="unitLabel">Reference Unit: </label>
+                <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
+            </p>
+        </form>
+
+        <div class="sankey-container">
+            <!--suppress HtmlUnknownTag -->
+            <sankey-diagram graph="graph" color="color" selected-node="selectedNode"></sankey-diagram>
+        </div>
+    </div>
+    <div class="col-md-3">
+
+    </div>
+</div>
+
 

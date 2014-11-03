@@ -28,3 +28,10 @@ sankey-diagram .node rect {
 sankey-diagram .node text {
     text-shadow: 0 1px 0 #fff;
 }
+
+sankey-diagram {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+

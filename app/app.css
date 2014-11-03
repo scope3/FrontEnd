@@ -1,32 +1,42 @@
-/* app css stylesheet
-came with angular-seed
-currently unused
-.menu {
-  list-style: none;
-  border-bottom: 0.1em solid black;
-  margin-bottom: 2em;
-  padding: 0 0 0.5em;
+/* app css stylesheet */
+.d3-tip {
+    line-height: 1;
+    font-size: 12px;
+    padding: 12px;
+    background: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    border-radius: 2px;
+    pointer-events: none;
 }
 
-.menu:before {
-  content: "[";
+/* Creates a small triangle extender for the tooltip */
+.d3-tip:after {
+    box-sizing: border-box;
+    display: inline;
+    font-size: 10px;
+    width: 100%;
+    line-height: 1;
+    color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    pointer-events: none;
+}
+/* Northward tooltips */
+.d3-tip.n:after {
+    content: "\25BC";
+    margin: -1px 0 0 0;
+    top: 100%;
+    left: 0;
+    text-align: center;
 }
 
-.menu:after {
-  content: "]";
+.sankey-container {
+    height: 650px;
 }
 
-.menu > li {
-  display: inline;
+.fragment-link {
+    cursor: pointer;
 }
 
-.menu > li:before {
-  content: "|";
-  padding-right: 0.3em;
+.select-label {
+    margin-right: 1em;
 }
-
-.menu > li:nth-child(1):before {
-  content: "";
-  padding: 0;
-}
-*/
