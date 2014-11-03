@@ -1,41 +1,78 @@
 <!-- Partial html for fragment sankey view -->
-
 <div class="row">
-    <div class="col-md-9">
 
-        <form>
-            <p>
-                <label>Scenario: </label>
-                <span>{{scenario.name}}</span>
-            </p>
 
-            <p>
-                <label>Fragment: </label>
+    <form>
+        <p>
+            <label>Scenario: </label>
+            <span>{{scenario.name}}</span>
+        </p>
+
+        <p>
+            <label>Fragment: </label>
         <span ng-repeat="parent in parentFragments">
             <a class="fragment-link" ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
              >
         </span>
-                <span>{{fragment.name}}</span>
-            </p>
+            <span>{{fragment.name}}</span>
+        </p>
 
-            <p>
-                <label>Flow Property Type </label>
-                    <select ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
-                            ng-change="onFlowPropertyChange()">
-                    </select>
-                <span>&nbsp;</span>
-                <label id="unitLabel">Reference Unit: </label>
-                <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
-            </p>
-        </form>
-
+        <p>
+            <label for="flow-prop-select">Flow Property Type </label>
+            <select id="flow-prop-select" ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
+                    ng-change="onFlowPropertyChange()">
+            </select>
+            <span>&nbsp;</span>
+            <label id="unitLabel">Reference Unit: </label>
+            <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
+        </p>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-8">
         <div class="sankey-container">
             <!--suppress HtmlUnknownTag -->
-            <sankey-diagram graph="graph" color="color" selected-node="selectedNode"></sankey-diagram>
+            <sankey-diagram graph="graph" color="color" selected-node="selectedNode"
+                            mouse-over-node="mouseOverNode"></sankey-diagram>
         </div>
     </div>
-    <div class="col-md-3">
-
+    <div class="col-md-4">
+        <div class="flow-container" ng-show="mouseOverNode">
+            <label>Input Flows</label>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Magnitude</th>
+                    <th>Unit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="if in inputFlows">
+                    <td>{{if.name}}</td>
+                    <td>{{if.magnitude | number}}</td>
+                    <td>{{if.unit}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <label>Output Flows</label>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Magnitude</th>
+                    <th>Unit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="of in outputFlows">
+                    <td>{{of.name}}</td>
+                    <td>{{of.magnitude | number}}</td>
+                    <td>{{of.unit}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 

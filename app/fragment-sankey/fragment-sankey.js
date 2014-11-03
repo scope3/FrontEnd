@@ -119,6 +119,7 @@ angular.module('lcaApp.fragment.sankey',
                     parentIndex = reverseIndex[element.parentFragmentFlowID];
                     link = {
                         nodeID: element.fragmentFlowID,
+                        flowID: element.flowID,
                         value: value
                     };
                     if (magnitude) {
@@ -285,14 +286,60 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
+            /**
+             * Get flow table content
+             * For each Sankey link provided, get
+             * flow name, magnitude and unit associated with selected flow property.
+             * If the link does have the selected flow property, display
+             * magnitude and unit for the flow's reference flow property.
+             *
+             * @param {Array}  nodeLinks     Sankey links
+             * @return {Array}  Data for display in table
+             */
+            function getFlowRows(nodeLinks) {
+                var flowData = [],
+                    activityLevel = $scope.scenario["activityLevel"];
+
+                nodeLinks.forEach( function (l) {
+                    if ("flowID" in l) {
+                        var flow = FlowForFragmentService.get(l.flowID),
+                            flowPropertyID = $scope.selectedFlowProperty["flowPropertyID"],
+                            magnitude = l.magnitude,
+                            unit = "";
+                        if (magnitude) {
+                            unit = $scope.selectedFlowProperty["referenceUnit"];
+                        } else  {
+                            var fp;
+                            flowPropertyID = flow["referenceFlowPropertyID"];
+                            magnitude = getMagnitude(l, flowPropertyID, activityLevel);
+                            fp = FlowPropertyForFragmentService.get(flowPropertyID);
+                            if (fp) {
+                               unit = fp["referenceUnit"];
+                            }
+                        }
+                        flowData.push({ name: flow.name, magnitude: magnitude, unit: unit });
+                    }
+                });
+                return flowData;
+            }
+
+            function onMouseOverNode(node) {
+                if (node) {
+                    $scope.inputFlows = getFlowRows(node.targetLinks);
+                    $scope.outputFlows = getFlowRows(node.sourceLinks);
+                }
+            }
+
             usSpinnerService.spin("spinner-lca");
             $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
+            $scope.mouseOverNode = null;
             $scope.parentFragments = [];
             $scope.fragment = null;
             $scope.scenario = null;
             $scope.$watch("selectedNode", onNodeSelectionChange);
+            $scope.$watch("mouseOverNode", onMouseOverNode);
             getData();
 
         }]);

@@ -37,6 +37,15 @@
     cursor: pointer;
 }
 
-.select-label {
-    margin-right: 1em;
+.flow-container {
+    font-size: 0.8em;
+    line-height: 1;
+}
+
+.flow-container table {
+    border-style: none;
+}
+
+.flow-container th {
+    background-color: #eee;
 }

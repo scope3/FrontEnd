@@ -18,7 +18,6 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             sankeyWidth = width - 150, // leave room for labels on right
             svg,
             color = d3.scale.ordinal(),
-            formatNumber = d3.format(",.0f"),
             /**
              * sankey variables
              */
@@ -54,7 +53,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             return n.nodeName;
         }
 
-        function onGraphChanged(newVal, oldVal) {
+        function onGraphChanged(newVal) {
             TipService.hide();
             if (newVal) {
                 graph = scope.graph;
@@ -70,6 +69,9 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                 .transition()
                 .style("stroke-opacity", opacity.link);
             TipService.hide();
+            scope.$apply(function(){
+                scope.mouseOverNode = null;
+            });
         }
 
         /**
@@ -107,6 +109,9 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                             0.5 : opacity.link);
                 });
             TipService.show(node, index);
+            scope.$apply(function(){
+                scope.mouseOverNode = node;
+            });
         }
 
 
@@ -241,7 +246,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
 
     return {
         restrict: 'E',
-        scope: { graph: '=', color: '=', selectedNode: '=selectedNode'},
+        scope: { graph: '=', color: '=', selectedNode: '=selectedNode', mouseOverNode: '=mouseOverNode'},
         link: link
     }
 }]);
