@@ -2,7 +2,7 @@
  * Unit test services
  */
 describe('Unit test resource factories', function () {
-
+    var shouldSucceed = true; // Set to false if web api not running
     // load modules
     beforeEach(module('lcaApp.resources.service'));
 
@@ -20,52 +20,78 @@ describe('Unit test resource factories', function () {
                 expect(nodeType.name).toEqual("Fragment");
             },
             function (errMsg) {
-                expect(errMsg).toBeDefined();
-                expect(errMsg).not.toBe(null);
+                if (shouldSucceed) {
+                    throw(errMsg);
+                } else {
+                    expect(errMsg).toBeDefined();
+                    expect(errMsg).not.toBe(null);
+                }
             }
         )
     }));
 
-    function testResourceService(resourceService) {
+    function testResourceService(resourceService, filterObject) {
         expect(resourceService).toBeDefined();
-        resourceService.load().then(
+        resourceService.load(filterObject).then(
             function (results) {
                 expect(results).toBeDefined();
                 expect(resourceService.objects).toBeDefined();
                 expect(results).toEqual(resourceService.objects);
             },
             function (errMsg) {
-                expect(errMsg).toBeDefined();
-                expect(errMsg).not.toBe(null);
+                if (shouldSucceed) {
+                    throw(errMsg);
+                } else {
+                    expect(errMsg).toBeDefined();
+                    expect(errMsg).not.toBe(null);
+                }
             }
         )
     }
 
-    it('inject ScenarioService', inject(function (ScenarioService) {
+    function testResult(resourceService, properties) {
+        expect(resourceService.objects.length).toBeGreaterThan(0);
+        var first = resourceService.objects[0];
+        expect(resourceService.idName).toBeDefined();
+        expect(first[resourceService.idName]).toBeDefined();
+        var oid = first[resourceService.idName];
+        expect(resourceService.get(oid)).toEqual(first);
+    }
+
+    it('test ScenarioService', inject(function (ScenarioService) {
         testResourceService(ScenarioService);
     }));
 
-    it('inject FragmentService', inject(function (FragmentService) {
+    it('test FragmentService', inject(function (FragmentService) {
         testResourceService(FragmentService);
     }));
 
-    it('inject ProcessService', inject(function (ProcessService) {
+    it('test ProcessService', inject(function (ProcessService) {
         testResourceService(ProcessService);
     }));
 
-    it('inject ProcessService', inject(function (ProcessService) {
-        testResourceService(ProcessService);
-    }));
-    it('inject FragmentFlowService', inject(function (FragmentFlowService) {
-        testResourceService(FragmentFlowService);
+    it('test ProcessForFlowTypeService', inject(function (ProcessForFlowTypeService) {
+        testResourceService(ProcessForFlowTypeService, {flowTypeID: 2});
+        //testResult(ProcessForFlowTypeService,
+//            ["processID",
+//            "name",
+//            "referenceYear",
+//            "geography",
+//            "referenceTypeID",
+//            "processTypeID",
+//            "version"])
     }));
 
-    it('inject FlowPropertyForFragmentService', inject(function (FlowPropertyForFragmentService) {
-        testResourceService(FlowPropertyForFragmentService);
+    it('test FragmentFlowService', inject(function (FragmentFlowService) {
+        testResourceService(FragmentFlowService, {fragmentID: 1, scenarioID: 1});
     }));
 
-    it('inject FlowForFragmentService', inject(function (FlowForFragmentService) {
-        testResourceService(FlowForFragmentService);
+    it('test FlowPropertyForFragmentService', inject(function (FlowPropertyForFragmentService) {
+        testResourceService(FlowPropertyForFragmentService, {fragmentID: 1} );
+    }));
+
+    it('test FlowForFragmentService', inject(function (FlowForFragmentService) {
+        testResourceService(FlowForFragmentService, {fragmentID: 1} );
     }));
 });
 

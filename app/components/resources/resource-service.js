@@ -13,6 +13,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "fragmentFlowProperty" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "nodeType" : "components/resources/nodetypes.json",
                 "process" : API_ROOT + "processes",
+                "processForFlowType" : API_ROOT + "api/flowtypes/:flowTypeID/processes",
                 "scenario" : API_ROOT + "scenarios"
             };
 
@@ -94,6 +95,12 @@ angular.module('lcaApp.resources.service')
         }
     ]);
 
+angular.module('lcaApp.resources.service')
+    .factory('ProcessForFlowTypeService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.create("processForFlowType", "processID");
+        }
+    ]);
 
 angular.module('lcaApp.resources.service')
     .factory('FlowPropertyForFragmentService', ['ResourceService',
