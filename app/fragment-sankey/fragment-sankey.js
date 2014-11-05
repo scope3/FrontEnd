@@ -309,9 +309,10 @@ angular.module('lcaApp.fragment.sankey',
                         if (magnitude) {
                             unit = $scope.selectedFlowProperty["referenceUnit"];
                         } else  {
-                            var fp;
+                            var fp, ff;
+                            ff = FragmentFlowService.get(l.nodeID);
                             flowPropertyID = flow["referenceFlowPropertyID"];
-                            magnitude = getMagnitude(l, flowPropertyID, activityLevel);
+                            magnitude = getMagnitude(ff, flowPropertyID, activityLevel);
                             fp = FlowPropertyForFragmentService.get(flowPropertyID);
                             if (fp) {
                                unit = fp["referenceUnit"];
