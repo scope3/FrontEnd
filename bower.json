@@ -4,6 +4,7 @@
     "private": true,
     "dependencies": {
         "angular": "1.2.x",
+        "angular-bootstrap": null,
         "angular-local-storage": null,
         "angular-resource": "1.2.x",
         "angular-loader": "1.2.x",

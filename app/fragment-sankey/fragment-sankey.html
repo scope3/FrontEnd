@@ -1,7 +1,6 @@
 <!-- Partial html for fragment sankey view -->
-<div class="row">
 
-
+    <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
     <form>
         <p>
             <label>Scenario: </label>
@@ -27,7 +26,7 @@
             <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
         </p>
     </form>
-</div>
+
 <div class="row">
     <div class="col-md-8">
         <div class="sankey-container">

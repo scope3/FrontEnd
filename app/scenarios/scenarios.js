@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lcaApp.scenarios',
-    ['lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner'])
+    ['lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner', 'ui.bootstrap.alert'])
 
 .controller('ScenarioListCtrl', ['$scope', '$window', 'usSpinnerService',
         'ScenarioService', 'FragmentService', '$q',
@@ -12,15 +12,21 @@ angular.module('lcaApp.scenarios',
             usSpinnerService.stop("spinner-lca");
         }
 
+        function startWaiting() {
+            $scope.alert = null;
+            usSpinnerService.spin("spinner-lca");
+        }
+
         function handleFailure(errMsg) {
             if (!failure) {
                 failure = true;
                 stopWaiting();
-                $window.alert(errMsg);
+                //$window.alert(errMsg);
+                $scope.alert = { type: "danger", msg: errMsg };
             }
         }
 
-        usSpinnerService.spin("spinner-lca");
+        startWaiting();
         $q.all([ScenarioService.load(), FragmentService.load()]).then (
             function() {
                 var scenarios = ScenarioService.objects,
