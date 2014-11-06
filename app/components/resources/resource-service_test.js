@@ -1,10 +1,20 @@
 /**
- * Unit test services
+ * Unit test resource services
+ *
+ * These tests are not yet useful because they do not wait for load to complete,
+ * and they need to use $httpBackend to mock web api calls
  */
 describe('Unit test resource factories', function () {
-    var shouldSucceed = true; // Set to false if web api not running
+    var shouldSucceed = true, // Set to false if web api not running
+        rootScope,
+        backend;
     // load modules
     beforeEach(module('lcaApp.resources.service'));
+
+    beforeEach(inject (function($rootScope, $httpBackend){
+        rootScope = $rootScope;
+        backend = $httpBackend;
+    }));
 
     // Test service availability
     it('inject NodeTypeService, load and get', inject(function (NodeTypeService) {
@@ -30,13 +40,14 @@ describe('Unit test resource factories', function () {
         )
     }));
 
-    function testResourceService(resourceService, filterObject) {
+    function testResourceService(resourceService, resourceProperties, filterObject) {
         expect(resourceService).toBeDefined();
         resourceService.load(filterObject).then(
             function (results) {
                 expect(results).toBeDefined();
                 expect(resourceService.objects).toBeDefined();
                 expect(results).toEqual(resourceService.objects);
+                testResult(resourceService, resourceProperties);
             },
             function (errMsg) {
                 if (shouldSucceed) {
@@ -46,7 +57,7 @@ describe('Unit test resource factories', function () {
                     expect(errMsg).not.toBe(null);
                 }
             }
-        )
+        );
     }
 
     function testResult(resourceService, properties) {
@@ -56,42 +67,77 @@ describe('Unit test resource factories', function () {
         expect(first[resourceService.idName]).toBeDefined();
         var oid = first[resourceService.idName];
         expect(resourceService.get(oid)).toEqual(first);
+        properties.forEach(function (prop) {
+            expect(prop in first);
+        });
     }
 
     it('test ScenarioService', inject(function (ScenarioService) {
-        testResourceService(ScenarioService);
+        testResourceService(ScenarioService,
+            ["scenarioID",
+                "name",
+                "topLevelFragmentID"]);
     }));
 
     it('test FragmentService', inject(function (FragmentService) {
-        testResourceService(FragmentService);
+        testResourceService(FragmentService,
+            ["fragmentID",
+                "name"]);
     }));
 
     it('test ProcessService', inject(function (ProcessService) {
-        testResourceService(ProcessService);
+        testResourceService(ProcessService,
+            ["processID",
+                "name",
+                "referenceYear",
+                "geography",
+                "referenceTypeID",
+                "processTypeID",
+                "version"]);
     }));
 
     it('test ProcessForFlowTypeService', inject(function (ProcessForFlowTypeService) {
-        testResourceService(ProcessForFlowTypeService, {flowTypeID: 2});
-        //testResult(ProcessForFlowTypeService,
-//            ["processID",
-//            "name",
-//            "referenceYear",
-//            "geography",
-//            "referenceTypeID",
-//            "processTypeID",
-//            "version"])
+        testResourceService(ProcessForFlowTypeService,
+            ["processID",
+                "name",
+                "referenceYear",
+                "geography",
+                "referenceTypeID",
+                "processTypeID",
+                "version"], {flowTypeID: 2}
+        );
     }));
 
     it('test FragmentFlowService', inject(function (FragmentFlowService) {
-        testResourceService(FragmentFlowService, {fragmentID: 1, scenarioID: 1});
+        testResourceService(FragmentFlowService,
+            ["fragmentFlowID",
+            "name",
+            "shortName",
+            "nodeTypeID",
+            "directionID",
+            "flowPropertyMagnitudes"], {fragmentID: 1, scenarioID: 1});
     }));
 
     it('test FlowPropertyForFragmentService', inject(function (FlowPropertyForFragmentService) {
-        testResourceService(FlowPropertyForFragmentService, {fragmentID: 1} );
+        testResourceService(FlowPropertyForFragmentService,
+        [ "flowPropertyID",
+            "name",
+            "referenceUnit"], {fragmentID: 1});
     }));
 
     it('test FlowForFragmentService', inject(function (FlowForFragmentService) {
-        testResourceService(FlowForFragmentService, {fragmentID: 1} );
+        testResourceService(FlowForFragmentService,
+        [ "flowID",
+            "name",
+            "referenceFlowPropertyID",
+            "flowTypeID",
+            "category"], {fragmentID: 1});
+    }));
+
+    it('test ImpactCategoryService', inject(function (ImpactCategoryService) {
+        testResourceService(ImpactCategoryService,
+            [ "impactCategoryID",
+                "name"]);
     }));
 });
 

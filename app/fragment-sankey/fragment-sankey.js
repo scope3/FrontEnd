@@ -176,20 +176,6 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             /**
-             * Compare function used to sort array of objects by name
-             */
-            function compareNames(a, b) {
-                if (a.name > b.name) {
-                    return 1;
-                }
-                if (a.name < b.name) {
-                    return -1;
-                }
-                // a must be equal to b
-                return 0;
-            }
-
-            /**
              * Update scope with flow properties and select one
              */
             function setFlowProperties() {
@@ -198,8 +184,7 @@ angular.module('lcaApp.fragment.sankey',
                 //  if that is in the list. Otherwise, set to first element in resource payload.
                 //
                 var selectedFlowProperty = $scope.selectedFlowProperty,
-                    flowProperties = FlowPropertyForFragmentService.objects;
-                flowProperties.sort(compareNames);
+                    flowProperties = FlowPropertyForFragmentService.getSortedObjects();
                 if (flowProperties) {
                     if (selectedFlowProperty) {
                         selectedFlowProperty = flowProperties.find(function (element) {

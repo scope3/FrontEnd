@@ -2,17 +2,19 @@
 
 describe('lcaApp.fragment.sankey module', function() {
 
+    var scope, ctrl;
+
   beforeEach(module('lcaApp.fragment.sankey'));
 
-  describe('fragment-sankey controller', function(){
+  beforeEach(inject(function ($controller, $rootScope) {
+        scope = $rootScope.$new();
+        ctrl = $controller('FragmentSankeyCtrl', {$scope: scope});
+    }));
 
-    it('should ....', inject(function($rootScope, $stateParams, $controller) {
-      //spec body
-        var scope = $rootScope.$new(),
-            ctrl = $controller('FragmentSankeyCtrl', {$scope:scope});
-        $stateParams.fragmentID = 8;
-      expect(ctrl).toBeDefined();
+
+    it('should ....', inject(function() {
+        expect(scope).toBeDefined();
+        expect(ctrl).toBeDefined();
     }));
 
   });
-});

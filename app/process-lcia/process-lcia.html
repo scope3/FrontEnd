@@ -1,0 +1,68 @@
+<!-- Partial html for process LCIA view -->
+<div class="row">
+    <form>
+        <p>
+            <label for="scenario-select">
+                Scenario
+            </label>
+            <select id="scenario-select" ng-model="selectedScenario"
+                    ng-options="s.name for s in scenarios"
+                    ng-change="onScenarioChange()">
+            </select>
+        </p>
+        <p>
+            <label for="process-select">Process</label>
+            <select id="process-select" ng-model="selectedProcess" ng-options="p.name for p in processes"
+                    ng-change="onProcessChange()">
+            </select>
+        </p>
+    </form>
+</div>
+<div class="row">
+    <div class="col-md-8">
+        <div class="lcia-container">
+            <!--suppress HtmlUnknownTag -->
+            <lcia-diagram results="results" flows="elementaryFlows"></lcia-diagram>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="flow-container" ng-show="mouseOverNode">
+            <label>Input Flows</label>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Magnitude</th>
+                    <th>Unit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="if in inputFlows">
+                    <td>{{if.name}}</td>
+                    <td>{{if.magnitude | number}}</td>
+                    <td>{{if.unit}}</td>
+                </tr>
+                </tbody>
+            </table>
+            <label>Output Flows</label>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Magnitude</th>
+                    <th>Unit</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr ng-repeat="of in outputFlows">
+                    <td>{{of.name}}</td>
+                    <td>{{of.magnitude | number}}</td>
+                    <td>{{of.unit}}</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

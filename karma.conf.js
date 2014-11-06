@@ -16,6 +16,7 @@ module.exports = function(config){
       'app/bower_components/angular-breadcrumb/release/angular-breadcrumb.js',
       'app/components/**/*.js',
       'app/fragment-sankey/**/*.js',
+      'app/process-lcia/**/*.js',
       'app/scenarios/**/*.js'
     ],
 
