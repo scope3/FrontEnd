@@ -11,9 +11,9 @@ angular.module('lcaApp.process.LCIA',
                   ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService) {
-            var processID = +$stateParams.processID,
-                scenarioID = +$stateParams.scenarioID,
-                activityLevel = +$stateParams.activity;
+            var processID = $stateParams.processID,
+                scenarioID = $stateParams.scenarioID;
+
 
 
             function startWaiting() {
@@ -37,6 +37,7 @@ angular.module('lcaApp.process.LCIA',
 
             function getResults() {
                 getFlowRows();
+                $scope.lciaMethods = LciaMethodService.getAll();
                 getLciaResults();
             }
 
@@ -44,12 +45,10 @@ angular.module('lcaApp.process.LCIA',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
-                $scope.selectedScenario = ScenarioService.get(scenarioID);
-                $scope.scenarios = ScenarioService.getSortedObjects();
-                $scope.selectedProcess = ProcessForFlowTypeService.get(processID);
-                $scope.processes = ProcessForFlowTypeService.getSortedObjects();
-                if ($scope.selectedScenario) {
-                    if ($scope.selectedProcess) {
+                $scope.scenario = ScenarioService.get(scenarioID);
+                $scope.process = ProcessForFlowTypeService.get(processID);
+                if ($scope.scenario) {
+                    if ($scope.process) {
                         getResults();
                     } else {
                         handleFailure("Invalid process ID : ", processID);
@@ -73,44 +72,14 @@ angular.module('lcaApp.process.LCIA',
             }
 
             /**
-             * Get data resources that are filtered by process.
-             * Called after process selection changes.
-             * If successful, compute process LCIA.
-             */
-            function getDataForProcess() {
-                $q.all([ProcessFlowService.load({processID:processID}),
-                    FlowPropertyForProcessService.load({processID: processID})])
-                    .then(getResults,
-                    handleFailure);
-            }
-
-            /**
-             * Called when process selection changes.
-             */
-            $scope.onProcessChange = function () {
-                processID = $scope.selectedProcess["processID"];
-                startWaiting();
-                getDataForProcess();
-            };
-
-            /**
-             * Called when scenario selection changes.
-             */
-            $scope.onScenarioChange = function () {
-                scenarioID = $scope.selectedScenario["scenarioID"];
-                startWaiting();
-                getLciaResults();
-            };
-
-
-            /**
              * Get flow table content
              * For each intermediate process flow, get
              * flow name, magnitude and unit associated with reference flow property.
              */
             function getFlowRows() {
-
-                ProcessFlowService.objects.forEach( function (pf) {
+                var processFlows = ProcessFlowService.getAll();
+                $scope.flowsVisible = processFlows.length > 0;
+                processFlows.forEach( function (pf) {
                     var rowObj, fp;
                     switch (pf.flow.flowTypeID) {
                         case 1:
@@ -133,8 +102,9 @@ angular.module('lcaApp.process.LCIA',
                 });
             }
 
-            $scope.selectedProcess = null;
-            $scope.selectedScenario = null;
+            $scope.process = null;
+            $scope.scenario = null;
+            $scope.activityLevel = $stateParams.activity;
             $scope.elementaryFlows = {};
             $scope.inputFlows = [];
             $scope.outputFlows = [];

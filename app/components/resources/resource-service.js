@@ -40,12 +40,11 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
              * @param {String} idName     Name of ID property in query result objects
              * @returns the object
              */
-            resourceService.create = function( routeKey, idName) {
+            resourceService.createService = function( routeKey, idName) {
                 var svc =
                     { loadFilter: null,
                       resource: resourceService.getResource(routeKey), // Instance of $resource
-                      objects: null,    // Query results
-                      idName: idName }; // Object ID property name
+                      objects: null }; // Object ID property name
 
                 /**
                  * Load resources using filter. Cache results using IdMapService
@@ -74,10 +73,10 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 };
 
                 /**
-                 * Default comparison function for sorting query result objects
-                 * Used to sort objects by name.
+                 * comparison function for sorting query result objects
+                 * by name.
                  */
-                svc.compare = function (a, b) {
+                svc.compareByName = function (a, b) {
                     if (a.name > b.name) {
                         return 1;
                     }
@@ -89,29 +88,15 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 };
 
                 /**
-                 * Sort query results
-                 * @return {Array} sorted query results
+                 * Get query results
+                 * @return {Array} the results
                  */
-                svc.getSortedObjects = function () {
-                    svc.objects.sort(svc.compare);
+                svc.getAll = function () {
                     return svc.objects;
                 };
 
-                /**
-                 * Get loaded resource by object ID
-                 * @param id    Object ID value
-                 * @returns loaded resource, if found.
-                 */
-                svc.get = function(id) {
-                    if (svc.idName) {
-                        return IdMapService.get(svc.idName, id);
-                    } else {
-                        return null;
-                    }
-                };
-
-
                 if (idName) {
+                    svc.idName = idName;
                     /**
                      * Get loaded resource by object ID
                      * @param id    Object ID value
@@ -134,7 +119,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
              */
             resourceService.getService = function (serviceName, routeKey, idName) {
                 if (! (serviceName in services)) {
-                    services[serviceName] = resourceService.create(routeKey, idName);
+                    services[serviceName] = resourceService.createService(routeKey, idName);
                 }
                 return services[serviceName];
             };

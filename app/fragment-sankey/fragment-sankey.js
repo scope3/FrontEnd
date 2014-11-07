@@ -23,7 +23,7 @@ angular.module('lcaApp.fragment.sankey',
              * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
              */
             function buildGraph(makeNew) {
-                var fragmentFlows = FragmentFlowService.objects;
+                var fragmentFlows = FragmentFlowService.getAll();
                 graph.isNew = makeNew;
                 if (makeNew) {
                     reverseIndex = {};
@@ -172,7 +172,6 @@ angular.module('lcaApp.fragment.sankey',
                 $scope.fragment = FragmentService.get(fragmentID);
                 if ($scope.fragment) {
                     $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
-                    $log.info("Top-level fragment activity level: " + $scope.fragment.activityLevel);
                 } else {
                     handleFailure("Invalid fragment ID : " + fragmentID);
                 }
@@ -191,7 +190,6 @@ angular.module('lcaApp.fragment.sankey',
                     $scope.parentFragments.push($scope.fragment);
                     fragmentID = fragmentFlow.subFragmentID;
                     $scope.fragment = subFragment;
-                    $log.info("Sub-fragment activity level: " + $scope.fragment.activityLevel);
                     getDataForFragment();
                 } else {
                     handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
@@ -221,7 +219,8 @@ angular.module('lcaApp.fragment.sankey',
                 //  if that is in the list. Otherwise, set to first element in resource payload.
                 //
                 var selectedFlowProperty = $scope.selectedFlowProperty,
-                    flowProperties = FlowPropertyForFragmentService.getSortedObjects();
+                    flowProperties = FlowPropertyForFragmentService.getAll();
+                flowProperties.sort(FlowPropertyForFragmentService.compareByName);
                 if (flowProperties) {
                     if (selectedFlowProperty) {
                         selectedFlowProperty = flowProperties.find(function (element) {
@@ -289,7 +288,6 @@ angular.module('lcaApp.fragment.sankey',
                 $scope.parentFragments.splice(index);
                 fragmentID = fragment.fragmentID;
                 $scope.fragment = fragment;
-                $log.info("Restored fragment activity level: " + $scope.fragment.activityLevel);
                 getDataForFragment();
             };
 

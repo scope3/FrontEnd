@@ -2,27 +2,25 @@
 <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
 <div class="row">
     <div class="col-md-8">
-        <form>
-            <p>
-                <label for="scenario-select">
-                    Scenario
-                </label>
-                <select id="scenario-select" ng-model="selectedScenario"
-                        ng-options="s.name for s in scenarios"
-                        ng-change="onScenarioChange()">
-                </select>
-            </p>
-
-            <p>
-                <label for="process-select">Process</label>
-                <select id="process-select" ng-model="selectedProcess" ng-options="p.name for p in processes"
-                        ng-change="onProcessChange()">
-                </select>
-            </p>
-        </form>
+        <dl class="dl-horizontal">
+            <dt>Scenario</dt>
+            <dd>{{scenario.name}}</dd>
+            <dt>Activity Level</dt>
+            <dd>{{activityLevel}}</dd>
+            <dt>Process</dt>
+            <dd>{{process.name}}</dd>
+        </dl>
+        <ul class="list-unstyled">
+            <li ng-repeat="method in lciaMethods" class="lcia-method">
+                <dl class="dl-horizontal">
+                    <dt>Method</dt>
+                    <dd>{{method.name}}</dd>
+                </dl>
+            </li>
+        </ul>
     </div>
     <div class="col-md-4">
-        <div class="flow-container" ng-show="selectedProcess">
+        <div class="flow-container" ng-show="flowsVisible">
             <label>Input Flows</label>
             <table class="table">
                 <thead>
@@ -60,12 +58,6 @@
         </div>
     </div>
 </div>
-<div class="row">
-    <div class="lcia-container">
-        <!--suppress HtmlUnknownTag -->
-        <lcia-bar-chart results="results" flows="elementaryFlows"></lcia-bar-chart>
-    </div>
 
-</div>
 
 
