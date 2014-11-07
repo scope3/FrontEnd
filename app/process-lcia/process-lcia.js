@@ -11,8 +11,9 @@ angular.module('lcaApp.process.LCIA',
                   ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService) {
-            var processID = $stateParams.processID,
-                scenarioID = $stateParams.scenarioID;
+            var processID = +$stateParams.processID,
+                scenarioID = +$stateParams.scenarioID,
+                activityLevel = +$stateParams.activity;
 
 
             function startWaiting() {

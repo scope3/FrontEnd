@@ -33,7 +33,7 @@ angular.module('lcaApp', [
             }
         })
             .state('scenarios.process', {
-                url: '/{scenarioID}/process-lcia/{processID}',
+                url: '/{scenarioID}/process-lcia/{processID}?activity',
                 views: {
                     "@" : {
                         templateUrl: 'process-lcia/process-lcia.html',

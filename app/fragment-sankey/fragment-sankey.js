@@ -15,7 +15,8 @@ angular.module('lcaApp.fragment.sankey',
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
-                baseValue = 1E-14;  // sankey link base value (replaces 0).
+                baseValue = 1E-14,  // sankey link base value (replaces 0).
+                activityLevel = 1;
 
 
             /**
@@ -73,7 +74,7 @@ angular.module('lcaApp.fragment.sankey',
                     },
                     fragFlow = FragmentFlowService.get(element.fragmentFlowID),
                     nodeType = NodeTypeService.get(element.nodeTypeID),
-                    refObj //, navState
+                    refObj , selectTip
                     ;
 
                 if (fragFlow) {
@@ -84,19 +85,23 @@ angular.module('lcaApp.fragment.sankey',
                 }
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
+                    node.selectable = refObj["hasElementaryFlows"];
+                    if (node.selectable) {
+                        selectTip = "Click to perform LCIA";
+                    }
 //                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
                 } else if ("subFragmentID" in element) {
                     refObj = FragmentService.get(element.subFragmentID);
+                    node.selectable = true;
+                    selectTip = "Click to descend";
 //                    navState = "scenarios.fragment({fragmentID: " + fragmentID +
 //                        ", scenarioID: " + scenarioID + "})";
 //                    node.toolTip = node.toolTip + "<p><a ui-sref='" + navState +  "'>" + refObj.name + "</a></p>";
 //                    navState = "#/scenarios/" + scenarioID + "/fragment-sankey/" + fragmentID;
 //                    node.toolTip = node.toolTip + "<p><a href='" + navState +  "'>" + refObj.name + "</a></p>";
                 }
-                if (refObj) {
-                    node.selectable = true;
-                    node.toolTip = node.toolTip + "<p>" + refObj.name +
-                        "</p><i><small>Click to navigate</small></i>";
+                if (node.selectable) {
+                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p><i><small>" + selectTip + "</small></i>";
                 }
 
                 reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
@@ -108,8 +113,7 @@ angular.module('lcaApp.fragment.sankey',
              */
             function addGraphLink(element) {
                 var link, parentIndex,
-                    nodeIndex = reverseIndex[element.fragmentFlowID],
-                    activityLevel = $scope.scenario["activityLevel"];
+                    nodeIndex = reverseIndex[element.fragmentFlowID];
 
                 if ("parentFragmentFlowID" in element) {
                     var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
@@ -177,6 +181,7 @@ angular.module('lcaApp.fragment.sankey',
 
                 $scope.scenario = ScenarioService.get(scenarioID);
                 if ($scope.scenario) {
+                    activityLevel = $scope.scenario["activityLevel"];
                     visualizeFragment();
                 } else {
                     handleFailure("Invalid scenarioID: " + scenarioID);
@@ -273,7 +278,10 @@ angular.module('lcaApp.fragment.sankey',
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
                     switch (newVal.nodeTypeID) {
                         case 1 :
-                            $state.go("scenarios.process", { scenarioID : scenarioID, processID : fragmentFlow.processID });
+                            $state.go("scenarios.process", { scenarioID : scenarioID,
+                                                             processID : fragmentFlow.processID ,
+                                                             activity : activityLevel }
+                            );
                             break;
                         case 2 :
                             $scope.parentFragments.push($scope.fragment);
@@ -297,8 +305,7 @@ angular.module('lcaApp.fragment.sankey',
              * @return {Array}  Data for display in table
              */
             function getFlowRows(nodeLinks) {
-                var flowData = [],
-                    activityLevel = $scope.scenario["activityLevel"];
+                var flowData = [];
 
                 nodeLinks.forEach( function (l) {
                     if ("flowID" in l) {
