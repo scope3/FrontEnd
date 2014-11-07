@@ -20,8 +20,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
                 "lciaResultForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciamethods/:lciaMethodID/lciaresults",
                 "process" : API_ROOT + "processes",
-                "processForFlowType" : API_ROOT + "api/flowtypes/:flowTypeID/processes",
-                "processFlow" : API_ROOT + "api/processes/:processID/processflows",
+                "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
+                "processFlow" : API_ROOT + "processes/:processID/processflows",
                 "scenario" : API_ROOT + "scenarios"
             };
 

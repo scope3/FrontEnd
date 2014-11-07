@@ -1,13 +1,13 @@
 'use strict';
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
-                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner',
+                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'angularSpinner',
                  'ui.bootstrap.alert'])
     .controller('FragmentSankeyCtrl',
-        ['$scope', '$stateParams', 'usSpinnerService', '$q', '$window',
+        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$window',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'NodeTypeService',
-        function ($scope, $stateParams, usSpinnerService, $q, $window, ScenarioService, FragmentService,
+        function ($scope, $stateParams, $state, usSpinnerService, $q, $window, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   NodeTypeService) {
             var fragmentID = $stateParams.fragmentID,
@@ -271,11 +271,16 @@ angular.module('lcaApp.fragment.sankey',
             function onNodeSelectionChange(newVal) {
                 if (newVal) {
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
-                    if (newVal.nodeTypeID === 2) {
-                        $scope.parentFragments.push($scope.fragment);
-                        $scope.fragment = null;
-                        fragmentID = fragmentFlow.subFragmentID;
-                        getDataForFragment();
+                    switch (newVal.nodeTypeID) {
+                        case 1 :
+                            $state.go("scenarios.process", { scenarioID : scenarioID, processID : fragmentFlow.processID });
+                            break;
+                        case 2 :
+                            $scope.parentFragments.push($scope.fragment);
+                            $scope.fragment = null;
+                            fragmentID = fragmentFlow.subFragmentID;
+                            getDataForFragment();
+                            break;
                     }
                 }
             }
@@ -285,7 +290,8 @@ angular.module('lcaApp.fragment.sankey',
              * For each Sankey link provided, get
              * flow name, magnitude and unit associated with selected flow property.
              * If the link does have the selected flow property, display
-             * magnitude and unit for the flow's reference flow property.
+             * magnitude and unit for the
+             * reference flow property.
              *
              * @param {Array}  nodeLinks     Sankey links
              * @return {Array}  Data for display in table

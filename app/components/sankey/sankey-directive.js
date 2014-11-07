@@ -81,6 +81,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
         */
         function onNodeClick(node) {
             d3.event.stopPropagation();
+            TipService.hide();
             scope.$apply(function(){
                 scope.selectedNode = node;
             });

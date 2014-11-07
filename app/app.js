@@ -7,6 +7,7 @@ angular.module('lcaApp', [
     'ncy-angular-breadcrumb',
     'lcaApp.scenarios',
     'lcaApp.fragment.sankey',
+    'lcaApp.process.LCIA',
     'lcaApp.version'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
@@ -30,6 +31,18 @@ angular.module('lcaApp', [
             data: {
                 ncyBreadcrumbLabel: 'Fragment Sankey Diagram'
             }
-        });
+        })
+            .state('scenarios.process', {
+                url: '/{scenarioID}/process-lcia/{processID}',
+                views: {
+                    "@" : {
+                        templateUrl: 'process-lcia/process-lcia.html',
+                        controller: 'ProcessLciaCtrl'
+                    }
+                },
+                data: {
+                    ncyBreadcrumbLabel: 'Process LCIA'
+                }
+            });
     }]);
 
