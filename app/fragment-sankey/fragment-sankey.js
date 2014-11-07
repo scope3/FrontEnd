@@ -4,10 +4,10 @@ angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'angularSpinner',
                  'ui.bootstrap.alert'])
     .controller('FragmentSankeyCtrl',
-        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$window',
+        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'NodeTypeService',
-        function ($scope, $stateParams, $state, usSpinnerService, $q, $window, ScenarioService, FragmentService,
+        function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   NodeTypeService) {
             var fragmentID = $stateParams.fragmentID,
@@ -15,8 +15,7 @@ angular.module('lcaApp.fragment.sankey',
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
-                baseValue = 1E-14,  // sankey link base value (replaces 0).
-                activityLevel = 1;
+                baseValue = 1E-14;  // sankey link base value (replaces 0).
 
 
             /**
@@ -41,10 +40,9 @@ angular.module('lcaApp.fragment.sankey',
              * Get magnitude of link with a flow property
              * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}}  link
              * @param {Number}  flowPropertyID    flow property key
-             * @param {Number}  activityLevel    current scenario's activity level
              * @return {Number} The magnitude, if link has the flow property. Otherwise, null.
              */
-            function getMagnitude(link, flowPropertyID, activityLevel) {
+            function getMagnitude(link, flowPropertyID) {
                 var magnitude = null, flowPropertyMagnitudes = [];
                 if ("flowPropertyMagnitudes" in link) {
                     flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
@@ -56,7 +54,7 @@ angular.module('lcaApp.fragment.sankey',
                         });
                 }
                 if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {
-                    magnitude = flowPropertyMagnitudes[0].magnitude * activityLevel;
+                    magnitude = flowPropertyMagnitudes[0].magnitude *  $scope.fragment.activityLevel;
                 }
                 return magnitude;
             }
@@ -94,14 +92,12 @@ angular.module('lcaApp.fragment.sankey',
                     refObj = FragmentService.get(element.subFragmentID);
                     node.selectable = true;
                     selectTip = "Click to descend";
-//                    navState = "scenarios.fragment({fragmentID: " + fragmentID +
-//                        ", scenarioID: " + scenarioID + "})";
-//                    node.toolTip = node.toolTip + "<p><a ui-sref='" + navState +  "'>" + refObj.name + "</a></p>";
-//                    navState = "#/scenarios/" + scenarioID + "/fragment-sankey/" + fragmentID;
-//                    node.toolTip = node.toolTip + "<p><a href='" + navState +  "'>" + refObj.name + "</a></p>";
                 }
-                if (node.selectable) {
-                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p><i><small>" + selectTip + "</small></i>";
+                if (refObj) {
+                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
+                }
+                if (selectTip) {
+                    node.toolTip = node.toolTip + "<i><small>" + selectTip + "</small></i>";
                 }
 
                 reverseIndex[element.fragmentFlowID] = graph.nodes.push(node) - 1;
@@ -116,7 +112,7 @@ angular.module('lcaApp.fragment.sankey',
                     nodeIndex = reverseIndex[element.fragmentFlowID];
 
                 if ("parentFragmentFlowID" in element) {
-                    var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"], activityLevel),
+                    var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
                         value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
                         flow = FlowForFragmentService.get(element.flowID),
                         unit = $scope.selectedFlowProperty["referenceUnit"];
@@ -153,6 +149,7 @@ angular.module('lcaApp.fragment.sankey',
                 usSpinnerService.stop("spinner-lca");
             }
 
+
             function handleFailure(errMsg) {
                 stopWaiting();
                 $scope.alert = { type: "danger", msg: errMsg };
@@ -162,15 +159,42 @@ angular.module('lcaApp.fragment.sankey',
              * Prepare fragment data for visualization
              */
             function visualizeFragment() {
-                $scope.alert = null;
+                setFlowProperties();
+                buildGraph(true);
+                stopWaiting();
+                $scope.graph = graph;
+            }
+
+            /**
+             * Set to top-level fragment, activity level derived from scenario
+             */
+            function initScopeFragment() {
                 $scope.fragment = FragmentService.get(fragmentID);
                 if ($scope.fragment) {
-                    setFlowProperties();
-                    buildGraph(true);
-                    stopWaiting();
-                    $scope.graph = graph;
+                    $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
+                    $log.info("Top-level fragment activity level: " + $scope.fragment.activityLevel);
                 } else {
-                    handleFailure("Invalid fragmentID: " + fragmentID);
+                    handleFailure("Invalid fragment ID : " + fragmentID);
+                }
+                return $scope.fragment;
+            }
+
+            /**
+             * Prepare to display sub-fragment
+             * Calculate sub-fragment activity level, push current fragment on breadcrumb stack
+             * @param {{subFragmentID: Number, nodeWeight: Number}} fragmentFlow  containing selected sub-fragment
+             */
+            function navigateSubFragment( fragmentFlow) {
+                var subFragment = FragmentService.get(fragmentFlow.subFragmentID);
+                if (subFragment) {
+                    subFragment.activityLevel = $scope.fragment.activityLevel * fragmentFlow.nodeWeight;
+                    $scope.parentFragments.push($scope.fragment);
+                    fragmentID = fragmentFlow.subFragmentID;
+                    $scope.fragment = subFragment;
+                    $log.info("Sub-fragment activity level: " + $scope.fragment.activityLevel);
+                    getDataForFragment();
+                } else {
+                    handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
                 }
             }
 
@@ -181,7 +205,7 @@ angular.module('lcaApp.fragment.sankey',
 
                 $scope.scenario = ScenarioService.get(scenarioID);
                 if ($scope.scenario) {
-                    activityLevel = $scope.scenario["activityLevel"];
+                    initScopeFragment();
                     visualizeFragment();
                 } else {
                     handleFailure("Invalid scenarioID: " + scenarioID);
@@ -251,7 +275,6 @@ angular.module('lcaApp.fragment.sankey',
              * Updates existing sankey graph.
              */
             $scope.onFlowPropertyChange = function () {
-                //console.log("Flow property changed. Current: " + $scope.selectedFlowProperty.name);
                 buildGraph(false);
                 $scope.graph = graph;
             };
@@ -265,6 +288,8 @@ angular.module('lcaApp.fragment.sankey',
             $scope.onParentFragmentSelected = function (fragment, index) {
                 $scope.parentFragments.splice(index);
                 fragmentID = fragment.fragmentID;
+                $scope.fragment = fragment;
+                $log.info("Restored fragment activity level: " + $scope.fragment.activityLevel);
                 getDataForFragment();
             };
 
@@ -279,15 +304,12 @@ angular.module('lcaApp.fragment.sankey',
                     switch (newVal.nodeTypeID) {
                         case 1 :
                             $state.go("scenarios.process", { scenarioID : scenarioID,
-                                                             processID : fragmentFlow.processID ,
-                                                             activity : activityLevel }
+                                                             processID : fragmentFlow.processID,
+                                                             activity : $scope.fragment.activityLevel }
                             );
                             break;
                         case 2 :
-                            $scope.parentFragments.push($scope.fragment);
-                            $scope.fragment = null;
-                            fragmentID = fragmentFlow.subFragmentID;
-                            getDataForFragment();
+                            navigateSubFragment(fragmentFlow);
                             break;
                     }
                 }
@@ -319,7 +341,7 @@ angular.module('lcaApp.fragment.sankey',
                             var fp, ff;
                             ff = FragmentFlowService.get(l.nodeID);
                             flowPropertyID = flow["referenceFlowPropertyID"];
-                            magnitude = getMagnitude(ff, flowPropertyID, activityLevel);
+                            magnitude = getMagnitude(ff, flowPropertyID);
                             fp = FlowPropertyForFragmentService.get(flowPropertyID);
                             if (fp) {
                                unit = fp["referenceUnit"];
