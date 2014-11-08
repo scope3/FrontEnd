@@ -15,8 +15,10 @@
                 <dl class="dl-horizontal">
                     <dt>Method</dt>
                     <dd>{{method.name}}</dd>
+                    <dt>Flow Property</dt>
+                    <dd>{{method.referenceFlowProperty.name}}</dd>
                     <dt>Total Impact</dt>
-                    <dd>{{lciaResults[method.lciaMethodID].cumulativeResult}}</dd>
+                    <dd>{{lciaResults[method.lciaMethodID].cumulativeResult | number}} {{method.referenceFlowProperty.referenceUnit}}</dd>
                 </dl>
             </li>
         </ul>
