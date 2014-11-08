@@ -63,7 +63,6 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                                     IdMapService.add(svc.idName, objects);
                                 }
                                 d.resolve(objects);
-
                             },
                             function(err) {
                                 d.reject("Web API query failed. URL: " + err.config.url);
@@ -222,9 +221,20 @@ angular.module('lcaApp.resources.service')
         }
     ]);
 
+/**
+ * LCIA results for multiple methods are queried simultaneously.
+ * Also, the query returns only one object.
+ */
 angular.module('lcaApp.resources.service')
     .factory('LciaResultForProcessService', ['ResourceService',
         function(ResourceService){
-            return ResourceService.getService('LciaResultForProcessService', "lciaResultForProcess", null);
+            var resource = ResourceService.getResource("lciaResultForProcess"),
+                resultSvc = {};
+
+            resultSvc.get = function(filter, callback) {
+                return resource.get(filter, callback);
+            };
+
+            return resultSvc;
         }
     ]);

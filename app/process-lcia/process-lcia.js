@@ -31,8 +31,25 @@ angular.module('lcaApp.process.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
+            /**
+             *  Display LCIA results provided by LCIA Result Service
+             * @param {{lciaMethodID : Number, lciaScore : Array }} result
+             */
+            function displayLciaResult(result) {
+                $scope.lciaResults[result.lciaMethodID] =
+                    { cumulativeResult : result.lciaScore[0].cumulativeResult };
+            }
+
+            function getLciaResult(lciaMethod) {
+                LciaResultForProcessService
+                    .get({scenarioID: scenarioID, lciaMethodID: lciaMethod.lciaMethodID, processID:processID},
+                    displayLciaResult);
+            }
+
             function getLciaResults() {
-                stopWaiting();
+                stopWaiting();  // Results will appear as they are processed
+                $scope.lciaMethods.forEach(getLciaResult);
+
             }
 
             function getResults() {
@@ -108,6 +125,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.elementaryFlows = {};
             $scope.inputFlows = [];
             $scope.outputFlows = [];
+            $scope.lciaResults = {};
             startWaiting();
             getData();
 
