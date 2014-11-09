@@ -14,8 +14,6 @@ angular.module('lcaApp.process.LCIA',
             var processID = $stateParams.processID,
                 scenarioID = $stateParams.scenarioID;
 
-
-
             function startWaiting() {
                 $scope.alert = null;
                 usSpinnerService.spin("spinner-lca");
