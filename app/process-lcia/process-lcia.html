@@ -20,6 +20,9 @@
                     <dt>Total Impact</dt>
                     <dd>{{lciaResults[method.lciaMethodID].cumulativeResult | number}} {{method.referenceFlowProperty.referenceUnit}}</dd>
                 </dl>
+                <div class="lcia-bar-container">
+                    <lcia-bar-chart lcia="lciaResults[method.lciaMethodID]" flows="elementaryFlows" activity="activityLevel"></lcia-bar-chart>
+                </div>
             </li>
         </ul>
     </div>

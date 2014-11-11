@@ -1,16 +1,17 @@
 'use strict';
 /* Controller for Process LCIA Diagram View */
 angular.module('lcaApp.process.LCIA',
-                ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
+                ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
+                 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service'])
     .controller('ProcessLciaCtrl',
-        ['$scope', '$stateParams', 'usSpinnerService', '$q', '$window',
-         'ScenarioService',
-        'ProcessForFlowTypeService', 'ProcessFlowService',
-        'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
-        function ($scope, $stateParams, usSpinnerService, $q, $window,
-                  ScenarioService,
+        ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
+         'ProcessForFlowTypeService', 'ProcessFlowService',
+         'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
+         'ColorCodeService',
+        function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
-                  LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService) {
+                  LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
+                  ColorCodeService) {
             var processID = $stateParams.processID,
                 scenarioID = $stateParams.scenarioID;
 
@@ -29,19 +30,17 @@ angular.module('lcaApp.process.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
-            /**
-             *  Display LCIA results provided by LCIA Result Service
-             * @param {{lciaMethodID : Number, lciaScore : Array }} result
-             */
-            function displayLciaResult(result) {
-                $scope.lciaResults[result.lciaMethodID] =
-                    { cumulativeResult : result.lciaScore[0].cumulativeResult };
-            }
-
             function getLciaResult(lciaMethod) {
+                var colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]);
                 LciaResultForProcessService
                     .get({scenarioID: scenarioID, lciaMethodID: lciaMethod.lciaMethodID, processID:processID},
-                    displayLciaResult);
+                    function displayLciaResult(result) {
+                        $scope.lciaResults[lciaMethod.lciaMethodID] =
+                        {   cumulativeResult : (result.lciaScore[0].cumulativeResult).toPrecision(4),
+                            lciaDetail : result.lciaScore[0].lciaDetail,
+                            colors : colors
+                        };
+                    });
             }
 
             function getLciaResults() {
