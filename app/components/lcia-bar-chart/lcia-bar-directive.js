@@ -8,17 +8,18 @@ angular.module('lcaApp.lciaBar.directive', [])
 
             var margin = {
                     top: 10,
-                    right: 200,
+                    right: 30,
                     bottom: 30,
-                    left: 20
+                    left: 30
                 },
                 parentElement = element[0],
                 width = parentElement.clientWidth - margin.left - margin.right,   // diagram width
                 svgHeight = parentElement.clientHeight - margin.top - margin.bottom,
-                chartHeight = 100,
+                chartHeight = 90,
                 barY = 10,      // y position of bar
                 barHeight = 30,
                 textPadding = 6,
+                legendRowHeight = 20,
                 colorScale = d3.scale.ordinal(),
                 xScale = d3.scale.linear().rangeRound([0, width]),
                 labelFormat = d3.format("^.2g"),    // Format numbers with precision 2
@@ -39,7 +40,7 @@ angular.module('lcaApp.lciaBar.directive', [])
                 svg.append("g")
                     .attr("class", "chart-group")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-                    .append("text").attr("id", "chart-header").style("font-weight", "bold").text("LCIA Details");
+                    .append("text").attr("id", "chart-header").style("font-weight", "bold").text("LCIA Details (positive scores)");
                 svg.append("g")
                     .attr("class", "x axis")
                     .attr("transform", "translate(" + margin.left + "," + (chartHeight - margin.bottom) + ")");
@@ -55,7 +56,7 @@ angular.module('lcaApp.lciaBar.directive', [])
             function getPositiveResults() {
                 var positiveDetails = [],
                     rolledImpact = {flowID: 0, result: 0},
-                    threshold = scope.lcia["cumulativeResult"] * 0.001;
+                    threshold = scope.lcia["cumulativeResult"] * 0.005;
 
                 scope.lcia["lciaDetail"].forEach( function (d) {
                     if (d.result > threshold) {
@@ -87,7 +88,6 @@ angular.module('lcaApp.lciaBar.directive', [])
                     reverseColors, // Clone of color array in reverse order (dark to light)
                     activityLevel = 1;
 
-                svg.select("#chart-header").style("visibility", displayResults.length > 0 ? "visible" : "hidden");
                 if ("activity" in scope) {
                     activityLevel = scope.activity;
                 }
@@ -116,12 +116,11 @@ angular.module('lcaApp.lciaBar.directive', [])
 
                 xScale.domain([0, runningTotal]);
                 svg.select(".x.axis")
-                    .call(xAxis)
-                    .style("visibility", displayResults.length > 0 ? "visible" : "hidden");
+                    .call(xAxis);
                 /**
                  * Update/Add/Delete rect data
                  */
-                rectSelection = d3.select(".chart-group").selectAll("rect").data(displayResults);
+                rectSelection = svg.select(".chart-group").selectAll("rect").data(displayResults);
                 rectSelection.enter().append("rect");
                 rectSelection.exit().remove();
                 rectSelection.attr("width", function (d) {
@@ -136,12 +135,130 @@ angular.module('lcaApp.lciaBar.directive', [])
                         return colorScale(d.flowID);
                     });
             }
-            prepareSvg();
-            scope.$watch('lcia.lciaDetail', function (newVal){
-                if (newVal) {
-                    var displayResults = getPositiveResults();
-                    if ( displayResults.length > 0 ) {
-                        drawBar();
+
+            /**
+             * Create header for legend.
+             *
+             * @param {number} catX          X coordinate for flow category
+             * @param {number} flowX          X coordinate for flow name
+             * @param {number} resultX        X coordinate for result header
+             * @param {number} headerY        Y coordinate for headers
+             */
+            function makeLegendHeader(catX, flowX, resultX, headerY) {
+                var legendGroup = svg.select(".legend-group");
+
+                legendGroup.append("text").attr({
+                    class: "legend-header",
+                    x: catX,
+                    y: headerY
+                })
+                    .text("Flow Category");
+                legendGroup.append("text").attr({
+                    class: "legend-header",
+                    x: flowX,
+                    y: headerY
+                })
+                    .text("Name");
+                legendGroup.append("text").attr({
+                    class: "legend-header",
+                    x: resultX,
+                    y: headerY
+                })
+                    .text("LCIA Result");
+
+            }
+
+            /**
+             * Make legend for chart, listing all flows with LCIA result.
+             *
+             * Flows that cannot be charted because the result is very small or negative are listed
+             * below the legend colors.
+             *
+             * @param {Array} flowData          Flows sorted by LCIA result in descending order.
+             */
+            function makeLegend(flowData) {
+                var rowHeight = legendRowHeight,
+                    boxSize = 18,
+                    colPadding = textPadding,
+                    textY = 9,
+                    colXs = [0, boxSize + colPadding, width - 275, width - 75],
+                    legend,
+                    newRows,
+                    squares,
+                    flows;
+
+                makeLegendHeader(colXs[1], colXs[2], colXs[3], textY);
+                // Update legend data
+                legend = svg.select(".legend-group").selectAll(".legend").data(flowData);
+                newRows = legend.enter().append("g").attr("class", "legend");
+                newRows.filter(function (d) {
+                    return d.result > 0 && (xScale(d.x1) - xScale(d.x0) > 1);
+                })
+                    .append("rect")
+                    .attr("x", colXs[0])
+                    .attr("width", boxSize)
+                    .attr("height", boxSize);
+                newRows.append("text")
+                    .attr("x", colXs[1])
+                    .attr("y", textY)
+                    .attr("dy", ".35em")
+                    .attr("class", "category");
+                newRows.append("text")
+                    .attr("x", colXs[2])
+                    .attr("y", textY)
+                    .attr("dy", ".35em")
+                    .attr("class", "flow-name");
+                newRows.append("text")
+                    .attr("x", colXs[3])
+                    .attr("y", textY)
+                    .attr("dy", ".35em")
+                    .attr("class", "lcia-result");
+                // Remove unused rows
+                //legend.exit().remove();
+
+                legend.attr("transform", function (d, i) {
+                    var rowY = (i + 1) * rowHeight;
+                    return "translate(0," + rowY + ")";
+                });
+                legend.selectAll("rect")
+                    .style("fill", function (d) {
+                        return colorScale(d.flowID);
+                    });
+                legend.selectAll(".category")
+                    .text(function (d) {
+                        if (d.flowID === 0) {
+                            return "Aggregate";
+                        } else if (d.flowID in scope.flows){
+                            return scope.flows[d.flowID].category;
+                        }
+                    });
+                legend.selectAll(".flow-name")
+                    .text(function (d) {
+                        if (d.flowID === 0) {
+                            return "Flows having impact < 0.5%";
+                        } else if (d.flowID in scope.flows){
+                            return scope.flows[d.flowID].name;
+                        }
+                    });
+                legend.selectAll(".lcia-result")
+                    .text(function (d) {
+                        return d.result.toPrecision(4);
+                    });
+            }
+
+
+            scope.$watch('lcia', function (newVal){
+                if ((typeof newVal != 'undefined') && newVal && ("lciaDetail" in scope.lcia)) {
+                    if ( scope.lcia.lciaDetail.length > 0 ) {
+                        var displayResults = getPositiveResults();
+                        if (displayResults.length > 0) {
+                            svgHeight = chartHeight + margin.top + (legendRowHeight * (displayResults.length + 1));
+                            prepareSvg();
+                            drawBar(displayResults);
+                            if ("flows" in scope) {
+                                makeLegend(displayResults);
+                            }
+                        }
                     }
                 }
             });

@@ -55,9 +55,20 @@
 }
 
 .lcia-bar-container {
-    height: 350px;
+    height: 100%;
 }
 
 .header text {
     font-weight: bold;
+}
+
+.axis text {
+    font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: #000;
+    shape-rendering: crispEdges;
 }
