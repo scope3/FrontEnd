@@ -7,7 +7,7 @@ angular.module('lcaApp.lciaBar.directive', [])
         function link(scope, element, attrs) {
 
             var margin = {
-                    top: 10,
+                    top: 30,
                     right: 30,
                     bottom: 30,
                     left: 30
@@ -43,7 +43,7 @@ angular.module('lcaApp.lciaBar.directive', [])
                     .append("text").attr("id", "chart-header").style("font-weight", "bold").text("LCIA Details (positive scores)");
                 svg.append("g")
                     .attr("class", "x axis")
-                    .attr("transform", "translate(" + margin.left + "," + (chartHeight - margin.bottom) + ")");
+                    .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top - margin.bottom) + ")");
                 svg.append("g")
                     .attr("class", "legend-group")
                     .attr("transform", "translate(" + margin.left + "," + (chartHeight + margin.top) + ")");
@@ -183,9 +183,7 @@ angular.module('lcaApp.lciaBar.directive', [])
                     textY = 9,
                     colXs = [0, boxSize + colPadding, width - 275, width - 75],
                     legend,
-                    newRows,
-                    squares,
-                    flows;
+                    newRows;
 
                 makeLegendHeader(colXs[1], colXs[2], colXs[3], textY);
                 // Update legend data
