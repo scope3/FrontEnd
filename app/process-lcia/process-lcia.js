@@ -30,17 +30,38 @@ angular.module('lcaApp.process.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
+            /**
+             * Extract LCIA results
+             * @param {{ lciaMethodID : Number, lciaScore : Array }} result
+             */
+            function extractResult(result) {
+                var positiveResults = [],
+                    positiveSum = 0,
+                    lciaMethod = LciaMethodService.get(result.lciaMethodID),
+                    colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]);
+
+                if (result.lciaScore[0].lciaDetail.length > 0) {
+                    positiveResults = result.lciaScore[0].lciaDetail
+                        .filter(function (el) {
+                            return el.result > 0;
+                        });
+                    positiveResults.forEach( function (p) {
+                        p.result = p.result * $scope.activityLevel;
+                        positiveSum += p.result;
+                    });
+                }
+                $scope.lciaResults[lciaMethod.lciaMethodID] =
+                {   cumulativeResult : (result.lciaScore[0].cumulativeResult * $scope.activityLevel).toPrecision(4),
+                    positiveResults : positiveResults,
+                    positiveSum : positiveSum,
+                    colors : colors
+                };
+            }
+
             function getLciaResult(lciaMethod) {
-                var colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]);
                 LciaResultForProcessService
                     .get({scenarioID: scenarioID, lciaMethodID: lciaMethod.lciaMethodID, processID:processID},
-                    function displayLciaResult(result) {
-                        $scope.lciaResults[lciaMethod.lciaMethodID] =
-                        {   cumulativeResult : (result.lciaScore[0].cumulativeResult).toPrecision(4),
-                            lciaDetail : result.lciaScore[0].lciaDetail,
-                            colors : colors
-                        };
-                    });
+                    extractResult);
             }
 
             function getLciaResults() {
@@ -118,7 +139,7 @@ angular.module('lcaApp.process.LCIA',
 
             $scope.process = null;
             $scope.scenario = null;
-            $scope.activityLevel = $stateParams.activity;
+            $scope.activityLevel = ("activity" in $stateParams) ? +$stateParams.activity : 1;
             $scope.elementaryFlows = {};
             $scope.inputFlows = [];
             $scope.outputFlows = [];

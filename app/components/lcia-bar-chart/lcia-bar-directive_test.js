@@ -3,235 +3,117 @@ describe('Unit test LCIA bar chart directive', function() {
         $rootScope;
 
     function getResultWithDetails() {
-        return {
-            "cumulativeResult": 3.824134558634954E-09,
-            "lciaDetail": [
+        return  [
                 {
                     "flowID": 40,
-                    "directionID": 1,
-                    "quantity": 3.51846969850466E-15,
-                    "factor": 1.0,
                     "result": 3.51846969850466E-15
                 },
                 {
                     "flowID": 213,
-                    "directionID": 1,
-                    "quantity": 9.27228389817585E-10,
-                    "factor": 8.7E-06,
                     "result": 8.06688699141299E-15
                 },
                 {
                     "flowID": 965,
-                    "directionID": 1,
-                    "quantity": 1.09521841384624E-07,
-                    "factor": 7.79E-09,
                     "result": 8.53175144386221E-16
                 },
                 {
                     "flowID": 307,
-                    "directionID": 1,
-                    "quantity": 4.87052901395822E-09,
-                    "factor": 1.96E-05,
                     "result": 9.5462368673581109E-14
                 },
                 {
                     "flowID": 941,
-                    "directionID": 1,
-                    "quantity": 5.69944925445674E-15,
-                    "factor": 0.0256,
                     "result": 1.4590590091409256E-16
                 },
                 {
                     "flowID": 1147,
-                    "directionID": 1,
-                    "quantity": 1.84586534871622E-09,
-                    "factor": 0.0025,
                     "result": 4.61466337179055E-12
                 },
                 {
                     "flowID": 964,
-                    "directionID": 1,
-                    "quantity": 0.0293336563808763,
-                    "factor": 7.79E-09,
                     "result": 2.285091832070264E-10
                 },
                 {
                     "flowID": 224,
-                    "directionID": 1,
-                    "quantity": 1.37389233567121E-11,
-                    "factor": 0.00262,
                     "result": 3.59959791945857E-14
                 },
                 {
                     "flowID": 913,
-                    "directionID": 1,
-                    "quantity": 6.97939103363513E-15,
-                    "factor": 36.0,
                     "result": 2.5125807721086468E-13
                 },
                 {
                     "flowID": 968,
-                    "directionID": 1,
-                    "quantity": 0.000547035537860401,
-                    "factor": 7.79E-09,
                     "result": 4.2614068399325248E-12
                 },
                 {
-                    "flowID": 144,
-                    "directionID": 1,
-                    "quantity": -2.46680255342679E-09,
-                    "factor": 1.66E-06,
-                    "result": -4.0948922386884708E-15
-                },
-                {
-                    "flowID": 1148,
-                    "directionID": 1,
-                    "quantity": -2.24636862994631E-11,
-                    "factor": 0.015,
-                    "result": -3.369552944919465E-13
-                },
-                {
                     "flowID": 1078,
-                    "directionID": 1,
-                    "quantity": 2.10738973621545E-20,
-                    "factor": 2.48E-06,
                     "result": 5.2263265458143164E-26
                 },
                 {
                     "flowID": 883,
-                    "directionID": 1,
-                    "quantity": 1.02719393538941E-10,
-                    "factor": 2.35E-05,
                     "result": 2.4139057481651133E-15
                 },
                 {
                     "flowID": 1028,
-                    "directionID": 1,
-                    "quantity": 2.06606836901219E-19,
-                    "factor": 2.62,
                     "result": 5.4130991268119382E-19
                 },
                 {
                     "flowID": 912,
-                    "directionID": 1,
-                    "quantity": 3.82532877781118E-11,
-                    "factor": 0.0711,
                     "result": 2.7198087610237488E-12
                 },
                 {
                     "flowID": 966,
-                    "directionID": 1,
-                    "quantity": 0.0015511468848828,
-                    "factor": 7.79E-09,
                     "result": 1.2083434233237014E-11
                 },
                 {
-                    "flowID": 178,
-                    "directionID": 1,
-                    "quantity": -1.1914370166548E-10,
-                    "factor": 0.00418,
-                    "result": -4.9802067296170643E-13
-                },
-                {
                     "flowID": 838,
-                    "directionID": 1,
-                    "quantity": 1.86815281118305E-16,
-                    "factor": 9.36,
                     "result": 1.7485910312673347E-15
                 },
                 {
                     "flowID": 840,
-                    "directionID": 1,
-                    "quantity": 1.84382859339928E-11,
-                    "factor": 6.75E-09,
                     "result": 1.2445843005445139E-19
                 },
                 {
                     "flowID": 7,
-                    "directionID": 1,
-                    "quantity": 2.14806250311929E-12,
-                    "factor": 6.21E-05,
                     "result": 1.3339468144370791E-16
                 },
                 {
                     "flowID": 9,
-                    "directionID": 1,
-                    "quantity": 3.16636069692042E-16,
-                    "factor": 9.09,
                     "result": 2.8782218735006615E-15
                 },
                 {
                     "flowID": 10,
-                    "directionID": 1,
-                    "quantity": 4.77910116180182E-12,
-                    "factor": 9E-06,
                     "result": 4.3011910456216383E-17
                 },
                 {
-                    "flowID": 365,
-                    "directionID": 1,
-                    "quantity": -3.21121186679806E-13,
-                    "factor": 8.42,
-                    "result": -2.7038403918439666E-12
-                },
-                {
                     "flowID": 369,
-                    "directionID": 1,
-                    "quantity": 4.63083422339795E-15,
-                    "factor": 9.92E-06,
                     "result": 4.5937875496107667E-20
                 },
                 {
                     "flowID": 386,
-                    "directionID": 1,
-                    "quantity": 1.51332931409174E-14,
-                    "factor": 0.000391,
                     "result": 5.9171176180987035E-18
                 },
                 {
                     "flowID": 387,
-                    "directionID": 1,
-                    "quantity": 1.14644259119709E-13,
-                    "factor": 0.00118,
                     "result": 1.3528022576125663E-16
                 },
                 {
                     "flowID": 388,
-                    "directionID": 1,
-                    "quantity": 3.10913638932923E-10,
-                    "factor": 11.5,
                     "result": 3.5755068477286146E-09
                 },
                 {
                     "flowID": 414,
-                    "directionID": 1,
-                    "quantity": 5.55225973582495E-16,
-                    "factor": 0.115,
                     "result": 6.3850986961986927E-17
                 },
                 {
                     "flowID": 415,
-                    "directionID": 1,
-                    "quantity": 1.07503247798537E-10,
-                    "factor": 0.00152,
                     "result": 1.6340493665377625E-13
                 },
                 {
                     "flowID": 449,
                     "directionID": 1,
-                    "quantity": 8.6451555675781E-08,
-                    "factor": 3.59E-07,
                     "result": 3.1036108487605382E-14
-                },
-                {
-                    "flowID": 627,
-                    "directionID": 1,
-                    "quantity": -1.68503848868775E-10,
-                    "factor": 0.00365,
-                    "result": -6.1503904837102877E-13
                 }
-            ]
-        };
+            ];
     }
 
     function getFlows() {
@@ -8027,15 +7909,15 @@ describe('Unit test LCIA bar chart directive', function() {
 
     it('Use the directive to display details', function() {
         $rootScope.lcia = {
-            results : getResultWithDetails(),
+            positiveResults : getResultWithDetails(),
+            positiveSum : 0.001,
             colors : colorbrewer.PuRd
         };
-        $rootScope.activity = 3200;
         $rootScope.flows = getFlows();
 
         // Compile a piece of HTML containing the directive
         var element =
-            $compile("<lcia-bar-chart lcia=\"lcia\" flows=\"flows\" activity=\"activity\"></lcia-bar-chart>")($rootScope);
+            $compile("<lcia-bar-chart lcia=\"lcia\" flows=\"flows\"></lcia-bar-chart>")($rootScope);
         element.scope().$digest();
     });
 
