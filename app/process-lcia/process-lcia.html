@@ -19,9 +19,8 @@
                     </div>
                     <div class="panel-body">
                         <dl class="dl-horizontal">
-                            <dt>Cumulative Result</dt>
-                            <dd>{{lciaResults[method.lciaMethodID].cumulativeResult | number}} {{method.referenceFlowProperty.referenceUnit}}
-                            </dd>
+                            <dt style="font-weight: normal">Cumulative Result:</dt>
+                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | number}} {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
                             <dd>{{method.referenceFlowProperty.name}}</dd>
                         </dl>
                         <div class="lcia-bar-container">

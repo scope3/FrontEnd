@@ -247,7 +247,7 @@ angular.module('lcaApp.lciaBar.directive', [])
                         threshold = (+scope.lcia.positiveSum / width).toPrecision(4);
                         var displayResults = rollUpResults();
                         if (displayResults.length > 0) {
-                            svgHeight = chartHeight + margin.top + (legendRowHeight * (displayResults.length + 1));
+                            svgHeight = chartHeight + (legendRowHeight * (displayResults.length + 1));
                             prepareSvg();
                             drawBar(displayResults);
                             if ("flows" in scope) {
