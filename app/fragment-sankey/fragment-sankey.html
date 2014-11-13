@@ -1,35 +1,29 @@
 <!-- Partial html for fragment sankey view -->
 
-    <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
-    <form>
-        <p>
-            <label>Scenario: </label>
-            <span>{{scenario.name}}</span>
-        </p>
-
-        <p>
-            <label>Fragment: </label>
+<alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
+<dl class="dl-horizontal">
+    <dt>Scenario</dt>
+    <dd>{{scenario.name}}</dd>
+    <dt>Fragment</dt>
+    <dd>
         <span ng-repeat="parent in parentFragments">
             <a class="fragment-link" ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
              >
         </span>
-            <span>{{fragment.name}}</span>
-        </p>
-        <p>
-            <label>Activity Level: </label>
-            <span>{{fragment.activityLevel}}</span>
-        </p>
+        <span>{{fragment.name}}</span>
+    </dd>
 
-        <p>
-            <label for="flow-prop-select">Flow Property Type </label>
-            <select id="flow-prop-select" ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
-                    ng-change="onFlowPropertyChange()">
-            </select>
-            <span>&nbsp;</span>
-            <label id="unitLabel">Reference Unit: </label>
-            <span id="refUnitName">{{selectedFlowProperty.referenceUnit}}</span>
-        </p>
-    </form>
+    <dt>Activity Level</dt>
+    <dd>{{fragment.activityLevel}}</dd>
+        <dt>Flow Property Type </dt>
+    <dd>
+        <select id="flow-prop-select" ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
+                ng-change="onFlowPropertyChange()">
+        </select>
+    </dd>
+        <dt>Reference Unit</dt>
+        <dd id="refUnitName">{{selectedFlowProperty.referenceUnit}}</dd>
+</dl>
 
 <div class="row">
     <div class="col-md-8">
