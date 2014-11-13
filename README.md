@@ -66,16 +66,20 @@ Now browse to the app at `http://localhost:8000/app/index.html`.
 
 
 
-## Directory Layout
+## Repository directory structure
 
 * app/                --> all of the source files for the application
-    * components/           --> shared modules
-        * idmap                 --> idmap service module
+    * components/           --> shared modules (services and directives)
+        * color-code            --> Maps categories to colors
+        * d3-tip                --> d3.tip service
+        * idmap                 --> Maps resource ID to resource
         * version/              --> version related components (came with angular-seed)
-        * resources/               --> resource service module
-        * sankey/                  --> sankey diagram module   
+        * lcia-bar-chart        --> LCIA bar chart directive
+        * resources/            --> WebAPI resource service 
+        * sankey/               --> Sankey diagram service and directive   
+    * fragment-sankey/          --> Fragment sankey view and controller
+    * process-lcia/             --> Process LCIA view and controller
     * scenarios/                --> scenarios view and controller
-    * fragment-sankey/          --> fragment sankey view and controller
 * karma.conf.js         --> config file for running unit tests with Karma
 * e2e-tests/            --> end-to-end tests (not currently implemented)
 
