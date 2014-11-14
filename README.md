@@ -43,7 +43,9 @@ before you can use npm to install this project's dependencies.*
 
 ```
 npm install
-``` calls `bower install`.  When it completes, you should find that you have two new
+```
+
+Behind the scenes this will also call `bower install`.  You should find that you have two new
 folders in your project.
 
 * `node_modules` - contains the npm packages for the tools we need
