@@ -1,80 +1,16 @@
-
-<div ng-repeat="scenario in scenarios" class="row">
-    <dl>
-        <dt>Scenario</dt>
-        <dd>{{scenario.name}}</dd>
-    </dl>
-    <!--<div class="col-lg-8" style="background-color: pink;">-->
-    <!--<dl>-->
-    <!--<dt>First Method</dt>-->
-    <!--<dd>{{firstMethod.name}}</dd>-->
-    <!--</dl>-->
-    <!--</div>-->
-    <!--<div ng-repeat="method in otherMethods" class="col-lg-4" style="background-color: beige;">-->
-    <!--<dl>-->
-    <!--<dt>Other Method</dt>-->
-    <!--<dd>{{method.name}}</dd>-->
-    <!--</dl>-->
-    <!--</div>-->
-    <div class="row">
-        <div class="col-lg-6" style="background-color: pink;">
-            <dl>
-                <dt>Method 0</dt>
-                <dd>{{methods[0].name}}</dd>
-            </dl>
-        </div>
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 1</dt>
-                <dd>{{methods[1].name}}</dd>
-            </dl>
-        </div>
-
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 2</dt>
-                <dd>{{methods[2].name}}</dd>
-            </dl>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6" style="background-color: pink;">
-            <dl>
-                <dt>method 3</dt>
-                <dd>{{methods[3].name}}</dd>
-            </dl>
-        </div>
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 4</dt>
-                <dd>{{methods[4].name}}</dd>
-            </dl>
-        </div>
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 5</dt>
-                <dd>{{methods[5].name}}</dd>
-            </dl>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-lg-6" style="background-color: pink;">
-            <dl>
-                <dt>method 6</dt>
-                <dd>{{methods[6].name}}</dd>
-            </dl>
-        </div>
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 7</dt>
-                <dd>{{methods[7].name}}</dd>
-            </dl>
-        </div>
-        <div class="col-lg-3" style="background-color: beige;">
-            <dl>
-                <dt>method 8</dt>
-                <dd>{{method[8].name}}</dd>
-            </dl>
+<div class="row">
+    <div ng-repeat="method in methods" class="col-lg-6">
+        <div class="panel panel-default" style="height:1000px">
+            <div class="panel-heading">{{method.name}}
+            </div>
+            <div class="panel-body">
+                <div ng-repeat="scenario in scenarios" class="row">
+                    <h6 class="text-center">{{scenario.name}}</h6>
+                    <div class="lcia-bar-container" style="height:300px">
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
+

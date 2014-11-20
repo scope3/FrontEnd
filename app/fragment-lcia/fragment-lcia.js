@@ -26,8 +26,6 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
-
-
             function getResults() {
                 stopWaiting();
                 $scope.methods = LciaMethodService.getAll();

@@ -15,10 +15,17 @@ angular.module('lcaApp.waterfall', [])
         values = [],      // 2 dimensional array of values (first dimension: scenario, second dimension: stage)
         colors = [],        // Array of colors (one for every stage)
         // Output   
-        segments = [],    // 2D array of waterfall segments, one for each non-null value
+        segments = [],    // 2D array of waterfall segments
         xScale = d3.scale.linear(),             // d3 scale maps aggregate value to chart's x axis
         colorScale = d3.scale.ordinal(), // d3 scale maps stages to colors
+        show0Result = true,        // Show stage that has no result
         resultStages = [];          // Stages that actually have a value in at least one scenario
+
+    waterfall.omit0result = function (_) {
+            if (!arguments.length) { return colors; }
+            colors = _;
+            return waterfall;
+        };
 
     waterfall.colors = function (_) {
         if (!arguments.length) { return colors; }
@@ -91,10 +98,11 @@ angular.module('lcaApp.waterfall', [])
                 scenarioStages = [];
 
             for (j = 0; j < stages.length; j++) {
+                // If waterfall configured to not show 0 result, then
                 // NULL value means this stage is not relevant in this scenario,
                 // no segment created
                 // Also do not add segment for 0 value
-                if (values[i][j] !== null && values[i][j] !== 0) {
+                if (show0Result || ( values[i][j] !== null && values[i][j] !== 0)) {
                     var segment = {};
                     segment.scenario = scenarios[i];
                     segment.stage = stages[j];

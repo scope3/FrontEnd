@@ -12,8 +12,9 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall'])
                     left: 10
                 },
                 parentElement = element[0],
+                yAxisWidth = 250,
                 width = parentElement.clientWidth - margin.left - margin.right,   // diagram width
-                svgHeight = parentElement.clientHeight - margin.top - margin.bottom,
+                height = parentElement.clientHeight - margin.top - margin.bottom,
                 barY = 10,      // y position of bar
                 barHeight = 30,
                 textPadding = 6,
@@ -25,13 +26,29 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall'])
                     .orient("bottom")
                     .ticks(4)
                     .tickFormat(labelFormat),
-                svg = null,
-                yAxisWidth = 250;
+                svg = null;
+
+
+            /**
+             * Initial preparation of svg element.
+             */
+            function prepareSvg() {
+                svg = d3.select(parentElement).append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom);
+
+                svg.append("g")
+                    .attr("class", "chart-group")
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            }
+
+            prepareSvg();
         }
 
         return {
             restrict: 'E',
-            scope: { stages: '=', values: '=', color: '=' },
+            scope: { service: '=', index: '=', color: '='},
             link: link
         }
     }]);
