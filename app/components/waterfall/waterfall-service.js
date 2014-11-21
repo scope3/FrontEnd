@@ -21,9 +21,9 @@ angular.module('lcaApp.waterfall', [])
         show0Result = true,        // Show stage that has no result
         resultStages = [];          // Stages that actually have a value in at least one scenario
 
-    waterfall.omit0result = function (_) {
-            if (!arguments.length) { return colors; }
-            colors = _;
+    waterfall.show0Result = function (_) {
+            if (!arguments.length) { return show0Result; }
+        show0Result = _;
             return waterfall;
         };
 
@@ -78,14 +78,14 @@ angular.module('lcaApp.waterfall', [])
     }
 
     function setGraphicAttributes(seg, index) {
-        seg.x = xScale(Math.min(seg.startVal, seg.endVal));
+        seg.x = xScale(Math.min(seg .startVal, seg.endVal));
         seg.y = (segmentPadding + segmentHeight) * index;
         seg.width = Math.abs(xScale(seg.value) - xScale(0));
         seg.color = colorScale(seg.stage);
         seg.endX = xScale(seg.endVal);
     }
 
-    waterfall.layout = function () {
+    waterfall.layout = function (){
         var i = 0, j = 0, minVal = 0.0, maxVal = 0.0;
 
         xScale.range([0, width]).nice();

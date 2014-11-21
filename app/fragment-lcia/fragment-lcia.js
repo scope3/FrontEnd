@@ -2,20 +2,18 @@
 /* Controller for Fragment LCIA Diagram View */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
-                 'lcaApp.colorCode.service'])
+                 'lcaApp.colorCode.service', 'd3.set'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentFlowService',
          'LciaMethodService', 'LciaResultForFragmentService',
-         'ColorCodeService',
+         'ColorCodeService', 'SetService',
         function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
                   FragmentService, FragmentFlowService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService ) {
+                  ColorCodeService, SetService ) {
 
-            var deferredPromises = [],
-                fragmentID = $stateParams.fragmentID,
-                scenarioKeys = [],
+            var fragmentID = $stateParams.fragmentID,
                 stages = [],
                 waterfalls = {},
                 results = {};
@@ -35,12 +33,15 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
-            function extractStages(lciaScores) {
-                lciaScores.forEach( function(score) {
-                    var ff = FragmentFlowService.get(score.fragmentFlowID);
-                    if (ff) {
-                        stages[ff.fragmentFlowID]= ff["shortName"];
-                    }
+            /**
+             * Convert fragmentFlow to fragmentStage
+             * until that is available in web API.
+             */
+            function extractStages() {
+                SetService.forEach( function( idString) {
+                    var ffID = +idString,
+                        ff = FragmentFlowService.get(ffID);
+                    stages.push({fragmentStageID: ffID, name: ff.name});
                 });
             }
 
@@ -54,7 +55,10 @@ angular.module('lcaApp.fragment.LCIA',
                     colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
                     result = {};
                 lciaResult.lciaScore.forEach( function ( score) {
-                    result[score.fragmentFlowID] = score.cumulativeResult * scenario.activityLevel;
+                    if ("fragmentFlowID" in score) {
+                        SetService.add(score.fragmentFlowID);
+                        result[score.fragmentFlowID] = score.cumulativeResult * scenario.activityLevel;
+                    }
                 });
                 if (! (lciaResult.lciaMethodID in results)) {
                     results[lciaResult.lciaMethodID] = {};
@@ -68,14 +72,44 @@ angular.module('lcaApp.fragment.LCIA',
                 });
             }
 
+            /**
+             * Create data model for waterfall directive using waterfall service.
+             * Results are grouped by method. All scenarios for a method must be
+             * in the same waterfall instance because the extent of the value axis
+             * is determined by the full range of values across all scenarios.
+             */
             function buildWaterfalls() {
+                var scenarioKeys, stageKeys;
+
                 stopWaiting();
+                extractStages();
+                scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
+                stageKeys = extractKeys(stages);
+                $scope.methods.forEach( function (m) {
+                    var values = [];
+                    if (m.lciaMethodID in results) {
+                        var methodResults = results[m.lciaMethodID];
+                        for (var i = 0; i < scenarioKeys.length; ++i) {
+                            var stageValues = [];
+                            for (var j = 0; j < stageKeys.length; ++j) {
+                                if (i in methodResults && j in methodResults[i]) {
+                                    stageValues.push(methodResults[i][j]);
+                                } else {
+                                    stageValues.push(null);
+                                }
+                            }
+                            values.push(stageValues);
+                        }
+                    }
+                });
             }
 
             function getResults() {
+                var promises = [];
+
                 $scope.methods = LciaMethodService.getAll();
                 $scope.scenarios = ScenarioService.getAll();
-                scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
+
                 $scope.methods.forEach(function (method) {
                     $scope.scenarios.forEach( function (scenario){
                         var result = LciaResultForFragmentService
@@ -83,10 +117,10 @@ angular.module('lcaApp.fragment.LCIA',
                                 lciaMethodID: method.lciaMethodID,
                                 fragmentID: scenario.topLevelFragmentID },
                             extractResult);
-                        deferredPromises.push(result.$promise);
+                        promises.push(result.$promise);
                     });
                 });
-                $q.all(deferredPromises).then(buildWaterfalls, handleFailure);
+                $q.all(promises).then(buildWaterfalls, handleFailure);
             }
 
             /**
