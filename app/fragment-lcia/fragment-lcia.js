@@ -5,11 +5,20 @@ angular.module('lcaApp.fragment.LCIA',
                  'lcaApp.colorCode.service'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
-         'LciaMethodService',
+         'FragmentService', 'FragmentFlowService',
+         'LciaMethodService', 'LciaResultForFragmentService',
          'ColorCodeService',
         function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
-                  LciaMethodService,
-                  ColorCodeService) {
+                  FragmentService, FragmentFlowService,
+                  LciaMethodService, LciaResultForFragmentService,
+                  ColorCodeService ) {
+
+            var deferredPromises = [],
+                fragmentID = 8,
+                scenarioKeys = [],
+                stages = [],
+                waterfalls = {},
+                results = {};
 
             function startWaiting() {
                 $scope.alert = null;
@@ -26,38 +35,75 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.alert = { type: "danger", msg: errMsg };
             }
 
-            function getResults() {
-                stopWaiting();
-                $scope.methods = LciaMethodService.getAll();
-                $scope.scenarios = ScenarioService.getAll();
-//                if (methods.length > 0) {
-//                    $scope.firstMethod = $scope.methods[0];
-//                    $scope.otherMethods = $scope.methods.slice(1);
-//                }
+            function extractStages(lciaScores) {
+                lciaScores.forEach( function(score) {
+                    var ff = FragmentFlowService.get(score.fragmentFlowID);
+                    if (ff) {
+                        stages[ff.fragmentFlowID]= ff["shortName"];
+                    }
+                });
             }
 
             /**
-             * Function called after requests for resources have been fulfilled.
+             * Extract LCIA results
+             * @param {{ lciaMethodID : Number, lciaScore : Array }} lciaResult
              */
-            function handleSuccess() {
-                getResults();
+            function extractResult(lciaResult) {
+                var lciaMethod = LciaMethodService.get(lciaResult.lciaMethodID),
+                    scenario = ScenarioService.get(lciaResult.scenarioID),
+                    colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
+                    result = {};
+                lciaResult.lciaScore.forEach( function ( score) {
+                    result[score.fragmentFlowID] = score.cumulativeResult * scenario.activityLevel;
+                });
+                if (! (lciaResult.lciaMethodID in results)) {
+                    results[lciaResult.lciaMethodID] = {};
+                }
+                results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
+            }
+
+            function extractKeys(resources, keyName) {
+                return resources.map( function( r) {
+                    return r[keyName];
+                });
+            }
+
+            function buildWaterfalls() {
+                stopWaiting();
+            }
+
+            function getResults() {
+                $scope.methods = LciaMethodService.getAll();
+                $scope.scenarios = ScenarioService.getAll();
+                scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
+                $scope.methods.forEach(function (method) {
+                    $scope.scenarios.forEach( function (scenario){
+                        var result = LciaResultForFragmentService
+                            .get({ scenarioID: scenario.scenarioID,
+                                lciaMethodID: method.lciaMethodID,
+                                fragmentID: scenario.topLevelFragmentID },
+                            extractResult);
+                        deferredPromises.push(result.$promise);
+                    });
+                });
+                $q.all(deferredPromises).then(buildWaterfalls, handleFailure);
             }
 
             /**
              * Get all data resources
              */
             function getData() {
-                $q.all([ScenarioService.load(),
-                    LciaMethodService.load()])
-                    .then(handleSuccess,
+                $q.all([FragmentService.load(), ScenarioService.load(),
+                    LciaMethodService.load(),
+                    FragmentFlowService.load({scenarioID: 0, fragmentID: 8})
+                    ])
+                    .then(getResults,
                     handleFailure);
             }
 
-
-
             $scope.scenarios = [];
-            $scope.firstResult = null;
-            $scope.otherResults = [];
+            $scope.methods = [];
+            $scope.waterfalls = {};
             startWaiting();
             getData();
 

@@ -18,6 +18,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "nodeType" : "components/resources/nodetypes.json",
                 "lciaMethod" : API_ROOT + "lciamethods",
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
+                "lciaResultForFragment" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/lciamethods/:lciaMethodID/lciaresults",
                 "lciaResultForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciamethods/:lciaMethodID/lciaresults",
                 "process" : API_ROOT + "processes",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
@@ -223,12 +224,25 @@ angular.module('lcaApp.resources.service')
 
 /**
  * LCIA results for multiple methods are queried simultaneously.
- * Also, the query returns only one object.
+ * Also, the query returns only one object, so no need to use IdMapService
  */
 angular.module('lcaApp.resources.service')
     .factory('LciaResultForProcessService', ['ResourceService',
         function(ResourceService){
             var resource = ResourceService.getResource("lciaResultForProcess"),
+                resultSvc = {};
+
+            resultSvc.get = function(filter, callback) {
+                return resource.get(filter, callback);
+            };
+
+            return resultSvc;
+        }
+    ]);
+angular.module('lcaApp.resources.service')
+    .factory('LciaResultForFragmentService', ['ResourceService',
+        function(ResourceService){
+            var resource = ResourceService.getResource("lciaResultForFragment"),
                 resultSvc = {};
 
             resultSvc.get = function(filter, callback) {
