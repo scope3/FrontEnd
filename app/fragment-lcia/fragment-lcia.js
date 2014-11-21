@@ -14,7 +14,7 @@ angular.module('lcaApp.fragment.LCIA',
                   ColorCodeService ) {
 
             var deferredPromises = [],
-                fragmentID = 8,
+                fragmentID = $stateParams.fragmentID,
                 scenarioKeys = [],
                 stages = [],
                 waterfalls = {},
@@ -95,7 +95,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getData() {
                 $q.all([FragmentService.load(), ScenarioService.load(),
                     LciaMethodService.load(),
-                    FragmentFlowService.load({scenarioID: 0, fragmentID: 8})
+                    FragmentFlowService.load({scenarioID: 0, fragmentID: fragmentID}) // Poor substitute for fragment stages
                     ])
                     .then(getResults,
                     handleFailure);
