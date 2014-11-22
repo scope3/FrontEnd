@@ -2,7 +2,7 @@
  * Angular service for waterfall charts.
  * Calculates size and position of chart components.
  */
-angular.module('lcaApp.waterfall', [])
+angular.module('lcaApp.waterfall.service', [])
     .factory('WaterfallService', [ function() {
     /*global d3 */
     var waterfall = {},
@@ -70,8 +70,8 @@ angular.module('lcaApp.waterfall', [])
     };
 
     function hasResult(stage) {
-        return waterfall.segments.some(function (scen) {
-            return scen.some(function (s) {
+        return waterfall.segments.some(function (scenario) {
+            return scenario.some(function (s) {
                 return s.stage === stage;
             });
         });
@@ -86,7 +86,7 @@ angular.module('lcaApp.waterfall', [])
     }
 
     waterfall.layout = function (){
-        var i = 0, j = 0, minVal = 0.0, maxVal = 0.0;
+        var i, j = 0, minVal = 0.0, maxVal = 0.0;
 
         xScale.range([0, width]).nice();
         colorScale.range(colors);
