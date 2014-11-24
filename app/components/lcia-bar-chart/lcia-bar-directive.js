@@ -1,8 +1,8 @@
 /**
  * Directive for reusable LCIA bar chart
  */
-angular.module('lcaApp.lciaBar.directive', [])
-    .directive('lciaBarChart', [function( ) {
+angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
+    .directive('lciaBarChart', ['FormatService', function( FormatService ) {
 
         function link(scope, element, attrs) {
 
@@ -22,7 +22,8 @@ angular.module('lcaApp.lciaBar.directive', [])
                 legendRowHeight = 20,
                 colorScale = d3.scale.ordinal(),
                 xScale = d3.scale.linear().rangeRound([0, width]),
-                labelFormat = d3.format("^.2g"),    // Format numbers with precision 2
+                labelFormat = FormatService.format("^.2g"),// Format numbers with precision 2, centered
+                legendFormat = FormatService.format(),    // Format numbers with precision 4
                 xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")
@@ -235,7 +236,8 @@ angular.module('lcaApp.lciaBar.directive', [])
                     });
                 legend.selectAll(".lcia-result")
                     .text(function (d) {
-                        return d.result.toPrecision(4);
+                        //return d.result.toPrecision(4);
+                        return legendFormat(d.result);
                     });
             }
 

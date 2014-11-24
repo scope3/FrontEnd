@@ -6,7 +6,7 @@
             <dt>Scenario</dt>
             <dd>{{scenario.name}}</dd>
             <dt>Activity Level</dt>
-            <dd>{{activityLevel}}</dd>
+            <dd>{{activityLevel | numFormat}}</dd>
             <dt>Process</dt>
             <dd>{{process.name}}</dd>
         </dl>
@@ -20,7 +20,7 @@
                     <div class="panel-body">
                         <dl class="dl-horizontal">
                             <dt style="font-weight: normal">Cumulative Result:</dt>
-                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | number}} {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
+                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}} {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
                             <dd>{{method.referenceFlowProperty.name}}</dd>
                         </dl>
                         <div class="lcia-bar-container">
@@ -45,7 +45,7 @@
                 <tbody>
                 <tr ng-repeat="if in inputFlows">
                     <td>{{if.name}}</td>
-                    <td>{{if.magnitude | number}}</td>
+                    <td>{{if.magnitude | numFormat}}</td>
                     <td>{{if.unit}}</td>
                 </tr>
                 </tbody>
@@ -62,7 +62,7 @@
                 <tbody>
                 <tr ng-repeat="of in outputFlows">
                     <td>{{of.name}}</td>
-                    <td>{{of.magnitude | number}}</td>
+                    <td>{{of.magnitude | numFormat}}</td>
                     <td>{{of.unit}}</td>
                 </tr>
                 </tbody>

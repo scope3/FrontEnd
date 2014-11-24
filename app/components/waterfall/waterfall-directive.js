@@ -1,8 +1,8 @@
 /**
  * Directive for reusable waterfall chart
  */
-angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall'])
-    .directive('waterfallChart', ['WaterfallService', function( WaterfallService) {
+angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
+    .directive('waterfallChart', ['WaterfallService', 'FormatService', function( WaterfallService, FormatService) {
 
         function link(scope, element, attrs) {
             var margin = {
@@ -20,7 +20,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall'])
                 textPadding = 6,
                 legendRowHeight = 20,
                 xScale = d3.scale.linear().rangeRound([0, width]),
-                labelFormat = d3.format("^.2g"),    // Format numbers with precision 2
+                labelFormat = FormatService.format("^.2g"),// Format numbers with precision 2, centered
                 xAxis = d3.svg.axis()
                     .scale(xScale)
                     .orient("bottom")

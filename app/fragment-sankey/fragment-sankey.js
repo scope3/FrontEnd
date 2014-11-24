@@ -2,20 +2,21 @@
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'angularSpinner',
-                 'ui.bootstrap.alert'])
+                 'ui.bootstrap.alert', 'lcaApp.format'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'NodeTypeService',
+        'FlowPropertyForFragmentService', 'NodeTypeService', 'FormatService',
         function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  NodeTypeService) {
+                  NodeTypeService, FormatService) {
             var fragmentID = $stateParams.fragmentID,
                 scenarioID = $stateParams.scenarioID,
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
-                baseValue = 1E-14;  // sankey link base value (replaces 0).
+                baseValue = 1E-14,  // sankey link base value (replaces 0).
+                magFormat = FormatService.format();
 
 
             /**
@@ -125,7 +126,7 @@ angular.module('lcaApp.fragment.sankey',
                     };
                     if (magnitude) {
                         link.magnitude = magnitude;
-                        link.toolTip = flow.name + " : " + magnitude.toPrecision(3) + " " + unit;
+                        link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                     } else {
                         link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
                     }
@@ -303,7 +304,8 @@ angular.module('lcaApp.fragment.sankey',
                         case 1 :
                             $state.go("scenarios.process", { scenarioID : scenarioID,
                                                              processID : fragmentFlow.processID,
-                                                             activity : $scope.fragment.activityLevel }
+                                                             activity : $scope.fragment.activityLevel *
+                                                                        fragmentFlow.nodeWeight }
                             );
                             break;
                         case 2 :

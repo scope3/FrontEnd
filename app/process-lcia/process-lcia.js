@@ -2,7 +2,7 @@
 /* Controller for Process LCIA Diagram View */
 angular.module('lcaApp.process.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
-                 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service'])
+                 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format'])
     .controller('ProcessLciaCtrl',
         ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',

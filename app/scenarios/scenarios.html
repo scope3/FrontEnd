@@ -7,7 +7,7 @@
     <tbody>
     <tr ng-repeat="scenario in scenarios">
         <td>{{scenario.name}}</td>
-        <td>{{scenario.activityLevel}}</td>
+        <td>{{scenario.activityLevel | numFormat}}</td>
         <td><a ui-sref=".fragment({scenarioID: scenario.scenarioID,
         fragmentID: scenario.topLevelFragmentID})">{{scenario.fragment.name}}</a></td>
     </tr>

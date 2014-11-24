@@ -14,7 +14,7 @@
     </dd>
 
     <dt>Activity Level</dt>
-    <dd>{{fragment.activityLevel}}</dd>
+    <dd>{{fragment.activityLevel | numFormat }} </dd>
         <dt>Flow Property Type </dt>
     <dd>
         <select id="flow-prop-select" ng-model="selectedFlowProperty" ng-options="fp.name for fp in flowProperties"
@@ -47,7 +47,7 @@
                 <tbody>
                 <tr ng-repeat="if in inputFlows">
                     <td>{{if.name}}</td>
-                    <td>{{if.magnitude | number}}</td>
+                    <td>{{if.magnitude | numFormat}}</td>
                     <td>{{if.unit}}</td>
                 </tr>
                 </tbody>
@@ -64,7 +64,7 @@
                 <tbody>
                 <tr ng-repeat="of in outputFlows">
                     <td>{{of.name}}</td>
-                    <td>{{of.magnitude | number}}</td>
+                    <td>{{of.magnitude | numFormat}}</td>
                     <td>{{of.unit}}</td>
                 </tr>
                 </tbody>
