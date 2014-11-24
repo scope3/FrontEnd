@@ -2,16 +2,16 @@
 /* Controller for Fragment LCIA Diagram View */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
-                 'lcaApp.colorCode.service', 'd3.set'])
+                 'lcaApp.colorCode.service'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
-         'FragmentService', 'FragmentFlowService',
+         'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
-         'ColorCodeService', 'SetService',
+         'ColorCodeService',
         function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
-                  FragmentService, FragmentFlowService,
+                  FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService, SetService ) {
+                  ColorCodeService ) {
 
             var fragmentID = $stateParams.fragmentID,
                 stages = [],
@@ -34,18 +34,6 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             /**
-             * Convert fragmentFlow to fragmentStage
-             * until that is available in web API.
-             */
-            function extractStages() {
-                SetService.forEach( function( idString) {
-                    var ffID = +idString,
-                        ff = FragmentFlowService.get(ffID);
-                    stages.push({fragmentStageID: ffID, name: ff.name});
-                });
-            }
-
-            /**
              * Extract LCIA results
              * @param {{ lciaMethodID : Number, lciaScore : Array }} lciaResult
              */
@@ -54,11 +42,12 @@ angular.module('lcaApp.fragment.LCIA',
                     scenario = ScenarioService.get(lciaResult.scenarioID),
                     colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
                     result = {};
-                lciaResult.lciaScore.forEach( function ( score) {
-                    if ("fragmentFlowID" in score) {
-                        SetService.add(score.fragmentFlowID);
-                        result[score.fragmentFlowID] = score.cumulativeResult * scenario.activityLevel;
-                    }
+                lciaResult.lciaScore.forEach(
+                    /**
+                     * @param score {{ fragmentStageID : Number,  cumulativeResult : Number }}
+                     */
+                    function ( score) {
+                    result[score.fragmentStageID] = score.cumulativeResult * scenario.activityLevel;
                 });
                 if (! (lciaResult.lciaMethodID in results)) {
                     results[lciaResult.lciaMethodID] = {};
@@ -82,7 +71,6 @@ angular.module('lcaApp.fragment.LCIA',
                 var scenarioKeys, stageKeys;
 
                 stopWaiting();
-                extractStages();
                 scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
                 stageKeys = extractKeys(stages);
                 $scope.methods.forEach( function (m) {
@@ -109,6 +97,7 @@ angular.module('lcaApp.fragment.LCIA',
 
                 $scope.methods = LciaMethodService.getAll();
                 $scope.scenarios = ScenarioService.getAll();
+                stages = FragmentStageService.getAll();
 
                 $scope.methods.forEach(function (method) {
                     $scope.scenarios.forEach( function (scenario){
@@ -129,7 +118,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getData() {
                 $q.all([FragmentService.load(), ScenarioService.load(),
                     LciaMethodService.load(),
-                    FragmentFlowService.load({scenarioID: 0, fragmentID: fragmentID}) // Poor substitute for fragment stages
+                    FragmentStageService.load({fragmentID: fragmentID})
                     ])
                     .then(getResults,
                     handleFailure);

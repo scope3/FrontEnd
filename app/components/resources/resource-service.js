@@ -12,6 +12,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
                 "fragment" : API_ROOT + "fragments/:fragmentID",
                 "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
+                "fragmentStage" : API_ROOT + "fragments/:fragmentID/fragmentstages",
                 "flowPropertyForFragment" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "flowPropertyForProcess" : API_ROOT + "processes/:processID/flowproperties",
                 "impactCategory" : API_ROOT + "impactcategories",
@@ -176,6 +177,12 @@ angular.module('lcaApp.resources.service')
     .factory('FragmentFlowService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FragmentFlowService', "fragmentFlow", "fragmentFlowID");
+        }
+    ]);
+angular.module('lcaApp.resources.service')
+    .factory('FragmentStageService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('FragmentStageService', "fragmentStage", "fragmentStageID");
         }
     ]);
 
