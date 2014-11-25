@@ -60,4 +60,13 @@ describe('Unit test waterfall module', function() {
         expect($rootScope.waterfallService.segments[1][2]["endVal"])
             .toEqual($rootScope.waterfallService.values()[1].reduce(addValues));
     });
+
+    it('should be able to compile and digest the directive', function() {
+        addData();
+        // Compile a piece of HTML containing the directive
+        var element = $compile("<waterfall-chart service=\"waterfallService\" index=\"0\" color=\"blue\"></waterfall-chart>")($rootScope);
+        // fire all the watches, so the scope expression {{1 + 1}} will be evaluated
+        element.scope().$digest();
+
+    });
 });

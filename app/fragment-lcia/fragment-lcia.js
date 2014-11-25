@@ -2,16 +2,16 @@
 /* Controller for Fragment LCIA Diagram View */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
-                 'lcaApp.colorCode.service'])
+                 'lcaApp.colorCode.service', 'lcaApp.waterfall'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
-         'ColorCodeService',
+         'ColorCodeService', 'WaterfallService',
         function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
                   FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService ) {
+                  ColorCodeService, WaterfallService ) {
 
             var fragmentID = $stateParams.fragmentID,
                 stages = [],
@@ -68,7 +68,7 @@ angular.module('lcaApp.fragment.LCIA',
              * is determined by the full range of values across all scenarios.
              */
             function buildWaterfalls() {
-                var scenarioKeys, stageKeys;
+                var scenarioKeys, stageKeys, wf;
 
                 stopWaiting();
                 scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
@@ -88,7 +88,13 @@ angular.module('lcaApp.fragment.LCIA',
                             }
                             values.push(stageValues);
                         }
+                        wf = new WaterfallService.scenarios(scenarioKeys)
+                            .stages(stages)
+                            .values(values);
+                        wf.layout();
+                        $scope.waterfalls[m.lciaMethodID] = wf;
                     }
+
                 });
             }
 
@@ -100,6 +106,8 @@ angular.module('lcaApp.fragment.LCIA',
                 stages = FragmentStageService.getAll();
 
                 $scope.methods.forEach(function (method) {
+                    var colors = ColorCodeService.getImpactCategoryColors(method["impactCategoryID"]);
+                    $scope.colors[method.lciaMethodID] = colors[3][0];  // One color per method
                     $scope.scenarios.forEach( function (scenario){
                         var result = LciaResultForFragmentService
                             .get({ scenarioID: scenario.scenarioID,
@@ -126,6 +134,7 @@ angular.module('lcaApp.fragment.LCIA',
 
             $scope.scenarios = [];
             $scope.methods = [];
+            $scope.colors = {};
             $scope.waterfalls = {};
             startWaiting();
             getData();

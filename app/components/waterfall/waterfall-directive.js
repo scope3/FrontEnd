@@ -43,7 +43,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             }
 
-            prepareSvg();
+            scope.$watch('service', function (newVal){
+                if (newVal) {
+                    prepareSvg();
+                }
+            });
         }
 
         return {
