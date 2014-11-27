@@ -15,7 +15,6 @@ angular.module('lcaApp.fragment.LCIA',
 
             var fragmentID = $stateParams.fragmentID,
                 stages = [],
-                waterfalls = {},
                 results = {};
 
             function startWaiting() {
@@ -34,20 +33,18 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             /**
-             * Extract LCIA results
+             * Get LCIA results for a scenario and method.
+             * Multiply cumulativeResult by scenario's activity level.
+             * Store in local cache indexed by (methodID, scenarioID, fragmentStageID).
              * @param {{ lciaMethodID : Number, lciaScore : Array }} lciaResult
              */
             function extractResult(lciaResult) {
-                var lciaMethod = LciaMethodService.get(lciaResult.lciaMethodID),
-                    scenario = ScenarioService.get(lciaResult.scenarioID),
-                    colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
+                var scenario = ScenarioService.get(lciaResult.scenarioID),
                     result = {};
                 lciaResult.lciaScore.forEach(
-                    /**
-                     * @param score {{ fragmentStageID : Number,  cumulativeResult : Number }}
-                     */
+                    /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
                     function ( score) {
-                    result[score.fragmentStageID] = score.cumulativeResult * scenario.activityLevel;
+                        result[score["fragmentStageID"]] = score.cumulativeResult * scenario.activityLevel;
                 });
                 if (! (lciaResult.lciaMethodID in results)) {
                     results[lciaResult.lciaMethodID] = {};
@@ -68,36 +65,42 @@ angular.module('lcaApp.fragment.LCIA',
              * is determined by the full range of values across all scenarios.
              */
             function buildWaterfalls() {
-                var scenarioKeys, stageKeys, wf;
-
                 stopWaiting();
-                scenarioKeys = extractKeys($scope.scenarios, "scenarioID");
-                stageKeys = extractKeys(stages);
                 $scope.methods.forEach( function (m) {
-                    var values = [];
+                    var wf;
                     if (m.lciaMethodID in results) {
-                        var methodResults = results[m.lciaMethodID];
-                        for (var i = 0; i < scenarioKeys.length; ++i) {
+                        var values = [], methodResults = results[m.lciaMethodID];
+                        $scope.scenarios.forEach( function (scenario) {
                             var stageValues = [];
-                            for (var j = 0; j < stageKeys.length; ++j) {
-                                if (i in methodResults && j in methodResults[i]) {
-                                    stageValues.push(methodResults[i][j]);
-                                } else {
-                                    stageValues.push(null);
-                                }
-                            }
-                            values.push(stageValues);
-                        }
-                        wf = new WaterfallService.scenarios(scenarioKeys)
+                            stages.forEach(
+                                /* @param stage {{ fragmentStageID : Number, name : String }} */
+                                function (stage) {
+                                    var stageID = stage["fragmentStageID"];
+                                    if (scenario.scenarioID in methodResults &&
+                                        stageID in methodResults[scenario.scenarioID]) {
+                                        stageValues.push(methodResults[scenario.scenarioID][stageID]);
+                                    } else {
+                                        stageValues.push(null);
+                                    }
+                            });
+                            values.push(stageValues.slice(0));
+                        });
+                        wf = new WaterfallService.scenarios($scope.scenarios)
                             .stages(stages)
-                            .values(values);
+                            .values(values.slice(0));
                         wf.layout();
                         $scope.waterfalls[m.lciaMethodID] = wf;
+                    } else {
+                        $scope.waterfalls[m.lciaMethodID] = null;
                     }
-
                 });
             }
 
+            /**
+             * Collect methods, scenarios, and stages.
+             * For each scenario and method combination, request LCIA results.
+             * When all results are in, build waterfalls.
+             */
             function getResults() {
                 var promises = [];
 

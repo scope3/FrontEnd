@@ -1,13 +1,13 @@
 <div class="row">
-    <div ng-repeat="method in methods" class="col-lg-6">
-        <div class="panel panel-default" style="height:1000px">
+    <div ng-repeat="method in methods" class="col-md-6">
+        <div class="panel panel-default">
             <div class="panel-heading">{{method.name}}
             </div>
             <div class="panel-body">
                 <div ng-repeat="scenario in scenarios" class="row">
                     <h6 class="text-center">{{scenario.name}}</h6>
                     <div class="lcia-bar-container">
-                        <waterfall-chart waterfall="waterfalls[method.lciaMethodID]" index="$index" color="colors[method.lciaMethodID]"></waterfall-chart>
+                        <waterfall-chart service="waterfalls[method.lciaMethodID]" index="$index" color="colors[method.lciaMethodID]"></waterfall-chart>
                     </div>
                 </div>
             </div>

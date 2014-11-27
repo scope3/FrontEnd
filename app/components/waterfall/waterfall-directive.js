@@ -28,7 +28,6 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     .tickFormat(labelFormat),
                 svg = null;
 
-
             /**
              * Initial preparation of svg element.
              */
@@ -39,13 +38,85 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
                 svg.append("g")
                     .attr("class", "chart-group")
-                    .append("g")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
             }
 
+            function drawWaterfall() {
+                var waterfall = scope.service,  // Waterfall service
+                    padding = 10,
+                    chartGroup, barGroup,
+                    chartID = "scenario" + scope.index,
+                    scenarioSegments = waterfall.segments[scope.index],
+                    transitionTime = 0,
+                    chartHeight = 0,
+                    minVal = 0.0, maxVal = 0.0;
+
+                chartGroup = svg.select(".chart-group");
+                if (scenarioSegments.length > 0) {
+                    chartHeight = scenarioSegments[scenarioSegments.length - 1].y
+                        + waterfall.segmentHeight() + waterfall.segmentPadding();
+                    // Draw bars
+                    barGroup = chartGroup.selectAll(".bar.g")
+                        .data(scenarioSegments);
+                    barGroup.enter().append("g")
+                        .attr("class", "bar g");
+                    barGroup.exit().remove();
+                    barGroup.append("rect")
+                        .attr("class", "bar rect")
+                        .attr("height", waterfall.segmentHeight())
+                        .attr("x", function (d) {
+                            return d.x;
+                        })
+                        .attr("y", function (d) {
+                            return d.y;
+                        })
+                        .attr("width", function (d) {
+                            return d.width;
+                        })
+                        .style("fill", scope.color);
+                    // Label bars
+                    barGroup.append("text")
+                        .attr("class", "bar text")
+                        .attr("x", function (d) {
+                            return (d.width < 50) ?
+                                d.x + d.width + 5 :
+                                d.x + d.width / 2 - 5;
+                        })
+                        .attr("y", function (d) {
+                            return d.y + (waterfall.segmentHeight() / 2);
+                        })
+                        .attr("dy", ".71em")
+                        .text(function (d) {
+                            return labelFormat(d.value);
+                        });
+                    // Connect bars
+                    barGroup.append("line")
+                        .attr("class", "bar line")
+                        .attr("x1", function (d) {
+                            return d.endX;
+                        })
+                        .attr("y1", function (d) {
+                            return d.y + waterfall.segmentHeight();
+                        })
+                        .attr("x2", function (d) {
+                            return d.endX;
+                        })
+                        .attr("y2", function (d) {
+                            return d.y + waterfall.segmentHeight() + waterfall.segmentPadding();
+                        })
+                        .style("stroke", function (d) {
+                            return d.color;
+                        });
+                    return margin.top + chartHeight + margin.bottom;
+                }
+                return 0;
+            }
+
+            prepareSvg();
             scope.$watch('service', function (newVal){
                 if (newVal) {
-                    prepareSvg();
+                    var svgHeight = drawWaterfall();
+                    svg.attr("height",svgHeight);
                 }
             });
         }

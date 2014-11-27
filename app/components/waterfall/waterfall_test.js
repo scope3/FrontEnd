@@ -63,6 +63,7 @@ describe('Unit test waterfall module', function() {
 
     it('should be able to compile and digest the directive', function() {
         addData();
+        $rootScope.waterfallService.layout();
         // Compile a piece of HTML containing the directive
         var element = $compile("<waterfall-chart service=\"waterfallService\" index=\"0\" color=\"blue\"></waterfall-chart>")($rootScope);
         // fire all the watches, so the scope expression {{1 + 1}} will be evaluated
