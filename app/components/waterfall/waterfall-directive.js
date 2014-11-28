@@ -7,51 +7,74 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
         function link(scope, element, attrs) {
             var margin = {
                     top: 10,
-                    right: 10,
-                    bottom: 10,
+                    right: 50,
+                    bottom: 20,
                     left: 10
                 },
                 parentElement = element[0],
                 yAxisWidth = 250,
-                width = parentElement.clientWidth - margin.left - margin.right,   // diagram width
-                height = parentElement.clientHeight - margin.top - margin.bottom,
-                xScale = d3.scale.linear().rangeRound([0, width]),
-                labelFormat = FormatService.format("^.2g"),// Format numbers with precision 2, centered
-                xAxis = d3.svg.axis()
-                    .scale(xScale)
-                    .orient("bottom")
-                    .ticks(4)
-                    .tickFormat(labelFormat),
-                svg = null;
+                labelFormat = FormatService.format("^.2r"),// Format numbers with precision 2, centered
+                svg = null,
+                waterfall = null,   // Current waterfall instance
+                segments,           // Waterfall segments for current scenario
+                chartHeight = 0;    // Height of chart without margins and axis
 
             /**
              * Initial preparation of svg element.
              */
-            function prepareSvg() {
-                svg = d3.select(parentElement).append("svg")
-                    .attr("width", width + margin.left + margin.right)
-                    .attr("height", height + margin.top + margin.bottom);
+            function createSvg() {
+                svg = d3.select(parentElement).append("svg");
 
                 svg.append("g")
                     .attr("class", "chart-group")
                     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+                svg.append("g")
+                    .attr("class", "x axis")
+                    .attr("transform", "translate(0," + chartHeight + ")");
+            }
+
+            function setSvgSize() {
+                svg.attr("width", waterfall.width() + margin.left + margin.right);
+                svg.attr("height", chartHeight + margin.top + margin.bottom);
+            }
+
+            function drawXAxis() {
+                svg.select(".x.axis").remove();
+                if ( chartHeight > 0 ) {
+                    var xAxis = d3.svg.axis()
+                            .scale(waterfall.xScale)
+                            .orient("bottom")
+                            .ticks(4)
+                            .tickFormat(labelFormat),
+                        minVal = d3.min(segments, function (d) {
+                            return d.endVal;
+                        }),
+                        maxVal = d3.max(segments, function (d) {
+                            return d.endVal;
+                        });
+
+                    if (minVal > 0) {
+                        minVal = 0;
+                    }
+                    xAxis.tickValues([minVal, maxVal]);
+                    svg.select(".chart-group")
+                        .append("g")
+                        .attr("class", "x axis")
+                        .attr("transform", "translate(0," + chartHeight + ")")
+                        .call(xAxis);
+                }
             }
 
             function drawWaterfall() {
-                var waterfall = scope.service,  // Waterfall service
-                    chartGroup, barGroup,
-                    scenarioSegments = waterfall.segments[scope.index],
-                    chartHeight = 0,
+                var chartGroup, barGroup,
                     minVal = 0.0, maxVal = 0.0,
                     lineColor = d3.rgb(scope.color).darker(2);
 
                 chartGroup = svg.select(".chart-group");
-                if (scenarioSegments.length > 0) {
-                    chartHeight = scenarioSegments[scenarioSegments.length - 1].y
-                        + waterfall.segmentHeight() + waterfall.segmentPadding();
+                if (segments.length > 0) {
                     // Draw bars
                     barGroup = chartGroup.selectAll(".bar.g")
-                        .data(scenarioSegments);
+                        .data(segments);
                     barGroup.enter().append("g")
                         .attr("class", "bar g");
                     barGroup.exit().remove();
@@ -103,16 +126,19 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                             return d.y + waterfall.segmentHeight() + waterfall.segmentPadding();
                         })
                         .style("stroke", lineColor);
-                    return margin.top + chartHeight + margin.bottom;
                 }
-                return 0;
             }
 
-            prepareSvg();
+            createSvg();
             scope.$watch('service', function (newVal){
                 if (newVal) {
-                    var svgHeight = drawWaterfall();
-                    svg.attr("height",svgHeight);
+                    waterfall = newVal;
+                    segments = waterfall.segments[scope.index];
+                    chartHeight = segments[segments.length - 1].y
+                        + waterfall.segmentHeight() + waterfall.segmentPadding();
+                    setSvgSize();
+                    drawWaterfall();
+                    drawXAxis();
                 }
             });
         }

@@ -82,7 +82,8 @@ angular.module('lcaApp.fragment.LCIA',
                         wf = new WaterfallService.createInstance();
                         wf.scenarios($scope.scenarios)
                             .stages(stages)
-                            .values(values.slice(0));
+                            .values(values.slice(0))
+                            .width(350);
                         wf.layout();
                         $scope.waterfalls[m.lciaMethodID] = wf;
                     } else {
