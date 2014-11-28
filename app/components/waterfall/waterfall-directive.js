@@ -15,10 +15,6 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 yAxisWidth = 250,
                 width = parentElement.clientWidth - margin.left - margin.right,   // diagram width
                 height = parentElement.clientHeight - margin.top - margin.bottom,
-                barY = 10,      // y position of bar
-                barHeight = 30,
-                textPadding = 6,
-                legendRowHeight = 20,
                 xScale = d3.scale.linear().rangeRound([0, width]),
                 labelFormat = FormatService.format("^.2g"),// Format numbers with precision 2, centered
                 xAxis = d3.svg.axis()
@@ -43,13 +39,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function drawWaterfall() {
                 var waterfall = scope.service,  // Waterfall service
-                    padding = 10,
                     chartGroup, barGroup,
-                    chartID = "scenario" + scope.index,
                     scenarioSegments = waterfall.segments[scope.index],
-                    transitionTime = 0,
                     chartHeight = 0,
-                    minVal = 0.0, maxVal = 0.0;
+                    minVal = 0.0, maxVal = 0.0,
+                    lineColor = d3.rgb(scope.color).darker(2);
 
                 chartGroup = svg.select(".chart-group");
                 if (scenarioSegments.length > 0) {
@@ -71,21 +65,25 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                             return d.y;
                         })
                         .attr("width", function (d) {
-                            return d.width;
+                            return d.width > 0 ? d.width : 0.1;
                         })
-                        .style("fill", scope.color);
+                        .style("fill", scope.color)
+                        .style("stroke", lineColor);
                     // Label bars
                     barGroup.append("text")
                         .attr("class", "bar text")
                         .attr("x", function (d) {
                             return (d.width < 50) ?
                                 d.x + d.width + 5 :
-                                d.x + d.width / 2 - 5;
+                                d.x + d.width / 2;
+                        })
+                        .style("text-anchor",  function (d) {
+                            return (d.width < 50) ? "start" : "middle";
                         })
                         .attr("y", function (d) {
                             return d.y + (waterfall.segmentHeight() / 2);
                         })
-                        .attr("dy", ".71em")
+                        .attr("dy", ".5em")
                         .text(function (d) {
                             return labelFormat(d.value);
                         });
@@ -104,9 +102,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         .attr("y2", function (d) {
                             return d.y + waterfall.segmentHeight() + waterfall.segmentPadding();
                         })
-                        .style("stroke", function (d) {
-                            return d.color;
-                        });
+                        .style("stroke", lineColor);
                     return margin.top + chartHeight + margin.bottom;
                 }
                 return 0;
