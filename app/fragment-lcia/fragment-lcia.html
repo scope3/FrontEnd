@@ -5,9 +5,9 @@
             </div>
             <div class="panel-body">
                 <div ng-repeat="scenario in scenarios" class="row">
-                    <h6 class="text-center">{{scenario.name}}</h6>
                     <div class="lcia-bar-container">
-                        <waterfall-chart service="waterfalls[method.lciaMethodID]" index="$index" color="colors[method.lciaMethodID]"></waterfall-chart>
+                        <waterfall-chart service="waterfalls[method.lciaMethodID]" index="$index"
+                                         color="colors[method.lciaMethodID]" title="scenario.name"></waterfall-chart>
                     </div>
                 </div>
             </div>
