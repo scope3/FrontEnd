@@ -2,7 +2,7 @@
  * Directive for reusable waterfall chart
  */
 angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
-    .directive('waterfallChart', ['WaterfallService', 'FormatService', function( WaterfallService, FormatService) {
+    .directive('waterfallChart', ['WaterfallService', 'FormatService', function (WaterfallService, FormatService) {
 
         function link(scope, element, attrs) {
             var margin = {
@@ -17,7 +17,8 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 svg = null,
                 waterfall = null,   // Current waterfall instance
                 segments,           // Waterfall segments for current scenario
-                titleHeight = 0;              // Chart title
+                titleHeight = 0,    // Space for optional title
+                unitHeight = 0;     // Space for optional unit
 
             /**
              * Initial preparation of svg element.
@@ -28,7 +29,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function prepareSvg() {
                 svg.attr("width", waterfall.width() + yAxisWidth + margin.left + margin.right);
-                svg.attr("height", waterfall.chartHeight + titleHeight + margin.top + margin.bottom);
+                svg.attr("height", waterfall.chartHeight + titleHeight + margin.top + margin.bottom + unitHeight);
                 svg.append("g")
                     .attr("class", "chart-group")
                     .attr("transform", "translate(" + (margin.left + yAxisWidth) + "," + (titleHeight + margin.top) + ")");
@@ -42,21 +43,19 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         .attr("class", "chart-title")
                         .attr("transform", "translate(" + (margin.left + yAxisWidth) + "," + (titleHeight + margin.top) + ")")
                         .append("text")
-                       .attr("x", width / 2)
-                       .attr("y", 0)
-                       .style("text-anchor", "middle")
-                       .text(scope.title);
+                        .attr("x", width / 2)
+                        .attr("y", 0)
+                        .style("text-anchor", "middle")
+                        .text(scope.title);
                 }
             }
 
             function drawXAxis() {
                 svg.select(".x.axis").remove();
-                if ( waterfall.chartHeight > 0 ) {
+                if (waterfall.chartHeight > 0) {
                     var xAxis = d3.svg.axis()
                             .scale(waterfall.xScale)
-                            .orient("bottom")
-                            .ticks(4)
-                            .tickFormat(labelFormat),
+                            .orient("bottom"),
                         minVal = d3.min(segments, function (d) {
                             return d.endVal;
                         }),
@@ -67,17 +66,26 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     if (minVal > 0) {
                         minVal = 0;
                     }
-                    xAxis.tickValues([minVal, maxVal]);
+                    xAxis.tickValues([minVal, maxVal])
+                        .tickFormat(function (d) {
+                            if (d === maxVal && scope.unit) {
+                                return labelFormat(d) + " " + scope.unit;
+                            }
+                            else {
+                                return labelFormat(d)
+                            }
+                        });
                     svg.select(".chart-group")
                         .append("g")
                         .attr("class", "x axis")
                         .attr("transform", "translate(0," + waterfall.chartHeight + ")")
                         .call(xAxis);
+
                 }
             }
 
             function wrap(text, width) {
-                text.each(function() {
+                text.each(function () {
                     var text = d3.select(this),
                         words = text.text().split(/\s+/).reverse(),
                         word,
@@ -100,8 +108,8 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         }
                     }
                     if (lineNumber > 0) {
-                        text.selectAll("tspan").attr("dy", function(d, i) {
-                            return i * lineHeight - dy +  "em";
+                        text.selectAll("tspan").attr("dy", function (d, i) {
+                            return i * lineHeight - dy + "em";
                         });
                     }
                 });
@@ -109,11 +117,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function drawYAxis() {
                 svg.select(".y.axis").remove();
-                if ( waterfall.chartHeight > 0 ) {
+                if (waterfall.chartHeight > 0) {
                     var yAxis = d3.svg.axis()
-                            .scale(waterfall.yScale)
-                            .orient("left")
-                            .tickSize(0);
+                        .scale(waterfall.yScale)
+                        .orient("left")
+                        .tickSize(0);
 
                     svg.select(".chart-group")
                         .append("g")
@@ -158,7 +166,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                                 d.x + d.width + 5 :
                                 d.x + d.width / 2;
                         })
-                        .style("text-anchor",  function (d) {
+                        .style("text-anchor", function (d) {
                             return (d.width < 50) ? "start" : "middle";
                         })
                         .attr("y", function (d) {
@@ -198,7 +206,12 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     titleHeight = 20;
                 }
             });
-            scope.$watch('service', function (newVal){
+            scope.$watch("unit", function (newVal) {
+                if (newVal) {
+                    unitHeight = 20;
+                }
+            });
+            scope.$watch('service', function (newVal) {
                 if (newVal) {
                     waterfall = newVal;
                     segments = waterfall.segments[scope.index];
@@ -215,7 +228,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
         return {
             restrict: 'E',
-            scope: { service: '=', index: '=', color: '=', yAxisWidth: '=', title: '='},
+            scope: { service: '=', index: '=', color: '=', yAxisWidth: '=', title: '=', unit: '='},
             link: link
         }
     }]);

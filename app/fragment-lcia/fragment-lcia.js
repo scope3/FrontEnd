@@ -97,15 +97,26 @@ angular.module('lcaApp.fragment.LCIA',
                 });
             }
 
+            function addShortMethodName(method) {
+                var parts = method.name.split("; ");
+                if (parts.length > 1) {
+                    method.shortName = parts[1];
+                } else {
+                    method.shortName = method.name;
+                }
+            }
+
             /**
              * Collect methods, scenarios, and stages.
              * For each scenario and method combination, request LCIA results.
              * When all results are in, build waterfalls.
              */
             function getResults() {
-                var promises = [];
-
-                $scope.methods = LciaMethodService.getAll();
+                var promises = [],
+                    methods;
+                methods = LciaMethodService.getAll();
+                methods.forEach(addShortMethodName);
+                $scope.methods = methods;
                 $scope.scenarios = ScenarioService.getAll();
                 stages = FragmentStageService.getAll();
 
