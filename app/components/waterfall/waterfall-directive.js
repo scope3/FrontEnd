@@ -6,18 +6,17 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
         function link(scope, element, attrs) {
             var margin = {
-                    top: 10,
-                    right: 50,
+                    top: 5,
+                    right: 40,
                     bottom: 20,
                     left: 10
                 },
                 parentElement = element[0],
-                yAxisWidth = 250,
+                yAxisWidth = 110,
                 labelFormat = FormatService.format("^.2r"),// Format numbers with precision 2, centered
                 svg = null,
                 waterfall = null,   // Current waterfall instance
-                segments,           // Waterfall segments for current scenario
-                chartHeight = 0;    // Height of chart without margins and axis
+                segments;           // Waterfall segments for current scenario
 
             /**
              * Initial preparation of svg element.
@@ -27,20 +26,17 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
                 svg.append("g")
                     .attr("class", "chart-group")
-                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-                svg.append("g")
-                    .attr("class", "x axis")
-                    .attr("transform", "translate(0," + chartHeight + ")");
+                    .attr("transform", "translate(" + (margin.left + yAxisWidth) + "," + margin.top + ")");
             }
 
             function setSvgSize() {
-                svg.attr("width", waterfall.width() + margin.left + margin.right);
-                svg.attr("height", chartHeight + margin.top + margin.bottom);
+                svg.attr("width", waterfall.width() + yAxisWidth + margin.left + margin.right);
+                svg.attr("height", waterfall.chartHeight + margin.top + margin.bottom);
             }
 
             function drawXAxis() {
                 svg.select(".x.axis").remove();
-                if ( chartHeight > 0 ) {
+                if ( waterfall.chartHeight > 0 ) {
                     var xAxis = d3.svg.axis()
                             .scale(waterfall.xScale)
                             .orient("bottom")
@@ -60,8 +56,50 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     svg.select(".chart-group")
                         .append("g")
                         .attr("class", "x axis")
-                        .attr("transform", "translate(0," + chartHeight + ")")
+                        .attr("transform", "translate(0," + waterfall.chartHeight + ")")
                         .call(xAxis);
+                }
+            }
+
+            function wrap(text, width) {
+                text.each(function() {
+                    var text = d3.select(this),
+                        words = text.text().split(/\s+/).reverse(),
+                        word,
+                        line = [],
+                        lineNumber = 0,
+                        lineHeight = 1.1, // ems
+                        x = text.attr("x"),
+                        y = text.attr("y"),
+                        dy = parseFloat(text.attr("dy")),
+                        tspan = text.text(null).append("tspan").attr("x", x).attr("y", y).attr("dy", dy + "em");
+                    while (word = words.pop()) {
+                        line.push(word);
+                        tspan.text(line.join(" "));
+                        if (tspan.node().getComputedTextLength() > width) {
+                            line.pop();
+                            tspan.text(line.join(" "));
+                            line = [word];
+                            tspan = text.append("tspan").attr("x", x).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+                        }
+                    }
+                });
+            }
+
+            function drawYAxis() {
+                svg.select(".y.axis").remove();
+                if ( waterfall.chartHeight > 0 ) {
+                    var yAxis = d3.svg.axis()
+                            .scale(waterfall.yScale)
+                            .orient("left")
+                            .tickSize(1);
+
+                    svg.select(".chart-group")
+                        .append("g")
+                        .attr("class", "y axis")
+                        .call(yAxis)
+                        .selectAll(".tick text")
+                        .call(wrap, yAxisWidth - 10);
                 }
             }
 
@@ -134,9 +172,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 if (newVal) {
                     waterfall = newVal;
                     segments = waterfall.segments[scope.index];
-                    chartHeight = segments[segments.length - 1].y
-                        + waterfall.segmentHeight() + waterfall.segmentPadding();
+                    yAxisWidth = +scope.yAxisWidth;
                     setSvgSize();
+                    if (yAxisWidth > 0) {
+                        drawYAxis();
+                    }
                     drawWaterfall();
                     drawXAxis();
                 }
@@ -145,7 +185,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
         return {
             restrict: 'E',
-            scope: { service: '=', index: '=', color: '='},
+            scope: { service: '=', index: '=', color: '=', yAxisWidth: '='},
             link: link
         }
     }]);

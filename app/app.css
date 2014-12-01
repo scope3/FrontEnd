@@ -70,3 +70,8 @@
     stroke: #000;
     shape-rendering: crispEdges;
 }
+
+waterfall-chart .y.axis path {
+    /*display: none; */
+    stroke-opacity: 0.2;
+}
