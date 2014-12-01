@@ -19,7 +19,7 @@ describe('Unit test waterfall module', function() {
 
     function addData(wf) {
         var scenarios = ["A", "B"],
-            stages = [1,2,3],
+            stages = ["stage 1","stage 2","stage 3"],
             values = [];
 
         values.push([0.1, 0.25, -0.01]);
@@ -56,7 +56,7 @@ describe('Unit test waterfall module', function() {
         var wf = $rootScope.waterfallService.createInstance();
         addData(wf);
         expect(wf.layout()).toBeDefined();
-        expect(wf.resultStages.length).toEqual(wf.stages().length);
+        expect(wf.resultStages().length).toEqual(wf.stages().length);
         expect(wf.segments.length).toEqual(wf.scenarios().length);
         expect(wf.segments[0][2]["endVal"])
             .toEqual(wf.values()[0].reduce(addValues));

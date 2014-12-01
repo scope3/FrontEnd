@@ -52,6 +52,10 @@ angular.module('lcaApp.fragment.LCIA',
                 results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
             }
 
+            function getName(o) {
+                return o.name;
+            }
+
             /**
              * Create data model for waterfall directive using waterfall service.
              * Results are grouped by method. All scenarios for a method must be
@@ -59,6 +63,7 @@ angular.module('lcaApp.fragment.LCIA',
              * is determined by the full range of values across all scenarios.
              */
             function buildWaterfalls() {
+                var stageNames = stages.map(getName);
                 stopWaiting();
                 $scope.methods.forEach( function (m) {
                     var wf;
@@ -81,9 +86,9 @@ angular.module('lcaApp.fragment.LCIA',
                         });
                         wf = new WaterfallService.createInstance();
                         wf.scenarios($scope.scenarios)
-                            .stages(stages)
+                            .stages(stageNames)
                             .values(values.slice(0))
-                            .width(350);
+                            .width(300);
                         wf.layout();
                         $scope.waterfalls[m.lciaMethodID] = wf;
                     } else {

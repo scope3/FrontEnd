@@ -15,11 +15,11 @@ angular.module('lcaApp.waterfall.service', [])
                 stages = [],        // stages within each scenario
                 values = [],      // 2 dimensional array of values (first dimension: scenario, second dimension: stage)
                 colors = [],        // Array of colors (one for every stage)
+                show0Result = true,        // Show stage that has no result
             // Output
                 segments = [],    // 2D array of waterfall segments
                 xScale = d3.scale.linear(),             // d3 scale maps aggregate value to chart's x axis
-                colorScale = d3.scale.ordinal(), // d3 scale maps stages to colors
-                show0Result = true;        // Show stage that has no result
+                yScale = d3.scale.ordinal(); // d3 scale maps stages to chart's y axis
 
             waterfall.show0Result = function (_) {
                 if (!arguments.length) {
@@ -97,7 +97,6 @@ angular.module('lcaApp.waterfall.service', [])
                 seg.x = xScale(Math.min(seg.startVal, seg.endVal));
                 seg.y = (segmentPadding + segmentHeight) * index;
                 seg.width = Math.abs(xScale(seg.value) - xScale(0));
-                seg.color = colorScale(seg.stage);
                 seg.endX = xScale(seg.endVal);
             }
 
@@ -105,8 +104,7 @@ angular.module('lcaApp.waterfall.service', [])
                 var i, j = 0, minVal = 0.0, maxVal = 0.0;
 
                 xScale.range([0, width]).nice();
-                colorScale.range(colors);
-                //colorScale.domain(stages);
+                yScale.domain(stages);
                 segments = [];
                 for (i = 0; i < scenarios.length; i++) {
                     //first calculate the left edge for each stage
@@ -144,15 +142,23 @@ angular.module('lcaApp.waterfall.service', [])
 
                 waterfall.segments = segments;
 
-                waterfall.resultStages = waterfall.stages().filter(hasResult);
-                colorScale.domain(waterfall.resultStages);
+                waterfall.resultStages = function () {
+                    return waterfall.stages().filter(hasResult);
+                };
+
+                if (show0Result) {
+                    // if 0 results are not shown, then chart height is variable.
+                    // These calculations are only relevant when every chart has the same stages.
+                    waterfall.chartHeight = stages.length * (waterfall.segmentHeight() + waterfall.segmentPadding());
+                    yScale.rangeRoundBands([0, waterfall.chartHeight], 0.1);
+                    waterfall.yScale = yScale;
+                }
+
 
                 waterfall.xScale = xScale;
-                waterfall.colorScale = colorScale;
 
                 return waterfall;
             };
-
 
             return waterfall;
         }
