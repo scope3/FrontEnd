@@ -46,7 +46,7 @@ angular.module('lcaApp', [
                 }
             })
             .state('fragment-lcia', {
-                url: '/fragment-lcia/{fragmentID}',
+                url: '/fragment-lcia',
                 views: {
                     "@" : {
                         templateUrl: 'fragment-lcia/fragment-lcia.html',

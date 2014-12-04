@@ -7,7 +7,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
         function link(scope, element, attrs) {
             var margin = {
                     top: 5,
-                    right: 40,
+                    right: 50,
                     bottom: 20,
                     left: 10
                 },
@@ -30,6 +30,8 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
             function prepareSvg() {
                 svg.attr("width", waterfall.width() + yAxisWidth + margin.left + margin.right);
                 svg.attr("height", waterfall.chartHeight + titleHeight + margin.top + margin.bottom + unitHeight);
+                // Display does not refresh cleanly after d3 update, so delete and recreate the chart group
+                svg.select(".chart-group").remove();
                 svg.append("g")
                     .attr("class", "chart-group")
                     .attr("transform", "translate(" + (margin.left + yAxisWidth) + "," + (titleHeight + margin.top) + ")");
@@ -45,6 +47,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         .append("text")
                         .attr("x", width / 2)
                         .attr("y", 0)
+                        .attr("dy", "-1em")
                         .style("text-anchor", "middle")
                         .text(scope.title);
                 }
@@ -162,12 +165,10 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     barGroup.append("text")
                         .attr("class", "bar text")
                         .attr("x", function (d) {
-                            return (d.width < 50) ?
-                                d.x + d.width + 5 :
-                                d.x + d.width / 2;
+                            return d.labelX;
                         })
                         .style("text-anchor", function (d) {
-                            return (d.width < 50) ? "start" : "middle";
+                            return d.labelAnchor;
                         })
                         .attr("y", function (d) {
                             return d.y + (waterfall.segmentHeight() / 2);

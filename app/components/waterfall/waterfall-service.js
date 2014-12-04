@@ -11,6 +11,7 @@ angular.module('lcaApp.waterfall.service', [])
                 width = 500,// overall chart width, default to 500 px
                 segmentHeight = 24,
                 segmentPadding = 8,
+                labelWidth = 50,
                 scenarios = [],     // each scenario gets a chart
                 stages = [],        // stages within each scenario
                 values = [],      // 2 dimensional array of values (first dimension: scenario, second dimension: stage)
@@ -61,6 +62,14 @@ angular.module('lcaApp.waterfall.service', [])
                 return waterfall;
             };
 
+            waterfall.labelWidth = function (_) {
+                if (!arguments.length) {
+                    return labelWidth;
+                }
+                labelWidth = _;
+                return waterfall;
+            };
+
             waterfall.scenarios = function (_) {
                 if (!arguments.length) {
                     return scenarios;
@@ -94,10 +103,26 @@ angular.module('lcaApp.waterfall.service', [])
             }
 
             function setGraphicAttributes(seg, index) {
+                var paddedWidth = labelWidth + 5;
+
                 seg.x = xScale(Math.min(seg.startVal, seg.endVal));
                 seg.y = (segmentPadding + segmentHeight) * index;
                 seg.width = Math.abs(xScale(seg.value) - xScale(0));
                 seg.endX = xScale(seg.endVal);
+                if (seg.width < paddedWidth) {
+                    if (width - seg.width - seg.x < paddedWidth) {
+                        seg.labelX = seg.x - 5;
+                        seg.labelAnchor = "end";
+                    }
+                    else {
+                        seg.labelX = seg.x + seg.width + 5;
+                        seg.labelAnchor = "start";
+                    }
+                }
+                else {
+                    seg.labelX = seg.x + seg.width / 2;
+                    seg.labelAnchor = "middle";
+                }
             }
 
             waterfall.layout = function () {

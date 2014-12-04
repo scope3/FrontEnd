@@ -1,3 +1,10 @@
+
+    <label>Fragment</label>
+    <select id="fragment-select" ng-model="fragment" ng-options="f.name for f in fragments"
+            ng-change="onFragmentChange()">
+    </select>
+        <p></p>
+
 <div class="row">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">

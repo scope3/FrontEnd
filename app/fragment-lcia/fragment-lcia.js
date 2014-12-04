@@ -13,7 +13,7 @@ angular.module('lcaApp.fragment.LCIA',
                   LciaMethodService, LciaResultForFragmentService,
                   ColorCodeService, WaterfallService ) {
 
-            var fragmentID = $stateParams.fragmentID,
+            var fragmentID,
                 stages = [],
                 results = {};
 
@@ -63,7 +63,9 @@ angular.module('lcaApp.fragment.LCIA',
              * is determined by the full range of values across all scenarios.
              */
             function buildWaterfalls() {
-                var stageNames = stages.map(getName);
+                var stageNames;
+                stages = FragmentStageService.getAll();
+                stageNames = stages.map(getName);
                 stopWaiting();
                 $scope.methods.forEach( function (m) {
                     var wf;
@@ -107,27 +109,21 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             /**
-             * Collect methods, scenarios, and stages.
-             * For each scenario and method combination, request LCIA results.
+             * Request fragment stages, then
+             * for each scenario and method combination, request LCIA results.
              * When all results are in, build waterfalls.
              */
-            function getResults() {
+            function getLciaResults() {
                 var promises = [],
-                    methods;
-                methods = LciaMethodService.getAll();
-                methods.forEach(addShortMethodName);
-                $scope.methods = methods;
-                $scope.scenarios = ScenarioService.getAll();
-                stages = FragmentStageService.getAll();
-
+                    result;
+                result = FragmentStageService.load({fragmentID: fragmentID});
+                promises.push(result.$promise);
                 $scope.methods.forEach(function (method) {
-                    var colors = ColorCodeService.getImpactCategoryColors(method["impactCategoryID"]);
-                    $scope.colors[method.lciaMethodID] = colors[3][0];  // One color per method
                     $scope.scenarios.forEach( function (scenario){
-                        var result = LciaResultForFragmentService
+                        result = LciaResultForFragmentService
                             .get({ scenarioID: scenario.scenarioID,
                                 lciaMethodID: method.lciaMethodID,
-                                fragmentID: scenario.topLevelFragmentID },
+                                fragmentID: fragmentID },
                             extractResult);
                         promises.push(result.$promise);
                     });
@@ -136,16 +132,39 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             /**
+             * Collect methods and scenarios, then get LCIA results.
+             */
+            function getResults() {
+                var methods = LciaMethodService.getAll();
+                methods.forEach(addShortMethodName);
+                $scope.methods = methods;
+                $scope.scenarios = ScenarioService.getAll();
+                $scope.fragments = FragmentService.getAll();
+
+                fragmentID = $scope.scenarios[0].topLevelFragmentID;
+                $scope.fragment = FragmentService.get(fragmentID);
+                $scope.methods.forEach(function (method) {
+                    var colors = ColorCodeService.getImpactCategoryColors(method["impactCategoryID"]);
+                    $scope.colors[method.lciaMethodID] = colors[3][0];  // One color per method
+                });
+                getLciaResults();
+            }
+
+            /**
              * Get all data resources
              */
             function getData() {
                 $q.all([FragmentService.load(), ScenarioService.load(),
-                    LciaMethodService.load(),
-                    FragmentStageService.load({fragmentID: fragmentID})
+                    LciaMethodService.load()
                     ])
                     .then(getResults,
                     handleFailure);
             }
+
+            $scope.onFragmentChange = function () {
+                fragmentID = $scope.fragment.fragmentID;
+                getLciaResults();
+            };
 
             $scope.scenarios = [];
             $scope.methods = [];
