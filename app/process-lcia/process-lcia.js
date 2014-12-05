@@ -49,7 +49,13 @@ angular.module('lcaApp.process.LCIA',
                         p.result = p.result * $scope.activityLevel;
                         positiveSum += p.result;
                     });
+                    // Default color for method looks bad with colors in bar chart. Keep default heading color.
+                    $scope.panelHeadingStyle[lciaMethod.lciaMethodID] = {};
                 }
+                else {
+                    $scope.panelHeadingStyle[lciaMethod.lciaMethodID] = {'background-color' : lciaMethod.getDefaultColor()};
+                }
+
                 $scope.lciaResults[lciaMethod.lciaMethodID] =
                 {   cumulativeResult : (result.lciaScore[0].cumulativeResult * $scope.activityLevel).toPrecision(4),
                     positiveResults : positiveResults,
@@ -144,6 +150,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.inputFlows = [];
             $scope.outputFlows = [];
             $scope.lciaResults = {};
+            $scope.panelHeadingStyle = {};
             startWaiting();
             getData();
 

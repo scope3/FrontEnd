@@ -8,15 +8,15 @@
 <div class="row">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">
-            <div class="panel-heading">
-                <dt>{{method.shortName}}</dt>
+            <div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">
+                <dt>{{method.getShortName()}}</dt>
                 <dd>{{method.referenceFlowProperty.name}}</dd>
             </div>
             <div class="panel-body">
                 <div ng-repeat="scenario in scenarios" class="row">
                     <div class="lcia-bar-container">
                         <waterfall-chart service="waterfalls[method.lciaMethodID]" index="$index"
-                                         color="colors[method.lciaMethodID]" title="scenario.name"
+                                         color="method.getDefaultColor()" title="scenario.name"
                                          unit="method.referenceFlowProperty.referenceUnit"></waterfall-chart>
                     </div>
                 </div>

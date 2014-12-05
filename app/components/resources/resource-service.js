@@ -1,7 +1,7 @@
 /**
  * Service to manage access to resources from web API
  */
-angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service' ])
+angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod' ])
     .constant('API_ROOT', "http://localhost:60393/api/")
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q',
         function($resource, API_ROOT, IdMapService, $q){
@@ -46,10 +46,13 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 var svc =
                     { loadFilter: null,
                       resource: resourceService.getResource(routeKey), // Instance of $resource
-                      objects: null }; // Object ID property name
+                      objects: null,    // Loaded objects
+                      extensionFactory: null // Factory for extending loaded objects
+                    };
 
                 /**
                  * Load resources using filter. Cache results using IdMapService
+                 * If extension objects exists, extend the resource objects.
                  * @param {Object} filter   Resource query filter
                  * @returns promise of loaded resources
                  */
@@ -61,6 +64,11 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                         svc.loadFilter = filter;
                         svc.objects = svc.resource.query( filter,
                             function(objects) {
+                                if (svc.extensionFactory) {
+                                    objects.forEach( function (o) {
+                                        angular.extend(o, svc.extensionFactory.createInstance())
+                                    });
+                                }
                                 if (svc.idName) {
                                     IdMapService.add(svc.idName, objects);
                                 }
@@ -108,6 +116,16 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     };
                 }
 
+                /**
+                 * Set optional extension object.
+                 * @param obj   The extension object
+                 * @returns this service
+                 */
+                svc.setExtensionFactory = function (obj) {
+                    svc.extensionFactory = obj;
+                    return svc;
+                };
+
                 return svc;
             };
 
@@ -136,93 +154,69 @@ angular.module('lcaApp.resources.service')
         function(ResourceService){
             return ResourceService.getService('ScenarioService', "scenario", "scenarioID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FragmentService', "fragment", "fragmentID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('ProcessService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ProcessService', "process", "processID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('ProcessForFlowTypeService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ProcessForFlowTypeService', "processForFlowType", "processID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FlowPropertyForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowPropertyForFragmentService', "flowPropertyForFragment", "flowPropertyID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FlowPropertyForProcessService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowPropertyForProcessService', "flowPropertyForProcess", "flowPropertyID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FragmentFlowService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FragmentFlowService', "fragmentFlow", "fragmentFlowID");
         }
-    ]);
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FragmentStageService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FragmentStageService', "fragmentStage", "fragmentStageID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('FlowForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowForFragmentService', "flowForFragment", "flowID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('ImpactCategoryService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ImpactCategoryService', "impactCategory", "impactCategoryID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
-    .factory('LciaMethodService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('LciaMethodService', "lciaMethod", "lciaMethodID");
+    ])
+    .factory('LciaMethodService', ['ResourceService', 'LciaMethodExtension',
+        function(ResourceService, LciaMethodExtension){
+            return ResourceService.getService('LciaMethodService', "lciaMethod", "lciaMethodID")
+                .setExtensionFactory(LciaMethodExtension);
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('LciaMethodForImpactCategoryService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('LciaMethodForImpactCategoryService', "lciaMethodForImpactCategory",
                 "lciaMethodID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('NodeTypeService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('NodeTypeService', "nodeType", "nodeTypeID");
         }
-    ]);
-
-angular.module('lcaApp.resources.service')
+    ])
     .factory('ProcessFlowService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ProcessFlowService', "processFlow", null);
@@ -245,8 +239,7 @@ angular.module('lcaApp.resources.service')
 
             return resultSvc;
         }
-    ]);
-angular.module('lcaApp.resources.service')
+    ])
     .factory('LciaResultForFragmentService', ['ResourceService',
         function(ResourceService){
             var resource = ResourceService.getResource("lciaResultForFragment"),

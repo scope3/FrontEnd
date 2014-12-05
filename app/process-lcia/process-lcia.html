@@ -1,8 +1,10 @@
 <!-- Partial html for process LCIA view -->
 <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
+
 <div class="row">
     <div class="col-md-8">
         <dl class="dl-horizontal">
+            <h4>Process LCIA</h4>
             <dt>Scenario</dt>
             <dd>{{scenario.name}}</dd>
             <dt>Activity Level</dt>
@@ -13,9 +15,8 @@
         <ul class="list-unstyled">
             <li ng-repeat="method in lciaMethods" class="lcia-method">
                 <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <dt>LCIA Method</dt>
-                        <dd>{{method.name}}</dd>
+                    <div class="panel-heading" ng-style="panelHeadingStyle[method.lciaMethodID]">
+                        <dt>{{method.name}}</dt>
                     </div>
                     <div class="panel-body">
                         <dl class="dl-horizontal">

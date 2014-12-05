@@ -99,15 +99,6 @@ angular.module('lcaApp.fragment.LCIA',
                 });
             }
 
-            function addShortMethodName(method) {
-                var parts = method.name.split("; ");
-                if (parts.length > 1) {
-                    method.shortName = parts[1];
-                } else {
-                    method.shortName = method.name;
-                }
-            }
-
             /**
              * Request fragment stages, then
              * for each scenario and method combination, request LCIA results.
@@ -136,17 +127,12 @@ angular.module('lcaApp.fragment.LCIA',
              */
             function getResults() {
                 var methods = LciaMethodService.getAll();
-                methods.forEach(addShortMethodName);
                 $scope.methods = methods;
                 $scope.scenarios = ScenarioService.getAll();
                 $scope.fragments = FragmentService.getAll();
 
                 fragmentID = $scope.scenarios[0].topLevelFragmentID;
                 $scope.fragment = FragmentService.get(fragmentID);
-                $scope.methods.forEach(function (method) {
-                    var colors = ColorCodeService.getImpactCategoryColors(method["impactCategoryID"]);
-                    $scope.colors[method.lciaMethodID] = colors[3][0];  // One color per method
-                });
                 getLciaResults();
             }
 
