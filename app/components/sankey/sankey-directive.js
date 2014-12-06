@@ -211,11 +211,16 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             //
             // Nodes with click behavior
             //
-            node.filter(function (d) {
-                return (d.selectable);
-            })
+            node.selectAll("rect")
+                .filter(function (d) {
+                    return (d.selectable);
+                })
                 .style("cursor", "pointer")
-                .on("click", onNodeClick);
+                .on("click", onNodeClick)
+                .style("stroke", function (n) {
+                    return d3.rgb(n.color).darker(1);
+                });
+
         }
 
         function prepareToolTip() {

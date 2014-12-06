@@ -22,7 +22,7 @@ sankey-diagram .node rect {
     /*    cursor: pointer;*/
     shape-rendering: crispEdges;
     opacity: 1;
-    stroke-width:0;
+    stroke-width:2;
 }
 
 sankey-diagram .node text {
