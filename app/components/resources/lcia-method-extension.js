@@ -7,8 +7,7 @@ angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service'])
 
             function Instance() {
                 var shortName = null,
-                    isActive = true,
-                    extension = {};
+                    extension = { "isActive" : true };
 
                 extension.getDefaultColor = function () {
                     var scales = ColorCodeService.getImpactCategoryColors(this["impactCategoryID"]);
@@ -36,13 +35,13 @@ angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service'])
                     return shortName;
                 };
 
-                extension.isActive = function (_) {
-                    if (!arguments.length) {
-                        return isActive;
-                    }
-                    isActive = _;
-                    return extension;
-                };
+//                extension.isActive = function (_) {
+//                    if (!arguments.length) {
+//                        return isActive;
+//                    }
+//                    isActive = _;
+//                    return extension;
+//                };
 
                 return extension;
             }

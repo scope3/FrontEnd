@@ -78,7 +78,9 @@ angular.module('lcaApp.process.LCIA',
 
             function getResults() {
                 getFlowRows();
-                $scope.lciaMethods = LciaMethodService.getAll();
+                $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
+                    return m.isActive;
+                });
                 getLciaResults();
             }
 

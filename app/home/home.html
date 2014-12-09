@@ -1,7 +1,7 @@
 <!-- Partial html for home page -->
 <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
 <h4>Scenarios</h4>
-<table class="table">
+<table class="table table-condensed">
     <thead>
     <tr><th>Name</th><th>Activity Level</th><th>Top Level Fragment</th></tr>
     </thead>
@@ -10,7 +10,19 @@
         <td>{{scenario.name}}</td>
         <td>{{scenario.activityLevel | numFormat}}</td>
         <td><a ui-sref=".fragment({scenarioID: scenario.scenarioID,
-        fragmentID: scenario.topLevelFragmentID})">{{scenario.fragment.name}}</a></td>
+        fragmentID: scenario.topLevelFragmentID})">{{fragments[scenario.topLevelFragmentID].name}}</a></td>
+    </tr>
+    </tbody>
+</table>
+<h4>LCIA Methods</h4>
+<table class="table table-condensed">
+    <thead>
+    <tr><th>Active</th><th>Name</th></tr>
+    </thead>
+    <tbody>
+    <tr ng-repeat="method in lciaMethods">
+        <td><input type="checkbox" ng-model="method.isActive"></td>
+        <td>{{method.name}}</td>
     </tr>
     </tbody>
 </table>

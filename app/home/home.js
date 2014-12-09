@@ -4,8 +4,8 @@ angular.module('lcaApp.home',
     ['lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner', 'ui.bootstrap.alert'])
 
 .controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService',
-        'ScenarioService', 'FragmentService', '$q',
-    function($scope, $window, usSpinnerService, ScenarioService, FragmentService, $q ) {
+        'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
+    function($scope, $window, usSpinnerService, ScenarioService, FragmentService, LciaMethodService, $q ) {
         var failure = false;
 
         function stopWaiting() {
@@ -26,19 +26,26 @@ angular.module('lcaApp.home',
             }
         }
 
-        startWaiting();
-        $q.all([ScenarioService.load(), FragmentService.load()]).then (
-            function() {
-                var scenarios = ScenarioService.objects,
-                    total = scenarios.length;
+        function displayScenarios() {
+            var scenarios = ScenarioService.getAll();
+            scenarios.forEach(function (scenario) {
+                $scope.fragments[scenario.topLevelFragmentID] = FragmentService.get(scenario.topLevelFragmentID);
+            });
+            $scope.scenarios = scenarios;
+        }
 
+        function displayLciaMethods() {
+            $scope.lciaMethods = LciaMethodService.getAll();
+        }
+
+        $scope.fragments = {};
+
+        startWaiting();
+        $q.all([ScenarioService.load(), FragmentService.load(), LciaMethodService.load()]).then (
+            function() {
                 stopWaiting();
-                if ( total > 0) {
-                    $scope.scenarios = scenarios;
-                    $scope.scenarios.forEach(function (scenario) {
-                        scenario.fragment = FragmentService.get(scenario.topLevelFragmentID);
-                    });
-                }
+                displayScenarios();
+                displayLciaMethods();
             }, handleFailure);
 
 }]);

@@ -17,7 +17,7 @@
         "angular-spinner": null,
         "normalize.css": null,
         "array.prototype.find": null,
-        "angular-ui-router": "0.2.11",
+        "angular-ui-router": "0.2.x",
         "angular-breadcrumb" : "0.2.x"
     }
 }
