@@ -5,24 +5,24 @@ angular.module('lcaApp', [
     'angularSpinner',
     'ui.router',
     'ncy-angular-breadcrumb',
-    'lcaApp.scenarios',
+    'lcaApp.home',
     'lcaApp.fragment.sankey',
     'lcaApp.process.LCIA',
     'lcaApp.fragment.LCIA',
     'lcaApp.version'
 ]).
     config(['$stateProvider', '$urlRouterProvider', function ($stateProvider, $urlRouterProvider) {
-        $urlRouterProvider.otherwise("/scenarios");
-        $stateProvider.state('scenarios', {
-            url: "/scenarios",
-            templateUrl: 'scenarios/scenarios.html',
-            controller: 'ScenarioListCtrl',
+        $urlRouterProvider.otherwise("/");
+        $stateProvider.state('home', {
+            url: "/",
+            templateUrl: 'home/home.html',
+            controller: 'HomeCtrl',
             data: {
-                ncyBreadcrumbLabel: 'Scenarios'
+                ncyBreadcrumbLabel: 'Home'
             }
         })
-        .state('scenarios.fragment', {
-            url: '/{scenarioID}/fragment-sankey/{fragmentID}',
+        .state('home.fragment', {
+            url: 'scenario/{scenarioID}/fragment-sankey/{fragmentID}',
             views: {
                 "@" : {
                     templateUrl: 'fragment-sankey/fragment-sankey.html',
@@ -33,8 +33,8 @@ angular.module('lcaApp', [
                 ncyBreadcrumbLabel: 'Fragment Sankey Diagram'
             }
         })
-            .state('scenarios.process', {
-                url: '/{scenarioID}/process-lcia/{processID}?activity',
+            .state('home.process', {
+                url: 'scenario/{scenarioID}/process-lcia/{processID}?activity',
                 views: {
                     "@" : {
                         templateUrl: 'process-lcia/process-lcia.html',

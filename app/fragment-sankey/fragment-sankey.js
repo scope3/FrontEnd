@@ -302,7 +302,7 @@ angular.module('lcaApp.fragment.sankey',
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
                     switch (newVal.nodeTypeID) {
                         case 1 :
-                            $state.go("scenarios.process", { scenarioID : scenarioID,
+                            $state.go("home.process", { scenarioID : scenarioID,
                                                              processID : fragmentFlow.processID,
                                                              activity : $scope.fragment.activityLevel *
                                                                         fragmentFlow.nodeWeight }

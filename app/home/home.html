@@ -1,5 +1,6 @@
-<!-- Partial html for scenarios view -->
+<!-- Partial html for home page -->
 <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
+<h4>Scenarios</h4>
 <table class="table">
     <thead>
     <tr><th>Name</th><th>Activity Level</th><th>Top Level Fragment</th></tr>
@@ -8,8 +9,9 @@
     <tr ng-repeat="scenario in scenarios">
         <td>{{scenario.name}}</td>
         <td>{{scenario.activityLevel | numFormat}}</td>
-        <td><a ui-sref="home.fragment({scenarioID: scenario.scenarioID,
+        <td><a ui-sref=".fragment({scenarioID: scenario.scenarioID,
         fragmentID: scenario.topLevelFragmentID})">{{scenario.fragment.name}}</a></td>
     </tr>
     </tbody>
 </table>
+
