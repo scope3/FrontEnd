@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('lcaApp.home',
-    ['lcaApp.resources.service', 'lcaApp.idmap.service', 'angularSpinner', 'ui.bootstrap.alert'])
+    ['lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
 
 .controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService',
         'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
