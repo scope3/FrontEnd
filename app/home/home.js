@@ -35,7 +35,12 @@ angular.module('lcaApp.home',
         }
 
         function displayLciaMethods() {
-            $scope.lciaMethods = LciaMethodService.getAll();
+            var lciaMethods = LciaMethodService.getAll();
+            // Restore isActive setting from local storage
+            lciaMethods.forEach(function (method) {
+                method.getIsActive();
+            });
+            $scope.lciaMethods = lciaMethods;
         }
 
         $scope.fragments = {};

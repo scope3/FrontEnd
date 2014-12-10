@@ -21,7 +21,7 @@
     </thead>
     <tbody>
     <tr ng-repeat="method in lciaMethods">
-        <td><input type="checkbox" ng-model="method.isActive"></td>
+        <td><input type="checkbox" ng-model="method.isActive" ng-change="method.storeIsActive()"></td>
         <td>{{method.name}}</td>
     </tr>
     </tbody>

@@ -1,13 +1,17 @@
 /**
  * Extension to LCIA method resources
  */
-angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service'])
-    .factory('LciaMethodExtension', [ 'ColorCodeService',
-        function(ColorCodeService) {
+angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service', 'LocalStorageModule'])
+    .factory('LciaMethodExtension', [ 'ColorCodeService', 'localStorageService',
+        function(ColorCodeService, localStorageService) {
+
+            function getStorageKey( id, propertyName) {
+                return "lciaMethod_" + id + "_" + propertyName;
+            }
 
             function Instance() {
                 var shortName = null,
-                    extension = { "isActive" : true };
+                    extension = { };
 
                 extension.getDefaultColor = function () {
                     var scales = ColorCodeService.getImpactCategoryColors(this["impactCategoryID"]);
@@ -35,13 +39,36 @@ angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service'])
                     return shortName;
                 };
 
-//                extension.isActive = function (_) {
-//                    if (!arguments.length) {
-//                        return isActive;
-//                    }
-//                    isActive = _;
-//                    return extension;
-//                };
+                /**
+                 * Get isActive value from local storage, if it was stored there.
+                 * Otherwise, default to true and store.
+                 * @returns {boolean|*} isActive value
+                 */
+                extension.getIsActive = function () {
+                    if ( ! ("isActive" in this)) {
+                        var storageKey = getStorageKey(this.lciaMethodID, "isActive"),
+                            storageVal = localStorageService.get(storageKey);
+                        if (storageVal == null) {
+                            this.isActive = true;
+                            localStorageService.set(storageKey, this.isActive);
+                        } else {
+                            // Convert from string to boolean
+                            this.isActive = storageVal === "true";
+                        }
+                    }
+                    return this.isActive;
+                };
+
+                /**
+                 * Store current isActive value.
+                 * Used to record change.
+                 */
+                extension.storeIsActive = function () {
+                    if ("isActive" in this) {
+                        var storageKey = getStorageKey(this.lciaMethodID, "isActive");
+                        localStorageService.set(storageKey, this.isActive);
+                    }
+                };
 
                 return extension;
             }

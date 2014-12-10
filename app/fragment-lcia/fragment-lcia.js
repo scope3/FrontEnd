@@ -128,7 +128,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getResults() {
                 var methods = LciaMethodService.getAll();
                 $scope.methods = methods.filter( function (m) {
-                   return m.isActive;
+                   return m.getIsActive();
                 });
                 $scope.scenarios = ScenarioService.getAll();
                 $scope.fragments = FragmentService.getAll();
