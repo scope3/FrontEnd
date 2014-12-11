@@ -14,8 +14,11 @@
         <tr ng-repeat="scenario in scenarios">
             <td>{{scenario.name}}</td>
             <td>{{scenario.activityLevel | numFormat}}</td>
-            <td><a ui-sref=".fragment({scenarioID: scenario.scenarioID,
-        fragmentID: scenario.topLevelFragmentID})">{{fragments[scenario.topLevelFragmentID].name}}</a></td>
+            <td>
+                <a ui-sref=".fragment({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
+                    {{fragments[scenario.topLevelFragmentID].name}}
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>
@@ -31,12 +34,16 @@
         </thead>
         <tbody>
         <tr ng-repeat="method in lciaMethods">
-            <td >
+            <td>
                 <label>
                     <input type="checkbox" ng-model="method.isActive" ng-change="method.storeIsActive()">
                 </label>
             </td>
-            <td ng-style="{'background-color' : method.getDefaultColor()}">{{method.name}}</td>
+            <td ng-style="{'background-color' : method.getDefaultColor()}">
+                <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
+                    {{method.name}}
+                </a>
+            </td>
         </tr>
         </tbody>
     </table>

@@ -14,11 +14,11 @@ module.exports = function(config){
       'app/bower_components/d3-tip/index.js',
       'app/bower_components/spin.js/spin.js',
       'app/bower_components/angular-spinner/angular-spinner.js',
-      'app/bower_components/angular-breadcrumb/release/angular-breadcrumb.js',
       'app/bower_components/angular-bootstrap/ui-bootstrap.js',
       'app/components/**/*.js',
       'app/fragment-lcia/**/*.js',
       'app/fragment-sankey/**/*.js',
+      'app/lcia-method/**/*.js',
       'app/process-lcia/**/*.js',
       'app/scenarios/**/*.js'
     ],

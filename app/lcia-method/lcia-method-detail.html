@@ -1,0 +1,32 @@
+<alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
+<div class="panel panel-default">
+    <div class="panel-heading" ng-style="{'background-color' : lciaMethod.getDefaultColor()}">LCIA Method</div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>Name</dt>
+            <dd>{{lciaMethod["name"]}}</dd>
+            <dt>Methodology</dt>
+            <dd>{{lciaMethod["methodology"]}}</dd>
+            <dt>Impact Category</dt>
+            <dd>{{impactCategory["name"]}}</dd>
+            <dt>Impact Indicator</dt>
+            <dd>{{lciaMethod["impactIndicator"]}}</dd>
+            <dt>Reference Year</dt>
+            <dd>{{lciaMethod["referenceYear"]}}</dd>
+            <dt>Duration</dt>
+            <dd>{{lciaMethod["duration"]}}</dd>
+            <dt>Impact Location</dt>
+            <dd>{{lciaMethod["impactLocation"]}}</dd>
+            <dt>Indicator Type</dt>
+            <dd>{{lciaMethod["indicatorType"]}}</dd>
+            <dt>Normalization</dt>
+            <dd>{{lciaMethod["normalization"]}}</dd>
+            <dt>Weighting</dt>
+            <dd>{{lciaMethod["weighting"]}}</dd>
+            <dt>Use Advice</dt>
+            <dd>{{lciaMethod["useAdvice"]}}</dd>
+            <dt>Reference Quantity</dt>
+            <dd>{{lciaMethod["referenceFlowProperty"]["name"]}}</dd>
+        </dl>
+    </div>
+</div>

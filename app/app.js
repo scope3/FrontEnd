@@ -5,11 +5,11 @@ angular.module('lcaApp', [
     'angularSpinner',
     'LocalStorageModule',
     'ui.router',
-    'ncy-angular-breadcrumb',
     'lcaApp.home',
     'lcaApp.fragment.sankey',
     'lcaApp.process.LCIA',
     'lcaApp.fragment.LCIA',
+    'lcaApp.lciaMethod.detail',
     'lcaApp.version'])
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
         function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
@@ -17,10 +17,7 @@ angular.module('lcaApp', [
             $stateProvider.state('home', {
                 url: "/",
                 templateUrl: 'home/home.html',
-                controller: 'HomeCtrl',
-                data: {
-                    ncyBreadcrumbLabel: 'Home'
-                }
+                controller: 'HomeCtrl'
             })
                 .state('home.fragment', {
                     url: 'scenario/{scenarioID}/fragment-sankey/{fragmentID}',
@@ -29,9 +26,6 @@ angular.module('lcaApp', [
                             templateUrl: 'fragment-sankey/fragment-sankey.html',
                             controller: 'FragmentSankeyCtrl'
                         }
-                    },
-                    data: {
-                        ncyBreadcrumbLabel: 'Fragment Sankey Diagram'
                     }
                 })
                 .state('home.process', {
@@ -41,9 +35,6 @@ angular.module('lcaApp', [
                             templateUrl: 'process-lcia/process-lcia.html',
                             controller: 'ProcessLciaCtrl'
                         }
-                    },
-                    data: {
-                        ncyBreadcrumbLabel: 'Process LCIA'
                     }
                 })
                 .state('fragment-lcia', {
@@ -53,11 +44,17 @@ angular.module('lcaApp', [
                             templateUrl: 'fragment-lcia/fragment-lcia.html',
                             controller: 'FragmentLciaCtrl'
                         }
-                    },
-                    data: {
-                        ncyBreadcrumbLabel: 'Fragment LCIA'
                     }
-                });
+                })
+            .state('lcia-method', {
+                url: '/lcia-method/{lciaMethodID}',
+                views: {
+                    "@": {
+                        templateUrl: 'lcia-method/lcia-method-detail.html',
+                        controller: 'LciaMethodDetailController'
+                    }
+                }
+            });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
         }]);
 
