@@ -61,7 +61,7 @@ angular.module('lcaApp.fragmentNavigation.service', [])
          * @returns {{}} the service for method chaining
          */
         svc.setLast = function (index) {
-            stack.splice(index);
+            stack.splice(index+1);
             return svc;
         };
 
@@ -70,7 +70,7 @@ angular.module('lcaApp.fragmentNavigation.service', [])
          * @returns {*|Array}
          */
         svc.getAll = function () {
-            return stack.slice();
+            return stack;
         };
 
         /**

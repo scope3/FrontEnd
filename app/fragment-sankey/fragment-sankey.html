@@ -6,13 +6,14 @@
     <dd>{{scenario.name}}</dd>
     <dt>Fragment</dt>
     <dd>
-        <span ng-repeat="parent in parentFragments">
-            <a class="fragment-link" ng-click="onParentFragmentSelected(parent,$index)">{{parent.name}}</a>
-             >
+        <span ng-repeat="navFrag in navigationService.getAll()">
+            <ng-switch on="$last">
+                <span ng-switch-when="true">{{navFrag.name}}</span>
+                <span ng-switch-default><a class="fragment-link" ng-click="onParentFragmentSelected(navFrag,$index)">{{navFrag.name}}</a>
+             ></span>
+            </ng-switch>
         </span>
-        <span>{{fragment.name}}</span>
     </dd>
-
     <dt>Activity Level</dt>
     <dd>{{fragment.activityLevel | numFormat }} </dd>
         <dt>Flow Property Type </dt>

@@ -2,14 +2,14 @@
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'angularSpinner',
-                 'ui.bootstrap.alert', 'lcaApp.format'])
+                 'ui.bootstrap.alert', 'lcaApp.format', 'lcaApp.fragmentNavigation.service'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'NodeTypeService', 'FormatService',
+        'FlowPropertyForFragmentService', 'NodeTypeService', 'FormatService', 'FragmentNavigationService',
         function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  NodeTypeService, FormatService) {
+                  NodeTypeService, FormatService, FragmentNavigationService) {
             var fragmentID = $stateParams.fragmentID,
                 scenarioID = $stateParams.scenarioID,
             //
@@ -173,6 +173,7 @@ angular.module('lcaApp.fragment.sankey',
                 $scope.fragment = FragmentService.get(fragmentID);
                 if ($scope.fragment) {
                     $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
+                    FragmentNavigationService.add($scope.fragment);
                 } else {
                     handleFailure("Invalid fragment ID : " + fragmentID);
                 }
@@ -188,9 +189,9 @@ angular.module('lcaApp.fragment.sankey',
                 var subFragment = FragmentService.get(fragmentFlow.subFragmentID);
                 if (subFragment) {
                     subFragment.activityLevel = $scope.fragment.activityLevel * fragmentFlow.nodeWeight;
-                    $scope.parentFragments.push($scope.fragment);
                     fragmentID = fragmentFlow.subFragmentID;
                     $scope.fragment = subFragment;
+                    FragmentNavigationService.add($scope.fragment);
                     getDataForFragment();
                 } else {
                     handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
@@ -286,9 +287,9 @@ angular.module('lcaApp.fragment.sankey',
              * @param index     Breadcrumb index
              */
             $scope.onParentFragmentSelected = function (fragment, index) {
-                $scope.parentFragments.splice(index);
                 fragmentID = fragment.fragmentID;
                 $scope.fragment = fragment;
+                FragmentNavigationService.setLast(index);
                 getDataForFragment();
             };
 
@@ -361,15 +362,22 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             startWaiting();
+
             $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
-            $scope.parentFragments = [];
-            $scope.fragment = null;
+
             $scope.scenario = null;
             $scope.$watch("selectedNode", onNodeSelectionChange);
             $scope.$watch("mouseOverNode", onMouseOverNode);
-            getData();
 
+            $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
+            $scope.fragment = FragmentNavigationService.getLast();
+            if ($scope.fragment) {
+                fragmentID = $scope.fragment.fragmentID;
+                getDataForFragment();
+            } else {
+                getData();
+            }
         }]);
