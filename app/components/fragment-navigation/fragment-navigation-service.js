@@ -16,19 +16,21 @@ angular.module('lcaApp.fragmentNavigation.service', [])
          * Set context for navigation. If it changes,
          * this service will clear navigation state. Otherwise,
          * no action is performed.
-         * @param scenarioID
-         * @param fragmentID
+         * @param { String | Number } scenarioID
+         * @param { String | Number } fragmentID
          * @returns {{}} the service, enables method chaining
          */
         svc.setContext = function (scenarioID, fragmentID) {
-            if ( (context.fragmentID && fragmentID !== context.fragmentID) ||
-                  (context.scenarioID && scenarioID !== context.scenarioID)
+            // Store IDs as numbers.
+            var sID = +scenarioID, fID = +fragmentID;
+            if ( (context.fragmentID && fID !== context.fragmentID) ||
+                  (context.scenarioID && sID !== context.scenarioID)
                 )
             {
                 stack = [];
             }
-            context.fragmentID = fragmentID;
-            context.scenarioID = scenarioID;
+            context.fragmentID = fID;
+            context.scenarioID = sID;
 
             return svc;
         };
@@ -71,15 +73,6 @@ angular.module('lcaApp.fragmentNavigation.service', [])
          */
         svc.getAll = function () {
             return stack;
-        };
-
-        /**
-         * Get a copy of the stack, excluding last state
-         * Use to create breadcrumb links
-         * @returns {*|Array}
-         */
-        svc.getPrevious = function () {
-            return stack.slice(0, stack.length);
         };
 
         return svc;

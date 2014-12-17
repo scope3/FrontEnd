@@ -7,6 +7,13 @@
             <h4>Process LCIA</h4>
             <dt>Scenario</dt>
             <dd>{{scenario.name}}</dd>
+            <dt>Fragment</dt>
+            <dd>
+            <span ng-repeat="navFrag in navigationService.getAll()">
+                 <span><a class="fragment-link" ng-click="goBackToFragment($index)">{{navFrag.name}}</a></span>
+                 <span ng-if="!$last"> > </span>
+            </span>
+            </dd>
             <dt>Activity Level</dt>
             <dd>{{activityLevel | numFormat}}</dd>
             <dt>Process</dt>
@@ -23,11 +30,13 @@
                     <div class="panel-body">
                         <dl class="dl-horizontal">
                             <dt style="font-weight: normal">Cumulative Result:</dt>
-                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}} {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
+                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}}
+                                {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
                             <dd>{{method.referenceFlowProperty.name}}</dd>
                         </dl>
                         <div class="lcia-bar-container">
-                            <lcia-bar-chart lcia="lciaResults[method.lciaMethodID]" flows="elementaryFlows"></lcia-bar-chart>
+                            <lcia-bar-chart lcia="lciaResults[method.lciaMethodID]"
+                                            flows="elementaryFlows"></lcia-bar-chart>
                         </div>
                     </div>
                 </div>

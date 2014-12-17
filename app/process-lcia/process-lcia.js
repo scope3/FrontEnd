@@ -2,16 +2,17 @@
 /* Controller for Process LCIA Diagram View */
 angular.module('lcaApp.process.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
-                 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format'])
+                 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
+                 'lcaApp.fragmentNavigation.service'])
     .controller('ProcessLciaCtrl',
-        ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
-         'ColorCodeService',
-        function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
+         'ColorCodeService', 'FragmentNavigationService',
+        function ($scope, $stateParams, $state, usSpinnerService, $q, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
-                  ColorCodeService) {
+                  ColorCodeService, FragmentNavigationService) {
             var processID = $stateParams.processID,
                 scenarioID = $stateParams.scenarioID;
 
@@ -84,11 +85,23 @@ angular.module('lcaApp.process.LCIA',
                 getLciaResults();
             }
 
+            function getActivityLevel() {
+                if ("activity" in $stateParams) {
+                    $scope.activityLevel = +$stateParams.activity;
+                    return true;
+                } else {
+                    handleFailure("Activity parameter is missing.");
+                    return false;
+                }
+            }
+
             /**
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
                 $scope.scenario = ScenarioService.get(scenarioID);
+                $scope.navigationService = FragmentNavigationService.setContext(scenarioID,
+                                                                                $scope.scenario.topLevelFragmentID);
                 $scope.process = ProcessForFlowTypeService.get(processID);
                 if ($scope.scenario) {
                     if ($scope.process) {
@@ -145,15 +158,26 @@ angular.module('lcaApp.process.LCIA',
                 });
             }
 
+            /**
+             * Set fragment navigation state, and
+             * go back to fragment sankey view
+             * @param navIndex  Index to fragment navigation state selected by user
+             */
+            $scope.goBackToFragment = function(navIndex) {
+                FragmentNavigationService.setLast(navIndex);
+                $state.go('home.fragment', {scenarioID: scenarioID,
+                    fragmentID: $scope.scenario.topLevelFragmentID});
+            };
+
             $scope.process = null;
             $scope.scenario = null;
-            $scope.activityLevel = ("activity" in $stateParams) ? +$stateParams.activity : 1;
             $scope.elementaryFlows = {};
             $scope.inputFlows = [];
             $scope.outputFlows = [];
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
-            startWaiting();
-            getData();
-
+            if (getActivityLevel()) {
+                startWaiting();
+                getData();
+            }
         }]);
