@@ -165,8 +165,9 @@ angular.module('lcaApp.process.LCIA',
              */
             $scope.goBackToFragment = function(navIndex) {
                 FragmentNavigationService.setLast(navIndex);
-                $state.go('fragment-sankey', {scenarioID: scenarioID,
-                    fragmentID: $scope.scenario.topLevelFragmentID});
+//                $state.go('fragment-sankey', {scenarioID: scenarioID,
+//                    fragmentID: $scope.scenario.topLevelFragmentID});
+                $state.go('^');
             };
 
             $scope.process = null;

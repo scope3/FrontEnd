@@ -167,16 +167,23 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             /**
-             * Set to top-level fragment, activity level derived from scenario
+             * If returning from another view, restore last fragment in navigation stack.
+             * Otherwise, set to top-level fragment, activity level derived from scenario.
              */
             function initScopeFragment() {
-                $scope.fragment = FragmentService.get(fragmentID);
-                if ($scope.fragment) {
-                    $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
-                    FragmentNavigationService.add($scope.fragment);
+                var fragState = FragmentNavigationService.getLast();
+                if (fragState) {
+                    $scope.fragment = fragState;
                 } else {
-                    handleFailure("Invalid fragment ID : " + fragmentID);
+                    $scope.fragment = FragmentService.get(fragmentID);
+                    if ($scope.fragment) {
+                        $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
+                        FragmentNavigationService.add($scope.fragment);
+                    } else {
+                        handleFailure("Invalid fragment ID : " + fragmentID);
+                    }
                 }
+
                 return $scope.fragment;
             }
 
@@ -301,6 +308,7 @@ angular.module('lcaApp.fragment.sankey',
             function onNodeSelectionChange(newVal) {
                 if (newVal) {
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
+                    $log.info("Clicked on node with weight = " + fragmentFlow.nodeWeight);
                     switch (newVal.nodeTypeID) {
                         case 1 :
                             $state.go(".process", { scenarioID : scenarioID,
@@ -367,17 +375,12 @@ angular.module('lcaApp.fragment.sankey',
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
-
+            $scope.fragment = null;
             $scope.scenario = null;
             $scope.$watch("selectedNode", onNodeSelectionChange);
             $scope.$watch("mouseOverNode", onMouseOverNode);
 
             $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
-            $scope.fragment = FragmentNavigationService.getLast();
-            if ($scope.fragment) {
-                fragmentID = $scope.fragment.fragmentID;
-                getDataForFragment();
-            } else {
-                getData();
-            }
+
+            getData();
         }]);
