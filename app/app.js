@@ -19,8 +19,8 @@ angular.module('lcaApp', [
                 templateUrl: 'home/home.html',
                 controller: 'HomeCtrl'
             })
-                .state('home.fragment', {
-                    url: 'scenario/{scenarioID}/fragment-sankey/{fragmentID}',
+                .state('fragment-sankey', {
+                    url: '/fragment-sankey/{scenarioID}/{fragmentID}',
                     views: {
                         "@": {
                             templateUrl: 'fragment-sankey/fragment-sankey.html',
@@ -28,8 +28,8 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('home.process', {
-                    url: 'scenario/{scenarioID}/process-lcia/{processID}?activity',
+                .state('fragment-sankey.process', {
+                    url: '/process-lcia/{processID}?activity',
                     views: {
                         "@": {
                             templateUrl: 'process-lcia/process-lcia.html',

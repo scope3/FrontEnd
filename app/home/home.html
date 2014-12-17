@@ -15,7 +15,7 @@
             <td>{{scenario.name}}</td>
             <td>{{scenario.activityLevel | numFormat}}</td>
             <td>
-                <a ui-sref=".fragment({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
+                <a ui-sref="fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
                     {{fragments[scenario.topLevelFragmentID].name}}
                 </a>
             </td>
