@@ -31,6 +31,7 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     .tickFormat(labelFormat),
                 svg = null,
                 threshold = 0;
+
             /**
              * Initial preparation of svg element.
              */
@@ -241,8 +242,12 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     });
             }
 
-
             scope.$watch('lcia', function (newVal){
+                // Only create svg when positive results are available
+                if (svg) {
+                    svg.remove();
+                    svg = null;
+                }
                 if ((typeof newVal != 'undefined') && newVal && ("positiveResults" in scope.lcia)) {
                     if ( scope.lcia.positiveResults.length > 0 ) {
                         xScale.domain([0, +scope.lcia.positiveSum]);

@@ -3,6 +3,7 @@
  */
 angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod' ])
     .constant('API_ROOT', "http://localhost:60393/api/")
+    .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q',
         function($resource, API_ROOT, IdMapService, $q){
             var resourceService = {},   // Singleton creates specific service type objects

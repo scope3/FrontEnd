@@ -174,6 +174,7 @@ angular.module('lcaApp.fragment.sankey',
                 var fragState = FragmentNavigationService.getLast();
                 if (fragState) {
                     $scope.fragment = fragState;
+                    fragmentID = $scope.fragment.fragmentID;
                 } else {
                     $scope.fragment = FragmentService.get(fragmentID);
                     if ($scope.fragment) {
@@ -209,11 +210,10 @@ angular.module('lcaApp.fragment.sankey',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
-
                 $scope.scenario = ScenarioService.get(scenarioID);
                 if ($scope.scenario) {
                     initScopeFragment();
-                    visualizeFragment();
+                    getDataForFragment();
                 } else {
                     handleFailure("Invalid scenarioID: " + scenarioID);
                 }
@@ -255,10 +255,11 @@ angular.module('lcaApp.fragment.sankey',
              * Get all data resources
              */
             function getData() {
+                startWaiting();
                 $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load(),
-                    FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
-                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
-                    FlowForFragmentService.load({fragmentID: fragmentID}),
+//                    FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
+//                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
+//                    FlowForFragmentService.load({fragmentID: fragmentID}),
                     NodeTypeService.load()])
                     .then(handleSuccess,
                     handleFailure);
@@ -368,8 +369,6 @@ angular.module('lcaApp.fragment.sankey',
                     $scope.outputFlows = getFlowRows(node.sourceLinks);
                 }
             }
-
-            startWaiting();
 
             $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;

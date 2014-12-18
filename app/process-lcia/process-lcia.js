@@ -8,13 +8,13 @@ angular.module('lcaApp.process.LCIA',
         ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
-         'ColorCodeService', 'FragmentNavigationService',
+         'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
         function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
-                  ColorCodeService, FragmentNavigationService) {
-            var processID = $stateParams.processID,
-                scenarioID = $stateParams.scenarioID;
+                  ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID) {
+            var processID = 1,
+                scenarioID = MODEL_BASE_CASE_SCENARIO_ID;
 
             function startWaiting() {
                 $scope.alert = null;
@@ -39,7 +39,8 @@ angular.module('lcaApp.process.LCIA',
                 var positiveResults = [],
                     positiveSum = 0,
                     lciaMethod = LciaMethodService.get(result.lciaMethodID),
-                    colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]);
+                    colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
+                    activityLevel = "activityLevel" in $scope ? $scope.activityLevel : 1;
 
                 if (result.lciaScore[0].lciaDetail.length > 0) {
                     positiveResults = result.lciaScore[0].lciaDetail
@@ -47,7 +48,7 @@ angular.module('lcaApp.process.LCIA',
                             return el.result > 0;
                         });
                     positiveResults.forEach( function (p) {
-                        p.result = p.result * $scope.activityLevel;
+                        p.result = p.result * activityLevel;
                         positiveSum += p.result;
                     });
                     // Default color for method looks bad with colors in bar chart. Keep default heading color.
@@ -58,7 +59,7 @@ angular.module('lcaApp.process.LCIA',
                 }
 
                 $scope.lciaResults[lciaMethod.lciaMethodID] =
-                {   cumulativeResult : (result.lciaScore[0].cumulativeResult * $scope.activityLevel).toPrecision(4),
+                {   cumulativeResult : (result.lciaScore[0].cumulativeResult * activityLevel).toPrecision(4),
                     positiveResults : positiveResults,
                     positiveSum : positiveSum,
                     colors : colors
@@ -79,25 +80,55 @@ angular.module('lcaApp.process.LCIA',
 
             function getResults() {
                 getFlowRows();
-                $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
-                    return m.getIsActive();
-                });
                 getLciaResults();
             }
 
-            function getActivityLevel() {
+            function getStateParams() {
                 if ("activity" in $stateParams) {
                     $scope.activityLevel = +$stateParams.activity;
-                    return true;
-                } else {
-                    $log.debug("No activity level");
-                    if (!scenarioID) {
-                        scenarioID = 1;
-                    }
-                    if (!processID) {
-                        processID = 1;
-                    }
                 }
+                if ("scenarioID" in $stateParams) {
+                    scenarioID = +$stateParams.scenarioID;
+                }
+                if ("processID"in $stateParams) {
+                    processID = +$stateParams.processID;
+                }
+            }
+
+            /**
+             * Prepare view for ui-router state, fragment-sankey.process
+             * Display scenario, fragment navigation state, and process from selected fragment node.
+             */
+            function prepareViewWithFragmentNavigation() {
+                $scope.scenario = ScenarioService.get(scenarioID);
+                if ($scope.scenario) {
+                    $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
+                        $scope.scenario.topLevelFragmentID).getAll();
+                } else {
+                    handleFailure("Invalid scenario ID : ", scenarioID);
+                }
+                $scope.process = ProcessForFlowTypeService.get(processID);
+                if (!$scope.process) handleFailure("Invalid process ID : ", processID);
+            }
+
+            /**
+             * Prepare view for ui-router state, process-lcia
+             * Populate selection controls with scenarios and processes.
+             */
+            function prepareViewWithSelection() {
+                $scope.scenarios = ScenarioService.getAll();
+                // HTML has multiple scopes
+                $scope.selection.scenario = $scope.scenario = $scope.scenarios.find(function (element) {
+                    return (element["scenarioID"] === scenarioID);
+                });
+
+                var processes = ProcessForFlowTypeService.getAll();
+                processes.sort(ProcessForFlowTypeService.compareByName);
+                $scope.processes = processes;
+                $scope.selection.process = $scope.process = $scope.processes.find(function (element) {
+                    return (element["processID"] === processID);
+                });
+
             }
 
             /**
@@ -105,37 +136,39 @@ angular.module('lcaApp.process.LCIA',
              */
             function handleSuccess() {
                 if ($scope.activityLevel) {
-                    $scope.scenario = ScenarioService.get(scenarioID);
-                    $scope.process = ProcessForFlowTypeService.get(processID);
-                    $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
-                        $scope.scenario.topLevelFragmentID).getAll();
+                    prepareViewWithFragmentNavigation();
                 }
                 else {
-                    $scope.scenarios = ScenarioService.getAll();
-                    $scope.scenario = $scope.scenarios[0];
-                    $scope.processes = ProcessForFlowTypeService.getAll();
-                    $scope.process = $scope.processes[0];
+                    prepareViewWithSelection();
                 }
                 if ($scope.scenario) {
                     if ($scope.process) {
-                        getResults();
-                    } else {
-                        handleFailure("Invalid process ID : ", processID);
+                        $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
+                            return m.getIsActive();
+                        });
+                        getDataFilteredByProcess();
                     }
-                } else {
-                    handleFailure("Invalid scenario ID : ", scenarioID);
                 }
             }
 
             /**
-             * Get all data resources
+             * Get data filtered by processID
+             */
+            function getDataFilteredByProcess() {
+                $q.all([
+                    ProcessFlowService.load({processID:processID}),
+                    FlowPropertyForProcessService.load({processID: processID})])
+                    .then(getResults,
+                    handleFailure);
+            }
+
+            /**
+             * Get shared data
              */
             function getData() {
                 $q.all([ScenarioService.load(),
                     ProcessForFlowTypeService.load({flowTypeID:2}),
-                    ProcessFlowService.load({processID:processID}),
-                    LciaMethodService.load(),
-                    FlowPropertyForProcessService.load({processID: processID})])
+                    LciaMethodService.load()])
                     .then(handleSuccess,
                     handleFailure);
             }
@@ -147,7 +180,10 @@ angular.module('lcaApp.process.LCIA',
              */
             function getFlowRows() {
                 var processFlows = ProcessFlowService.getAll();
+                $scope.elementaryFlows = {};
                 $scope.flowsVisible = processFlows.length > 0;
+                $scope.inputFlows = [];
+                $scope.outputFlows = [];
                 processFlows.forEach( function (pf) {
                     var rowObj, fp;
                     switch (pf.flow.flowTypeID) {
@@ -178,27 +214,30 @@ angular.module('lcaApp.process.LCIA',
              */
             $scope.goBackToFragment = function(navIndex) {
                 FragmentNavigationService.setLast(navIndex);
-//                $state.go('fragment-sankey', {scenarioID: scenarioID,
-//                    fragmentID: $scope.scenario.topLevelFragmentID});
                 $state.go('^');
             };
 
             $scope.onScenarioChange = function() {
-                $log.debug("Scenario changed.");
-            }
+                $scope.scenario = $scope.selection.scenario;
+                scenarioID = $scope.scenario.scenarioID;
+                getLciaResults();
+            };
 
             $scope.onProcessChange = function() {
-                $log.debug("Process changed.");
-            }
+                $scope.process = $scope.selection.process;
+                processID = $scope.process.processID;
+                getDataFilteredByProcess();
+            };
 
             $scope.process = null;
             $scope.scenario = null;
+            $scope.selection = {};
             $scope.elementaryFlows = {};
             $scope.inputFlows = [];
             $scope.outputFlows = [];
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
-            getActivityLevel();
+            getStateParams();
             startWaiting();
             getData();
 

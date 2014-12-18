@@ -3,8 +3,9 @@
 
 <div class="row">
     <div class="col-md-8">
+        <div ng-if="activityLevel">
         <h4>Process LCIA</h4>
-        <dl class="dl-horizontal" ng-if="activityLevel">
+        <dl class="dl-horizontal">
             <dt>Scenario</dt>
             <dd>{{scenario.name}}</dd>
             <span ng-if="navigationStates.length">
@@ -21,20 +22,23 @@
             <dt>Process</dt>
             <dd>{{process.name}}</dd>
         </dl>
+        </div>
         <div ng-if="!activityLevel">
-            <p>
-                <label>Scenario</label>
-                <select ng-model="scenario" ng-options="s.name for s in scenarios"
+        <dl class="dl-horizontal">
+            <dt>Scenario</dt>
+            <dd>
+                <select ng-model="selection.scenario" ng-options="s.name for s in scenarios"
                         ng-change="onScenarioChange()">
                 </select>
-            </p>
-
-            <p>
-                <label>Process</label>
-                <select ng-model="process" ng-options="p.name for p in processes"
-                        ng-change="onProcessChange()" style="width:50%">
+            </dd>
+            <p></p>
+            <dt>Process</dt>
+            <dd>
+                <select ng-model="selection.process" ng-options="p.name for p in processes"
+                        ng-change="onProcessChange()" style="width:70%">
                 </select>
-            </p>
+            </dd>
+        </dl>
         </div>
         <ul class="list-unstyled">
             <li ng-repeat="method in lciaMethods" class="lcia-method">
