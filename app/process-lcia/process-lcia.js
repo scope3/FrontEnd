@@ -5,11 +5,11 @@ angular.module('lcaApp.process.LCIA',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
                  'lcaApp.fragmentNavigation.service'])
     .controller('ProcessLciaCtrl',
-        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService',
-        function ($scope, $stateParams, $state, usSpinnerService, $q, ScenarioService,
+        function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService) {
@@ -90,8 +90,13 @@ angular.module('lcaApp.process.LCIA',
                     $scope.activityLevel = +$stateParams.activity;
                     return true;
                 } else {
-                    handleFailure("Activity parameter is missing.");
-                    return false;
+                    $log.debug("No activity level");
+                    if (!scenarioID) {
+                        scenarioID = 1;
+                    }
+                    if (!processID) {
+                        processID = 1;
+                    }
                 }
             }
 
@@ -99,10 +104,18 @@ angular.module('lcaApp.process.LCIA',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
-                $scope.scenario = ScenarioService.get(scenarioID);
-                $scope.navigationService = FragmentNavigationService.setContext(scenarioID,
-                                                                                $scope.scenario.topLevelFragmentID);
-                $scope.process = ProcessForFlowTypeService.get(processID);
+                if ($scope.activityLevel) {
+                    $scope.scenario = ScenarioService.get(scenarioID);
+                    $scope.process = ProcessForFlowTypeService.get(processID);
+                    $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
+                        $scope.scenario.topLevelFragmentID).getAll();
+                }
+                else {
+                    $scope.scenarios = ScenarioService.getAll();
+                    $scope.scenario = $scope.scenarios[0];
+                    $scope.processes = ProcessForFlowTypeService.getAll();
+                    $scope.process = $scope.processes[0];
+                }
                 if ($scope.scenario) {
                     if ($scope.process) {
                         getResults();
@@ -170,6 +183,14 @@ angular.module('lcaApp.process.LCIA',
                 $state.go('^');
             };
 
+            $scope.onScenarioChange = function() {
+                $log.debug("Scenario changed.");
+            }
+
+            $scope.onProcessChange = function() {
+                $log.debug("Process changed.");
+            }
+
             $scope.process = null;
             $scope.scenario = null;
             $scope.elementaryFlows = {};
@@ -177,8 +198,8 @@ angular.module('lcaApp.process.LCIA',
             $scope.outputFlows = [];
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
-            if (getActivityLevel()) {
-                startWaiting();
-                getData();
-            }
+            getActivityLevel();
+            startWaiting();
+            getData();
+
         }]);

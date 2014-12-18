@@ -37,6 +37,15 @@ angular.module('lcaApp', [
                         }
                     }
                 })
+                .state('process-lcia', {
+                    url: '/process-lcia',
+                    views: {
+                        "@": {
+                            templateUrl: 'process-lcia/process-lcia.html',
+                            controller: 'ProcessLciaCtrl'
+                        }
+                    }
+                })
                 .state('fragment-lcia', {
                     url: '/fragment-lcia',
                     views: {
