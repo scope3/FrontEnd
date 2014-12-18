@@ -58,7 +58,7 @@ it easier to serve the files by a webserver.*
 ### Run the Application
 
 We have preconfigured the project with a simple development web server.  The simplest way to start
-this server is:
+this server is to execute (from the FrontEnd directory):
 
 ```
 npm start
@@ -66,7 +66,16 @@ npm start
 
 Now browse to the app at `http://localhost:8000/app/index.html`.
 
+NOTE: there may be firewall or other transport-level obstructions to npm's
+automatic package retrieval.  Proposed fixes vary; one that has been shown
+to work in some cases is to modify the local Git configuration to use https
+by default:
 
+```
+git config --global url."https://".insteadOf git://
+```
+
+See also this issue report: https://github.com/bower/bower/issues/689
 
 ## Repository directory structure
 
