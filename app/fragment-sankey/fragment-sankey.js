@@ -370,7 +370,7 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
-            $scope.color = { domain: ([2, 3, 4, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
+            $scope.color = { domain: ([2, 3, 5, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;

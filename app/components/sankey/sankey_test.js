@@ -39,8 +39,8 @@ describe('Unit test sankey diagram directive', function() {
             {"nodeTypeID": 1, "nodeID": 169, "nodeName": "Wastewater to Treatment", "processID": 63},
             {"nodeTypeID": 3, "nodeID": 170, "nodeName": ""},
             {"nodeTypeID": 1, "nodeID": 171, "nodeName": "Waste water treatment (contains organic load)", "processID": 187},
-            {"nodeTypeID": 4, "nodeID": 172, "nodeName": ""},
-            {"nodeTypeID": 4, "nodeID": 173, "nodeName": ""},
+            {"nodeTypeID": 5, "nodeID": 172, "nodeName": ""},
+            {"nodeTypeID": 5, "nodeID": 173, "nodeName": ""},
             {"nodeTypeID": 1, "nodeID": 174, "nodeName": "Used Oil Rejuvenation/Other", "processID": 32},
             {"nodeTypeID": 3, "nodeID": 175, "nodeName": ""},
             {"nodeTypeID": 3, "nodeID": 176, "nodeName": ""},
@@ -78,7 +78,7 @@ describe('Unit test sankey diagram directive', function() {
             {"flowID": 446, "nodeID": 179, "magnitude": 0.175463, "value": 0.17546300000001, "source": 26, "target": 28}
         ]};
 
-        $rootScope.color = { domain: ([2, 3, 4, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
+        $rootScope.color = { domain: ([2, 3, 5, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
 
 
 }));
