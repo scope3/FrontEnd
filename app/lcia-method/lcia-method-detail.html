@@ -30,3 +30,21 @@
         </dl>
     </div>
 </div>
+<div class="panel panel-default">
+    <div class="panel-heading">LCIA Characterization Factors</div>
+    <div class="panel-body">
+        <table class="table table-condensed">
+            <thead>
+            <tr><th>Flow Category</th><th>Flow Name</th><th>Factor</th></tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="f in lciaFactors">
+                <td>{{f.category}}</td>
+                <td>{{f.name}}</td>
+                <td>{{f.factor | numFormat}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

@@ -11,6 +11,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
             resourceService.ROUTES = {
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
+                "flowForFlowType" : API_ROOT + "flowtypes/:flowTypeID/flows",
                 "fragment" : API_ROOT + "fragments/:fragmentID",
                 "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
                 "fragmentStage" : API_ROOT + "fragments/:fragmentID/fragmentstages",
@@ -18,6 +19,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "flowPropertyForProcess" : API_ROOT + "processes/:processID/flowproperties",
                 "impactCategory" : API_ROOT + "impactcategories",
                 "nodeType" : "components/resources/nodetypes.json",
+                "lciaFactor" : API_ROOT + "lciamethods/:lciaMethodID/lciafactors",
                 "lciaMethod" : API_ROOT + "lciamethods",
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
                 "lciaResultForFragment" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/lciamethods/:lciaMethodID/lciaresults",
@@ -191,6 +193,11 @@ angular.module('lcaApp.resources.service')
             return ResourceService.getService('FragmentStageService', "fragmentStage", "fragmentStageID");
         }
     ])
+    .factory('FlowForFlowTypeService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('FlowForFlowTypeService', "flowForFlowType", "flowID");
+        }
+    ])
     .factory('FlowForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowForFragmentService', "flowForFragment", "flowID");
@@ -199,6 +206,11 @@ angular.module('lcaApp.resources.service')
     .factory('ImpactCategoryService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ImpactCategoryService', "impactCategory", "impactCategoryID");
+        }
+    ])
+    .factory('LciaFactorService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('LciaFactorService', "lciaFactor", "lciaID");
         }
     ])
     .factory('LciaMethodService', ['ResourceService', 'LciaMethodExtension',
