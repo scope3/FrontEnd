@@ -2,26 +2,17 @@
  * Unit test module, lcaApp.models.param
  */
 describe('Unit test Param Model service', function() {
-    var paramModelService, paramService, scenarioID, mockParams, q, log;
+    var paramModelService, scenarioID, params;
 
-    function fakeSuccessfulLoad() {
-        var deferred = q.defer();
-        deferred.resolve(mockParams);
-        return deferred.promise;
-    }
-
-    beforeEach(module('lcaApp.models.param', 'lcaApp.resources.mocks'));
+    beforeEach(module('lcaApp.models.param', 'lcaApp.mock.params'));
 
     beforeEach(inject(function(_ParamModelService_) {
         paramModelService = _ParamModelService_;
     }));
 
-    beforeEach(inject(function(_ParamService_, paramFilter, paramResponse, $q, $log) {
-        paramService = _ParamService_;
-        mockParams = paramResponse;
-        scenarioID = paramFilter.scenarioID;
-        q = $q;
-        log = $log;
+    beforeEach(inject(function( mockParams) {
+        params = mockParams.objects;
+        scenarioID = mockParams.filter.scenarioID;
     }));
 
 
@@ -29,25 +20,31 @@ describe('Unit test Param Model service', function() {
         expect(paramModelService).toBeDefined();
     });
 
-    it('should handle successful ParamService load', function() {
-        var model;
-        spyOn(paramService, 'load').andCallFake(fakeSuccessfulLoad);
-        paramModelService.load(scenarioID).then(
-            function(response) {
-                expect(response).toBeDefined();
-                expect(response.processes).toBeDefined();
-                expect(response.lciaMethods).toBeDefined();
-                expect(response.processes[43]).toBeDefined();
-                expect(response.processes[43].flows).toBeDefined();
-                expect(response.processes[43].flows[154]).toBeDefined();
-                expect(response.processes[43].flows[154].processID).toEqual(43);
-            },
-            function(err) {
-                expect(err).not.toBeDefined();
-            }
-        );
-
-        //expect(model.processes).toBeDefined();
+    it('should create a model for scenario params', function() {
+        var model =
+        paramModelService.createModel(scenarioID, params);
+        expect(model).toBeDefined();
     });
 
+    it('should index param types, 6, 8, and 10 ', function() {
+        var model = paramModelService.createModel(scenarioID, params);
+
+        params.forEach( function(p) {
+            switch(p.paramTypeID) {
+                case 6 :
+                case 8:
+                    expect(model.processes[p.processID].flows[p.flowID]["paramTypes"][p.paramTypeID]).toEqual(p);
+                    break;
+                case 10:
+                    expect(model.lciaMethods[p.lciaMethodID].flows[p.flowID]).toEqual(p);
+                    break;
+            }
+
+        });
+    });
+
+    it('should get model if created', function() {
+        expect(paramModelService.getModel(scenarioID-1)).toBeNull();
+        expect(paramModelService.createModel(scenarioID, params)).toEqual(paramModelService.getModel(scenarioID));
+    })
 });
