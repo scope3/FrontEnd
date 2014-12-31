@@ -2,16 +2,16 @@
  * Angular service for handling LCIA details.
  * Provides data model for Process LCIA bar chart.
  */
-angular.module('lcaApp.lciaDetail.service', [])
-    .factory('LciaDetailService', [ function () {
-        /*global d3 */
+angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
+    .factory('LciaDetailService', [ 'ParamModelService', function (ParamModelService) {
         function Instance() {
             var model = {},
             // Input
                 activityLevel = 1,     // Derived from fragment navigation
                 colors = [],        // Array of colors
-                methodParams = [],
-                processParams = [],
+                scenarioID = 0,
+                processID = 0,
+                lciaMethodID = 0,
                 resultDetails = [];
 
             model.activityLevel = function (_) {
@@ -30,19 +30,27 @@ angular.module('lcaApp.lciaDetail.service', [])
                 return model;
             };
 
-            model.methodParams = function (_) {
+            model.scenarioID = function (_) {
                 if (!arguments.length) {
-                    return methodParams;
+                    return scenarioID;
                 }
-                methodParams = _;
+                scenarioID = _;
                 return model;
             };
 
-            model.processParams = function (_) {
+            model.processID = function (_) {
                 if (!arguments.length) {
-                    return processParams;
+                    return processID;
                 }
-                processParams = _;
+                processID = _;
+                return model;
+            };
+
+            model.lciaMethodID = function (_) {
+                if (!arguments.length) {
+                    return lciaMethodID;
+                }
+                lciaMethodID = _;
                 return model;
             };
 
@@ -55,13 +63,20 @@ angular.module('lcaApp.lciaDetail.service', [])
             };
 
             function flowHasParam(flowID) {
-                return flowID in processParams || flowID in methodParams ;
+                return (model.processFlowParams && flowID in model.processFlowParams) ||
+                       (model.methodFlowParams && flowID in model.methodFlowParams) ;
+            }
+
+            function getFlowParams() {
+                model.processFlowParams = ParamModelService.getProcessFlowParams(scenarioID, processID);
+                model.methodFlowParams = ParamModelService.getLciaMethodFlowParams(scenarioID, lciaMethodID);
             }
 
             model.prepareBarChartData = function () {
                 var positiveResults = [],
                     positiveSum = 0;
                 if (resultDetails.length > 0) {
+                    getFlowParams();
                     positiveResults = resultDetails
                         .filter(function (el) {
                             return el.result > 0;
@@ -74,6 +89,7 @@ angular.module('lcaApp.lciaDetail.service', [])
                 }
                 model.positiveResults = positiveResults;
                 model.positiveSum = positiveSum;
+                return model;
             };
 
             return model;

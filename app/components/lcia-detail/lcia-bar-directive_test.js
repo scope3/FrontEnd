@@ -7911,7 +7911,9 @@ describe('Unit test LCIA bar chart directive', function() {
         $rootScope.lcia = {
             positiveResults : getResultWithDetails(),
             positiveSum : 0.001,
-            colors : colorbrewer.PuRd
+            colors : function () {
+                return colorbrewer.PuRd;
+            }
         };
         $rootScope.flows = getFlows();
 

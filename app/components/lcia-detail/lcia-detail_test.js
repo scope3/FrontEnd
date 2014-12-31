@@ -1,29 +1,5 @@
 describe("Unit test LCIA detail service", function() {
-    var lciaDetailService, processID, lciaMethodID, processLcia,
-        mockMethodParams = {
-            1121: {
-                "paramID": 9,
-                    "paramTypeID": 10,
-                    "scenarioID": 2,
-                    "name": "Acidification: ILCD2011 ReCiPe2008  || sulfur dioxide [Emissions to air, unspecified]",
-                    "flowID": 1121,
-                    "lciaMethodID": 17,
-                    "value": 1.16E-08
-            } },
-        mockProcessParams = {
-            154: {
-                paramTypes: {
-                    8 : {
-                        "paramID": 12,
-                        "paramTypeID": 8,
-                        "scenarioID": 2,
-                        "name": "Truck Class 6 MHD Diesel || methane [Emissions to air, unspecified]",
-                        "flowID": 154,
-                        "processID": 43,
-                        "value": 0.0006285
-                    }
-                }
-            }},
+    var lciaDetailService, scenarioID, processID, lciaMethodID, processLcia, paramModelService,
         mockColors = {
             3: ["#f7fcb9","#addd8e","#31a354"],
             4: ["#ffffcc","#c2e699","#78c679","#238443"],
@@ -35,6 +11,7 @@ describe("Unit test LCIA detail service", function() {
         };
 
     beforeEach(module('lcaApp.lciaDetail.service', 'lcaApp.mock.processLCIA'));
+    beforeEach(module('lcaApp.models.param', 'lcaApp.mock.params'));
 
     beforeEach(inject(function(_LciaDetailService_, mockProcessLCIA) {
         lciaDetailService = _LciaDetailService_;
@@ -43,14 +20,21 @@ describe("Unit test LCIA detail service", function() {
         processID = processLcia.filter.processID;
     }));
 
+    beforeEach(inject(function(_ParamModelService_, mockParams) {
+        paramModelService = _ParamModelService_;
+        paramModelService.createModel(scenarioID, mockParams.objects);
+        scenarioID = mockParams.filter.scenarioID;
+    }));
+
     it("should create instance", function() {
         expect(lciaDetailService.createInstance()).toBeDefined();
     });
 
-    it( "should accept params", function() {
+    it( "should accept context object IDs", function() {
         var dtlModel = lciaDetailService.createInstance();
-        expect( dtlModel.methodParams(mockMethodParams).methodParams()).toEqual(mockMethodParams);
-        expect( dtlModel.processParams(mockProcessParams).processParams()).toEqual(mockProcessParams);
+        expect( dtlModel.scenarioID(scenarioID).scenarioID()).toEqual(scenarioID);
+        expect( dtlModel.processID(processID).processID()).toEqual(processID);
+        expect( dtlModel.lciaMethodID(lciaMethodID).lciaMethodID()).toEqual(lciaMethodID);
     });
 
     it( "should accept color scales", function() {
@@ -84,15 +68,19 @@ describe("Unit test LCIA detail service", function() {
 
     it( "should detect flows with parameter(s)", function() {
         var dtlModel = lciaDetailService.createInstance(),
-            dtlResult = processLcia.result.lciaScore[0].lciaDetail;
-        dtlModel.resultDetails(dtlResult)
-            .methodParams(mockMethodParams)
-            .processParams(mockProcessParams)
+            dtlResult = processLcia.result.lciaScore[0].lciaDetail,
+            processFlowParams = paramModelService.getProcessFlowParams(scenarioID, processID) || {},
+            methodFlowParams = paramModelService.getLciaMethodFlowParams(scenarioID, lciaMethodID) || {};
+        dtlModel.scenarioID(scenarioID)
+            .processID(processID)
+            .lciaMethodID(lciaMethodID)
+            .resultDetails(dtlResult)
             .prepareBarChartData();
-       dtlModel.positiveResults.forEach( function(p){
+
+        dtlModel.positiveResults.forEach( function(p){
            expect(p.hasParam).toBeDefined();
            expect(p.flowID).toBeDefined();
-           expect(p.flowID === 1121 || p.flowID === 154).toEqual(p.hasParam);
+           expect(!p.hasParam || p.flowID in processFlowParams || p.flowID in methodFlowParams);
         });
     });
 });

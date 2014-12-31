@@ -3,16 +3,19 @@
 angular.module('lcaApp.process.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
-                 'lcaApp.fragmentNavigation.service'])
+                 'lcaApp.fragmentNavigation.service',
+                 'lcaApp.lciaDetail.service', 'lcaApp.models.param'])
     .controller('ProcessLciaCtrl',
         ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
+         'LciaDetailService', 'ParamService', 'ParamModelService',
         function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
-                  ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID) {
+                  ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
+                  LciaDetailService, ParamService, ParamModelService) {
             var processID = 1,
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID;
 
@@ -36,21 +39,19 @@ angular.module('lcaApp.process.LCIA',
              * @param {{ lciaMethodID : Number, lciaScore : Array }} result
              */
             function extractResult(result) {
-                var positiveResults = [],
-                    positiveSum = 0,
+                var lciaDetail = null,
                     lciaMethod = LciaMethodService.get(result.lciaMethodID),
                     colors = ColorCodeService.getImpactCategoryColors(lciaMethod["impactCategoryID"]),
                     activityLevel = "activityLevel" in $scope ? $scope.activityLevel : 1;
 
                 if (result.lciaScore[0].lciaDetail.length > 0) {
-                    positiveResults = result.lciaScore[0].lciaDetail
-                        .filter(function (el) {
-                            return el.result > 0;
-                        });
-                    positiveResults.forEach( function (p) {
-                        p.result = p.result * activityLevel;
-                        positiveSum += p.result;
-                    });
+                    lciaDetail = LciaDetailService.createInstance();
+                    lciaDetail.colors(colors)
+                        .scenarioID(scenarioID)
+                        .processID(processID)
+                        .lciaMethodID(result.lciaMethodID)
+                        .resultDetails(result.lciaScore[0].lciaDetail)
+                        .prepareBarChartData();
                     // Default color for method looks bad with colors in bar chart. Keep default heading color.
                     $scope.panelHeadingStyle[lciaMethod.lciaMethodID] = {};
                 }
@@ -60,9 +61,7 @@ angular.module('lcaApp.process.LCIA',
 
                 $scope.lciaResults[lciaMethod.lciaMethodID] =
                 {   cumulativeResult : (result.lciaScore[0].cumulativeResult * activityLevel).toPrecision(4),
-                    positiveResults : positiveResults,
-                    positiveSum : positiveSum,
-                    colors : colors
+                    detail : lciaDetail
                 };
             }
 
@@ -78,8 +77,19 @@ angular.module('lcaApp.process.LCIA',
 
             }
 
-            function getResults() {
+            /**
+             * Get results from process filtered queries
+             */
+            function getProcessResults() {
                 getFlowRows();
+                getLciaResults();
+            }
+
+            /**
+             * Get results from scenario filtered queries
+             */
+            function getScenarioResults() {
+                ParamModelService.createModel(scenarioID, ParamService.getAll());
                 getLciaResults();
             }
 
@@ -146,7 +156,9 @@ angular.module('lcaApp.process.LCIA',
                         $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
                             return m.getIsActive();
                         });
-                        getDataFilteredByProcess();
+                        getFlowRows();
+                        ParamModelService.createModel(scenarioID, ParamService.getAll());
+                        getLciaResults();
                     }
                 }
             }
@@ -158,17 +170,29 @@ angular.module('lcaApp.process.LCIA',
                 $q.all([
                     ProcessFlowService.load({processID:processID}),
                     FlowPropertyForProcessService.load({processID: processID})])
-                    .then(getResults,
+                    .then(getProcessResults,
                     handleFailure);
             }
 
             /**
-             * Get shared data
+             * Get data filtered by scenarioID
+             */
+            function getDataFilteredByScenario() {
+                    ParamService.load({scenarioID:scenarioID})
+                    .then(getScenarioResults,
+                    handleFailure);
+            }
+
+            /**
+             * Get all data, except for LCIA results
              */
             function getData() {
                 $q.all([ScenarioService.load(),
                     ProcessForFlowTypeService.load({flowTypeID:2}),
-                    LciaMethodService.load()])
+                    LciaMethodService.load(),
+                    ProcessFlowService.load({processID:processID}),
+                    FlowPropertyForProcessService.load({processID: processID}),
+                    ParamService.load({scenarioID:scenarioID})])
                     .then(handleSuccess,
                     handleFailure);
             }
@@ -220,7 +244,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.onScenarioChange = function() {
                 $scope.scenario = $scope.selection.scenario;
                 scenarioID = $scope.scenario.scenarioID;
-                getLciaResults();
+                getDataFilteredByScenario();
             };
 
             $scope.onProcessChange = function() {

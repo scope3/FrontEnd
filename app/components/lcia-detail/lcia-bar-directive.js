@@ -64,6 +64,7 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                         details.push(d);
                     } else {
                         rolledImpact.result += d.result;
+                        rolledImpact.hasParam = rolledImpact.hasParam || d.hasParam;
                     }
                 });
                 if (rolledImpact.result > 0) {
@@ -98,7 +99,7 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                 } else if (flowList.length < 9) {
                     colorClassSize = flowList.length;
                 }
-                reverseColors = scope.lcia.colors[colorClassSize].slice();
+                reverseColors = scope.lcia.colors()[colorClassSize].slice();
                 reverseColors.reverse();
                 colorScale.range(reverseColors);
                 /**
@@ -139,9 +140,10 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
              * @param {number} catX          X coordinate for flow category
              * @param {number} flowX          X coordinate for flow name
              * @param {number} resultX        X coordinate for result header
+             * @param {number} paramX        X coordinate for param header
              * @param {number} headerY        Y coordinate for headers
              */
-            function makeLegendHeader(catX, flowX, resultX, headerY) {
+            function makeLegendHeader(catX, flowX, resultX, paramX, headerY) {
                 var legendGroup = svg.select(".legend-group");
 
                 legendGroup.append("text").attr({
@@ -162,7 +164,12 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     y: headerY
                 })
                     .text("LCIA Result");
-
+                legendGroup.append("text").attr({
+                    class: "legend-header",
+                    x: paramX,
+                    y: headerY
+                })
+                    .text("Param");
             }
 
             /**
@@ -178,11 +185,11 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     boxSize = 18,
                     colPadding = textPadding,
                     textY = 9,
-                    colXs = [0, boxSize + colPadding, width - 275, width - 75],
+                    colXs = [0, boxSize + colPadding, width - 350, width - 125, width - 30],
                     legend,
                     newRows;
 
-                makeLegendHeader(colXs[1], colXs[2], colXs[3], textY);
+                makeLegendHeader(colXs[1], colXs[2], colXs[3], colXs[4], textY);
                 // Update legend data
                 legend = svg.select(".legend-group").selectAll(".legend").data(flowData);
                 newRows = legend.enter().append("g").attr("class", "legend");
@@ -208,6 +215,12 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     .attr("y", textY)
                     .attr("dy", ".35em")
                     .attr("class", "lcia-result");
+                newRows.append("text")
+                    .attr("x", colXs[4])
+                    .attr("y", textY)
+                    .attr("dx", "1em")
+                    .attr("dy", ".35em")
+                    .attr("class", "param-check");
                 // Remove unused rows
                 //legend.exit().remove();
 
@@ -239,6 +252,10 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                     .text(function (d) {
                         //return d.result.toPrecision(4);
                         return legendFormat(d.result);
+                    });
+                legend.selectAll(".param-check")
+                    .text(function (d) {
+                        return d.hasParam ? "X" : "";
                     });
             }
 

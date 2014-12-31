@@ -118,6 +118,30 @@ angular.module('lcaApp.models.param', [] )
                 }
             };
 
+            svc.getProcessFlowParams = function(scenarioID, processID) {
+                if (scenarioID in model.scenarios && model.scenarios[scenarioID] &&
+                    "processes" in model.scenarios[scenarioID] &&
+                    processID in model.scenarios[scenarioID].processes &&
+                    "flows" in model.scenarios[scenarioID].processes[processID]) {
+                    return model.scenarios[scenarioID].processes[processID].flows;
+                }
+                else {
+                    return null;
+                }
+            };
+
+            svc.getLciaMethodFlowParams = function(scenarioID, lciaMethodID) {
+                if (scenarioID in model.scenarios && model.scenarios[scenarioID] &&
+                    "lciaMethods" in model.scenarios[scenarioID] &&
+                    lciaMethodID in model.scenarios[scenarioID].lciaMethods &&
+                    "flows" in model.scenarios[scenarioID].lciaMethods[lciaMethodID]) {
+                    return model.scenarios[scenarioID].lciaMethods[lciaMethodID].flows;
+                }
+                else {
+                    return null;
+                }
+            };
+
             return svc;
         }
     );
