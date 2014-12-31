@@ -1,8 +1,8 @@
 /**
  * Directive for reusable LCIA bar chart
  */
-angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
-    .directive('lciaBarChart', ['FormatService', function( FormatService ) {
+angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
+    .directive('lciaBarChart', ['FormatService', 'NameService', function( FormatService, NameService ) {
 
         function link(scope, element, attrs) {
 
@@ -237,7 +237,8 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format'])
                         if (d.flowID === 0) {
                             return "Aggregate";
                         } else if (d.flowID in scope.flows){
-                            return scope.flows[d.flowID].category;
+                            var catName = scope.flows[d.flowID].category;
+                            return NameService.shorten(catName, 30);
                         }
                     });
                 legend.selectAll(".flow-name")
