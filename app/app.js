@@ -13,9 +13,9 @@ angular.module('lcaApp', [
     'lcaApp.version'])
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
         function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
-            $urlRouterProvider.otherwise("/");
+            $urlRouterProvider.otherwise("");
             $stateProvider.state('home', {
-                url: "/",
+                url: "",
                 templateUrl: 'home/home.html',
                 controller: 'HomeCtrl'
             })
