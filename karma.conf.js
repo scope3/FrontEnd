@@ -20,7 +20,6 @@ module.exports = function(config){
       'app/fragment-sankey/**/*.js',
       'app/lcia-method/**/*.js',
       'app/process-lcia/**/*.js',
-      'app/scenarios/**/*.js'
     ],
 
     autoWatch : true,
