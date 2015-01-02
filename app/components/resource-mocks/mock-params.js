@@ -192,4 +192,17 @@ angular.module('lcaApp.mock.params', [])
             }
         ]
     })
+    .factory('MockParamService', ['mockParams', '$q',
+        function (mockParams, $q) {
+            var svc = {};
+
+            svc.load = function () {
+                var deferred = $q.defer();
+                deferred.resolve(mockParams.objects);
+                return deferred.promise;
+            };
+
+            return svc;
+
+        }])
 ;

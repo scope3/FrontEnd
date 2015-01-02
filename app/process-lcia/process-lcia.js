@@ -10,12 +10,12 @@ angular.module('lcaApp.process.LCIA',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
-         'LciaDetailService', 'ParamService', 'ParamModelService',
+         'LciaDetailService', 'ParamModelService',
         function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
-                  LciaDetailService, ParamService, ParamModelService) {
+                  LciaDetailService, ParamModelService) {
             var processID = 1,
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID;
 
@@ -89,7 +89,6 @@ angular.module('lcaApp.process.LCIA',
              * Get results from scenario filtered queries
              */
             function getScenarioResults() {
-                ParamModelService.createModel(scenarioID, ParamService.getAll());
                 getLciaResults();
             }
 
@@ -157,7 +156,6 @@ angular.module('lcaApp.process.LCIA',
                             return m.getIsActive();
                         });
                         getFlowRows();
-                        ParamModelService.createModel(scenarioID, ParamService.getAll());
                         getLciaResults();
                     }
                 }
@@ -178,7 +176,7 @@ angular.module('lcaApp.process.LCIA',
              * Get data filtered by scenarioID
              */
             function getDataFilteredByScenario() {
-                    ParamService.load({scenarioID:scenarioID})
+                    ParamModelService.load(scenarioID)
                     .then(getScenarioResults,
                     handleFailure);
             }
@@ -192,7 +190,7 @@ angular.module('lcaApp.process.LCIA',
                     LciaMethodService.load(),
                     ProcessFlowService.load({processID:processID}),
                     FlowPropertyForProcessService.load({processID: processID}),
-                    ParamService.load({scenarioID:scenarioID})])
+                    ParamModelService.load(scenarioID)])
                     .then(handleSuccess,
                     handleFailure);
             }

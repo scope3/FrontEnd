@@ -47,9 +47,9 @@
         }
     }}}
  */
-angular.module('lcaApp.models.param', [] )
-    .factory('ParamModelService',
-        function() {
+angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
+    .factory('ParamModelService', ['ParamService', '$q',
+        function(ParamService, $q) {
             var svc = {},
                 model = { scenarios : {} };
 
@@ -118,6 +118,18 @@ angular.module('lcaApp.models.param', [] )
                 }
             };
 
+            svc.load = function( scenarioID) {
+                var deferred = $q.defer();
+                ParamService.load({scenarioID: scenarioID})
+                    .then(function(response) {
+                        deferred.resolve(svc.createModel(scenarioID, response));
+                    },
+                    function(err) {
+                        deferred.reject("Param Model load failed. " + err);
+                    });
+                return deferred.promise;
+            };
+
             svc.getProcessFlowParams = function(scenarioID, processID) {
                 if (scenarioID in model.scenarios && model.scenarios[scenarioID] &&
                     "processes" in model.scenarios[scenarioID] &&
@@ -144,4 +156,4 @@ angular.module('lcaApp.models.param', [] )
 
             return svc;
         }
-    );
+    ]);
