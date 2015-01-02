@@ -1,22 +1,24 @@
 {
-    "name": "lca-spa",
-    "version": "0.0.0",
-    "private": true,
-    "dependencies": {
-        "angular": "1.2.x",
-        "angular-bootstrap": null,
-        "angular-local-storage": null,
-        "angular-resource": "1.2.x",
-        "angular-loader": "1.2.x",
-        "angular-mocks": "1.2.x",
-        "bootstrap": "~3.2",
-        "d3": "~3",
-        "d3-plugins": null,
-        "d3-tip": null,
-        "colorbrewer": null,
-        "angular-spinner": null,
-        "normalize.css": null,
-        "array.prototype.find": null,
-        "angular-ui-router": "0.2.x"
-    }
+  "name": "lca-spa",
+  "version": "0.0.0",
+  "private": true,
+  "dependencies": {
+    "angular": "1.3.x",
+    "angular-bootstrap": null,
+    "angular-local-storage": null,
+    "angular-resource": "1.3.x",
+    "angular-mocks": "1.3.x",
+    "bootstrap": "~3.2",
+    "d3": "~3",
+    "d3-plugins": null,
+    "d3-tip": null,
+    "colorbrewer": null,
+    "angular-spinner": null,
+    "normalize.css": null,
+    "array.prototype.find": null,
+    "angular-ui-router": "0.2.x"
+  },
+  "resolutions": {
+    "angular": "1.3.x"
+  }
 }
