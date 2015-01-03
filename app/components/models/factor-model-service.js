@@ -32,9 +32,9 @@
     }
 }
  */
-angular.module('lcaApp.models.lciaFactor', [] )
-    .factory('LciaFactorModelService',
-        function() {
+angular.module('lcaApp.models.lciaFactor', ['lcaApp.resources.service'] )
+    .factory('LciaFactorModelService', ['LciaFactorService', '$q',
+        function(LciaFactorService, $q) {
             var svc = {},
                 model = { lciaMethods : {} };
 
@@ -87,6 +87,24 @@ angular.module('lcaApp.models.lciaFactor', [] )
                 }
             };
 
+            /**
+             * Load LCIA factor resources
+             * @param {Number} lciaMethodID   lciaMethodID filter
+             * @returns {*} promise, model branch for the LCIA method
+             */
+            svc.load = function( lciaMethodID) {
+                var deferred = $q.defer();
+                LciaFactorService.load({lciaMethodID: lciaMethodID})
+                    .then(function(response) {
+                        deferred.resolve(svc.createModel(lciaMethodID, response));
+                    },
+                    function(err) {
+                        deferred.reject("LCIA factor model load failed. " + err);
+                    });
+                return deferred.promise;
+            };
+
             return svc;
         }
+        ]
     );

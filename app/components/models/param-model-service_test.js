@@ -45,19 +45,7 @@ describe('Unit test Param Model service', function() {
 
     it('should index param types, 6, 8, and 10 ', function() {
         var model = paramModelService.createModel(scenarioID, params);
-
-        params.forEach( function(p) {
-            switch(p.paramTypeID) {
-                case 6 :
-                case 8:
-                    expect(model.processes[p.processID].flows[p.flowID]["paramTypes"][p.paramTypeID]).toEqual(p);
-                    break;
-                case 10:
-                    expect(model.lciaMethods[p.lciaMethodID].flows[p.flowID]).toEqual(p);
-                    break;
-            }
-
-        });
+        testModel(model);
     });
 
     it('should get model if created', function() {
@@ -66,13 +54,30 @@ describe('Unit test Param Model service', function() {
     });
 
     it('should load param resources', function() {
-        paramModelService.load(scenarioID)
-            .then(function(response) {
-                expect(response).toBeDefined();
-                testModel(response);
-            },
-            function(err) {
-                expect(err).toBeFalsy();
-            })
+        expect(paramModelService.load(scenarioID)).toBeDefined();
+
+        /** Still cannot figure out to test promise in jasmine
+        runs(function() {
+            waitFlag = false;
+            paramModelService.load(scenarioID)
+                .then(
+                function(response) {
+                    waitFlag = true;
+                },
+                function(err) {
+                    waitFlag = true;
+                })
+            }
+        );
+
+        waitsFor(function() {
+            return waitFlag;
+        }, "The model should be loaded", 1500);
+
+        runs(function() {
+            expect(paramModelService.getModel(scenarioID)).toBeDefined();
+            testModel(paramModelService.getModel(scenarioID));
+        });
+         */
     });
 });

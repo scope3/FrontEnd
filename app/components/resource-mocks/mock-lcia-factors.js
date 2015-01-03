@@ -243,4 +243,16 @@ angular.module('lcaApp.mock.lciaFactors', [])
             }
         ]
     })
+    .factory('MockLciaFactorService', ['mockLciaFactors', '$q',
+        function (mockLciaFactors, $q) {
+            var svc = {};
+
+            svc.load = function () {
+                var deferred = $q.defer();
+                deferred.resolve(mockLciaFactors.objects);
+                return deferred.promise;
+            };
+
+            return svc;
+        }])
 ;

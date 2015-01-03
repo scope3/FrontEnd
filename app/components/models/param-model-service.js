@@ -118,6 +118,11 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
                 }
             };
 
+            /**
+             * Load param resources
+             * @param {Number} scenarioID   ScenarioID filter
+             * @returns {*} promise, model branch for the scenario
+             */
             svc.load = function( scenarioID) {
                 var deferred = $q.defer();
                 ParamService.load({scenarioID: scenarioID})

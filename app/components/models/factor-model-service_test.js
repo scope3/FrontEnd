@@ -4,7 +4,7 @@
 describe('Unit test Lciafactor Model service', function() {
     var lciaFactorModelService, lciaMethodID, lciaFactors;
 
-    beforeEach(module('lcaApp.models.lciaFactor', 'lcaApp.mock.lciaFactors'));
+    beforeEach(module('lcaApp.models.lciaFactor', 'lcaApp.mock.lciaFactors', 'lcaApp.resources.service'));
 
     beforeEach(inject(function(_LciaFactorModelService_) {
         lciaFactorModelService = _LciaFactorModelService_;
@@ -15,6 +15,9 @@ describe('Unit test Lciafactor Model service', function() {
         lciaMethodID = mockLciaFactors.filter.lciaMethodID;
     }));
 
+    beforeEach(inject(function( _LciaFactorService_, _MockLciaFactorService_) {
+        spyOn(_LciaFactorService_, "load").andCallFake(_MockLciaFactorService_.load);
+    }));
 
     it('LciaFactorModelService should have been injected', function() {
         expect(lciaFactorModelService).toBeDefined();
@@ -37,5 +40,9 @@ describe('Unit test Lciafactor Model service', function() {
     it('should get model if created', function() {
         expect(lciaFactorModelService.getModel(lciaMethodID-1)).toBeNull();
         expect(lciaFactorModelService.createModel(lciaMethodID, lciaFactors)).toEqual(lciaFactorModelService.getModel(lciaMethodID));
-    })
+    });
+
+    it('should load LCIA factor resources', function() {
+        expect(lciaFactorModelService.load(lciaMethodID)).toBeDefined();
+    });
 });
