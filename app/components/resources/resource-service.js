@@ -7,7 +7,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q',
         function($resource, API_ROOT, IdMapService, $q){
             var resourceService = {},   // Singleton creates specific service type objects
-                services = {};          // Services created for, and shared by controllers
+                services = {},          // Services created for, and shared by controllers
+                authToken = '2514bc8';  // Authentication token, will be obtained from login
 
             resourceService.ROUTES = {
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
@@ -40,6 +41,12 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 }
             };
 
+            resourceService.addAuthParam = function( filter) {
+                var paramFilter = filter || {};
+                paramFilter.auth = authToken;
+                return paramFilter;
+            };
+
             /**
              * Create service object for a particular route
              * @param {String} routeKey   Key to ROUTES
@@ -61,12 +68,13 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                  * @returns promise of loaded resources
                  */
                 svc.load = function(filter) {
-                    var d = $q.defer();
-                    if (filter === svc.loadFilter && svc.objects) {
+                    var d = $q.defer(),
+                        authFilter = resourceService.addAuthParam(filter);
+                    if (authFilter === svc.loadFilter && svc.objects) {
                         d.resolve(svc.objects);
                     } else {
-                        svc.loadFilter = filter;
-                        svc.objects = svc.resource.query( filter,
+                        svc.loadFilter = authFilter;
+                        svc.objects = svc.resource.query( authFilter,
                             function(objects) {
                                 if (svc.extensionFactory) {
                                     objects.forEach( function (o) {
@@ -253,7 +261,7 @@ angular.module('lcaApp.resources.service')
                 resultSvc = {};
 
             resultSvc.get = function(filter, callback) {
-                return resource.get(filter, callback);
+                return resource.get(ResourceService.addAuthParam(filter), callback);
             };
 
             return resultSvc;
@@ -265,7 +273,7 @@ angular.module('lcaApp.resources.service')
                 resultSvc = {};
 
             resultSvc.get = function(filter, callback) {
-                return resource.get(filter, callback);
+                return resource.get(ResourceService.addAuthParam(filter), callback);
             };
 
             return resultSvc;
