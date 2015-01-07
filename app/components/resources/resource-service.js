@@ -34,10 +34,18 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
             resourceService.getResource = function( routeKey) {
                 if ( routeKey in this.ROUTES) {
-                    return $resource( this.ROUTES[routeKey], {}, {
-                        get: {method: 'GET', cache: true, isArray: false},
-                        query: {method: 'GET', cache: true, isArray: true}
-                    });
+                    var actions = { } ;
+                    if (routeKey === "lciaResultForFragment" || routeKey === "lciaResultForProcess") {
+                        actions.get = {method: 'GET', cache: false, isArray: false };
+                    } else {
+                        actions.query = {method: 'GET', cache: true, isArray: true};
+                    }
+                    if (routeKey === "scenario" || routeKey === "param") {
+                        actions.create = { method: 'POST'};
+                        actions.update = { method: 'PUT' };
+                        actions.delete = { method: 'DELETE' };
+                    }
+                    return $resource(this.ROUTES[routeKey], {}, actions);
                 }
             };
 
