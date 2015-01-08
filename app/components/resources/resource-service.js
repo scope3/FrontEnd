@@ -9,7 +9,15 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
         function($resource, API_ROOT, IdMapService, $q){
             var resourceService = {},   // Singleton creates specific service type objects
                 services = {},          // Services created for, and shared by controllers
-                authToken = '2514bc8';  // Authentication token, will be obtained from login
+                authToken = '2514bc8', // Authentication token. Placeholder, to be obtained from login in the future
+                actions = {             // Set of all web API actions
+//                    get: {method: 'GET', cache: false, isArray: false}, // Used to get detailed LCIA results for one method
+//                    query: {method: 'GET', cache: true, isArray: true}, // Get array of resources
+//                    // Following actions are only used with scenarios and params
+//                    create: { method: 'POST'},
+                    update: { method: 'PUT' }
+//                    , delete: { method: 'DELETE' }
+                };
 
             resourceService.ROUTES = {
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
@@ -35,17 +43,6 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
             resourceService.getResource = function( routeKey) {
                 if ( routeKey in this.ROUTES) {
-                    var actions = { } ;
-                    if (routeKey === "lciaResultForFragment" || routeKey === "lciaResultForProcess") {
-                        actions.get = {method: 'GET', cache: false, isArray: false };
-                    } else {
-                        actions.query = {method: 'GET', cache: true, isArray: true};
-                    }
-                    if (routeKey === "scenario" || routeKey === "param") {
-                        actions.create = { method: 'POST'};
-                        actions.update = { method: 'PUT' };
-                        actions.delete = { method: 'DELETE' };
-                    }
                     return $resource(this.ROUTES[routeKey], {}, actions);
                 }
             };
@@ -150,6 +147,13 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 return svc;
             };
 
+            resourceService.addChangeMethods = function(svc) {
+                svc.create = function (obj, successCB, errorCB) {
+                    svc.objects = null;
+                    svc.resource.save( resourceService.addAuthParam(), obj, successCB, errorCB);
+                };
+            };
+
             /**
              * Create service if not already created.
              * @param {String} serviceName    Key to service object
@@ -159,9 +163,29 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
              */
             resourceService.getService = function (serviceName, routeKey, idName) {
                 if (! (serviceName in services)) {
-                    services[serviceName] = resourceService.createService(routeKey, idName);
+                    var svc = resourceService.createService(routeKey, idName);
+                    if (routeKey === "scenario" || routeKey === "param") {
+                        resourceService.addChangeMethods(svc);
+                    }
+                    services[serviceName] = svc;
                 }
                 return services[serviceName];
+            };
+
+            /**
+             * Create a service to get single resource without caching.
+             * @param serviceName
+             * @returns {{}}
+             */
+            resourceService.createSimpleGetService = function (serviceName) {
+                var resource = resourceService.getResource(serviceName),
+                    svc = {};
+
+                svc.get = function(filter, callback) {
+                    return resource.get(resourceService.addAuthParam(filter), callback);
+                };
+
+                return svc;
             };
 
             return resourceService;
@@ -266,25 +290,11 @@ angular.module('lcaApp.resources.service')
 angular.module('lcaApp.resources.service')
     .factory('LciaResultForProcessService', ['ResourceService',
         function(ResourceService){
-            var resource = ResourceService.getResource("lciaResultForProcess"),
-                resultSvc = {};
-
-            resultSvc.get = function(filter, callback) {
-                return resource.get(ResourceService.addAuthParam(filter), callback);
-            };
-
-            return resultSvc;
+            return ResourceService.createSimpleGetService("lciaResultForProcess");
         }
     ])
     .factory('LciaResultForFragmentService', ['ResourceService',
         function(ResourceService){
-            var resource = ResourceService.getResource("lciaResultForFragment"),
-                resultSvc = {};
-
-            resultSvc.get = function(filter, callback) {
-                return resource.get(ResourceService.addAuthParam(filter), callback);
-            };
-
-            return resultSvc;
+            return ResourceService.createSimpleGetService("lciaResultForFragment");
         }
     ]);

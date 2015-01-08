@@ -139,5 +139,17 @@ describe('Unit test resource factories', function () {
             [ "impactCategoryID",
                 "name"]);
     }));
+
+    it('ScenarioService should be able to create scenario', inject(function (ScenarioService) {
+        var scenario = {name: "test scenario", topLevelFragmentID: 8};
+        // Callbacks are not invoked during the test, so this is really just a usage example
+        ScenarioService.create(scenario,
+        function() {
+            expect(scenario.scenarioID).toBeDefined();
+        },
+        function(errResponse) {
+            expect(errResponse).toBeDefined();
+        });
+    }));
 });
 

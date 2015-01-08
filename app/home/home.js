@@ -8,6 +8,13 @@ angular.module('lcaApp.home',
     function($scope, $window, usSpinnerService, ScenarioService, FragmentService, LciaMethodService, $q ) {
         var failure = false;
 
+        $scope.fragments = {};
+
+        $scope.createScenario = function() {
+            var scenario = { name: "test scenario", topLevelFragmentID : 8 };
+            ScenarioService.create(scenario, addScenario, handleFailure);
+        };
+
         function stopWaiting() {
             usSpinnerService.stop("spinner-lca");
         }
@@ -26,6 +33,11 @@ angular.module('lcaApp.home',
             }
         }
 
+        function addScenario(scenario) {
+            $scope.fragments[scenario.topLevelFragmentID] = FragmentService.get(scenario.topLevelFragmentID);
+            $scope.scenarios.push(scenario);
+        }
+
         function displayScenarios() {
             var scenarios = ScenarioService.getAll();
             scenarios.forEach(function (scenario) {
@@ -42,8 +54,6 @@ angular.module('lcaApp.home',
             });
             $scope.lciaMethods = lciaMethods;
         }
-
-        $scope.fragments = {};
 
         startWaiting();
         $q.all([ScenarioService.load(), FragmentService.load(), LciaMethodService.load()]).then (
