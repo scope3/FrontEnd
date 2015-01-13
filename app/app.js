@@ -10,6 +10,7 @@ angular.module('lcaApp', [
     'lcaApp.process.LCIA',
     'lcaApp.fragment.LCIA',
     'lcaApp.lciaMethod.detail',
+    'lcaApp.scenario.edit',
     'lcaApp.version'])
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
         function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
@@ -61,6 +62,15 @@ angular.module('lcaApp', [
                     "@": {
                         templateUrl: 'lcia-method/lcia-method-detail.html',
                         controller: 'LciaMethodDetailController'
+                    }
+                }
+            })
+            .state('new-scenario', {
+                url: '/scenario/new',
+                views: {
+                    "@": {
+                        templateUrl: 'scenario/scenario-edit.html',
+                        controller: 'ScenarioEditController'
                     }
                 }
             });

@@ -1,0 +1,20 @@
+
+
+<form ng-submit="saveScenario()">
+    <legend ng-show="scenario.scenarioID">Edit Scenario</legend>
+    <legend ng-hide="scenario.scenarioID">New Scenario</legend>
+    <div class="form-group">
+        <label for="inputName">Name</label>
+        <input type="text" class="form-control" id="inputName" ng-model="scenario.name" required>
+    </div>
+
+    <div class="form-group">
+        <label for="selectFragment">Top Level Fragment</label>
+        <select id="selectFragment" class="form-control" ng-model="scenario.topLevelFragmentID"
+                    ng-options="fragment.fragmentID as fragment.name for fragment in fragments" required></select>
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-default">Save</button>
+    </div>
+</form>

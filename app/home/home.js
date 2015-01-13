@@ -3,16 +3,15 @@
 angular.module('lcaApp.home',
     ['lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
 
-.controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService',
+.controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService', '$state',
         'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
-    function($scope, $window, usSpinnerService, ScenarioService, FragmentService, LciaMethodService, $q ) {
+    function($scope, $window, usSpinnerService, $state, ScenarioService, FragmentService, LciaMethodService, $q ) {
         var failure = false;
 
         $scope.fragments = {};
 
         $scope.createScenario = function() {
-            var scenario = { name: "test scenario", topLevelFragmentID : 8 };
-            ScenarioService.create(scenario, addScenario, handleFailure);
+            $state.go("new-scenario");
         };
 
         function stopWaiting() {
@@ -31,11 +30,6 @@ angular.module('lcaApp.home',
                 //$window.alert(errMsg);
                 $scope.alert = { type: "danger", msg: errMsg };
             }
-        }
-
-        function addScenario(scenario) {
-            $scope.fragments[scenario.topLevelFragmentID] = FragmentService.get(scenario.topLevelFragmentID);
-            $scope.scenarios.push(scenario);
         }
 
         function displayScenarios() {
