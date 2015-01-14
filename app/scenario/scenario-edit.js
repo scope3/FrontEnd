@@ -8,10 +8,21 @@ angular.module('lcaApp.scenario.edit',
      'ScenarioService', 'FragmentService',
         function ($scope, $state, $stateParams, $q,
                   ScenarioService, FragmentService) {
+            var existingScenario = null;
 
-            $scope.saveScenario = function () {
-                if ( ! $scope.scenarioID) {
-                    ScenarioService.create($scope.scenario, goHome, handleFailure);
+
+            $scope.save = function () {
+                if ( $scope.form.$valid ) {
+                    if (!existingScenario) {
+                        ScenarioService.create($scope.scenario, goHome, handleFailure);
+                    }
+                }
+            };
+
+            $scope.revertChanges = function () {
+                if ( ! existingScenario) {
+                    $scope.scenario = null;
+                    goHome();
                 }
             };
 
@@ -29,7 +40,7 @@ angular.module('lcaApp.scenario.edit',
                 }
                 else {
                     // Create scenario
-                    $scope.scenario = { name: "", topLevelFragmentID: null};
+                    $scope.scenario = { name: "", activityLevel: 1, topLevelFragmentID: null};
                     $scope.fragments = FragmentService.getAll();
                 }
             }

@@ -1,20 +1,28 @@
-
-
-<form ng-submit="saveScenario()">
+<form name="form" novalidate >
     <legend ng-show="scenario.scenarioID">Edit Scenario</legend>
     <legend ng-hide="scenario.scenarioID">New Scenario</legend>
-    <div class="form-group">
+    <div class="form-group required">
         <label for="inputName">Name</label>
         <input type="text" class="form-control" id="inputName" ng-model="scenario.name" required>
     </div>
 
-    <div class="form-group">
+    <div class="form-group required">
         <label for="selectFragment">Top Level Fragment</label>
         <select id="selectFragment" class="form-control" ng-model="scenario.topLevelFragmentID"
                     ng-options="fragment.fragmentID as fragment.name for fragment in fragments" required></select>
     </div>
 
     <div class="form-group">
-        <button type="submit" class="btn btn-default">Save</button>
+        <label for="inputAL">Activity Level</label>
+        <input type="number" min="1" class="form-control" id="inputAL" ng-model="scenario.activityLevel" >
+    </div>
+
+    <div class="form-group">
+        <button type="submit" class="btn btn-default" ng-disabled="form.$submitted || form.$invalid" ng-click="save()">
+            Save
+        </button>
+        <button type="button" class="btn btn-default" ng-disabled="form.$submitted" ng-click="revertChanges()">
+            Cancel
+        </button>
     </div>
 </form>
