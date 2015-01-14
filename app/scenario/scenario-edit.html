@@ -17,8 +17,8 @@
         <input type="number" min="1" class="form-control" id="inputAL" ng-model="scenario.activityLevel" >
     </div>
 
-    <div class="form-group">
-        <button type="submit" class="btn btn-default" ng-disabled="form.$submitted || form.$invalid" ng-click="save()">
+    <div class="form-group pull-right" >
+        <button type="submit" class="btn btn-primary" ng-disabled="form.$submitted || form.$invalid" ng-click="save()">
             Save
         </button>
         <button type="button" class="btn btn-default" ng-disabled="form.$submitted" ng-click="revertChanges()">
