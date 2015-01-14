@@ -47,6 +47,7 @@ angular.module('lcaApp.process.LCIA',
                 if (result.lciaScore[0].lciaDetail.length > 0) {
                     lciaDetail = LciaDetailService.createInstance();
                     lciaDetail.colors(colors)
+                        .activityLevel(activityLevel)
                         .scenarioID(scenarioID)
                         .processID(processID)
                         .lciaMethodID(result.lciaMethodID)
@@ -201,7 +202,9 @@ angular.module('lcaApp.process.LCIA',
              * flow name, magnitude and unit associated with reference flow property.
              */
             function getFlowRows() {
-                var processFlows = ProcessFlowService.getAll();
+                var processFlows = ProcessFlowService.getAll(),
+                    activityLevel = "activityLevel" in $scope ? $scope.activityLevel : 1;
+
                 $scope.elementaryFlows = {};
                 $scope.flowsVisible = processFlows.length > 0;
                 $scope.inputFlows = [];
@@ -213,7 +216,7 @@ angular.module('lcaApp.process.LCIA',
                             fp = FlowPropertyForProcessService.get(pf.flow["referenceFlowPropertyID"]);
                             rowObj = {
                                 name: pf.flow.name,
-                                magnitude: pf.result,
+                                magnitude: pf.result * activityLevel,
                                 unit: fp["referenceUnit"]
                             };
                             if (pf.directionID === 1) {
