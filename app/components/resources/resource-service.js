@@ -38,7 +38,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "process" : API_ROOT + "processes",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
                 "processFlow" : API_ROOT + "processes/:processID/processflows",
-                "scenario" : API_ROOT + "scenarios"
+                "scenario" : API_ROOT + "scenarios/:scenarioID"
             };
 
             resourceService.getResource = function( routeKey) {
@@ -151,6 +151,13 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 svc.create = function (obj, successCB, errorCB) {
                     svc.objects = null;
                     svc.resource.save( resourceService.addAuthParam(), obj, successCB, errorCB);
+                };
+
+                svc.delete = function(obj, successCB, errorCB) {
+                    var params = resourceService.addAuthParam();
+                    params[svc.idName] = obj[svc.idName];
+                    svc.objects = null;
+                    svc.resource.delete( params, successCB, errorCB);
                 };
             };
 

@@ -23,6 +23,12 @@
                     {{fragments[scenario.topLevelFragmentID].name}}
                 </a>
             </td>
+            <td>
+                <button type="button" class="btn btn-default btn-sm" title="Delete" ng-click="deleteScenario(scenario)"
+                        ng-hide="hideDelete(scenario)" >
+                    <span class="glyphicon glyphicon-trash" aria-hidden="true"  ></span>
+                </button>
+            </td>
         </tr>
         </tbody>
     </table>

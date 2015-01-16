@@ -1,17 +1,29 @@
 'use strict';
 
 angular.module('lcaApp.home',
-    ['lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
-
+               ['lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
 .controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService', '$state',
-        'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
-    function($scope, $window, usSpinnerService, $state, ScenarioService, FragmentService, LciaMethodService, $q ) {
+            'ScenarioService', 'FragmentService', 'LciaMethodService', '$q', 'BASE_SCENARIO_GROUP_ID',
+    function($scope, $window, usSpinnerService, $state,
+             ScenarioService, FragmentService, LciaMethodService, $q, BASE_SCENARIO_GROUP_ID) {
         var failure = false;
 
         $scope.fragments = {};
 
         $scope.createScenario = function() {
             $state.go("new-scenario");
+        };
+
+        $scope.deleteScenario = function(scenario) {
+            var msg = "Delete scenario, " + scenario.name + "?";
+            if ( $window.confirm(msg)) {
+                startWaiting();
+                ScenarioService.delete(scenario, reloadScenarios, handleFailure);
+            }
+        };
+
+        $scope.hideDelete = function(scenario) {
+            return scenario.scenarioGroupID === BASE_SCENARIO_GROUP_ID;
         };
 
         function stopWaiting() {
@@ -30,6 +42,13 @@ angular.module('lcaApp.home',
                 //$window.alert(errMsg);
                 $scope.alert = { type: "danger", msg: errMsg };
             }
+        }
+
+        function reloadScenarios() {
+            ScenarioService.load().then(function() {
+                stopWaiting();
+                displayScenarios();
+            }, handleFailure);
         }
 
         function displayScenarios() {
