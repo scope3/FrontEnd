@@ -13,8 +13,9 @@ angular.module('lcaApp.lciaMethod.detail',
                 columnDefs: [{field:'category', displayName:'Flow Category'}, {field:'name', displayName:'Flow Name'},
                     {field:'factor', displayName:'Factor', cellFilter: 'numFormat'}]
             };
-            $scope.status = {
-                open: true
+            $scope.accordionStatus = {
+                attributesOpen: true,
+                factorsOpen: true
             };
 
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(),

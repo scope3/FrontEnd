@@ -1,10 +1,10 @@
 <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
-<accordion>
-    <accordion-group is-open="status.open">
+<accordion close-others="false">
+    <accordion-group is-open="accordionStatus.attributesOpen">
         <accordion-heading>
             LCIA Method Attributes
             <i class="pull-right glyphicon"
-               ng-class="{'glyphicon-chevron-down': status.open, 'glyphicon-chevron-right': !status.open}"></i>
+               ng-class="{'glyphicon-chevron-down': accordionStatus.attributesOpen, 'glyphicon-chevron-right': !accordionStatus.attributesOpen}"></i>
         </accordion-heading>
         <dl class="dl-horizontal">
             <dt>Name</dt>
@@ -33,11 +33,15 @@
             <dd>{{lciaMethod["referenceFlowProperty"]["name"]}}</dd>
         </dl>
     </accordion-group>
+    <accordion-group is-open="accordionStatus.factorsOpen">
+        <accordion-heading>
+            LCIA Characterization Factors
+            <i class="pull-right glyphicon"
+               ng-class="{'glyphicon-chevron-down': accordionStatus.factorsOpen, 'glyphicon-chevron-right': !accordionStatus.factorsOpen}"></i>
+        </accordion-heading>
+        <div class="row-fluid">
+            <div class="gridStyle" ng-grid="gridOptions"></div>
+        </div>
+    </accordion-group>
 </accordion>
-<div class="panel panel-default">
-    <div class="panel-heading">LCIA Characterization Factors</div>
-    <div class="panel-body">
-        <div class="gridStyle" ng-grid="gridOptions"></div>
-    </div>
-</div>
 
