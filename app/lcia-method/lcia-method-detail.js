@@ -1,13 +1,21 @@
 'use strict';
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
-    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.alert'])
+    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap', 'ngGrid'])
     // Follow new angular naming convention for controllers
     // TODO: refactor other controllers (*Ctrl -> *Controller)
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
         function ($scope, $stateParams, $q, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService) {
+            $scope.lciaFactors = [];
+            $scope.gridOptions = { data: 'lciaFactors',
+                columnDefs: [{field:'category', displayName:'Flow Category'}, {field:'name', displayName:'Flow Name'},
+                    {field:'factor', displayName:'Factor', cellFilter: 'numFormat'}]
+            };
+            $scope.status = {
+                open: true
+            };
 
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
@@ -28,6 +36,7 @@ angular.module('lcaApp.lciaMethod.detail',
                             name: flow.name,
                             factor: f.factor };
                     });
+
             }
 
             /**
