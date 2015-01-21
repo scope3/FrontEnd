@@ -1,4 +1,3 @@
-
 <accordion close-others="false">
     <accordion-group is-open="accordionStatus.attributesOpen">
         <accordion-heading>
@@ -33,15 +32,16 @@
             <dd>{{lciaMethod["referenceFlowProperty"]["name"]}}</dd>
         </dl>
     </accordion-group>
-    <accordion-group is-open="accordionStatus.factorsOpen">
-        <accordion-heading>
-            LCIA Characterization Factors
-            <i class="pull-right glyphicon"
-               ng-class="{'glyphicon-chevron-down': accordionStatus.factorsOpen, 'glyphicon-chevron-right': !accordionStatus.factorsOpen}"></i>
-        </accordion-heading>
-        <div class="row-fluid">
-            <div class="gridStyle" ng-grid="gridOptions"></div>
-        </div>
-    </accordion-group>
 </accordion>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">LCIA Characterization Factors</span>
+        <span class="pull-right">
+            <label for="selectScenario">Scenario</label>
+            <select id="selectScenario" ng-model="paramScenario"
+                    ng-options="scenario.scenarioID as scenario.name for scenario in scenarios"></select>
+        </span>
+    </div>
+    <div class="gridStyle" ng-grid="gridOptions"></div>
+</div>
 

@@ -7,21 +7,26 @@ angular.module('lcaApp.lciaMethod.detail',
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
-        'StatusService',
-        function ($scope, $stateParams, $q, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
-                  StatusService) {
+        'ScenarioService', 'StatusService',
+        function ($scope, $stateParams, $q,
+                  ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
+                  ScenarioService, StatusService) {
             $scope.lciaFactors = [];
             $scope.gridOptions = { data: 'lciaFactors',
-                columnDefs: [{field:'category', displayName:'Flow Category'}, {field:'name', displayName:'Flow Name'},
-                    {field:'factor', displayName:'Factor', cellFilter: 'numFormat'}]
+                columnDefs: [
+                    {field: 'category', displayName: 'Flow Category'},
+                    {field: 'name', displayName: 'Flow Name'},
+                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'}
+                ]
             };
             $scope.accordionStatus = {
                 attributesOpen: true,
                 factorsOpen: true
             };
+            $scope.paramScenario = null;
 
             StatusService.startWaiting();
-            $q.all([LciaMethodService.load(), ImpactCategoryService.load(),
+            $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
                 handleSuccess, StatusService.handleFailure);
@@ -44,9 +49,10 @@ angular.module('lcaApp.lciaMethod.detail',
              */
             function handleSuccess() {
                 StatusService.handleSuccess();
+                $scope.scenarios = ScenarioService.getAll();
                 $scope.lciaMethod = LciaMethodService.get($stateParams.lciaMethodID);
                 if (!$scope.lciaMethod) {
-                    handleFailure("Invalid LCIA method ID parameter");
+                    StatusService.handleFailure("Invalid LCIA method ID parameter.");
                 } else {
                     $scope.impactCategory = ImpactCategoryService.get($scope.lciaMethod["impactCategoryID"]);
                     displayLciaFactors();
