@@ -51,6 +51,7 @@
     <script src="components/sankey/sankey-directive.js"></script>
     <script src="components/sankey/sankey-service.js"></script>
     <script src="components/set/set-service.js"></script>
+    <script src="components/status/status-service.js"></script>
     <script src="home/home.js"></script>
     <script src="fragment-lcia/fragment-lcia.js"></script>
     <script src="fragment-sankey/fragment-sankey.js"></script>
@@ -78,7 +79,7 @@
             </ul>
         </div>
     </nav>
-    <!--<div ncy-breadcrumb></div>-->
+    <alert ng-show="alert" type="{{alert.type}}">{{alert.msg}}</alert>
     <div ui-view></div>
     <span us-spinner="{radius:30, width:8, length: 16}" spinner-key="spinner-lca"></span>
 </div>

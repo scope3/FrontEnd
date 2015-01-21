@@ -1,13 +1,13 @@
 'use strict';
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
-                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'angularSpinner',
-                 'ui.bootstrap.alert', 'lcaApp.format', 'lcaApp.fragmentNavigation.service'])
+                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.status.service',
+                 'lcaApp.format', 'lcaApp.fragmentNavigation.service'])
     .controller('FragmentSankeyCtrl',
-        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'NodeTypeService', 'FormatService', 'FragmentNavigationService',
-        function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService, FragmentService,
+        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   NodeTypeService, FormatService, FragmentNavigationService) {
             var fragmentID = $stateParams.fragmentID,
@@ -141,28 +141,13 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
-            function startWaiting() {
-                $scope.alert = null;
-                usSpinnerService.spin("spinner-lca");
-            }
-
-            function stopWaiting() {
-                usSpinnerService.stop("spinner-lca");
-            }
-
-
-            function handleFailure(errMsg) {
-                stopWaiting();
-                $scope.alert = { type: "danger", msg: errMsg };
-            }
-
             /**
              * Prepare fragment data for visualization
              */
             function visualizeFragment() {
                 setFlowProperties();
                 buildGraph(true);
-                stopWaiting();
+                StatusService.stopWaiting();
                 $scope.graph = graph;
             }
 
@@ -181,7 +166,7 @@ angular.module('lcaApp.fragment.sankey',
                         $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
                         FragmentNavigationService.add($scope.fragment);
                     } else {
-                        handleFailure("Invalid fragment ID : " + fragmentID);
+                        StatusService.handleFailure("Invalid fragment ID : " + fragmentID);
                     }
                 }
 
@@ -202,7 +187,7 @@ angular.module('lcaApp.fragment.sankey',
                     FragmentNavigationService.add($scope.fragment);
                     getDataForFragment();
                 } else {
-                    handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
+                    StatusService.handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
                 }
             }
 
@@ -215,7 +200,7 @@ angular.module('lcaApp.fragment.sankey',
                     initScopeFragment();
                     getDataForFragment();
                 } else {
-                    handleFailure("Invalid scenarioID: " + scenarioID);
+                    StatusService.handleFailure("Invalid scenarioID: " + scenarioID);
                 }
             }
 
@@ -255,14 +240,14 @@ angular.module('lcaApp.fragment.sankey',
              * Get all data resources
              */
             function getData() {
-                startWaiting();
+                StatusService.startWaiting();
                 $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load(),
 //                    FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
 //                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
 //                    FlowForFragmentService.load({fragmentID: fragmentID}),
                     NodeTypeService.load()])
                     .then(handleSuccess,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             /**
@@ -271,12 +256,12 @@ angular.module('lcaApp.fragment.sankey',
              * If successful, visualize selected fragment.
              */
             function getDataForFragment() {
-                startWaiting();
+                StatusService.startWaiting();
                 $q.all([FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
                     FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
                     FlowForFragmentService.load({fragmentID: fragmentID})])
                     .then(visualizeFragment,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             /**

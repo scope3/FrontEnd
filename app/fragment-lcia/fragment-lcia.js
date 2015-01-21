@@ -1,14 +1,14 @@
 'use strict';
 /* Controller for Fragment LCIA Diagram View */
 angular.module('lcaApp.fragment.LCIA',
-                ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
+                ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall'])
     .controller('FragmentLciaCtrl',
-        ['$scope', '$stateParams', 'usSpinnerService', '$q', 'ScenarioService',
+        ['$scope', '$stateParams', 'StatusService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
          'ColorCodeService', 'WaterfallService',
-        function ($scope, $stateParams, usSpinnerService, $q, ScenarioService,
+        function ($scope, $stateParams, StatusService, $q, ScenarioService,
                   FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
                   ColorCodeService, WaterfallService ) {
@@ -16,21 +16,6 @@ angular.module('lcaApp.fragment.LCIA',
             var fragmentID,
                 stages = [],
                 results = {};
-
-            function startWaiting() {
-                $scope.alert = null;
-                usSpinnerService.spin("spinner-lca");
-            }
-
-            function stopWaiting() {
-                $scope.alert = null;
-                usSpinnerService.stop("spinner-lca");
-            }
-
-            function handleFailure(errMsg) {
-                stopWaiting();
-                $scope.alert = { type: "danger", msg: errMsg };
-            }
 
             /**
              * Get LCIA results for a scenario and method.
@@ -66,7 +51,7 @@ angular.module('lcaApp.fragment.LCIA',
                 var stageNames;
                 stages = FragmentStageService.getAll();
                 stageNames = stages.map(getName);
-                stopWaiting();
+                StatusService.stopWaiting();
                 $scope.methods.forEach( function (m) {
                     var wf;
                     if (m.lciaMethodID in results) {
@@ -119,7 +104,7 @@ angular.module('lcaApp.fragment.LCIA',
                         promises.push(result.$promise);
                     });
                 });
-                $q.all(promises).then(buildWaterfalls, handleFailure);
+                $q.all(promises).then(buildWaterfalls, StatusService.handleFailure);
             }
 
             /**
@@ -146,7 +131,7 @@ angular.module('lcaApp.fragment.LCIA',
                     LciaMethodService.load()
                     ])
                     .then(getResults,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             $scope.onFragmentChange = function () {
@@ -158,7 +143,7 @@ angular.module('lcaApp.fragment.LCIA',
             $scope.methods = [];
             $scope.colors = {};
             $scope.waterfalls = {};
-            startWaiting();
+            StatusService.startWaiting();
             getData();
 
         }]);

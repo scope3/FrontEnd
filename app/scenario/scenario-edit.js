@@ -2,11 +2,11 @@
  * Controller for scenario editor
  */
 angular.module('lcaApp.scenario.edit',
-    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.alert', 'angularSpinner'])
+    ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service'])
     .controller('ScenarioEditController',
-    ['$scope', '$state', '$stateParams', '$q', 'usSpinnerService',
+    ['$scope', '$state', '$stateParams', '$q', 'StatusService',
      'ScenarioService', 'FragmentService',
-        function ($scope, $state, $stateParams, $q, usSpinnerService,
+        function ($scope, $state, $stateParams, $q, StatusService,
                   ScenarioService, FragmentService) {
             var existingScenario = null;
 
@@ -18,8 +18,8 @@ angular.module('lcaApp.scenario.edit',
             $scope.save = function () {
                 if ( $scope.form.$valid ) {
                     if (!existingScenario) {
-                        startWaiting();
-                        ScenarioService.create($scope.scenario, handleSuccess, handleFailure);
+                        StatusService.startWaiting();
+                        ScenarioService.create($scope.scenario, handleSuccess, StatusService.handleFailure);
                     }
                 }
             };
@@ -35,27 +35,13 @@ angular.module('lcaApp.scenario.edit',
                 }
             };
 
-            function stopWaiting() {
-                usSpinnerService.stop("spinner-lca");
-            }
-
-            function startWaiting() {
-                $scope.alert = null;
-                usSpinnerService.spin("spinner-lca");
-            }
-
             function goHome() {
                 $state.go('home');
             }
 
             function handleSuccess() {
-                stopWaiting();
+                StatusService.stopWaiting();
                 goHome();
-            }
-
-            function handleFailure(errMsg) {
-                stopWaiting();
-                $scope.alert = { type: "danger", msg: errMsg };
             }
 
             function setScope() {
@@ -70,7 +56,7 @@ angular.module('lcaApp.scenario.edit',
             }
 
             $q.all([ScenarioService.load(), FragmentService.load()])
-                .then(setScope, handleFailure);
+                .then(setScope, StatusService.handleFailure);
 
         }
      ]

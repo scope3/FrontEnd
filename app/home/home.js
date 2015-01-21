@@ -1,12 +1,11 @@
 'use strict';
 
 angular.module('lcaApp.home',
-               ['lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert'])
-.controller('HomeCtrl', ['$scope', '$window', 'usSpinnerService', '$state',
+               ['lcaApp.resources.service', 'lcaApp.status.service'])
+.controller('HomeCtrl', ['$scope', '$window', 'StatusService', '$state',
             'ScenarioService', 'FragmentService', 'LciaMethodService', '$q', 'BASE_SCENARIO_GROUP_ID',
-    function($scope, $window, usSpinnerService, $state,
+    function($scope, $window, StatusService, $state,
              ScenarioService, FragmentService, LciaMethodService, $q, BASE_SCENARIO_GROUP_ID) {
-        var failure = false;
 
         $scope.fragments = {};
 
@@ -17,8 +16,8 @@ angular.module('lcaApp.home',
         $scope.deleteScenario = function(scenario) {
             var msg = "Delete scenario, " + scenario.name + "?";
             if ( $window.confirm(msg)) {
-                startWaiting();
-                ScenarioService.delete(scenario, reloadScenarios, handleFailure);
+                StatusService.startWaiting();
+                ScenarioService.delete(scenario, reloadScenarios, StatusService.handleFailure);
             }
         };
 
@@ -26,29 +25,11 @@ angular.module('lcaApp.home',
             return scenario.scenarioGroupID === BASE_SCENARIO_GROUP_ID;
         };
 
-        function stopWaiting() {
-            usSpinnerService.stop("spinner-lca");
-        }
-
-        function startWaiting() {
-            $scope.alert = null;
-            usSpinnerService.spin("spinner-lca");
-        }
-
-        function handleFailure(errMsg) {
-            if (!failure) {
-                failure = true;
-                stopWaiting();
-                //$window.alert(errMsg);
-                $scope.alert = { type: "danger", msg: errMsg };
-            }
-        }
-
         function reloadScenarios() {
             ScenarioService.load().then(function() {
-                stopWaiting();
+                StatusService.handleSuccess();
                 displayScenarios();
-            }, handleFailure);
+            }, StatusService.handleFailure);
         }
 
         function displayScenarios() {
@@ -68,12 +49,12 @@ angular.module('lcaApp.home',
             $scope.lciaMethods = lciaMethods;
         }
 
-        startWaiting();
+        StatusService.startWaiting();
         $q.all([ScenarioService.load(), FragmentService.load(), LciaMethodService.load()]).then (
             function() {
-                stopWaiting();
+                StatusService.handleSuccess();
                 displayScenarios();
                 displayLciaMethods();
-            }, handleFailure);
+            }, StatusService.handleFailure);
 
 }]);

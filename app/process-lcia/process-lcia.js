@@ -1,38 +1,23 @@
 'use strict';
 /* Controller for Process LCIA Diagram View */
 angular.module('lcaApp.process.LCIA',
-                ['ui.router', 'lcaApp.resources.service', 'angularSpinner', 'ui.bootstrap.alert',
+                ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
                  'lcaApp.fragmentNavigation.service',
                  'lcaApp.lciaDetail.service', 'lcaApp.models.param'])
     .controller('ProcessLciaCtrl',
-        ['$scope', '$stateParams', '$state', 'usSpinnerService', '$q', '$log', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService',
-        function ($scope, $stateParams, $state, usSpinnerService, $q, $log, ScenarioService,
+        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService) {
             var processID = 1,
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID;
-
-            function startWaiting() {
-                $scope.alert = null;
-                usSpinnerService.spin("spinner-lca");
-            }
-
-            function stopWaiting() {
-                $scope.alert = null;
-                usSpinnerService.stop("spinner-lca");
-            }
-
-            function handleFailure(errMsg) {
-                stopWaiting();
-                $scope.alert = { type: "danger", msg: errMsg };
-            }
 
             /**
              * Extract LCIA results
@@ -73,7 +58,7 @@ angular.module('lcaApp.process.LCIA',
             }
 
             function getLciaResults() {
-                stopWaiting();  // Results will appear as they are processed
+                StatusService.stopWaiting();  // Results will appear as they are processed
                 $scope.lciaMethods.forEach(getLciaResult);
 
             }
@@ -115,10 +100,10 @@ angular.module('lcaApp.process.LCIA',
                     $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
                         $scope.scenario.topLevelFragmentID).getAll();
                 } else {
-                    handleFailure("Invalid scenario ID : ", scenarioID);
+                    StatusService.handleFailure("Invalid scenario ID : ", scenarioID);
                 }
                 $scope.process = ProcessForFlowTypeService.get(processID);
-                if (!$scope.process) handleFailure("Invalid process ID : ", processID);
+                if (!$scope.process) StatusService.handleFailure("Invalid process ID : ", processID);
             }
 
             /**
@@ -170,7 +155,7 @@ angular.module('lcaApp.process.LCIA',
                     ProcessFlowService.load({processID:processID}),
                     FlowPropertyForProcessService.load({processID: processID})])
                     .then(getProcessResults,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             /**
@@ -179,7 +164,7 @@ angular.module('lcaApp.process.LCIA',
             function getDataFilteredByScenario() {
                     ParamModelService.load(scenarioID)
                     .then(getScenarioResults,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             /**
@@ -193,7 +178,7 @@ angular.module('lcaApp.process.LCIA',
                     FlowPropertyForProcessService.load({processID: processID}),
                     ParamModelService.load(scenarioID)])
                     .then(handleSuccess,
-                    handleFailure);
+                    StatusService.handleFailure);
             }
 
             /**
@@ -263,7 +248,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
             getStateParams();
-            startWaiting();
+            StatusService.startWaiting();
             getData();
 
         }]);

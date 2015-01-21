@@ -1,13 +1,15 @@
 'use strict';
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
-    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap', 'ngGrid'])
+    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'ngGrid', 'lcaApp.status.service'])
     // Follow new angular naming convention for controllers
     // TODO: refactor other controllers (*Ctrl -> *Controller)
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
-        function ($scope, $stateParams, $q, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService) {
+        'StatusService',
+        function ($scope, $stateParams, $q, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
+                  StatusService) {
             $scope.lciaFactors = [];
             $scope.gridOptions = { data: 'lciaFactors',
                 columnDefs: [{field:'category', displayName:'Flow Category'}, {field:'name', displayName:'Flow Name'},
@@ -18,14 +20,11 @@ angular.module('lcaApp.lciaMethod.detail',
                 factorsOpen: true
             };
 
+            StatusService.startWaiting();
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
-                handleSuccess, handleFailure);
-
-            function handleFailure(errMsg) {
-                $scope.alert = { type: "danger", msg: errMsg };
-            }
+                handleSuccess, StatusService.handleFailure);
 
             function displayLciaFactors() {
                 var lciaFactors = LciaFactorService.getAll();
@@ -44,6 +43,7 @@ angular.module('lcaApp.lciaMethod.detail',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
+                StatusService.handleSuccess();
                 $scope.lciaMethod = LciaMethodService.get($stateParams.lciaMethodID);
                 if (!$scope.lciaMethod) {
                     handleFailure("Invalid LCIA method ID parameter");
