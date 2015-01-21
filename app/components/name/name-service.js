@@ -3,10 +3,10 @@
  */
 'use strict';
 
-angular.module('lcaApp.name', ['d3.set'])
-    .factory('NameService', [ 'SetService', function(SetService){
+angular.module('lcaApp.name', ['d3'])
+    .factory('NameService', [ 'd3Service', function(d3Service){
         var svc = {},
-            shortNameBreakChars = SetService;
+            shortNameBreakChars = d3Service.set();
 
         /**
          * Shorten a name so that it does not exceed maximum length.

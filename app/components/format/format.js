@@ -6,19 +6,18 @@
  */
 'use strict';
 
-angular.module('lcaApp.format', [])
-    .factory('FormatService', [ function(){
+angular.module('lcaApp.format', ['d3'])
+    .factory('FormatService', [ 'd3Service', function(d3Service){
         var svc = {};
         svc.format = function (spec) {
             var formatSpec = spec || ".4g";
-            return d3.format(formatSpec);
+            return d3Service.format(formatSpec);
         };
         return svc;
     }])
-    .filter('numFormat', function(){
+    .filter('numFormat', [ 'FormatService', function(FormatService){
         return function (input, spec) {
-            var formatSpec = spec || ".4g",
-                formatter = d3.format(formatSpec);
+            var formatter = FormatService.format(spec);
             return formatter(input);
         };
-    });
+    }]);

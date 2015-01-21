@@ -1,13 +1,13 @@
 
-describe('Unit test set service', function() {
+describe('Unit test d3 set service', function() {
 
     var setService;
 
     // load modules
-    beforeEach(module('d3.set'));
+    beforeEach(module('d3'));
 
-    beforeEach(inject(function (_SetService_) {
-        setService = _SetService_;
+    beforeEach(inject(function (_d3Service_) {
+        setService = _d3Service_.set();
     }));
 
     // Test service availability
