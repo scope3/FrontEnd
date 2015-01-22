@@ -39,7 +39,8 @@
         <span class="pull-right">
             <label for="selectScenario">Scenario</label>
             <select id="selectScenario" ng-model="paramScenario"
-                    ng-options="scenario.scenarioID as scenario.name for scenario in scenarios"></select>
+                    ng-options="scenario.name for scenario in scenarios"
+                    ng-change="onScenarioChange()"></select>
         </span>
     </div>
     <div class="gridStyle" ng-grid="gridOptions"></div>

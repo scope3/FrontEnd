@@ -136,11 +136,12 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
             };
 
             svc.getProcessFlowParams = function(scenarioID, processID) {
-                if (scenarioID in model.scenarios && model.scenarios[scenarioID] &&
-                    "processes" in model.scenarios[scenarioID] &&
-                    processID in model.scenarios[scenarioID].processes &&
-                    "flows" in model.scenarios[scenarioID].processes[processID]) {
-                    return model.scenarios[scenarioID].processes[processID].flows;
+                var sModel = svc.getModel(scenarioID);
+                if ( sModel &&
+                    sModel.hasOwnProperty("processes") &&
+                    sModel.processes.hasOwnProperty(processID) &&
+                    sModel.processes[processID].hasOwnProperty("flows")) {
+                    return sModel.processes[processID].flows;
                 }
                 else {
                     return null;
@@ -148,11 +149,29 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
             };
 
             svc.getLciaMethodFlowParams = function(scenarioID, lciaMethodID) {
-                if (scenarioID in model.scenarios && model.scenarios[scenarioID] &&
-                    "lciaMethods" in model.scenarios[scenarioID] &&
-                    lciaMethodID in model.scenarios[scenarioID].lciaMethods &&
-                    "flows" in model.scenarios[scenarioID].lciaMethods[lciaMethodID]) {
-                    return model.scenarios[scenarioID].lciaMethods[lciaMethodID].flows;
+                var sModel = svc.getModel(scenarioID);
+                if ( sModel &&
+                    sModel.hasOwnProperty("lciaMethods") &&
+                    sModel.lciaMethods.hasOwnProperty(lciaMethodID) &&
+                    sModel.lciaMethods[lciaMethodID].hasOwnProperty("flows")) {
+                        return sModel.lciaMethods[lciaMethodID].flows;
+                }
+                else {
+                    return null;
+                }
+            };
+
+            svc.getLciaMethodFlowParam = function(scenarioID, lciaMethodID, flowID) {
+                var params = svc.getLciaMethodFlowParams(scenarioID, lciaMethodID);
+                return ( params && params.hasOwnProperty(flowID)) ? params[flowID] : null;
+            };
+
+            svc.getProcessFlowParam = function(scenarioID, processID, flowID, paramTypeID) {
+                var params = svc.getProcessFlowParams(scenarioID, processID);
+                if (params && params.hasOwnProperty(flowID) &&
+                    params[flowID].hasOwnProperty("paramTypes") &&
+                    params[flowID].paramTypes.hasOwnProperty(paramTypeID)) {
+                    return params[flowID].paramTypes[paramTypeID];
                 }
                 else {
                     return null;

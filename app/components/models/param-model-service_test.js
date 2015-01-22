@@ -33,6 +33,18 @@ describe('Unit test Param Model service', function() {
         });
     }
 
+    function getProcessParam() {
+        return params.find(function(p){
+            return p.hasOwnProperty("processID");
+        });
+    }
+
+    function getMethodParam() {
+        return params.find(function(p){
+            return p.hasOwnProperty("lciaMethodID");
+        });
+    }
+
     it('ParamModelService should have been injected', function() {
         expect(paramModelService).toBeDefined();
     });
@@ -51,6 +63,27 @@ describe('Unit test Param Model service', function() {
     it('should get model if created', function() {
         expect(paramModelService.getModel(scenarioID-1)).toBeNull();
         expect(paramModelService.createModel(scenarioID, params)).toEqual(paramModelService.getModel(scenarioID));
+    });
+
+    it('should get a param for a given scenario, LCIA method, and flow', function() {
+        var mockParam, foundParam;
+
+        paramModelService.createModel(scenarioID, params);
+        mockParam = getMethodParam();
+        foundParam = paramModelService.getLciaMethodFlowParam( mockParam.scenarioID, mockParam.lciaMethodID, mockParam.flowID);
+        expect(foundParam).toBeDefined();
+        expect(foundParam).toEqual(mockParam);
+    });
+
+    it('should get a param for a given scenario, process, flow, and param type', function() {
+        var mockParam, foundParam;
+
+        paramModelService.createModel(scenarioID, params);
+        mockParam = getProcessParam();
+        foundParam = paramModelService.getProcessFlowParam( mockParam.scenarioID, mockParam.processID, mockParam.flowID,
+                                                            mockParam.paramTypeID);
+        expect(foundParam).toBeDefined();
+        expect(foundParam).toEqual(mockParam);
     });
 
     it('should load param resources', function() {

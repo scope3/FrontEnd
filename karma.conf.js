@@ -17,6 +17,7 @@ module.exports = function(config){
       'app/bower_components/angular-bootstrap/ui-bootstrap.js',
       'app/bower_components/jquery/dist/jquery.min.js',
       'app/bower_components/ng-grid/build/ng-grid.js',
+      'app/bower_components/array.prototype.find/index.js',
       'app/components/**/*.js',
       'app/fragment-lcia/**/*.js',
       'app/fragment-sankey/**/*.js',
