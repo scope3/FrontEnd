@@ -28,7 +28,6 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "flowPropertyForFragment" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "flowPropertyForProcess" : API_ROOT + "processes/:processID/flowproperties",
                 "impactCategory" : API_ROOT + "impactcategories",
-                "nodeType" : "components/resources/nodetypes.json",
                 "lciaFactor" : API_ROOT + "lciamethods/:lciaMethodID/lciafactors",
                 "lciaMethod" : API_ROOT + "lciamethods",
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
@@ -259,7 +258,7 @@ angular.module('lcaApp.resources.service')
     ])
     .factory('LciaFactorService', ['ResourceService',
         function(ResourceService){
-            return ResourceService.getService('LciaFactorService', "lciaFactor", "lciaID");
+            return ResourceService.getService('LciaFactorService', "lciaFactor", null);
         }
     ])
     .factory('LciaMethodService', ['ResourceService', 'LciaMethodExtension',
@@ -272,11 +271,6 @@ angular.module('lcaApp.resources.service')
         function(ResourceService){
             return ResourceService.getService('LciaMethodForImpactCategoryService', "lciaMethodForImpactCategory",
                 "lciaMethodID");
-        }
-    ])
-    .factory('NodeTypeService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('NodeTypeService', "nodeType", "nodeTypeID");
         }
     ])
     .factory('ParamService', ['ResourceService',

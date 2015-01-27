@@ -12,7 +12,6 @@
             flows: {
                 49 :
                 {
-                    "lciaid": 5205,
                     "lciaMethodID": 2,
                     "flowID": 49,
                     "direction": "Input",
@@ -21,7 +20,6 @@
             ,
                 65 :
                 {
-                    "lciaid": 5374,
                     "lciaMethodID": 2,
                     "flowID": 65,
                     "direction": "Output",

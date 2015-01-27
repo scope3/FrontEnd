@@ -16,30 +16,6 @@ describe('Unit test resource factories', function () {
         backend = $httpBackend;
     }));
 
-    // Test service availability
-    it('inject NodeTypeService, load and get', inject(function (NodeTypeService) {
-        expect(NodeTypeService).toBeDefined();
-        NodeTypeService.load().then(
-            function (results) {
-                var nodeType;
-                expect(results).toBeDefined();
-                expect(NodeTypeService.objects).toBeDefined();
-                expect(results).toEqual(NodeTypeService.objects);
-                nodeType = NodeTypeService.get(2);
-                expect(nodeType).not.toBe(null);
-                expect(nodeType.name).toEqual("Fragment");
-            },
-            function (errMsg) {
-                if (shouldSucceed) {
-                    throw(errMsg);
-                } else {
-                    expect(errMsg).toBeDefined();
-                    expect(errMsg).not.toBe(null);
-                }
-            }
-        )
-    }));
-
     function testResourceService(resourceService, resourceProperties, filterObject) {
         expect(resourceService).toBeDefined();
         resourceService.load(filterObject).then(
@@ -92,7 +68,6 @@ describe('Unit test resource factories', function () {
                 "referenceYear",
                 "geography",
                 "referenceTypeID",
-                "processTypeID",
                 "version"]);
     }));
 
@@ -103,7 +78,6 @@ describe('Unit test resource factories', function () {
                 "referenceYear",
                 "geography",
                 "referenceTypeID",
-                "processTypeID",
                 "version"], {flowTypeID: 2}
         );
     }));
@@ -113,7 +87,7 @@ describe('Unit test resource factories', function () {
             ["fragmentFlowID",
             "name",
             "shortName",
-            "nodeTypeID",
+            "nodeType",
             "direction",
             "flowPropertyMagnitudes"], {fragmentID: 1, scenarioID: 1});
     }));

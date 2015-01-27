@@ -18,35 +18,35 @@ describe('Unit test sankey diagram directive', function() {
         $rootScope = _$rootScope_;
 
         $rootScope.graph = {"nodes": [
-            {"nodeTypeID": 3, "nodeID": 151, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 152, "nodeName": "Scenario", "processID": 72},
-            {"nodeTypeID": 2, "nodeID": 153, "nodeName": "Local Collection Mixer", "subFragmentID": 3},
-            {"nodeTypeID": 3, "nodeID": 154, "nodeName": ""},
-            {"nodeTypeID": 2, "nodeID": 155, "nodeName": "Inter-Facility Mixer", "subFragmentID": 7},
-            {"nodeTypeID": 3, "nodeID": 156, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 157, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 158, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 159, "nodeName": ""},
-            {"nodeTypeID": 2, "nodeID": 160, "nodeName": "Waste Oil Preprocessing", "subFragmentID": 6},
-            {"nodeTypeID": 3, "nodeID": 161, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 162, "nodeName": "Transfer Losses", "processID": 9},
-            {"nodeTypeID": 3, "nodeID": 163, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 164, "nodeName": ""},
-            {"nodeTypeID": 2, "nodeID": 165, "nodeName": "Haz Waste Landfill Output", "subFragmentID": 4},
-            {"nodeTypeID": 3, "nodeID": 166, "nodeName": ""},
-            {"nodeTypeID": 2, "nodeID": 167, "nodeName": "Haz Waste Incineration Output", "subFragmentID": 5},
-            {"nodeTypeID": 3, "nodeID": 168, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 169, "nodeName": "Wastewater to Treatment", "processID": 63},
-            {"nodeTypeID": 3, "nodeID": 170, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 171, "nodeName": "Waste water treatment (contains organic load)", "processID": 187},
-            {"nodeTypeID": 5, "nodeID": 172, "nodeName": ""},
-            {"nodeTypeID": 5, "nodeID": 173, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 174, "nodeName": "Used Oil Rejuvenation/Other", "processID": 32},
-            {"nodeTypeID": 3, "nodeID": 175, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 176, "nodeName": ""},
-            {"nodeTypeID": 1, "nodeID": 177, "nodeName": "UO water fraction", "processID": 38},
-            {"nodeTypeID": 3, "nodeID": 178, "nodeName": ""},
-            {"nodeTypeID": 3, "nodeID": 179, "nodeName": ""}
+            {"nodeType": "InputOutput", "nodeID": 151, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 152, "nodeName": "Scenario", "processID": 72},
+            {"nodeType": "Fragment", "nodeID": 153, "nodeName": "Local Collection Mixer", "subFragmentID": 3},
+            {"nodeType": "InputOutput", "nodeID": 154, "nodeName": ""},
+            {"nodeType": "Fragment", "nodeID": 155, "nodeName": "Inter-Facility Mixer", "subFragmentID": 7},
+            {"nodeType": "InputOutput", "nodeID": 156, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 157, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 158, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 159, "nodeName": ""},
+            {"nodeType": "Fragment", "nodeID": 160, "nodeName": "Waste Oil Preprocessing", "subFragmentID": 6},
+            {"nodeType": "InputOutput", "nodeID": 161, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 162, "nodeName": "Transfer Losses", "processID": 9},
+            {"nodeType": "InputOutput", "nodeID": 163, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 164, "nodeName": ""},
+            {"nodeType": "Fragment", "nodeID": 165, "nodeName": "Haz Waste Landfill Output", "subFragmentID": 4},
+            {"nodeType": "InputOutput", "nodeID": 166, "nodeName": ""},
+            {"nodeType": "Fragment", "nodeID": 167, "nodeName": "Haz Waste Incineration Output", "subFragmentID": 5},
+            {"nodeType": "InputOutput", "nodeID": 168, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 169, "nodeName": "Wastewater to Treatment", "processID": 63},
+            {"nodeType": "InputOutput", "nodeID": 170, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 171, "nodeName": "Waste water treatment (contains organic load)", "processID": 187},
+            {"nodeType": "Cutoff", "nodeID": 172, "nodeName": ""},
+            {"nodeType": "Cutoff", "nodeID": 173, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 174, "nodeName": "Used Oil Rejuvenation/Other", "processID": 32},
+            {"nodeType": "InputOutput", "nodeID": 175, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 176, "nodeName": ""},
+            {"nodeType": "Process", "nodeID": 177, "nodeName": "UO water fraction", "processID": 38},
+            {"nodeType": "InputOutput", "nodeID": 178, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 179, "nodeName": ""}
         ], "links": [
             {"flowID": 16, "nodeID": 151, "magnitude": 0.547163, "value": 0.54716300000001, "source": 1, "target": 0},
             {"flowID": 373, "nodeID": 152, "magnitude": 1, "value": 1.00000000000001, "source": 2, "target": 1},
@@ -78,7 +78,7 @@ describe('Unit test sankey diagram directive', function() {
             {"flowID": 446, "nodeID": 179, "magnitude": 0.175463, "value": 0.17546300000001, "source": 26, "target": 28}
         ]};
 
-        $rootScope.color = { domain: ([2, 3, 5, 1, 0]), range : colorbrewer.Set3[5], property: "nodeTypeID" };
+        $rootScope.color = { domain: ([2, 3, 5, 1, 0]), range : colorbrewer.Set3[5], property: "nodeType" };
 
 
 }));

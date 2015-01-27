@@ -6,10 +6,10 @@ angular.module('lcaApp.fragment.sankey',
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'NodeTypeService', 'FormatService', 'FragmentNavigationService',
+        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  NodeTypeService, FormatService, FragmentNavigationService) {
+                  FormatService, FragmentNavigationService) {
             var fragmentID = $stateParams.fragmentID,
                 scenarioID = $stateParams.scenarioID,
             //
@@ -66,21 +66,20 @@ angular.module('lcaApp.fragment.sankey',
              */
             function addGraphNode(element) {
                 var node = {
-                        nodeTypeID: element.nodeTypeID,
+                        nodeType: element.nodeType,
                         nodeID: element.fragmentFlowID,
                         nodeName: "",
                         toolTip: ""
                     },
                     fragFlow = FragmentFlowService.get(element.fragmentFlowID),
-                    nodeType = NodeTypeService.get(element.nodeTypeID),
                     refObj , selectTip
                     ;
 
                 if (fragFlow) {
                     node.nodeName = fragFlow["shortName"];
                 }
-                if (nodeType) {
-                    node.toolTip = "<strong>" + nodeType.name + "</strong>";
+                if (node.nodeType) {
+                    node.toolTip = "<strong>" + node.nodeType + "</strong>";
                 }
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
@@ -241,11 +240,7 @@ angular.module('lcaApp.fragment.sankey',
              */
             function getData() {
                 StatusService.startWaiting();
-                $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load(),
-//                    FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
-//                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
-//                    FlowForFragmentService.load({fragmentID: fragmentID}),
-                    NodeTypeService.load()])
+                $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load()])
                     .then(handleSuccess,
                     StatusService.handleFailure);
             }
@@ -295,15 +290,15 @@ angular.module('lcaApp.fragment.sankey',
                 if (newVal) {
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
                     $log.info("Clicked on node with weight = " + fragmentFlow.nodeWeight);
-                    switch (newVal.nodeTypeID) {
-                        case 1 :
+                    switch (newVal.nodeType) {
+                        case "Process" :
                             $state.go(".process", { scenarioID : scenarioID,
                                                              processID : fragmentFlow.processID,
                                                              activity : $scope.fragment.activityLevel *
                                                                         fragmentFlow.nodeWeight }
                             );
                             break;
-                        case 2 :
+                        case "Fragment" :
                             navigateSubFragment(fragmentFlow);
                             break;
                     }
@@ -355,7 +350,7 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
-            $scope.color = { domain: ([2, 3, 5, 1, 0]), range: colorbrewer.Set3[5], property: "nodeTypeID" };
+            $scope.color = { domain: (["Fragment", "InputOutput", "Cutoff", "Process", "Background"]), range: colorbrewer.Set3[5], property: "nodeType" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
