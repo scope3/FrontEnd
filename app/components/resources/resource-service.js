@@ -56,7 +56,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
              * Create service object for a particular route
              * @param {String} routeKey   Key to ROUTES
              * @param {String} idName     Name of ID property in query result objects
-             * @returns the object
+             * @returns {{loadFilter: null, resource: *, objects: null, extensionFactory: null}} object
              */
             resourceService.createService = function( routeKey, idName) {
                 var svc =
@@ -136,7 +136,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 /**
                  * Set optional extension object.
                  * @param obj   The extension object
-                 * @returns this service
+                 * @returns {{loadFilter: null, resource: *, objects: null, extensionFactory: null}} service
                  */
                 svc.setExtensionFactory = function (obj) {
                     svc.extensionFactory = obj;
@@ -201,9 +201,28 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 // Factories using functional inheritance
 //
 angular.module('lcaApp.resources.service')
-    .factory('ScenarioService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('ScenarioService', "scenario", "scenarioID");
+    .factory('ScenarioService', ['ResourceService', 'BASE_SCENARIO_GROUP_ID',
+        function(ResourceService, BASE_SCENARIO_GROUP_ID){
+            var svc = ResourceService.getService('ScenarioService', "scenario", "scenarioID");
+            /**
+             * Does user have delete access to scenario?
+             * @param { {scenarioID, scenarioGroupID } } scenario
+             * @returns {boolean}
+             */
+            svc.canDelete = function (scenario) {
+                return scenario.scenarioGroupID !== BASE_SCENARIO_GROUP_ID;
+            };
+
+            /**
+             * Does user have update access to scenario?
+             * @param { {scenarioID, scenarioGroupID } } scenario
+             * @returns {boolean}
+             */
+            svc.canUpdate = function (scenario) {
+                return scenario.scenarioGroupID !== BASE_SCENARIO_GROUP_ID;
+            };
+
+            return svc;
         }
     ])
     .factory('FragmentService', ['ResourceService',

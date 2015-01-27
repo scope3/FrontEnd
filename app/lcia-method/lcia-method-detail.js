@@ -12,14 +12,17 @@ angular.module('lcaApp.lciaMethod.detail',
         function ($scope, $stateParams, $q,
                   ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
                   ScenarioService, ParamModelService, StatusService) {
+
             $scope.lciaFactors = [];
+            $scope.gridColumns = [
+                {field: 'category', displayName: 'Flow Category'},
+                {field: 'name', displayName: 'Flow Name'},
+                {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'},
+                {field: 'value', displayName: 'Override', visible: false }
+            ];
+
             $scope.gridOptions = { data: 'lciaFactors',
-                columnDefs: [
-                    {field: 'category', displayName: 'Flow Category'},
-                    {field: 'name', displayName: 'Flow Name'},
-                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'},
-                    {field: 'value', displayName: 'Override' }
-                ]
+                columnDefs: 'gridColumns'
             };
             $scope.accordionStatus = {
                 attributesOpen: true,
@@ -35,20 +38,43 @@ angular.module('lcaApp.lciaMethod.detail',
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
                 handleLciaFactorResults, StatusService.handleFailure);
 
+            function defineParamCol() {
+                var paramCol = {field: 'value', displayName: 'Override'};
+                if ($scope.paramScenario) {
+                    paramCol.visible = true;
+                    if (ScenarioService.canUpdate($scope.paramScenario)) {
+                        paramCol.enableCellEdit = true;
+                    }
+                } else {
+                    paramCol.visible = false;
+                }
+                return paramCol;
+            }
+
+
+            function setGridColumns () {
+                var paramCol = defineParamCol();
+                $scope.gridColumns = [
+                    {field: 'category', displayName: 'Flow Category'},
+                    {field: 'name', displayName: 'Flow Name'},
+                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'},
+                    paramCol
+                ];
+            }
+
             function displayLciaFactors() {
                 var lciaFactors = LciaFactorService.getAll();
                 $scope.lciaFactors =
                     lciaFactors.map(function (f) {
-                        var flow = FlowForFlowTypeService.get(f.flowID),
-                            record = {flowID: flow.flowID,
-                                category: flow.category,
-                                name: flow.name,
-                                factor: f.factor,
-                                paramID: null,
-                                value: null
-                            };
+                        var flow = FlowForFlowTypeService.get(f.flowID);
 
-                        return record;
+                        return {flowID: flow.flowID,
+                            category: flow.category,
+                            name: flow.name,
+                            factor: f.factor,
+                            paramID: null,
+                            value: null
+                        };
                     });
 
             }
@@ -69,6 +95,7 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function addParamData() {
+
                 StatusService.handleSuccess();
                 $scope.lciaFactors.forEach( function(lf) {
                     var param = ParamModelService
@@ -82,6 +109,15 @@ angular.module('lcaApp.lciaMethod.detail',
                         lf.value = null;
                     }
                 });
+                setGridColumns();
+            }
+
+            function clearParamData() {
+                $scope.lciaFactors.forEach( function(lf) {
+                    lf.paramID = null;
+                    lf.value = null;
+                });
+                setGridColumns();
             }
 
             function getParams() {
@@ -89,6 +125,8 @@ angular.module('lcaApp.lciaMethod.detail',
                     StatusService.startWaiting();
                     ParamModelService.load($scope.paramScenario.scenarioID).then(addParamData,
                         StatusService.handleFailure);
+                } else {
+                    clearParamData();
                 }
             }
 

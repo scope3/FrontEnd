@@ -84,5 +84,5 @@ waterfall-chart .y.axis path {
     /*border: 1px solid rgb(212,212,212);*/
     width: 100%;
     /* height to fit not supported, unfortunately */
-    height: 800px;
+    height: 600px;
 }

@@ -3,9 +3,9 @@
 angular.module('lcaApp.home',
                ['lcaApp.resources.service', 'lcaApp.status.service'])
 .controller('HomeCtrl', ['$scope', '$window', 'StatusService', '$state',
-            'ScenarioService', 'FragmentService', 'LciaMethodService', '$q', 'BASE_SCENARIO_GROUP_ID',
+            'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
     function($scope, $window, StatusService, $state,
-             ScenarioService, FragmentService, LciaMethodService, $q, BASE_SCENARIO_GROUP_ID) {
+             ScenarioService, FragmentService, LciaMethodService, $q) {
 
         $scope.fragments = {};
 
@@ -22,7 +22,7 @@ angular.module('lcaApp.home',
         };
 
         $scope.hideDelete = function(scenario) {
-            return scenario.scenarioGroupID === BASE_SCENARIO_GROUP_ID;
+            return ! ScenarioService.canDelete(scenario);
         };
 
         function reloadScenarios() {
