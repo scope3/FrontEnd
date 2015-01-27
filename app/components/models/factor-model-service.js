@@ -15,7 +15,7 @@
                     "lciaid": 5205,
                     "lciaMethodID": 2,
                     "flowID": 49,
-                    "directionID": 1,
+                    "direction": "Input",
                     "factor": -1.0
                 }
             ,
@@ -24,7 +24,7 @@
                     "lciaid": 5374,
                     "lciaMethodID": 2,
                     "flowID": 65,
-                    "directionID": 2,
+                    "direction": "Output",
                     "factor": 353.0
                 }
             }

@@ -110,7 +110,7 @@ describe('Unit test LCIA bar chart directive', function() {
                 },
                 {
                     "flowID": 449,
-                    "directionID": 1,
+                    "direction": "Input",
                     "result": 3.1036108487605382E-14
                 }
             ];
@@ -127,7 +127,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.14806250311929E-12,
                 "result": 2.14806250311929E-12,
                 "stDev": 0.0
@@ -141,7 +141,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.16636069692042E-16,
                 "result": 3.16636069692042E-16,
                 "stDev": 0.0
@@ -155,7 +155,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.77910116180182E-12,
                 "result": 4.77910116180182E-12,
                 "stDev": 0.0
@@ -169,7 +169,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 5.15652267526529E-14,
                 "result": 5.15652267526529E-14,
                 "stDev": 0.0
@@ -182,7 +182,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.32785854729973E-05,
                 "result": 4.32785854729973E-05,
                 "stDev": 0.0
@@ -195,7 +195,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable energy resources from water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.00012864553013246,
                 "result": 0.00012864553013246,
                 "stDev": 0.0
@@ -208,7 +208,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable energy resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 5.38644189254466E-06,
                 "result": 5.38644189254466E-06,
                 "stDev": 0.0
@@ -221,7 +221,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable energy resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.2983166196669E-05,
                 "result": 3.2983166196669E-05,
                 "stDev": 0.0
@@ -234,7 +234,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.35741316568461E-08,
                 "result": 1.35741316568461E-08,
                 "stDev": 0.0
@@ -247,7 +247,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.5573102875924E-05,
                 "result": 2.5573102875924E-05,
                 "stDev": 0.0
@@ -260,7 +260,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.31187337062877E-05,
                 "result": 4.31187337062877E-05,
                 "stDev": 0.0
@@ -273,7 +273,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.86863856532157E-11,
                 "result": 1.86863856532157E-11,
                 "stDev": 0.0
@@ -287,7 +287,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.29542061478724E-09,
                 "result": 8.29542061478724E-09,
                 "stDev": 0.0
@@ -301,7 +301,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.11242667610388E-09,
                 "result": 9.11242667610388E-09,
                 "stDev": 0.0
@@ -314,7 +314,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.71062654722811E-17,
                 "result": 5.71062654722811E-17,
                 "stDev": 0.0
@@ -327,7 +327,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.94904064246554E-07,
                 "result": 8.94904064246554E-07,
                 "stDev": 0.0
@@ -341,7 +341,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.54514725210007E-18,
                 "result": 1.54514725210007E-18,
                 "stDev": 0.0
@@ -355,7 +355,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.50585931894217E-18,
                 "result": 9.50585931894217E-18,
                 "stDev": 0.0
@@ -369,7 +369,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.485901516176E-19,
                 "result": 6.485901516176E-19,
                 "stDev": 0.0
@@ -383,7 +383,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.84605004205559E-18,
                 "result": 3.84605004205559E-18,
                 "stDev": 0.0
@@ -397,7 +397,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.60237242598389E-09,
                 "result": 6.60237242598389E-09,
                 "stDev": 0.0
@@ -411,7 +411,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.1492651928764E-12,
                 "result": 3.1492651928764E-12,
                 "stDev": 0.0
@@ -425,7 +425,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.42763033358934E-19,
                 "result": 2.42763033358934E-19,
                 "stDev": 0.0
@@ -438,7 +438,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.39301348984773E-10,
                 "result": 6.39301348984773E-10,
                 "stDev": 0.0
@@ -452,7 +452,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.6575588714906E-19,
                 "result": 2.6575588714906E-19,
                 "stDev": 0.0
@@ -466,7 +466,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.51846969850466E-15,
                 "result": 3.51846969850466E-15,
                 "stDev": 0.0
@@ -480,7 +480,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.10931479263233E-08,
                 "result": 1.10931479263233E-08,
                 "stDev": 0.0
@@ -494,7 +494,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.49373832493547E-09,
                 "result": 4.49373832493547E-09,
                 "stDev": 0.0
@@ -508,7 +508,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.43238858726084E-16,
                 "result": 7.43238858726084E-16,
                 "stDev": 0.0
@@ -522,7 +522,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.84024533038357E-15,
                 "result": 2.84024533038357E-15,
                 "stDev": 0.0
@@ -536,7 +536,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.00397177095135E-16,
                 "result": 7.00397177095135E-16,
                 "stDev": 0.0
@@ -550,7 +550,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 5.62909837942817E-08,
                 "result": 5.62909837942817E-08,
                 "stDev": 0.0
@@ -564,7 +564,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.843238182001507,
                 "result": 0.843238182001507,
                 "stDev": 0.0
@@ -578,7 +578,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.27847058126126E-16,
                 "result": 5.27847058126126E-16,
                 "stDev": 0.0
@@ -592,7 +592,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.5064920309627E-05,
                 "result": 8.5064920309627E-05,
                 "stDev": 0.0
@@ -606,7 +606,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.91421522209723E-09,
                 "result": 2.91421522209723E-09,
                 "stDev": 0.0
@@ -620,7 +620,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.88497609118803E-12,
                 "result": 2.88497609118803E-12,
                 "stDev": 0.0
@@ -634,7 +634,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.6441597778869E-12,
                 "result": 2.6441597778869E-12,
                 "stDev": 0.0
@@ -648,7 +648,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.09240437540269E-09,
                 "result": 2.09240437540269E-09,
                 "stDev": 0.0
@@ -662,7 +662,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.23386011224381E-11,
                 "result": 1.23386011224381E-11,
                 "stDev": 0.0
@@ -675,7 +675,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.23424300468216E-12,
                 "result": 5.23424300468216E-12,
                 "stDev": 0.0
@@ -689,7 +689,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.51927413517535E-19,
                 "result": 1.51927413517535E-19,
                 "stDev": 0.0
@@ -703,7 +703,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.53301271795676E-14,
                 "result": 2.53301271795676E-14,
                 "stDev": 0.0
@@ -717,7 +717,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.49051546779098E-14,
                 "result": 4.49051546779098E-14,
                 "stDev": 0.0
@@ -731,7 +731,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.08894328824907E-22,
                 "result": 1.08894328824907E-22,
                 "stDev": 0.0
@@ -745,7 +745,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.63223876661682E-18,
                 "result": 2.63223876661682E-18,
                 "stDev": 0.0
@@ -759,7 +759,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.86899199494326E-18,
                 "result": 4.86899199494326E-18,
                 "stDev": 0.0
@@ -773,7 +773,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.00408631794183E-21,
                 "result": 2.00408631794183E-21,
                 "stDev": 0.0
@@ -787,7 +787,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.09512432568517E-17,
                 "result": 1.09512432568517E-17,
                 "stDev": 0.0
@@ -801,7 +801,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.06063333024697E-16,
                 "result": 5.06063333024697E-16,
                 "stDev": 0.0
@@ -815,7 +815,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.87986033006173E-13,
                 "result": 8.87986033006173E-13,
                 "stDev": 0.0
@@ -829,7 +829,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.5034876468475E-15,
                 "result": 9.5034876468475E-15,
                 "stDev": 0.0
@@ -842,7 +842,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 8.81197058614082E-07,
                 "result": 8.81197058614082E-07,
                 "stDev": 0.0
@@ -856,7 +856,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.05742955274979E-09,
                 "result": 8.05742955274979E-09,
                 "stDev": 0.0
@@ -870,7 +870,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.64007369174867E-09,
                 "result": 6.64007369174867E-09,
                 "stDev": 0.0
@@ -884,7 +884,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.19277670940015E-16,
                 "result": 4.19277670940015E-16,
                 "stDev": 0.0
@@ -898,7 +898,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.43700548368388E-14,
                 "result": 8.43700548368388E-14,
                 "stDev": 0.0
@@ -912,7 +912,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.91557201327652E-15,
                 "result": 3.91557201327652E-15,
                 "stDev": 0.0
@@ -926,7 +926,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.57018601131413E-12,
                 "result": 3.57018601131413E-12,
                 "stDev": 0.0
@@ -940,7 +940,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.32622423166236E-13,
                 "result": 5.32622423166236E-13,
                 "stDev": 0.0
@@ -954,7 +954,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.26431453873285E-10,
                 "result": 1.26431453873285E-10,
                 "stDev": 0.0
@@ -967,7 +967,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.29129273063262E-26,
                 "result": 1.29129273063262E-26,
                 "stDev": 0.0
@@ -981,7 +981,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.24238020591343E-14,
                 "result": 1.24238020591343E-14,
                 "stDev": 0.0
@@ -995,7 +995,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.1321367380244E-21,
                 "result": 4.1321367380244E-21,
                 "stDev": 0.0
@@ -1009,7 +1009,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.1387026759568E-13,
                 "result": 1.1387026759568E-13,
                 "stDev": 0.0
@@ -1023,7 +1023,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.39839595135877E-13,
                 "result": 3.39839595135877E-13,
                 "stDev": 0.0
@@ -1037,7 +1037,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.28682137754131E-19,
                 "result": 8.28682137754131E-19,
                 "stDev": 0.0
@@ -1051,7 +1051,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.06978430620893E-11,
                 "result": 1.06978430620893E-11,
                 "stDev": 0.0
@@ -1065,7 +1065,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.47386959826929E-08,
                 "result": 1.47386959826929E-08,
                 "stDev": 0.0
@@ -1079,7 +1079,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.97411215514138E-09,
                 "result": 7.97411215514138E-09,
                 "stDev": 0.0
@@ -1093,7 +1093,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.38329560519381E-07,
                 "result": 2.38329560519381E-07,
                 "stDev": 0.0
@@ -1107,7 +1107,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.82514905049593E-08,
                 "result": 3.82514905049593E-08,
                 "stDev": 0.0
@@ -1121,7 +1121,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.9377366786298E-13,
                 "result": 1.9377366786298E-13,
                 "stDev": 0.0
@@ -1135,7 +1135,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.36827021186902E-06,
                 "result": 9.36827021186902E-06,
                 "stDev": 0.0
@@ -1149,7 +1149,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.71960312996827E-09,
                 "result": 1.71960312996827E-09,
                 "stDev": 0.0
@@ -1163,7 +1163,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.9107888163147E-08,
                 "result": 2.9107888163147E-08,
                 "stDev": 0.0
@@ -1177,7 +1177,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.02553248515328E-08,
                 "result": 5.02553248515328E-08,
                 "stDev": 0.0
@@ -1191,7 +1191,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.61697434174184E-13,
                 "result": 1.61697434174184E-13,
                 "stDev": 0.0
@@ -1205,7 +1205,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.16607422718137E-09,
                 "result": 5.16607422718137E-09,
                 "stDev": 0.0
@@ -1219,7 +1219,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.3624658532805E-17,
                 "result": 9.3624658532805E-17,
                 "stDev": 0.0
@@ -1233,7 +1233,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.86918298603339E-16,
                 "result": 9.86918298603339E-16,
                 "stDev": 0.0
@@ -1246,7 +1246,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.87461739012992E-05,
                 "result": 3.87461739012992E-05,
                 "stDev": 0.0
@@ -1260,7 +1260,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.000184002218252489,
                 "result": 0.000184002218252489,
                 "stDev": 0.0
@@ -1274,7 +1274,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.4112249540012E-05,
                 "result": 9.4112249540012E-05,
                 "stDev": 0.0
@@ -1288,7 +1288,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.64572339932178E-13,
                 "result": 6.64572339932178E-13,
                 "stDev": 0.0
@@ -1302,7 +1302,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.19820510703659E-18,
                 "result": 6.19820510703659E-18,
                 "stDev": 0.0
@@ -1316,7 +1316,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.38360591334447E-15,
                 "result": 8.38360591334447E-15,
                 "stDev": 0.0
@@ -1330,7 +1330,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.60568389295252E-11,
                 "result": 2.60568389295252E-11,
                 "stDev": 0.0
@@ -1344,7 +1344,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.96197013025715E-16,
                 "result": 2.96197013025715E-16,
                 "stDev": 0.0
@@ -1358,7 +1358,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.14618657424281E-13,
                 "result": 1.14618657424281E-13,
                 "stDev": 0.0
@@ -1372,7 +1372,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.2103148142309E-17,
                 "result": 1.2103148142309E-17,
                 "stDev": 0.0
@@ -1386,7 +1386,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.08854881715831E-14,
                 "result": 7.08854881715831E-14,
                 "stDev": 0.0
@@ -1400,7 +1400,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.26827049567473E-10,
                 "result": 7.26827049567473E-10,
                 "stDev": 0.0
@@ -1414,7 +1414,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.95856408562927E-22,
                 "result": 4.95856408562927E-22,
                 "stDev": 0.0
@@ -1428,7 +1428,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.11477073037742E-12,
                 "result": 5.11477073037742E-12,
                 "stDev": 0.0
@@ -1442,7 +1442,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": -1.71141043288686E-13,
                 "result": -1.71141043288686E-13,
                 "stDev": 0.0
@@ -1456,7 +1456,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.46166283229121E-07,
                 "result": 4.46166283229121E-07,
                 "stDev": 0.0
@@ -1470,7 +1470,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.71180182923339E-15,
                 "result": 6.71180182923339E-15,
                 "stDev": 0.0
@@ -1484,7 +1484,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.75533388520264E-16,
                 "result": 5.75533388520264E-16,
                 "stDev": 0.0
@@ -1498,7 +1498,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -2.46680255342679E-09,
                 "result": -2.46680255342679E-09,
                 "stDev": 0.0
@@ -1512,7 +1512,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.0211812054386074,
                 "result": 0.0211812054386074,
                 "stDev": 0.0
@@ -1526,7 +1526,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.11299433357798E-06,
                 "result": 2.11299433357798E-06,
                 "stDev": 0.0
@@ -1540,7 +1540,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.44554725542677E-17,
                 "result": 6.44554725542677E-17,
                 "stDev": 0.0
@@ -1554,7 +1554,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.91846757174786E-06,
                 "result": 7.91846757174786E-06,
                 "stDev": 0.0
@@ -1568,7 +1568,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.2167317193271E-11,
                 "result": 1.2167317193271E-11,
                 "stDev": 0.0
@@ -1582,7 +1582,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.18950154066461E-10,
                 "result": 2.18950154066461E-10,
                 "stDev": 0.0
@@ -1596,7 +1596,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.77592344470247E-16,
                 "result": 2.77592344470247E-16,
                 "stDev": 0.0
@@ -1610,7 +1610,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.01021486516993E-12,
                 "result": 2.01021486516993E-12,
                 "stDev": 0.0
@@ -1624,7 +1624,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.15047146443327E-15,
                 "result": 2.15047146443327E-15,
                 "stDev": 0.0
@@ -1638,7 +1638,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.05244400187163E-13,
                 "result": 1.05244400187163E-13,
                 "stDev": 0.0
@@ -1652,7 +1652,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.35156196563699E-14,
                 "result": 4.35156196563699E-14,
                 "stDev": 0.0
@@ -1666,7 +1666,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.43901062841002E-17,
                 "result": 1.43901062841002E-17,
                 "stDev": 0.0
@@ -1680,7 +1680,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.53681169764221E-13,
                 "result": 1.53681169764221E-13,
                 "stDev": 0.0
@@ -1694,7 +1694,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.39619001784489E-10,
                 "result": 1.39619001784489E-10,
                 "stDev": 0.0
@@ -1708,7 +1708,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.51442703263014E-12,
                 "result": 8.51442703263014E-12,
                 "stDev": 0.0
@@ -1722,7 +1722,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.06618062214835E-13,
                 "result": 1.06618062214835E-13,
                 "stDev": 0.0
@@ -1736,7 +1736,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.49888377808191E-06,
                 "result": 7.49888377808191E-06,
                 "stDev": 0.0
@@ -1750,7 +1750,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.84933650349087E-13,
                 "result": 1.84933650349087E-13,
                 "stDev": 0.0
@@ -1764,7 +1764,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.87798648603595E-16,
                 "result": 1.87798648603595E-16,
                 "stDev": 0.0
@@ -1778,7 +1778,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -1.1914370166548E-10,
                 "result": -1.1914370166548E-10,
                 "stDev": 0.0
@@ -1792,7 +1792,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.37788750565925E-19,
                 "result": 3.37788750565925E-19,
                 "stDev": 0.0
@@ -1806,7 +1806,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.84895178076319E-17,
                 "result": 5.84895178076319E-17,
                 "stDev": 0.0
@@ -1820,7 +1820,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.58627921284717E-16,
                 "result": 1.58627921284717E-16,
                 "stDev": 0.0
@@ -1834,7 +1834,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable element resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.00556913811314E-14,
                 "result": 4.00556913811314E-14,
                 "stDev": 0.0
@@ -1848,7 +1848,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.000678923129321707,
                 "result": 0.000678923129321707,
                 "stDev": 0.0
@@ -1862,7 +1862,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.57224246436025E-14,
                 "result": 4.57224246436025E-14,
                 "stDev": 0.0
@@ -1876,7 +1876,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.49592032874988E-11,
                 "result": 7.49592032874988E-11,
                 "stDev": 0.0
@@ -1890,7 +1890,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.20913507419887E-15,
                 "result": 6.20913507419887E-15,
                 "stDev": 0.0
@@ -1904,7 +1904,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.82848490252821E-10,
                 "result": 3.82848490252821E-10,
                 "stDev": 0.0
@@ -1918,7 +1918,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.44440098496915E-09,
                 "result": 1.44440098496915E-09,
                 "stDev": 0.0
@@ -1932,7 +1932,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.61663106376976E-14,
                 "result": 1.61663106376976E-14,
                 "stDev": 0.0
@@ -1946,7 +1946,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.19335582850652E-09,
                 "result": 2.19335582850652E-09,
                 "stDev": 0.0
@@ -1960,7 +1960,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.7215273907343E-18,
                 "result": 8.7215273907343E-18,
                 "stDev": 0.0
@@ -1974,7 +1974,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.03613398685137E-16,
                 "result": 1.03613398685137E-16,
                 "stDev": 0.0
@@ -1988,7 +1988,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.69414152749005E-13,
                 "result": 3.69414152749005E-13,
                 "stDev": 0.0
@@ -2002,7 +2002,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.9779515061565E-21,
                 "result": 9.9779515061565E-21,
                 "stDev": 0.0
@@ -2016,7 +2016,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.02472574640623E-16,
                 "result": 1.02472574640623E-16,
                 "stDev": 0.0
@@ -2030,7 +2030,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 9.27228389817585E-10,
                 "result": 9.27228389817585E-10,
                 "stDev": 0.0
@@ -2043,7 +2043,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.76655439758559E-07,
                 "result": 7.76655439758559E-07,
                 "stDev": 0.0
@@ -2056,7 +2056,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.71062654722811E-15,
                 "result": 5.71062654722811E-15,
                 "stDev": 0.0
@@ -2070,7 +2070,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.03099405590864E-19,
                 "result": 5.03099405590864E-19,
                 "stDev": 0.0
@@ -2084,7 +2084,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.04917616061689E-14,
                 "result": 1.04917616061689E-14,
                 "stDev": 0.0
@@ -2097,7 +2097,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.80127986503036E-06,
                 "result": 1.80127986503036E-06,
                 "stDev": 0.0
@@ -2110,7 +2110,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.60257132704187E-13,
                 "result": 2.60257132704187E-13,
                 "stDev": 0.0
@@ -2124,7 +2124,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.20605724597089E-10,
                 "result": 1.20605724597089E-10,
                 "stDev": 0.0
@@ -2138,7 +2138,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.37389233567121E-11,
                 "result": 1.37389233567121E-11,
                 "stDev": 0.0
@@ -2152,7 +2152,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.54203880012334E-09,
                 "result": 1.54203880012334E-09,
                 "stDev": 0.0
@@ -2166,7 +2166,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.18568191197004E-12,
                 "result": 6.18568191197004E-12,
                 "stDev": 0.0
@@ -2180,7 +2180,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.01661397253194E-14,
                 "result": 1.01661397253194E-14,
                 "stDev": 0.0
@@ -2194,7 +2194,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.63078728176022E-09,
                 "result": 1.63078728176022E-09,
                 "stDev": 0.0
@@ -2208,7 +2208,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.03048264552363E-07,
                 "result": 9.03048264552363E-07,
                 "stDev": 0.0
@@ -2222,7 +2222,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.76283818222248E-14,
                 "result": 1.76283818222248E-14,
                 "stDev": 0.0
@@ -2236,7 +2236,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.36502272570203E-13,
                 "result": 1.36502272570203E-13,
                 "stDev": 0.0
@@ -2249,7 +2249,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.80654128241686E-15,
                 "result": 4.80654128241686E-15,
                 "stDev": 0.0
@@ -2262,7 +2262,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.0126264576986E-15,
                 "result": 1.0126264576986E-15,
                 "stDev": 0.0
@@ -2276,7 +2276,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.13100036668596E-16,
                 "result": 1.13100036668596E-16,
                 "stDev": 0.0
@@ -2290,7 +2290,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.5065715409284E-16,
                 "result": 4.5065715409284E-16,
                 "stDev": 0.0
@@ -2304,7 +2304,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.5618636221635E-09,
                 "result": 3.5618636221635E-09,
                 "stDev": 0.0
@@ -2318,7 +2318,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.81810670010379E-22,
                 "result": 4.81810670010379E-22,
                 "stDev": 0.0
@@ -2332,7 +2332,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.76702941014378E-19,
                 "result": 2.76702941014378E-19,
                 "stDev": 0.0
@@ -2346,7 +2346,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.87267393891858E-11,
                 "result": 2.87267393891858E-11,
                 "stDev": 0.0
@@ -2360,7 +2360,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.28403191021167E-18,
                 "result": 1.28403191021167E-18,
                 "stDev": 0.0
@@ -2374,7 +2374,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.92455627643361E-12,
                 "result": 1.92455627643361E-12,
                 "stDev": 0.0
@@ -2388,7 +2388,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.51378616029615E-16,
                 "result": 6.51378616029615E-16,
                 "stDev": 0.0
@@ -2402,7 +2402,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.90363273492182E-09,
                 "result": 6.90363273492182E-09,
                 "stDev": 0.0
@@ -2416,7 +2416,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.42012266519178E-16,
                 "result": 1.42012266519178E-16,
                 "stDev": 0.0
@@ -2430,7 +2430,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.02600889287935E-16,
                 "result": 3.02600889287935E-16,
                 "stDev": 0.0
@@ -2444,7 +2444,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.94201787558485E-11,
                 "result": 2.94201787558485E-11,
                 "stDev": 0.0
@@ -2458,7 +2458,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.94766220624141E-13,
                 "result": 3.94766220624141E-13,
                 "stDev": 0.0
@@ -2472,7 +2472,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.0541778710119E-11,
                 "result": 6.0541778710119E-11,
                 "stDev": 0.0
@@ -2486,7 +2486,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.1298685886987E-09,
                 "result": 4.1298685886987E-09,
                 "stDev": 0.0
@@ -2500,7 +2500,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.69512157884389E-10,
                 "result": 5.69512157884389E-10,
                 "stDev": 0.0
@@ -2514,7 +2514,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.20864999587213E-19,
                 "result": 1.20864999587213E-19,
                 "stDev": 0.0
@@ -2528,7 +2528,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": -3.78611818395195E-15,
                 "result": -3.78611818395195E-15,
                 "stDev": 0.0
@@ -2542,7 +2542,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.14413203074387E-09,
                 "result": 2.14413203074387E-09,
                 "stDev": 0.0
@@ -2556,7 +2556,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.22931067956226E-20,
                 "result": 1.22931067956226E-20,
                 "stDev": 0.0
@@ -2570,7 +2570,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.61586025650734E-15,
                 "result": 9.61586025650734E-15,
                 "stDev": 0.0
@@ -2584,7 +2584,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.13609813215343E-18,
                 "result": 1.13609813215343E-18,
                 "stDev": 0.0
@@ -2598,7 +2598,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.1663261528155E-16,
                 "result": 1.1663261528155E-16,
                 "stDev": 0.0
@@ -2612,7 +2612,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.28504872729808E-13,
                 "result": 5.28504872729808E-13,
                 "stDev": 0.0
@@ -2626,7 +2626,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.0478169507203E-14,
                 "result": 2.0478169507203E-14,
                 "stDev": 0.0
@@ -2640,7 +2640,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.57218633051818E-19,
                 "result": 5.57218633051818E-19,
                 "stDev": 0.0
@@ -2654,7 +2654,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.83884649301849E-12,
                 "result": 4.83884649301849E-12,
                 "stDev": 0.0
@@ -2668,7 +2668,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.76973980684691E-09,
                 "result": 2.76973980684691E-09,
                 "stDev": 0.0
@@ -2682,7 +2682,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.61767215315378E-11,
                 "result": 1.61767215315378E-11,
                 "stDev": 0.0
@@ -2696,7 +2696,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.54815054800106E-16,
                 "result": 9.54815054800106E-16,
                 "stDev": 0.0
@@ -2710,7 +2710,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.843238183108019,
                 "result": 0.843238183108019,
                 "stDev": 0.0
@@ -2724,7 +2724,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.19266163618064E-13,
                 "result": 5.19266163618064E-13,
                 "stDev": 0.0
@@ -2738,7 +2738,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.56374273785514E-14,
                 "result": 9.56374273785514E-14,
                 "stDev": 0.0
@@ -2752,7 +2752,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.98647137137574E-12,
                 "result": 2.98647137137574E-12,
                 "stDev": 0.0
@@ -2766,7 +2766,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.84024533038357E-17,
                 "result": 2.84024533038357E-17,
                 "stDev": 0.0
@@ -2780,7 +2780,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.91148487729176E-11,
                 "result": 2.91148487729176E-11,
                 "stDev": 0.0
@@ -2794,7 +2794,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.50635252395406E-13,
                 "result": 7.50635252395406E-13,
                 "stDev": 0.0
@@ -2808,7 +2808,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.34732815180177E-09,
                 "result": 6.34732815180177E-09,
                 "stDev": 0.0
@@ -2822,7 +2822,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.36392940132125E-16,
                 "result": 1.36392940132125E-16,
                 "stDev": 0.0
@@ -2836,7 +2836,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.33855281413848E-14,
                 "result": 1.33855281413848E-14,
                 "stDev": 0.0
@@ -2850,7 +2850,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.87052901395822E-09,
                 "result": 4.87052901395822E-09,
                 "stDev": 0.0
@@ -2864,7 +2864,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.44554738340034E-15,
                 "result": 6.44554738340034E-15,
                 "stDev": 0.0
@@ -2878,7 +2878,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.16832460108467E-15,
                 "result": 1.16832460108467E-15,
                 "stDev": 0.0
@@ -2892,7 +2892,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.80657111267913E-13,
                 "result": 3.80657111267913E-13,
                 "stDev": 0.0
@@ -2906,7 +2906,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.90404696007048E-19,
                 "result": 2.90404696007048E-19,
                 "stDev": 0.0
@@ -2920,7 +2920,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.45212983243786E-14,
                 "result": 6.45212983243786E-14,
                 "stDev": 0.0
@@ -2934,7 +2934,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.17852738108517E-09,
                 "result": 8.17852738108517E-09,
                 "stDev": 0.0
@@ -2948,7 +2948,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.4048119439378E-18,
                 "result": 6.4048119439378E-18,
                 "stDev": 0.0
@@ -2962,7 +2962,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.46690854199866E-21,
                 "result": 1.46690854199866E-21,
                 "stDev": 0.0
@@ -2976,7 +2976,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.09755139801087E-13,
                 "result": 2.09755139801087E-13,
                 "stDev": 0.0
@@ -2990,7 +2990,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.16821574281318E-17,
                 "result": 2.16821574281318E-17,
                 "stDev": 0.0
@@ -3004,7 +3004,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.51474219440368E-05,
                 "result": 3.51474219440368E-05,
                 "stDev": 0.0
@@ -3018,7 +3018,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.5172619038717E-16,
                 "result": 9.5172619038717E-16,
                 "stDev": 0.0
@@ -3031,7 +3031,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.00058931696115987,
                 "result": 0.00058931696115987,
                 "stDev": 0.0
@@ -3045,7 +3045,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.09158438207328E-11,
                 "result": 7.09158438207328E-11,
                 "stDev": 0.0
@@ -3059,7 +3059,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.78828452637018E-12,
                 "result": 2.78828452637018E-12,
                 "stDev": 0.0
@@ -3072,7 +3072,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.53387037949923E-08,
                 "result": 1.53387037949923E-08,
                 "stDev": 0.0
@@ -3086,7 +3086,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.57299751809805E-10,
                 "result": 1.57299751809805E-10,
                 "stDev": 0.0
@@ -3100,7 +3100,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.8980084634983E-09,
                 "result": 1.8980084634983E-09,
                 "stDev": 0.0
@@ -3113,7 +3113,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.68496888537718E-11,
                 "result": 6.68496888537718E-11,
                 "stDev": 0.0
@@ -3126,7 +3126,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive emissions to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.477586830961053,
                 "result": 0.477586830961053,
                 "stDev": 0.0
@@ -3139,7 +3139,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -1.4000073430871E-11,
                 "result": -1.4000073430871E-11,
                 "stDev": 0.0
@@ -3153,7 +3153,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.90471933180635E-15,
                 "result": 6.90471933180635E-15,
                 "stDev": 0.0
@@ -3167,7 +3167,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.16650125903434E-17,
                 "result": 3.16650125903434E-17,
                 "stDev": 0.0
@@ -3181,7 +3181,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.70142144049666E-11,
                 "result": 1.70142144049666E-11,
                 "stDev": 0.0
@@ -3195,7 +3195,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.111717712405382,
                 "result": 0.111717712405382,
                 "stDev": 0.0
@@ -3209,7 +3209,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.24828510858962E-17,
                 "result": 6.24828510858962E-17,
                 "stDev": 0.0
@@ -3223,7 +3223,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.54812881859602E-08,
                 "result": 1.54812881859602E-08,
                 "stDev": 0.0
@@ -3237,7 +3237,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.75820127263128E-13,
                 "result": 2.75820127263128E-13,
                 "stDev": 0.0
@@ -3251,7 +3251,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -3.21121186679806E-13,
                 "result": -3.21121186679806E-13,
                 "stDev": 0.0
@@ -3265,7 +3265,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.04496581848339E-10,
                 "result": 4.04496581848339E-10,
                 "stDev": 0.0
@@ -3279,7 +3279,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.90691237640397E-23,
                 "result": 4.90691237640397E-23,
                 "stDev": 0.0
@@ -3293,7 +3293,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.63083422339795E-15,
                 "result": 4.63083422339795E-15,
                 "stDev": 0.0
@@ -3306,7 +3306,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.16231423395959E-06,
                 "result": 1.16231423395959E-06,
                 "stDev": 0.0
@@ -3319,7 +3319,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -5.94642729301738E-12,
                 "result": -5.94642729301738E-12,
                 "stDev": 0.0
@@ -3332,7 +3332,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.34810549810641E-12,
                 "result": 6.34810549810641E-12,
                 "stDev": 0.0
@@ -3346,7 +3346,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.51332931409174E-14,
                 "result": 1.51332931409174E-14,
                 "stDev": 0.0
@@ -3360,7 +3360,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.14644259119709E-13,
                 "result": 1.14644259119709E-13,
                 "stDev": 0.0
@@ -3374,7 +3374,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.10913638932923E-10,
                 "result": 3.10913638932923E-10,
                 "stDev": 0.0
@@ -3388,7 +3388,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.70742755913738E-19,
                 "result": 2.70742755913738E-19,
                 "stDev": 0.0
@@ -3401,7 +3401,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.95943295798684E-07,
                 "result": 1.95943295798684E-07,
                 "stDev": 0.0
@@ -3415,7 +3415,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.63719062676407E-16,
                 "result": 2.63719062676407E-16,
                 "stDev": 0.0
@@ -3428,7 +3428,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Stockpile goods"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.83813461239218E-08,
                 "result": 2.83813461239218E-08,
                 "stDev": 0.0
@@ -3442,7 +3442,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.10460016709192E-12,
                 "result": 6.10460016709192E-12,
                 "stDev": 0.0
@@ -3455,7 +3455,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive waste"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.74730822422174E-14,
                 "result": 3.74730822422174E-14,
                 "stDev": 0.0
@@ -3469,7 +3469,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.25367330400354E-11,
                 "result": 9.25367330400354E-11,
                 "stDev": 0.0
@@ -3483,7 +3483,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.14915399695635E-13,
                 "result": 1.14915399695635E-13,
                 "stDev": 0.0
@@ -3497,7 +3497,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.12302065697971E-17,
                 "result": 5.12302065697971E-17,
                 "stDev": 0.0
@@ -3511,7 +3511,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.03971008425099E-11,
                 "result": 1.03971008425099E-11,
                 "stDev": 0.0
@@ -3525,7 +3525,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.58091194452989E-17,
                 "result": 6.58091194452989E-17,
                 "stDev": 0.0
@@ -3539,7 +3539,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 5.55225973582495E-16,
                 "result": 5.55225973582495E-16,
                 "stDev": 0.0
@@ -3553,7 +3553,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.07503247798537E-10,
                 "result": 1.07503247798537E-10,
                 "stDev": 0.0
@@ -3566,7 +3566,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.03142407790638E-07,
                 "result": 1.03142407790638E-07,
                 "stDev": 0.0
@@ -3580,7 +3580,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Natural gas (resource)"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.76102464698344E-09,
                 "result": 1.76102464698344E-09,
                 "stDev": 0.0
@@ -3594,7 +3594,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.7056463529779E-12,
                 "result": 1.7056463529779E-12,
                 "stDev": 0.0
@@ -3608,7 +3608,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.97465983097206E-14,
                 "result": 8.97465983097206E-14,
                 "stDev": 0.0
@@ -3622,7 +3622,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.13806192826444E-17,
                 "result": 1.13806192826444E-17,
                 "stDev": 0.0
@@ -3636,7 +3636,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.51617116003669E-19,
                 "result": 1.51617116003669E-19,
                 "stDev": 0.0
@@ -3649,7 +3649,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -2.10923662578916E-10,
                 "result": -2.10923662578916E-10,
                 "stDev": 0.0
@@ -3663,7 +3663,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.20010792114403E-11,
                 "result": 2.20010792114403E-11,
                 "stDev": 0.0
@@ -3677,7 +3677,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 8.6451555675781E-08,
                 "result": 8.6451555675781E-08,
                 "stDev": 0.0
@@ -3691,7 +3691,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.60664964650814E-15,
                 "result": 2.60664964650814E-15,
                 "stDev": 0.0
@@ -3705,7 +3705,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.64532574282356E-10,
                 "result": 1.64532574282356E-10,
                 "stDev": 0.0
@@ -3718,7 +3718,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.70558597223604E-07,
                 "result": 1.70558597223604E-07,
                 "stDev": 0.0
@@ -3731,7 +3731,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.51266728637499E-10,
                 "result": 3.51266728637499E-10,
                 "stDev": 0.0
@@ -3744,7 +3744,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -2.58250815145849E-10,
                 "result": -2.58250815145849E-10,
                 "stDev": 0.0
@@ -3758,7 +3758,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.06274753474475E-07,
                 "result": 4.06274753474475E-07,
                 "stDev": 0.0
@@ -3772,7 +3772,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.75531395503365E-12,
                 "result": 1.75531395503365E-12,
                 "stDev": 0.0
@@ -3786,7 +3786,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.32279234641531E-11,
                 "result": 4.32279234641531E-11,
                 "stDev": 0.0
@@ -3800,7 +3800,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.6557528443179E-14,
                 "result": 4.6557528443179E-14,
                 "stDev": 0.0
@@ -3814,7 +3814,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.73080836034933E-14,
                 "result": 1.73080836034933E-14,
                 "stDev": 0.0
@@ -3828,7 +3828,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.07584747047748E-11,
                 "result": 7.07584747047748E-11,
                 "stDev": 0.0
@@ -3842,7 +3842,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.18174528827878E-17,
                 "result": 3.18174528827878E-17,
                 "stDev": 0.0
@@ -3856,7 +3856,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.08369493013073E-17,
                 "result": 3.08369493013073E-17,
                 "stDev": 0.0
@@ -3870,7 +3870,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.56203699731787E-14,
                 "result": 1.56203699731787E-14,
                 "stDev": 0.0
@@ -3884,7 +3884,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.58260007987806E-07,
                 "result": 5.58260007987806E-07,
                 "stDev": 0.0
@@ -3897,7 +3897,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.53989476272194E-12,
                 "result": 4.53989476272194E-12,
                 "stDev": 0.0
@@ -3910,7 +3910,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.71062654722811E-15,
                 "result": 5.71062654722811E-15,
                 "stDev": 0.0
@@ -3924,7 +3924,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.15699828664683E-19,
                 "result": 1.15699828664683E-19,
                 "stDev": 0.0
@@ -3938,7 +3938,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.88409398675244E-20,
                 "result": 8.88409398675244E-20,
                 "stDev": 0.0
@@ -3952,7 +3952,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.48966390872783E-18,
                 "result": 8.48966390872783E-18,
                 "stDev": 0.0
@@ -3966,7 +3966,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.88794185208089E-14,
                 "result": 6.88794185208089E-14,
                 "stDev": 0.0
@@ -3980,7 +3980,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.56726944988686E-17,
                 "result": 7.56726944988686E-17,
                 "stDev": 0.0
@@ -3994,7 +3994,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.47966879701315E-11,
                 "result": 2.47966879701315E-11,
                 "stDev": 0.0
@@ -4008,7 +4008,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.12303887275852E-10,
                 "result": 2.12303887275852E-10,
                 "stDev": 0.0
@@ -4022,7 +4022,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.80544358648798E-13,
                 "result": 4.80544358648798E-13,
                 "stDev": 0.0
@@ -4036,7 +4036,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.08748883153756E-11,
                 "result": 8.08748883153756E-11,
                 "stDev": 0.0
@@ -4050,7 +4050,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 9.09070082365367E-25,
                 "result": 9.09070082365367E-25,
                 "stDev": 0.0
@@ -4064,7 +4064,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.86399521058268E-12,
                 "result": 6.86399521058268E-12,
                 "stDev": 0.0
@@ -4078,7 +4078,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.49511486324957E-09,
                 "result": 1.49511486324957E-09,
                 "stDev": 0.0
@@ -4092,7 +4092,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.57703271294476E-17,
                 "result": 2.57703271294476E-17,
                 "stDev": 0.0
@@ -4106,7 +4106,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.44593305827927E-15,
                 "result": 1.44593305827927E-15,
                 "stDev": 0.0
@@ -4120,7 +4120,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.6316197760733E-13,
                 "result": 2.6316197760733E-13,
                 "stDev": 0.0
@@ -4134,7 +4134,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.05464159565086E-12,
                 "result": 2.05464159565086E-12,
                 "stDev": 0.0
@@ -4148,7 +4148,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.36564828251897E-14,
                 "result": 2.36564828251897E-14,
                 "stDev": 0.0
@@ -4162,7 +4162,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.13669648796206E-16,
                 "result": 2.13669648796206E-16,
                 "stDev": 0.0
@@ -4176,7 +4176,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.99649693518346E-12,
                 "result": 2.99649693518346E-12,
                 "stDev": 0.0
@@ -4190,7 +4190,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.46260832356395E-10,
                 "result": 6.46260832356395E-10,
                 "stDev": 0.0
@@ -4204,7 +4204,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.92745851310361E-22,
                 "result": 9.92745851310361E-22,
                 "stDev": 0.0
@@ -4218,7 +4218,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.23566726889775E-15,
                 "result": 3.23566726889775E-15,
                 "stDev": 0.0
@@ -4232,7 +4232,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.27381775037116E-16,
                 "result": 2.27381775037116E-16,
                 "stDev": 0.0
@@ -4246,7 +4246,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.25854904922873E-16,
                 "result": 9.25854904922873E-16,
                 "stDev": 0.0
@@ -4260,7 +4260,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.34779493753207E-20,
                 "result": 2.34779493753207E-20,
                 "stDev": 0.0
@@ -4274,7 +4274,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.52143087903438E-19,
                 "result": 6.52143087903438E-19,
                 "stDev": 0.0
@@ -4288,7 +4288,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.89433515728671E-13,
                 "result": 6.89433515728671E-13,
                 "stDev": 0.0
@@ -4302,7 +4302,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.16263060828021E-15,
                 "result": 4.16263060828021E-15,
                 "stDev": 0.0
@@ -4316,7 +4316,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.57981095540799E-14,
                 "result": 2.57981095540799E-14,
                 "stDev": 0.0
@@ -4330,7 +4330,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.20459254551171E-14,
                 "result": 4.20459254551171E-14,
                 "stDev": 0.0
@@ -4344,7 +4344,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.7878501339244E-15,
                 "result": 1.7878501339244E-15,
                 "stDev": 0.0
@@ -4358,7 +4358,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.11498665823876E-17,
                 "result": 8.11498665823876E-17,
                 "stDev": 0.0
@@ -4372,7 +4372,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.56181023058464E-18,
                 "result": 7.56181023058464E-18,
                 "stDev": 0.0
@@ -4386,7 +4386,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.65322790944198E-14,
                 "result": 1.65322790944198E-14,
                 "stDev": 0.0
@@ -4400,7 +4400,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.1792950449973E-14,
                 "result": 5.1792950449973E-14,
                 "stDev": 0.0
@@ -4414,7 +4414,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.49808507848395E-12,
                 "result": 1.49808507848395E-12,
                 "stDev": 0.0
@@ -4427,7 +4427,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 7.7681364246199E-11,
                 "result": 7.7681364246199E-11,
                 "stDev": 0.0
@@ -4441,7 +4441,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.17130039944323E-16,
                 "result": 8.17130039944323E-16,
                 "stDev": 0.0
@@ -4455,7 +4455,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.13035547285015E-15,
                 "result": 6.13035547285015E-15,
                 "stDev": 0.0
@@ -4469,7 +4469,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.3265077733534E-14,
                 "result": 7.3265077733534E-14,
                 "stDev": 0.0
@@ -4483,7 +4483,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.00208074751936E-13,
                 "result": 3.00208074751936E-13,
                 "stDev": 0.0
@@ -4497,7 +4497,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.23603549350933E-17,
                 "result": 5.23603549350933E-17,
                 "stDev": 0.0
@@ -4511,7 +4511,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.44015633652845E-17,
                 "result": 4.44015633652845E-17,
                 "stDev": 0.0
@@ -4525,7 +4525,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.42803769899856E-14,
                 "result": 2.42803769899856E-14,
                 "stDev": 0.0
@@ -4539,7 +4539,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.97159696629408E-12,
                 "result": 3.97159696629408E-12,
                 "stDev": 0.0
@@ -4553,7 +4553,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.49727913188199E-13,
                 "result": 3.49727913188199E-13,
                 "stDev": 0.0
@@ -4567,7 +4567,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.07640516939304E-14,
                 "result": 4.07640516939304E-14,
                 "stDev": 0.0
@@ -4581,7 +4581,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.83970936714887E-11,
                 "result": 2.83970936714887E-11,
                 "stDev": 0.0
@@ -4595,7 +4595,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.67761083889217E-12,
                 "result": 4.67761083889217E-12,
                 "stDev": 0.0
@@ -4609,7 +4609,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.95447776768745E-17,
                 "result": 2.95447776768745E-17,
                 "stDev": 0.0
@@ -4623,7 +4623,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.20507153913095E-14,
                 "result": 1.20507153913095E-14,
                 "stDev": 0.0
@@ -4637,7 +4637,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.74821057799076E-13,
                 "result": 1.74821057799076E-13,
                 "stDev": 0.0
@@ -4651,7 +4651,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.18710076116947E-12,
                 "result": 3.18710076116947E-12,
                 "stDev": 0.0
@@ -4665,7 +4665,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.51114669530775E-14,
                 "result": 3.51114669530775E-14,
                 "stDev": 0.0
@@ -4679,7 +4679,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.93019492811552E-12,
                 "result": 7.93019492811552E-12,
                 "stDev": 0.0
@@ -4693,7 +4693,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.08623999367907E-17,
                 "result": 6.08623999367907E-17,
                 "stDev": 0.0
@@ -4707,7 +4707,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.87212885961016E-19,
                 "result": 8.87212885961016E-19,
                 "stDev": 0.0
@@ -4721,7 +4721,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.41921395652187E-19,
                 "result": 4.41921395652187E-19,
                 "stDev": 0.0
@@ -4735,7 +4735,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.57721085659078E-14,
                 "result": 1.57721085659078E-14,
                 "stDev": 0.0
@@ -4749,7 +4749,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.91279825179352E-13,
                 "result": 2.91279825179352E-13,
                 "stDev": 0.0
@@ -4762,7 +4762,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -2.8642755602936E-08,
                 "result": -2.8642755602936E-08,
                 "stDev": 0.0
@@ -4775,7 +4775,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 7.02318258516721E-10,
                 "result": 7.02318258516721E-10,
                 "stDev": 0.0
@@ -4788,7 +4788,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Stockpile goods"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.21428909941121E-07,
                 "result": 2.21428909941121E-07,
                 "stDev": 0.0
@@ -4802,7 +4802,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -1.68503848868775E-10,
                 "result": -1.68503848868775E-10,
                 "stDev": 0.0
@@ -4815,7 +4815,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Crude oil (resource)"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -3.27589396063026E-10,
                 "result": -3.27589396063026E-10,
                 "stDev": 0.0
@@ -4828,7 +4828,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.5798153253053E-10,
                 "result": 3.5798153253053E-10,
                 "stDev": 0.0
@@ -4841,7 +4841,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Inorganic emissions to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.71993612109714E-08,
                 "result": 8.71993612109714E-08,
                 "stDev": 0.0
@@ -4855,7 +4855,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.62662093479135E-15,
                 "result": 4.62662093479135E-15,
                 "stDev": 0.0
@@ -4868,7 +4868,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.75603191054719E-11,
                 "result": 1.75603191054719E-11,
                 "stDev": 0.0
@@ -4882,7 +4882,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.22317164102271E-15,
                 "result": 3.22317164102271E-15,
                 "stDev": 0.0
@@ -4895,7 +4895,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.29181643296915E-10,
                 "result": 3.29181643296915E-10,
                 "stDev": 0.0
@@ -4909,7 +4909,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to industrial soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.42610956713497E-15,
                 "result": 2.42610956713497E-15,
                 "stDev": 0.0
@@ -4922,7 +4922,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive waste"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.8556611594445E-11,
                 "result": 2.8556611594445E-11,
                 "stDev": 0.0
@@ -4935,7 +4935,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Occupation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 8.23719921566709E-08,
                 "result": 8.23719921566709E-08,
                 "stDev": 0.0
@@ -4949,7 +4949,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.96779509042244E-11,
                 "result": 3.96779509042244E-11,
                 "stDev": 0.0
@@ -4962,7 +4962,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive waste"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.00928342623805E-13,
                 "result": 3.00928342623805E-13,
                 "stDev": 0.0
@@ -4975,7 +4975,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive emissions to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.89233055697399E-10,
                 "result": 5.89233055697399E-10,
                 "stDev": 0.0
@@ -4988,7 +4988,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -4.98914691234577E-11,
                 "result": -4.98914691234577E-11,
                 "stDev": 0.0
@@ -5001,7 +5001,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.000683251508382966,
                 "result": 0.000683251508382966,
                 "stDev": 0.0
@@ -5014,7 +5014,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Crude oil (resource)"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -3.75224201125679E-10,
                 "result": -3.75224201125679E-10,
                 "stDev": 0.0
@@ -5028,7 +5028,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to air"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.39128885952846E-19,
                 "result": 5.39128885952846E-19,
                 "stDev": 0.0
@@ -5042,7 +5042,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.13081292758138E-10,
                 "result": 7.13081292758138E-10,
                 "stDev": 0.0
@@ -5055,7 +5055,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.143468276704608,
                 "result": 0.143468276704608,
                 "stDev": 0.0
@@ -5068,7 +5068,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Stockpile goods"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.6059521225361E-08,
                 "result": 3.6059521225361E-08,
                 "stDev": 0.0
@@ -5081,7 +5081,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.76016851683383E-13,
                 "result": 2.76016851683383E-13,
                 "stDev": 0.0
@@ -5095,7 +5095,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.0426270533914E-14,
                 "result": 1.0426270533914E-14,
                 "stDev": 0.0
@@ -5109,7 +5109,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.53664851399418E-14,
                 "result": 6.53664851399418E-14,
                 "stDev": 0.0
@@ -5123,7 +5123,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.09736095732328E-17,
                 "result": 1.09736095732328E-17,
                 "stDev": 0.0
@@ -5137,7 +5137,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.28765335008097E-17,
                 "result": 1.28765335008097E-17,
                 "stDev": 0.0
@@ -5151,7 +5151,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable element resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 9.23867041448922E-12,
                 "result": 9.23867041448922E-12,
                 "stDev": 0.0
@@ -5165,7 +5165,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.86815281118305E-16,
                 "result": 1.86815281118305E-16,
                 "stDev": 0.0
@@ -5178,7 +5178,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.84382859339928E-11,
                 "result": 1.84382859339928E-11,
                 "stDev": 0.0
@@ -5191,7 +5191,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Transformation"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.08180741739086E-11,
                 "result": 1.08180741739086E-11,
                 "stDev": 0.0
@@ -5204,7 +5204,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Uranium (resource)"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 4.14518603135961E-10,
                 "result": 4.14518603135961E-10,
                 "stDev": 0.0
@@ -5218,7 +5218,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Heavy metals to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.02097288019301E-10,
                 "result": 7.02097288019301E-10,
                 "stDev": 0.0
@@ -5231,7 +5231,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Hemeroby"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.71607326795465E-10,
                 "result": 3.71607326795465E-10,
                 "stDev": 0.0
@@ -5244,7 +5244,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Radioactive waste"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.93314073143612E-13,
                 "result": 5.93314073143612E-13,
                 "stDev": 0.0
@@ -5258,7 +5258,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.44112787673266E-10,
                 "result": 1.44112787673266E-10,
                 "stDev": 0.0
@@ -5271,7 +5271,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Stockpile goods"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.17632759750996E-06,
                 "result": 1.17632759750996E-06,
                 "stDev": 0.0
@@ -5285,7 +5285,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.70913495623988E-17,
                 "result": 4.70913495623988E-17,
                 "stDev": 0.0
@@ -5299,7 +5299,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.02719393538941E-10,
                 "result": 1.02719393538941E-10,
                 "stDev": 0.0
@@ -5313,7 +5313,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.64329193459765E-12,
                 "result": 2.64329193459765E-12,
                 "stDev": 0.0
@@ -5327,7 +5327,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.98207863633149E-17,
                 "result": 3.98207863633149E-17,
                 "stDev": 0.0
@@ -5341,7 +5341,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.97465607857697E-15,
                 "result": 5.97465607857697E-15,
                 "stDev": 0.0
@@ -5355,7 +5355,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.99238759731792E-20,
                 "result": 5.99238759731792E-20,
                 "stDev": 0.0
@@ -5369,7 +5369,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.0419086083256E-14,
                 "result": 8.0419086083256E-14,
                 "stDev": 0.0
@@ -5383,7 +5383,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.89469778409691E-11,
                 "result": 7.89469778409691E-11,
                 "stDev": 0.0
@@ -5397,7 +5397,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.91259403588301E-13,
                 "result": 7.91259403588301E-13,
                 "stDev": 0.0
@@ -5411,7 +5411,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.89773865950295E-16,
                 "result": 6.89773865950295E-16,
                 "stDev": 0.0
@@ -5425,7 +5425,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.38455835682974E-19,
                 "result": 6.38455835682974E-19,
                 "stDev": 0.0
@@ -5439,7 +5439,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.29873410396672E-11,
                 "result": 7.29873410396672E-11,
                 "stDev": 0.0
@@ -5453,7 +5453,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.68824810697282E-16,
                 "result": 1.68824810697282E-16,
                 "stDev": 0.0
@@ -5467,7 +5467,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.20982781888078E-13,
                 "result": 7.20982781888078E-13,
                 "stDev": 0.0
@@ -5481,7 +5481,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.83920929828061E-14,
                 "result": 2.83920929828061E-14,
                 "stDev": 0.0
@@ -5495,7 +5495,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.83459998348854E-21,
                 "result": 4.83459998348854E-21,
                 "stDev": 0.0
@@ -5509,7 +5509,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.05240587002899E-10,
                 "result": 1.05240587002899E-10,
                 "stDev": 0.0
@@ -5523,7 +5523,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": -3.90192385012323E-17,
                 "result": -3.90192385012323E-17,
                 "stDev": 0.0
@@ -5537,7 +5537,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.01075645616396E-15,
                 "result": 2.01075645616396E-15,
                 "stDev": 0.0
@@ -5551,7 +5551,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.37073423698397E-06,
                 "result": 8.37073423698397E-06,
                 "stDev": 0.0
@@ -5565,7 +5565,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.73260726754907E-16,
                 "result": 6.73260726754907E-16,
                 "stDev": 0.0
@@ -5579,7 +5579,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.70678875551863E-19,
                 "result": 1.70678875551863E-19,
                 "stDev": 0.0
@@ -5593,7 +5593,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.26780155566887E-18,
                 "result": 1.26780155566887E-18,
                 "stDev": 0.0
@@ -5607,7 +5607,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.82532877781118E-11,
                 "result": 3.82532877781118E-11,
                 "stDev": 0.0
@@ -5621,7 +5621,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.97939103363513E-15,
                 "result": 6.97939103363513E-15,
                 "stDev": 0.0
@@ -5635,7 +5635,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.92648532406264E-17,
                 "result": 8.92648532406264E-17,
                 "stDev": 0.0
@@ -5649,7 +5649,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.24810973746582E-14,
                 "result": 7.24810973746582E-14,
                 "stDev": 0.0
@@ -5663,7 +5663,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.45893977308521E-10,
                 "result": 2.45893977308521E-10,
                 "stDev": 0.0
@@ -5677,7 +5677,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.76716380428105E-15,
                 "result": 1.76716380428105E-15,
                 "stDev": 0.0
@@ -5691,7 +5691,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.89461512106022E-18,
                 "result": 2.89461512106022E-18,
                 "stDev": 0.0
@@ -5705,7 +5705,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.19873554155168E-12,
                 "result": 5.19873554155168E-12,
                 "stDev": 0.0
@@ -5719,7 +5719,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.36826004578658E-09,
                 "result": 2.36826004578658E-09,
                 "stDev": 0.0
@@ -5733,7 +5733,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.70414719823014E-16,
                 "result": 1.70414719823014E-16,
                 "stDev": 0.0
@@ -5747,7 +5747,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.94614263768125E-18,
                 "result": 2.94614263768125E-18,
                 "stDev": 0.0
@@ -5761,7 +5761,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.04744862388112E-13,
                 "result": 5.04744862388112E-13,
                 "stDev": 0.0
@@ -5775,7 +5775,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": -5.19086421627098E-21,
                 "result": -5.19086421627098E-21,
                 "stDev": 0.0
@@ -5789,7 +5789,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.42722917077187E-15,
                 "result": 2.42722917077187E-15,
                 "stDev": 0.0
@@ -5803,7 +5803,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.26304862197972E-15,
                 "result": 6.26304862197972E-15,
                 "stDev": 0.0
@@ -5817,7 +5817,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.09685195486239E-15,
                 "result": 1.09685195486239E-15,
                 "stDev": 0.0
@@ -5831,7 +5831,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.83497974995082E-17,
                 "result": 3.83497974995082E-17,
                 "stDev": 0.0
@@ -5845,7 +5845,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.54206383255476E-17,
                 "result": 1.54206383255476E-17,
                 "stDev": 0.0
@@ -5859,7 +5859,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.32309931067215E-16,
                 "result": 2.32309931067215E-16,
                 "stDev": 0.0
@@ -5873,7 +5873,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.77287442499203E-11,
                 "result": 5.77287442499203E-11,
                 "stDev": 0.0
@@ -5887,7 +5887,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 5.69944925445674E-15,
                 "result": 5.69944925445674E-15,
                 "stDev": 0.0
@@ -5901,7 +5901,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.82122695945903E-14,
                 "result": 3.82122695945903E-14,
                 "stDev": 0.0
@@ -5915,7 +5915,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.35334613088924E-15,
                 "result": 2.35334613088924E-15,
                 "stDev": 0.0
@@ -5929,7 +5929,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.32094142249326E-18,
                 "result": 1.32094142249326E-18,
                 "stDev": 0.0
@@ -5943,7 +5943,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.50627503018742E-19,
                 "result": 2.50627503018742E-19,
                 "stDev": 0.0
@@ -5957,7 +5957,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.95381943275339E-18,
                 "result": 1.95381943275339E-18,
                 "stDev": 0.0
@@ -5971,7 +5971,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.66077868570969E-15,
                 "result": 7.66077868570969E-15,
                 "stDev": 0.0
@@ -5985,7 +5985,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.1873018309143E-17,
                 "result": 4.1873018309143E-17,
                 "stDev": 0.0
@@ -5999,7 +5999,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.15614900344289E-14,
                 "result": 1.15614900344289E-14,
                 "stDev": 0.0
@@ -6013,7 +6013,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.79141752613341E-12,
                 "result": 2.79141752613341E-12,
                 "stDev": 0.0
@@ -6027,7 +6027,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.07551028440122E-11,
                 "result": 9.07551028440122E-11,
                 "stDev": 0.0
@@ -6041,7 +6041,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.30162307247768E-20,
                 "result": 1.30162307247768E-20,
                 "stDev": 0.0
@@ -6055,7 +6055,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.70019099251226E-21,
                 "result": 9.70019099251226E-21,
                 "stDev": 0.0
@@ -6069,7 +6069,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.16499828709008E-16,
                 "result": 2.16499828709008E-16,
                 "stDev": 0.0
@@ -6083,7 +6083,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.19271967319152E-20,
                 "result": 1.19271967319152E-20,
                 "stDev": 0.0
@@ -6097,7 +6097,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.49959878834382E-17,
                 "result": 4.49959878834382E-17,
                 "stDev": 0.0
@@ -6110,7 +6110,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.0293336563808763,
                 "result": 0.0293336563808763,
                 "stDev": 0.0
@@ -6123,7 +6123,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.09521841384624E-07,
                 "result": 1.09521841384624E-07,
                 "stDev": 0.0
@@ -6136,7 +6136,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.0015511468848828,
                 "result": 0.0015511468848828,
                 "stDev": 0.0
@@ -6150,7 +6150,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.19574665758922E-14,
                 "result": 2.19574665758922E-14,
                 "stDev": 0.0
@@ -6163,7 +6163,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable energy resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.000547035537860401,
                 "result": 0.000547035537860401,
                 "stDev": 0.0
@@ -6176,7 +6176,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 3.53203728512596E-07,
                 "result": 3.53203728512596E-07,
                 "stDev": 0.0
@@ -6189,7 +6189,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.10642341876735E-06,
                 "result": 7.10642341876735E-06,
                 "stDev": 0.0
@@ -6202,7 +6202,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.5453123147941E-12,
                 "result": 4.5453123147941E-12,
                 "stDev": 0.0
@@ -6216,7 +6216,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.62560484628489E-17,
                 "result": 4.62560484628489E-17,
                 "stDev": 0.0
@@ -6229,7 +6229,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.81349393938677E-11,
                 "result": 1.81349393938677E-11,
                 "stDev": 0.0
@@ -6243,7 +6243,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.51856025122396E-14,
                 "result": 1.51856025122396E-14,
                 "stDev": 0.0
@@ -6257,7 +6257,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.23665828230585E-07,
                 "result": 2.23665828230585E-07,
                 "stDev": 0.0
@@ -6271,7 +6271,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.81537975188743E-14,
                 "result": 1.81537975188743E-14,
                 "stDev": 0.0
@@ -6285,7 +6285,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.60761802626448E-18,
                 "result": 1.60761802626448E-18,
                 "stDev": 0.0
@@ -6299,7 +6299,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.62328968032197E-16,
                 "result": 1.62328968032197E-16,
                 "stDev": 0.0
@@ -6313,7 +6313,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.54535041182683E-22,
                 "result": 4.54535041182683E-22,
                 "stDev": 0.0
@@ -6327,7 +6327,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.49244522951304E-14,
                 "result": 1.49244522951304E-14,
                 "stDev": 0.0
@@ -6341,7 +6341,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.99268037612784E-11,
                 "result": 5.99268037612784E-11,
                 "stDev": 0.0
@@ -6355,7 +6355,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.96526462265379E-11,
                 "result": 3.96526462265379E-11,
                 "stDev": 0.0
@@ -6369,7 +6369,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.87855884153517E-23,
                 "result": 1.87855884153517E-23,
                 "stDev": 0.0
@@ -6383,7 +6383,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.64456751233562E-18,
                 "result": 2.64456751233562E-18,
                 "stDev": 0.0
@@ -6397,7 +6397,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.97638279366226E-11,
                 "result": 1.97638279366226E-11,
                 "stDev": 0.0
@@ -6411,7 +6411,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.59564661101119E-13,
                 "result": 5.59564661101119E-13,
                 "stDev": 0.0
@@ -6425,7 +6425,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.44992540182932E-15,
                 "result": 6.44992540182932E-15,
                 "stDev": 0.0
@@ -6439,7 +6439,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.24863006876959E-13,
                 "result": 1.24863006876959E-13,
                 "stDev": 0.0
@@ -6453,7 +6453,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.34077832092967E-10,
                 "result": 7.34077832092967E-10,
                 "stDev": 0.0
@@ -6467,7 +6467,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.8999392776605E-12,
                 "result": 5.8999392776605E-12,
                 "stDev": 0.0
@@ -6481,7 +6481,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.41924577743418E-16,
                 "result": 8.41924577743418E-16,
                 "stDev": 0.0
@@ -6495,7 +6495,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.26417901071929E-19,
                 "result": 6.26417901071929E-19,
                 "stDev": 0.0
@@ -6509,7 +6509,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.60531363035989E-18,
                 "result": 5.60531363035989E-18,
                 "stDev": 0.0
@@ -6523,7 +6523,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.19920301865772E-13,
                 "result": 1.19920301865772E-13,
                 "stDev": 0.0
@@ -6537,7 +6537,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.26715192278119E-11,
                 "result": 4.26715192278119E-11,
                 "stDev": 0.0
@@ -6551,7 +6551,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.73015536589409E-18,
                 "result": 8.73015536589409E-18,
                 "stDev": 0.0
@@ -6565,7 +6565,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.12426097304675E-12,
                 "result": 8.12426097304675E-12,
                 "stDev": 0.0
@@ -6579,7 +6579,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.65456901503047E-11,
                 "result": 7.65456901503047E-11,
                 "stDev": 0.0
@@ -6593,7 +6593,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.04830305543007E-13,
                 "result": 3.04830305543007E-13,
                 "stDev": 0.0
@@ -6607,7 +6607,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.05545356564014E-17,
                 "result": 1.05545356564014E-17,
                 "stDev": 0.0
@@ -6621,7 +6621,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.02747031219528E-14,
                 "result": 2.02747031219528E-14,
                 "stDev": 0.0
@@ -6635,7 +6635,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.06458111858582E-06,
                 "result": 3.06458111858582E-06,
                 "stDev": 0.0
@@ -6649,7 +6649,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.18421470772688E-10,
                 "result": 2.18421470772688E-10,
                 "stDev": 0.0
@@ -6663,7 +6663,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.82753427301101E-14,
                 "result": 4.82753427301101E-14,
                 "stDev": 0.0
@@ -6677,7 +6677,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.55497634632318E-07,
                 "result": 1.55497634632318E-07,
                 "stDev": 0.0
@@ -6691,7 +6691,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.15517622916026E-12,
                 "result": 1.15517622916026E-12,
                 "stDev": 0.0
@@ -6705,7 +6705,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.45377532512451E-12,
                 "result": 2.45377532512451E-12,
                 "stDev": 0.0
@@ -6719,7 +6719,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.34181812186922E-19,
                 "result": 1.34181812186922E-19,
                 "stDev": 0.0
@@ -6733,7 +6733,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.18344447798759E-17,
                 "result": 1.18344447798759E-17,
                 "stDev": 0.0
@@ -6747,7 +6747,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.06606836901219E-19,
                 "result": 2.06606836901219E-19,
                 "stDev": 0.0
@@ -6761,7 +6761,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.71256716402582E-18,
                 "result": 1.71256716402582E-18,
                 "stDev": 0.0
@@ -6775,7 +6775,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.49198932659101E-16,
                 "result": 6.49198932659101E-16,
                 "stDev": 0.0
@@ -6789,7 +6789,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.04341823662748E-17,
                 "result": 6.04341823662748E-17,
                 "stDev": 0.0
@@ -6803,7 +6803,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.0419086083256E-15,
                 "result": 8.0419086083256E-15,
                 "stDev": 0.0
@@ -6817,7 +6817,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.592262198277E-14,
                 "result": 1.592262198277E-14,
                 "stDev": 0.0
@@ -6831,7 +6831,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.95420654462356E-13,
                 "result": 1.95420654462356E-13,
                 "stDev": 0.0
@@ -6845,7 +6845,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.03066062366147E-13,
                 "result": 1.03066062366147E-13,
                 "stDev": 0.0
@@ -6859,7 +6859,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 8.12852943213984E-13,
                 "result": 8.12852943213984E-13,
                 "stDev": 0.0
@@ -6873,7 +6873,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.35327478170299E-20,
                 "result": 1.35327478170299E-20,
                 "stDev": 0.0
@@ -6887,7 +6887,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 9.66839611121928E-15,
                 "result": 9.66839611121928E-15,
                 "stDev": 0.0
@@ -6901,7 +6901,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.35460274113314E-16,
                 "result": 2.35460274113314E-16,
                 "stDev": 0.0
@@ -6915,7 +6915,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.44563858044324E-16,
                 "result": 5.44563858044324E-16,
                 "stDev": 0.0
@@ -6929,7 +6929,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.14043944254118E-13,
                 "result": 1.14043944254118E-13,
                 "stDev": 0.0
@@ -6943,7 +6943,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.08869245326811E-10,
                 "result": 2.08869245326811E-10,
                 "stDev": 0.0
@@ -6957,7 +6957,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.4578926701454E-14,
                 "result": 1.4578926701454E-14,
                 "stDev": 0.0
@@ -6971,7 +6971,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 7.50218801594695E-12,
                 "result": 7.50218801594695E-12,
                 "stDev": 0.0
@@ -6985,7 +6985,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.75022832058851E-16,
                 "result": 1.75022832058851E-16,
                 "stDev": 0.0
@@ -6999,7 +6999,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.31830180079181E-13,
                 "result": 2.31830180079181E-13,
                 "stDev": 0.0
@@ -7013,7 +7013,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.94742966410994E-13,
                 "result": 3.94742966410994E-13,
                 "stDev": 0.0
@@ -7026,7 +7026,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.04320061909565E-12,
                 "result": 4.04320061909565E-12,
                 "stDev": 0.0
@@ -7039,7 +7039,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.17011610362216E-21,
                 "result": 5.17011610362216E-21,
                 "stDev": 0.0
@@ -7052,7 +7052,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from air"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.01612935625036E-07,
                 "result": 2.01612935625036E-07,
                 "stDev": 0.0
@@ -7066,7 +7066,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.34506822645298E-21,
                 "result": 6.34506822645298E-21,
                 "stDev": 0.0
@@ -7079,7 +7079,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.28119536448997E-10,
                 "result": 1.28119536448997E-10,
                 "stDev": 0.0
@@ -7093,7 +7093,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.31435757904026E-17,
                 "result": 1.31435757904026E-17,
                 "stDev": 0.0
@@ -7107,7 +7107,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.35262966639622E-08,
                 "result": 1.35262966639622E-08,
                 "stDev": 0.0
@@ -7121,7 +7121,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.10400790689264E-15,
                 "result": 1.10400790689264E-15,
                 "stDev": 0.0
@@ -7135,7 +7135,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.10436995956189E-10,
                 "result": 2.10436995956189E-10,
                 "stDev": 0.0
@@ -7149,7 +7149,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 6.7250525411347E-13,
                 "result": 6.7250525411347E-13,
                 "stDev": 0.0
@@ -7163,7 +7163,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.63639068048892E-06,
                 "result": 1.63639068048892E-06,
                 "stDev": 0.0
@@ -7177,7 +7177,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.1661451482488E-15,
                 "result": 1.1661451482488E-15,
                 "stDev": 0.0
@@ -7191,7 +7191,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 2.10738973621545E-20,
                 "result": 2.10738973621545E-20,
                 "stDev": 0.0
@@ -7205,7 +7205,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.57855945271226E-11,
                 "result": 3.57855945271226E-11,
                 "stDev": 0.0
@@ -7218,7 +7218,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.32020882855272E-12,
                 "result": 1.32020882855272E-12,
                 "stDev": 0.0
@@ -7232,7 +7232,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.30139813193227E-12,
                 "result": 2.30139813193227E-12,
                 "stDev": 0.0
@@ -7246,7 +7246,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.8635478500528E-23,
                 "result": 3.8635478500528E-23,
                 "stDev": 0.0
@@ -7260,7 +7260,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.98156728472166E-11,
                 "result": 1.98156728472166E-11,
                 "stDev": 0.0
@@ -7274,7 +7274,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.64578979089962E-18,
                 "result": 2.64578979089962E-18,
                 "stDev": 0.0
@@ -7288,7 +7288,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.57649695272128E-14,
                 "result": 1.57649695272128E-14,
                 "stDev": 0.0
@@ -7302,7 +7302,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.6934238448292E-17,
                 "result": 3.6934238448292E-17,
                 "stDev": 0.0
@@ -7316,7 +7316,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.28504844245775E-13,
                 "result": 5.28504844245775E-13,
                 "stDev": 0.0
@@ -7330,7 +7330,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.13356229652952E-16,
                 "result": 5.13356229652952E-16,
                 "stDev": 0.0
@@ -7344,7 +7344,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.78223163861218E-12,
                 "result": 1.78223163861218E-12,
                 "stDev": 0.0
@@ -7358,7 +7358,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.61416461898296E-07,
                 "result": 1.61416461898296E-07,
                 "stDev": 0.0
@@ -7372,7 +7372,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.80337291173773E-19,
                 "result": 2.80337291173773E-19,
                 "stDev": 0.0
@@ -7386,7 +7386,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.19324072401012E-13,
                 "result": 4.19324072401012E-13,
                 "stDev": 0.0
@@ -7400,7 +7400,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.5737756093469E-11,
                 "result": 1.5737756093469E-11,
                 "stDev": 0.0
@@ -7414,7 +7414,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.25208429894566E-11,
                 "result": 1.25208429894566E-11,
                 "stDev": 0.0
@@ -7428,7 +7428,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.51856025122396E-14,
                 "result": 1.51856025122396E-14,
                 "stDev": 0.0
@@ -7442,7 +7442,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.47296798514091E-09,
                 "result": 5.47296798514091E-09,
                 "stDev": 0.0
@@ -7456,7 +7456,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.00927439826246E-19,
                 "result": 1.00927439826246E-19,
                 "stDev": 0.0
@@ -7470,7 +7470,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.000702629500750413,
                 "result": 0.000702629500750413,
                 "stDev": 0.0
@@ -7484,7 +7484,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.04872121777987E-17,
                 "result": 1.04872121777987E-17,
                 "stDev": 0.0
@@ -7498,7 +7498,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.42052759847925E-07,
                 "result": 1.42052759847925E-07,
                 "stDev": 0.0
@@ -7512,7 +7512,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.39868246702506E-20,
                 "result": 3.39868246702506E-20,
                 "stDev": 0.0
@@ -7526,7 +7526,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.00029811607897672,
                 "result": 0.00029811607897672,
                 "stDev": 0.0
@@ -7540,7 +7540,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.90857537008634E-16,
                 "result": 6.90857537008634E-16,
                 "stDev": 0.0
@@ -7554,7 +7554,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.00027652591726E-07,
                 "result": 2.00027652591726E-07,
                 "stDev": 0.0
@@ -7568,7 +7568,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.11815103760585E-12,
                 "result": 1.11815103760585E-12,
                 "stDev": 0.0
@@ -7582,7 +7582,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.16390603169989E-16,
                 "result": 1.16390603169989E-16,
                 "stDev": 0.0
@@ -7596,7 +7596,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 5.5281554668029E-14,
                 "result": 5.5281554668029E-14,
                 "stDev": 0.0
@@ -7610,7 +7610,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable material resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.07032718627574E-11,
                 "result": 1.07032718627574E-11,
                 "stDev": 0.0
@@ -7624,7 +7624,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.1031144889936E-15,
                 "result": 2.1031144889936E-15,
                 "stDev": 0.0
@@ -7638,7 +7638,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.52021464388454E-12,
                 "result": 2.52021464388454E-12,
                 "stDev": 0.0
@@ -7652,7 +7652,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.21720428129343E-09,
                 "result": 2.21720428129343E-09,
                 "stDev": 0.0
@@ -7666,7 +7666,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.54351879345153E-15,
                 "result": 3.54351879345153E-15,
                 "stDev": 0.0
@@ -7680,7 +7680,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.33989445185293E-11,
                 "result": 2.33989445185293E-11,
                 "stDev": 0.0
@@ -7694,7 +7694,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 4.6557528443179E-14,
                 "result": 4.6557528443179E-14,
                 "stDev": 0.0
@@ -7708,7 +7708,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.9476577720913E-05,
                 "result": 1.9476577720913E-05,
                 "stDev": 0.0
@@ -7722,7 +7722,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Renewable material resources from water"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 0.0324341319322915,
                 "result": 0.0324341319322915,
                 "stDev": 0.0
@@ -7736,7 +7736,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": 1.84586534871622E-09,
                 "result": 1.84586534871622E-09,
                 "stDev": 0.0
@@ -7750,7 +7750,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Non-renewable element resources from ground"
                 },
-                "directionID": 1,
+                "direction": "Input",
                 "magnitude": -2.24636862994631E-11,
                 "result": -2.24636862994631E-11,
                 "stDev": 0.0
@@ -7763,7 +7763,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.57282354608726E-07,
                 "result": 1.57282354608726E-07,
                 "stDev": 0.0
@@ -7776,7 +7776,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 3.3567900457867E-09,
                 "result": 3.3567900457867E-09,
                 "stDev": 0.0
@@ -7790,7 +7790,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.39392106418043E-16,
                 "result": 2.39392106418043E-16,
                 "stDev": 0.0
@@ -7804,7 +7804,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to sea water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 6.03092104729706E-17,
                 "result": 6.03092104729706E-17,
                 "stDev": 0.0
@@ -7818,7 +7818,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 0.0427534258530966,
                 "result": 0.0427534258530966,
                 "stDev": 0.0
@@ -7832,7 +7832,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.58242239835656E-15,
                 "result": 1.58242239835656E-15,
                 "stDev": 0.0
@@ -7846,7 +7846,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to non-agricultural soil"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 2.07014908593725E-16,
                 "result": 2.07014908593725E-16,
                 "stDev": 0.0
@@ -7860,7 +7860,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.58242239835656E-16,
                 "result": 1.58242239835656E-16,
                 "stDev": 0.0
@@ -7874,7 +7874,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Emissions to air, unspecified"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.9475967979773E-16,
                 "result": 1.9475967979773E-16,
                 "stDev": 0.0
@@ -7887,7 +7887,7 @@ describe('Unit test LCIA bar chart directive', function() {
                     "flowTypeID": 2,
                     "category": "Other emissions to fresh water"
                 },
-                "directionID": 2,
+                "direction": "Output",
                 "magnitude": 1.77070429025056E-07,
                 "result": 1.77070429025056E-07,
                 "stDev": 0.0

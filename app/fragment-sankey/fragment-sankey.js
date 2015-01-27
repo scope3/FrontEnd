@@ -39,7 +39,7 @@ angular.module('lcaApp.fragment.sankey',
 
             /**
              * Get magnitude of link with a flow property
-             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}}  link
+             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, direction: String, flowPropertyMagnitudes:Array}}  link
              * @param {Number}  flowPropertyID    flow property key
              * @return {Number} The magnitude, if link has the flow property. Otherwise, null.
              */
@@ -106,7 +106,7 @@ angular.module('lcaApp.fragment.sankey',
 
             /**
              * Add graph link for fragmentflow element
-             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, directionID:Number, flowPropertyMagnitudes:Array}} element
+             * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, direction:String, flowPropertyMagnitudes:Array}} element
              */
             function addGraphLink(element) {
                 var link, parentIndex,
@@ -130,7 +130,7 @@ angular.module('lcaApp.fragment.sankey',
                     } else {
                         link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
                     }
-                    if (element.directionID === 1) {
+                    if (element.direction === "Input") {
                         link.source = nodeIndex;
                         link.target = parentIndex;
                     } else {

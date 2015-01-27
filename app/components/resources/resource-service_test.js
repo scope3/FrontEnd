@@ -114,7 +114,7 @@ describe('Unit test resource factories', function () {
             "name",
             "shortName",
             "nodeTypeID",
-            "directionID",
+            "direction",
             "flowPropertyMagnitudes"], {fragmentID: 1, scenarioID: 1});
     }));
 

@@ -204,9 +204,9 @@ angular.module('lcaApp.process.LCIA',
                                 magnitude: pf.result * activityLevel,
                                 unit: fp["referenceUnit"]
                             };
-                            if (pf.directionID === 1) {
+                            if (pf.direction === "Input") {
                                 $scope.inputFlows.push(rowObj);
-                            } else if (pf.directionID === 2 ) {
+                            } else if (pf.direction === "Output" ) {
                                 $scope.outputFlows.push(rowObj);
                             }
                             break;
