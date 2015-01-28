@@ -4,14 +4,14 @@ angular.module('lcaApp.process.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
                  'lcaApp.fragmentNavigation.service',
-                 'lcaApp.lciaDetail.service', 'lcaApp.models.param'])
+                 'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario'])
     .controller('ProcessLciaCtrl',
-        ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService',
-        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioService,
+        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
@@ -95,7 +95,7 @@ angular.module('lcaApp.process.LCIA',
              * Display scenario, fragment navigation state, and process from selected fragment node.
              */
             function prepareViewWithFragmentNavigation() {
-                $scope.scenario = ScenarioService.get(scenarioID);
+                $scope.scenario = ScenarioModelService.get(scenarioID);
                 if ($scope.scenario) {
                     $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
                         $scope.scenario.topLevelFragmentID).getAll();
@@ -111,7 +111,7 @@ angular.module('lcaApp.process.LCIA',
              * Populate selection controls with scenarios and processes.
              */
             function prepareViewWithSelection() {
-                $scope.scenarios = ScenarioService.getAll();
+                $scope.scenarios = ScenarioModelService.getAll();
                 // HTML has multiple scopes
                 $scope.selection.scenario = $scope.scenario = $scope.scenarios.find(function (element) {
                     return (element["scenarioID"] === scenarioID);
@@ -171,7 +171,7 @@ angular.module('lcaApp.process.LCIA',
              * Get all data, except for LCIA results
              */
             function getData() {
-                $q.all([ScenarioService.load(),
+                $q.all([ScenarioModelService.load(),
                     ProcessForFlowTypeService.load({flowTypeID:2}),
                     LciaMethodService.load(),
                     ProcessFlowService.load({processID:processID}),
@@ -230,6 +230,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.onScenarioChange = function() {
                 $scope.scenario = $scope.selection.scenario;
                 scenarioID = $scope.scenario.scenarioID;
+                ScenarioModelService.setActiveID(scenarioID);
                 getDataFilteredByScenario();
             };
 
@@ -239,6 +240,13 @@ angular.module('lcaApp.process.LCIA',
                 getDataFilteredByProcess();
             };
 
+            function getActiveScenarioID() {
+                var activeID = ScenarioModelService.getActiveID();
+                if (activeID) {
+                   scenarioID = activeID;
+                }
+            }
+
             $scope.process = null;
             $scope.scenario = null;
             $scope.selection = {};
@@ -247,6 +255,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.outputFlows = [];
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
+            getActiveScenarioID();
             getStateParams();
             StatusService.startWaiting();
             getData();

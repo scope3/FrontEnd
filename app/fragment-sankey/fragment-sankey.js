@@ -2,12 +2,12 @@
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.status.service',
-                 'lcaApp.format', 'lcaApp.fragmentNavigation.service'])
+                 'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
-        'ScenarioService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
+        'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService',
-        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioService, FragmentService,
+        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   FormatService, FragmentNavigationService) {
             var fragmentID = $stateParams.fragmentID,
@@ -194,8 +194,9 @@ angular.module('lcaApp.fragment.sankey',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
-                $scope.scenario = ScenarioService.get(scenarioID);
+                $scope.scenario = ScenarioModelService.get(scenarioID);
                 if ($scope.scenario) {
+                    ScenarioModelService.setActiveID(scenarioID);
                     initScopeFragment();
                     getDataForFragment();
                 } else {
@@ -240,7 +241,7 @@ angular.module('lcaApp.fragment.sankey',
              */
             function getData() {
                 StatusService.startWaiting();
-                $q.all([ScenarioService.load(), FragmentService.load(), ProcessService.load()])
+                $q.all([ScenarioModelService.load(), FragmentService.load(), ProcessService.load()])
                     .then(handleSuccess,
                     StatusService.handleFailure);
             }

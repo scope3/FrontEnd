@@ -2,16 +2,16 @@
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
     ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'ngGrid', 'lcaApp.status.service',
-     'lcaApp.models.param'])
+     'lcaApp.models.param', 'lcaApp.models.scenario'])
     // Follow new angular naming convention for controllers
     // TODO: refactor other controllers (*Ctrl -> *Controller)
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
-        'ScenarioService', 'ParamModelService', 'StatusService',
+        'ScenarioModelService', 'ParamModelService', 'StatusService',
         function ($scope, $stateParams, $q,
                   ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
-                  ScenarioService, ParamModelService, StatusService) {
+                  ScenarioModelService, ParamModelService, StatusService) {
 
             $scope.lciaFactors = [];
             $scope.gridColumns = [
@@ -30,10 +30,10 @@ angular.module('lcaApp.lciaMethod.detail',
             };
             $scope.paramScenario = null;
 
-            $scope.onScenarioChange = getParams;
+            $scope.onScenarioChange = changeScenario;
 
             StatusService.startWaiting();
-            $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioService.load(),
+            $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
                 handleLciaFactorResults, StatusService.handleFailure);
@@ -42,7 +42,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 var paramCol = {field: 'value', displayName: 'Override'};
                 if ($scope.paramScenario) {
                     paramCol.visible = true;
-                    if (ScenarioService.canUpdate($scope.paramScenario)) {
+                    if (ScenarioModelService.canUpdate($scope.paramScenario)) {
                         paramCol.enableCellEdit = true;
                     }
                 } else {
@@ -76,7 +76,17 @@ angular.module('lcaApp.lciaMethod.detail',
                             value: null
                         };
                     });
+                getParams();
+            }
 
+            function selectActiveScenario() {
+                var scenarioID = ScenarioModelService.getActiveID();
+                if (scenarioID) {
+                    var scenario = ScenarioModelService.get(scenarioID);
+                    if (scenario) {
+                        $scope.paramScenario = scenario;
+                    }
+                }
             }
 
             /**
@@ -84,7 +94,8 @@ angular.module('lcaApp.lciaMethod.detail',
              */
             function handleLciaFactorResults() {
                 StatusService.handleSuccess();
-                $scope.scenarios = ScenarioService.getAll();
+                $scope.scenarios = ScenarioModelService.getAll();
+                selectActiveScenario();
                 $scope.lciaMethod = LciaMethodService.get($stateParams.lciaMethodID);
                 if (!$scope.lciaMethod) {
                     StatusService.handleFailure("Invalid LCIA method ID parameter.");
@@ -128,6 +139,11 @@ angular.module('lcaApp.lciaMethod.detail',
                 } else {
                     clearParamData();
                 }
+            }
+
+            function changeScenario() {
+                ScenarioModelService.setActiveID($scope.paramScenario.scenarioID);
+                getParams();
             }
 
         }]);
