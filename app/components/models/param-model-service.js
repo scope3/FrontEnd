@@ -47,9 +47,9 @@
         }
     }}}
  */
-angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
-    .factory('ParamModelService', ['ParamService', '$q',
-        function(ParamService, $q) {
+angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service'] )
+    .factory('ParamModelService', ['ParamService', '$q', 'StatusService',
+        function(ParamService, $q, StatusService) {
             var svc = {},
                 model = { scenarios : {} };
 
@@ -69,6 +69,18 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
                         nest( nest(parent.flows, param.flowID), "paramTypes");
                         parent.flows[param.flowID]["paramTypes"][param.paramTypeID] = param;
                     }
+                }
+            }
+
+            function insertParam(p) {
+                var m = model.scenarios[p.scenarioID];
+                if ("processID" in p ) {
+                    nest( nest(m, "processes"), p.processID);
+                    associateByFlow(m.processes[p.processID], p);
+                }
+                else if ("lciaMethodID" in p ) {
+                    nest( nest(m, "lciaMethods"), p.lciaMethodID);
+                    associateByFlow(m.lciaMethods[p.lciaMethodID], p);
                 }
             }
 
@@ -177,6 +189,17 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service'] )
                     return null;
                 }
             };
+
+            function handleCreate(result) {
+                insertParam(result);
+            }
+
+            svc.createParam = function(newParam) {
+                if (newParam.hasOwnProperty("lciaMethodID") && newParam.hasOwnProperty("flowID")) {
+                    newParam.paramTypeID = 10;
+                }
+                ParamService.create(newParam, handleCreate, StatusService.handleFailure, {scenarioID: newParam.scenarioID});
+            }
 
             return svc;
         }

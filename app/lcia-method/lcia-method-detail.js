@@ -14,15 +14,12 @@ angular.module('lcaApp.lciaMethod.detail',
                   ScenarioModelService, ParamModelService, StatusService) {
 
             $scope.lciaFactors = [];
-            $scope.gridColumns = [
-                {field: 'category', displayName: 'Flow Category'},
-                {field: 'name', displayName: 'Flow Name'},
-                {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'},
-                {field: 'value', displayName: 'Override', visible: false }
-            ];
+            $scope.gridColumns = [];
 
-            $scope.gridOptions = { data: 'lciaFactors',
-                columnDefs: 'gridColumns'
+            $scope.gridOptions = {
+                data: 'lciaFactors',
+                columnDefs: 'gridColumns',
+                enableRowSelection : false
             };
             $scope.accordionStatus = {
                 attributesOpen: true,
@@ -32,6 +29,10 @@ angular.module('lcaApp.lciaMethod.detail',
 
             $scope.onScenarioChange = changeScenario;
 
+            $scope.dynamicGridStyle = null;
+
+            $scope.$on('ngGridEventEndCellEdit', handleCellEdit);
+
             StatusService.startWaiting();
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
@@ -39,11 +40,12 @@ angular.module('lcaApp.lciaMethod.detail',
                 handleLciaFactorResults, StatusService.handleFailure);
 
             function defineParamCol() {
-                var paramCol = {field: 'value', displayName: 'Override'};
+                var paramCol = {field: 'value', displayName: 'Parameter'};
                 if ($scope.paramScenario) {
                     paramCol.visible = true;
                     if (ScenarioModelService.canUpdate($scope.paramScenario)) {
                         paramCol.enableCellEdit = true;
+                        paramCol.cellClass = "gridCellEdit";
                     }
                 } else {
                     paramCol.visible = false;
@@ -63,7 +65,9 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function displayLciaFactors() {
-                var lciaFactors = LciaFactorService.getAll();
+                var lciaFactors = LciaFactorService.getAll(),
+                    gridHeight = lciaFactors.length * 30 + 50;
+                $scope.dynamicGridStyle = { height: gridHeight} ;
                 $scope.lciaFactors =
                     lciaFactors.map(function (f) {
                         var flow = FlowForFlowTypeService.get(f.flowID);
@@ -71,11 +75,10 @@ angular.module('lcaApp.lciaMethod.detail',
                         return {flowID: flow.flowID,
                             category: flow.category,
                             name: flow.name,
-                            factor: f.factor,
-                            paramID: null,
-                            value: null
+                            factor: f.factor
                         };
                     });
+
                 getParams();
             }
 
@@ -144,6 +147,21 @@ angular.module('lcaApp.lciaMethod.detail',
             function changeScenario() {
                 ScenarioModelService.setActiveID($scope.paramScenario.scenarioID);
                 getParams();
+            }
+
+            function handleCellEdit (evt){
+                console.log(evt.targetScope.row.entity);  // the underlying data bound to the row
+                // Detect changes and send entity to server
+                //{flowID: 20, category: "Emissions to air, unspecified", name: "pentachlorophenol", factor: 0.00000872, paramID: null…}
+                var rowObj = evt.targetScope.row.entity;
+                if (rowObj.paramID === null) {
+                    var param = {
+                        scenarioID: $scope.paramScenario.scenarioID,
+                        lciaMethodID: $scope.lciaMethod.lciaMethodID,
+                        flowID: rowObj.flowID,
+                        value: +rowObj.value };
+                    ParamModelService.createParam(param);
+                }
             }
 
         }]);

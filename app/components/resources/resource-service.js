@@ -147,9 +147,10 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
             };
 
             resourceService.addChangeMethods = function(svc) {
-                svc.create = function (obj, successCB, errorCB) {
+                svc.create = function (obj, successCB, errorCB, params) {
+                    var p = resourceService.addAuthParam(params);
                     svc.objects = null;
-                    svc.resource.save( resourceService.addAuthParam(), obj, successCB, errorCB);
+                    svc.resource.save( p, obj, successCB, errorCB);
                 };
 
                 svc.delete = function(obj, successCB, errorCB) {
@@ -157,6 +158,12 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     params[svc.idName] = obj[svc.idName];
                     svc.objects = null;
                     svc.resource.delete( params, successCB, errorCB);
+                };
+
+                svc.update = function(obj, successCB, errorCB) {
+                    var params = resourceService.addAuthParam();
+                    params[svc.idName] = obj[svc.idName];
+                    svc.resource.update( params, obj, successCB, errorCB);
                 };
             };
 

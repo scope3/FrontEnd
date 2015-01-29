@@ -86,3 +86,9 @@ waterfall-chart .y.axis path {
     /* height to fit not supported, unfortunately */
     height: 600px;
 }
+
+.gridCellEdit {
+
+    border-style: ridge;
+}
+
