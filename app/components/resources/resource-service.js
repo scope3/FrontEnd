@@ -33,7 +33,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
                 "lciaResultForFragment" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/lciamethods/:lciaMethodID/lciaresults",
                 "lciaResultForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciamethods/:lciaMethodID/lciaresults",
-                "param" : API_ROOT + "scenarios/:scenarioID/params",
+                "param" : API_ROOT + "scenarios/:scenarioID/params/:paramID",
                 "process" : API_ROOT + "processes",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
                 "processFlow" : API_ROOT + "processes/:processID/processflows",
@@ -160,10 +160,10 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     svc.resource.delete( params, successCB, errorCB);
                 };
 
-                svc.update = function(obj, successCB, errorCB) {
-                    var params = resourceService.addAuthParam();
-                    params[svc.idName] = obj[svc.idName];
-                    svc.resource.update( params, obj, successCB, errorCB);
+                svc.update = function(obj, successCB, errorCB, params) {
+                    var p = resourceService.addAuthParam(params);
+                    p[svc.idName] = obj[svc.idName];
+                    svc.resource.update( p, obj, successCB, errorCB);
                 };
             };
 

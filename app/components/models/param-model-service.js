@@ -192,6 +192,11 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
 
             function handleCreate(result) {
                 insertParam(result);
+                StatusService.handleSuccess("Parameter created." + result);
+            }
+
+            function handleUpdate(result) {
+                StatusService.handleSuccess("Parameter updated." + result);
             }
 
             svc.createParam = function(newParam) {
@@ -199,7 +204,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     newParam.paramTypeID = 10;
                 }
                 ParamService.create(newParam, handleCreate, StatusService.handleFailure, {scenarioID: newParam.scenarioID});
-            }
+            };
+
+            svc.updateParam = function(paramID, paramValue) {
+                var param = ParamService.get(paramID);
+                if (param) {
+                    param.value = paramValue;
+                    ParamService.update(param, handleUpdate, StatusService.handleFailure, {scenarioID: param.scenarioID});
+                }
+            };
 
             return svc;
         }

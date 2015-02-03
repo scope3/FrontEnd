@@ -21,9 +21,12 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                 $rootScope.alert = { type: "danger", msg: errMsg };
             };
 
-            svc.handleSuccess = function () {
+            svc.handleSuccess = function (infoMsg) {
                     svc.stopWaiting();
                     $rootScope.alert = null;
+                    if (infoMsg) {
+                        $rootScope.alert = { type: "success", msg: infoMsg };
+                    }
             };
 
             return svc;

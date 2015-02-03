@@ -154,13 +154,21 @@ angular.module('lcaApp.lciaMethod.detail',
                 // Detect changes and send entity to server
                 //{flowID: 20, category: "Emissions to air, unspecified", name: "pentachlorophenol", factor: 0.00000872, paramID: null…}
                 var rowObj = evt.targetScope.row.entity;
-                if (rowObj.paramID === null) {
-                    var param = {
-                        scenarioID: $scope.paramScenario.scenarioID,
-                        lciaMethodID: $scope.lciaMethod.lciaMethodID,
-                        flowID: rowObj.flowID,
-                        value: +rowObj.value };
-                    ParamModelService.createParam(param);
+
+                if (rowObj.paramID === null ) {
+                    if (rowObj.value) {
+                        var param = {
+                            scenarioID: $scope.paramScenario.scenarioID,
+                            lciaMethodID: $scope.lciaMethod.lciaMethodID,
+                            flowID: rowObj.flowID,
+                            value: +rowObj.value
+                        };
+                        ParamModelService.createParam(param);
+                    }
+                } else {
+                    if (rowObj.value) {
+                        ParamModelService.updateParam(rowObj.paramID, +rowObj.value);
+                    }
                 }
             }
 
