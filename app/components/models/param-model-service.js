@@ -48,8 +48,8 @@
     }}}
  */
 angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service'] )
-    .factory('ParamModelService', ['ParamService', '$q', 'StatusService',
-        function(ParamService, $q, StatusService) {
+    .factory('ParamModelService', ['ParamService', '$q', 'StatusService', '$log',
+        function(ParamService, $q, StatusService, $log) {
             var svc = {},
                 model = { scenarios : {} };
 
@@ -81,6 +81,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 else if ("lciaMethodID" in p ) {
                     nest( nest(m, "lciaMethods"), p.lciaMethodID);
                     associateByFlow(m.lciaMethods[p.lciaMethodID], p);
+                }
+            }
+
+            function removeParam(p) {
+                if (p.paramTypeID === 10) {
+                    var params = svc.getLciaMethodFlowParams(p.scenarioID, p.lciaMethodID);
+                    if (params.hasOwnProperty(p.flowID)) {
+                        delete params[p.flowID];
+                    }
                 }
             }
 
@@ -192,11 +201,23 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
 
             function handleCreate(result) {
                 insertParam(result);
-                StatusService.handleSuccess("Parameter created." + result);
+                $log.info("Parameter created. " + angular.toJson(result, true));
             }
 
             function handleUpdate(result) {
-                StatusService.handleSuccess("Parameter updated." + result);
+                $log.info("Parameter updated. " + angular.toJson(result, true));
+            }
+
+            function handleDelete(result) {
+                if (result.hasOwnProperty("scenarioID") &&
+                    result.hasOwnProperty("lciaMethodID") &&
+                    result.hasOwnProperty("flowID")) {
+                    var param = svc.getLciaMethodFlowParam(result.scenarioID, result.lciaMethodID, result.flowID);
+                    if (param) {
+                        removeParam(param);
+                    }
+                }
+                $log.info("Parameter deleted. " + angular.toJson(result, true));
             }
 
             svc.createParam = function(newParam) {
@@ -204,6 +225,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     newParam.paramTypeID = 10;
                 }
                 ParamService.create(newParam, handleCreate, StatusService.handleFailure, {scenarioID: newParam.scenarioID});
+            };
+
+            svc.deleteParam = function(paramID) {
+                var param = ParamService.get(paramID);
+                if (param) {
+                    ParamService.delete(param, handleDelete, StatusService.handleFailure, {scenarioID: param.scenarioID});
+                }
             };
 
             svc.updateParam = function(paramID, paramValue) {

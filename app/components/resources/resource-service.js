@@ -14,7 +14,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 //                    get: {method: 'GET', cache: false, isArray: false}, // Used to get detailed LCIA results for one method
 //                    query: {method: 'GET', cache: true, isArray: true}, // Get array of resources
 //                    // Following actions are only used with scenarios and params
-//                    create: { method: 'POST'},
+ //                   create: { method: 'POST', isArray:true},    // POST param returns an array containing one param
                     update: { method: 'PUT' }
 //                    , delete: { method: 'DELETE' }
                 };
@@ -153,11 +153,11 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     svc.resource.save( p, obj, successCB, errorCB);
                 };
 
-                svc.delete = function(obj, successCB, errorCB) {
-                    var params = resourceService.addAuthParam();
-                    params[svc.idName] = obj[svc.idName];
+                svc.delete = function(obj, successCB, errorCB, params) {
+                    var p = resourceService.addAuthParam(params);
+                    p[svc.idName] = obj[svc.idName];
                     svc.objects = null;
-                    svc.resource.delete( params, successCB, errorCB);
+                    svc.resource.delete( p, obj, successCB, errorCB);
                 };
 
                 svc.update = function(obj, successCB, errorCB, params) {

@@ -150,13 +150,12 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function handleCellEdit (evt){
-                console.log(evt.targetScope.row.entity);  // the underlying data bound to the row
                 // Detect changes and send entity to server
                 //{flowID: 20, category: "Emissions to air, unspecified", name: "pentachlorophenol", factor: 0.00000872, paramID: null…}
                 var rowObj = evt.targetScope.row.entity;
 
                 if (rowObj.paramID === null ) {
-                    if (rowObj.value) {
+                    if (rowObj.value ) {
                         var param = {
                             scenarioID: $scope.paramScenario.scenarioID,
                             lciaMethodID: $scope.lciaMethod.lciaMethodID,
@@ -166,8 +165,10 @@ angular.module('lcaApp.lciaMethod.detail',
                         ParamModelService.createParam(param);
                     }
                 } else {
-                    if (rowObj.value) {
+                    if (rowObj.value && rowObj.value !== "") {
                         ParamModelService.updateParam(rowObj.paramID, +rowObj.value);
+                    } else {
+                        ParamModelService.deleteParam(rowObj.paramID);
                     }
                 }
             }
