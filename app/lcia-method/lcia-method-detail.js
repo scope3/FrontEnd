@@ -19,7 +19,8 @@ angular.module('lcaApp.lciaMethod.detail',
             $scope.gridOptions = {
                 data: 'lciaFactors',
                 columnDefs: 'gridColumns',
-                enableRowSelection : false
+                enableRowSelection : false,
+                enableCellEditOnFocus: true
             };
             $scope.accordionStatus = {
                 attributesOpen: true,
@@ -43,10 +44,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 var paramCol = {field: 'value', displayName: 'Parameter'};
                 if ($scope.paramScenario) {
                     paramCol.visible = true;
-                    if (ScenarioModelService.canUpdate($scope.paramScenario)) {
-                        paramCol.enableCellEdit = true;
-                        paramCol.cellClass = "gridCellEdit";
-                    }
+                    paramCol.enableCellEdit = ScenarioModelService.canUpdate($scope.paramScenario);
                 } else {
                     paramCol.visible = false;
                 }
@@ -57,9 +55,9 @@ angular.module('lcaApp.lciaMethod.detail',
             function setGridColumns () {
                 var paramCol = defineParamCol();
                 $scope.gridColumns = [
-                    {field: 'category', displayName: 'Flow Category'},
-                    {field: 'name', displayName: 'Flow Name'},
-                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat'},
+                    {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
+                    {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
+                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat', enableCellEdit: false},
                     paramCol
                 ];
             }
