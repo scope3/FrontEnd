@@ -6,12 +6,12 @@ angular.module('lcaApp.lciaMethod.detail',
     // Follow new angular naming convention for controllers
     // TODO: refactor other controllers (*Ctrl -> *Controller)
     .controller('LciaMethodDetailController', [
-        '$scope', '$stateParams', '$q',
+        '$scope', '$stateParams', '$q', '$log',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
-        'ScenarioModelService', 'ParamModelService', 'StatusService',
-        function ($scope, $stateParams, $q,
+        'ScenarioModelService', 'ParamModelService', 'PARAM_VALUE_STATUS', 'StatusService',
+        function ($scope, $stateParams, $q, $log,
                   ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
-                  ScenarioModelService, ParamModelService, StatusService) {
+                  ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
 
             $scope.lciaFactors = [];
             $scope.gridColumns = [];
@@ -34,6 +34,14 @@ angular.module('lcaApp.lciaMethod.detail',
 
             $scope.$on('ngGridEventEndCellEdit', handleCellEdit);
 
+            $scope.validChange = function (row) {
+                return row.entity.editStatus === PARAM_VALUE_STATUS.changed;
+            };
+
+            $scope.invalidChange = function (row) {
+                return row.entity.editStatus === PARAM_VALUE_STATUS.invalid;
+            };
+
             StatusService.startWaiting();
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
                 FlowForFlowTypeService.load({flowTypeID: 2}) ,
@@ -44,7 +52,10 @@ angular.module('lcaApp.lciaMethod.detail',
                 var paramCol = {field: 'value', displayName: 'Parameter'};
                 if ($scope.paramScenario) {
                     paramCol.visible = true;
-                    paramCol.enableCellEdit = ScenarioModelService.canUpdate($scope.paramScenario);
+                    if (ScenarioModelService.canUpdate($scope.paramScenario)) {
+                        paramCol.cellTemplate = 'template/grid/edit-param-cell.html';
+                        paramCol.enableCellEdit = true;
+                    }
                 } else {
                     paramCol.visible = false;
                 }
@@ -120,6 +131,7 @@ angular.module('lcaApp.lciaMethod.detail',
                         lf.paramID = null;
                         lf.value = null;
                     }
+                    lf.editStatus = PARAM_VALUE_STATUS.unchanged;
                 });
                 setGridColumns();
             }
@@ -128,6 +140,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 $scope.lciaFactors.forEach( function(lf) {
                     lf.paramID = null;
                     lf.value = null;
+                    lf.editStatus = PARAM_VALUE_STATUS.unchanged;
                 });
                 setGridColumns();
             }
@@ -148,12 +161,32 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function handleCellEdit (evt){
-                // Detect changes and send entity to server
+                // Detect changes and set status
                 //{flowID: 20, category: "Emissions to air, unspecified", name: "pentachlorophenol", factor: 0.00000872, paramID: null…}
                 var rowObj = evt.targetScope.row.entity;
-
+                // parameter value must be a number that differs from factor value
+                if ( rowObj.value && (isNaN(rowObj.value) || +rowObj.value === rowObj.factor)) {
+                    //StatusService.handleFailure("Parameter value, " + value + ", is not numeric.");
+                    rowObj.editStatus = PARAM_VALUE_STATUS.invalid;
+                }
+                else {
+                    if ( rowObj.paramID ) {
+                        var origParam = ParamModelService
+                            .getLciaMethodFlowParam($scope.paramScenario.scenarioID, $scope.lciaMethod.lciaMethodID,
+                                                    rowObj.flowID);
+                        if (origParam.value === +rowObj.value) {
+                            rowObj.editStatus = PARAM_VALUE_STATUS.unchanged;
+                        } else {
+                            rowObj.editStatus = PARAM_VALUE_STATUS.changed;
+                        }
+                    }
+                    else if (rowObj.value) {
+                        rowObj.editStatus = PARAM_VALUE_STATUS.changed;
+                    }
+                }
+                /*
                 if (rowObj.paramID === null ) {
-                    if (rowObj.value ) {
+                    if ( validateInput(rowObj.value) ) {
                         var param = {
                             scenarioID: $scope.paramScenario.scenarioID,
                             lciaMethodID: $scope.lciaMethod.lciaMethodID,
@@ -164,11 +197,14 @@ angular.module('lcaApp.lciaMethod.detail',
                     }
                 } else {
                     if (rowObj.value && rowObj.value !== "") {
-                        ParamModelService.updateParam(rowObj.paramID, +rowObj.value);
+                        if ( validateInput(rowObj.value)) {
+                            ParamModelService.updateParam(rowObj.paramID, +rowObj.value);
+                        }
                     } else {
                         ParamModelService.deleteParam(rowObj.paramID);
                     }
                 }
+                */
             }
 
         }]);

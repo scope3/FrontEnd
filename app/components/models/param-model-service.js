@@ -48,10 +48,16 @@
     }}}
  */
 angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service'] )
+    // Status relevant to editor views.
+    .constant('PARAM_VALUE_STATUS',
+                { unchanged: 1, // value did not change
+                    changed: 2, // value changed and is valid
+                    invalid: 3 }) // value changed and is not valid
     .factory('ParamModelService', ['ParamService', '$q', 'StatusService', '$log',
         function(ParamService, $q, StatusService, $log) {
             var svc = {},
-                model = { scenarios : {} };
+                model = { scenarios : {} },
+                pendingChanges = { };
 
             function nest(parent, property) {
                 if (! (property in parent)) {
@@ -220,16 +226,25 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 $log.info("Parameter deleted. " + angular.toJson(result, true));
             }
 
+            function getPendingChanges(scenarioID) {
+                if ( !pendingChanges.hasOwnProperty(scenarioID) ) {
+                    pendingChanges.scenarioID = { add: [], remove: [], replace: [] };
+                }
+                return pendingChanges.scenarioID;
+            }
+
             svc.createParam = function(newParam) {
                 if (newParam.hasOwnProperty("lciaMethodID") && newParam.hasOwnProperty("flowID")) {
                     newParam.paramTypeID = 10;
                 }
+                getPendingChanges(newParam.scenarioID).add.push(newParam);
                 ParamService.create(newParam, handleCreate, StatusService.handleFailure, {scenarioID: newParam.scenarioID});
             };
 
             svc.deleteParam = function(paramID) {
                 var param = ParamService.get(paramID);
                 if (param) {
+                    getPendingChanges(param.scenarioID).remove.push(param);
                     ParamService.delete(param, handleDelete, StatusService.handleFailure, {scenarioID: param.scenarioID});
                 }
             };
@@ -238,6 +253,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 var param = ParamService.get(paramID);
                 if (param) {
                     param.value = paramValue;
+                    getPendingChanges(param.scenarioID).replace.push(param);
                     ParamService.update(param, handleUpdate, StatusService.handleFailure, {scenarioID: param.scenarioID});
                 }
             };

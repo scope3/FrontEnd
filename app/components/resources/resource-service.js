@@ -150,20 +150,20 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 svc.create = function (obj, successCB, errorCB, params) {
                     var p = resourceService.addAuthParam(params);
                     svc.objects = null;
-                    svc.resource.save( p, obj, successCB, errorCB);
+                    return svc.resource.save( p, obj, successCB, errorCB);
                 };
 
                 svc.delete = function(obj, successCB, errorCB, params) {
                     var p = resourceService.addAuthParam(params);
                     p[svc.idName] = obj[svc.idName];
                     svc.objects = null;
-                    svc.resource.delete( p, obj, successCB, errorCB);
+                    return svc.resource.delete( p, obj, successCB, errorCB);
                 };
 
                 svc.update = function(obj, successCB, errorCB, params) {
                     var p = resourceService.addAuthParam(params);
                     p[svc.idName] = obj[svc.idName];
-                    svc.resource.update( p, obj, successCB, errorCB);
+                    return svc.resource.update( p, obj, successCB, errorCB);
                 };
             };
 

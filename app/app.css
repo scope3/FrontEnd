@@ -87,8 +87,13 @@ waterfall-chart .y.axis path {
     height: 600px;
 }
 
-.gridCellEdit {
+.editValid {
+    background-color: darkgreen;
+    color: white;
+}
 
-    border-style: ridge;
+.editInvalid {
+    background-color: darkred;
+    color: white;
 }
 
