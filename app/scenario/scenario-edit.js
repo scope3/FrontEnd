@@ -19,7 +19,7 @@ angular.module('lcaApp.scenario.edit',
                 if ( $scope.form.$valid ) {
                     if (!existingScenario) {
                         StatusService.startWaiting();
-                        ScenarioService.create($scope.scenario, handleSuccess, StatusService.handleFailure);
+                        ScenarioService.create(null, $scope.scenario, handleSuccess, StatusService.handleFailure);
                     }
                 }
             };

@@ -17,7 +17,7 @@ angular.module('lcaApp.home',
             var msg = "Delete scenario, " + scenario.name + "?";
             if ( $window.confirm(msg)) {
                 StatusService.startWaiting();
-                ScenarioService.delete(scenario, reloadScenarios, StatusService.handleFailure);
+                ScenarioService.remove(null, scenario, reloadScenarios, StatusService.handleFailure);
             }
         };
 

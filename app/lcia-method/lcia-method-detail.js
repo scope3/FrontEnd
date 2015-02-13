@@ -7,29 +7,35 @@ angular.module('lcaApp.lciaMethod.detail',
         '$scope', '$stateParams', '$q', '$log', '$window',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
         'ScenarioModelService', 'ParamModelService', 'PARAM_VALUE_STATUS', 'StatusService',
-        function ($scope, $stateParams, $q, $log, $window, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService, ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
+        function ($scope, $stateParams, $q, $log, $window,
+                  ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
+                  ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
 
-            $scope.lciaFactors = [];
-            $scope.gridColumns = [];
+            $scope.lciaFactors = [];    // Data source for ngGrid
+            $scope.gridColumns = [];    // ngGrid column definitions
 
+            // ngGrid options
             $scope.gridOptions = {
                 data: 'lciaFactors',
                 columnDefs: 'gridColumns',
                 enableRowSelection: false,
                 enableCellEditOnFocus: true
             };
+
+            // Control open/close state of accordion containing LCIA method attributes
             $scope.accordionStatus = {
-                attributesOpen: true,
-                factorsOpen: true
+                attributesOpen: true
             };
-            $scope.paramScenario = null;
 
-            $scope.onScenarioChange = changeScenario;
+            $scope.paramScenario = null;    // Selected scenario for param viewing
 
-            $scope.dynamicGridStyle = null;
+            $scope.onScenarioChange = changeScenario;   // Scenario selection change handler
 
-            $scope.$on('ngGridEventEndCellEdit', handleCellEdit);
+            $scope.dynamicGridStyle = null;     // Used to change grid style.
 
+            $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
+
+            // Helper functions to display change status in grid
             $scope.validChange = function (row) {
                 return row.entity.editStatus === PARAM_VALUE_STATUS.changed;
             };
@@ -52,11 +58,15 @@ angular.module('lcaApp.lciaMethod.detail',
                 }));
             };
 
+            /**
+             * Gather changes and apply
+             */
             $scope.applyChanges = function () {
                 var changedParams = $scope.lciaFactors.filter(function (lf) {
                     return lf.editStatus === PARAM_VALUE_STATUS.changed;
                 });
-                return changedParams.map(changeParam);
+                StatusService.startWaiting();
+                ParamModelService.applyChanges(changedParams.map(changeParam), getParams, StatusService.handleFailure);
             };
 
             StatusService.startWaiting();
@@ -175,6 +185,7 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function getParams() {
+                StatusService.stopWaiting();
                 if ($scope.paramScenario) {
                     StatusService.startWaiting();
                     ParamModelService.load($scope.paramScenario.scenarioID).then(addParamData,
