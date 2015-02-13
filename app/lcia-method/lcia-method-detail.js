@@ -2,14 +2,12 @@
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
     ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'ngGrid', 'lcaApp.status.service',
-     'lcaApp.models.param', 'lcaApp.models.scenario'])
+        'lcaApp.models.param', 'lcaApp.models.scenario'])
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q', '$log', '$window',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
         'ScenarioModelService', 'ParamModelService', 'PARAM_VALUE_STATUS', 'StatusService',
-        function ($scope, $stateParams, $q, $log, $window,
-                  ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
-                  ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
+        function ($scope, $stateParams, $q, $log, $window, ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService, ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
 
             $scope.lciaFactors = [];
             $scope.gridColumns = [];
@@ -17,7 +15,7 @@ angular.module('lcaApp.lciaMethod.detail',
             $scope.gridOptions = {
                 data: 'lciaFactors',
                 columnDefs: 'gridColumns',
-                enableRowSelection : false,
+                enableRowSelection: false,
                 enableCellEditOnFocus: true
             };
             $scope.accordionStatus = {
@@ -47,19 +45,18 @@ angular.module('lcaApp.lciaMethod.detail',
             $scope.noValidChanges = function () {
                 return !($scope.paramScenario && $scope.lciaFactors.length > 0 &&
                     ScenarioModelService.canUpdate($scope.paramScenario) &&
-                    $scope.lciaFactors.some( function(lf) {
+                    $scope.lciaFactors.some(function (lf) {
                         return lf.editStatus === PARAM_VALUE_STATUS.changed;
-                    }) &&
-                    !$scope.lciaFactors.some( function(lf) {
-                        return lf.editStatus === PARAM_VALUE_STATUS.invalid;
-                    }));
+                    }) && !$scope.lciaFactors.some(function (lf) {
+                    return lf.editStatus === PARAM_VALUE_STATUS.invalid;
+                }));
             };
 
             $scope.applyChanges = function () {
-                var changedParams = $scope.lciaFactors.filter( function (lf) {
+                var changedParams = $scope.lciaFactors.filter(function (lf) {
                     return lf.editStatus === PARAM_VALUE_STATUS.changed;
                 });
-                return changedParams.map( getParamChange);
+                return changedParams.map(getParamChange);
             };
 
             StatusService.startWaiting();
@@ -69,8 +66,10 @@ angular.module('lcaApp.lciaMethod.detail',
                 handleLciaFactorResults, StatusService.handleFailure);
 
             function defineParamCol() {
-                var paramCol = [{field: 'value', displayName: 'Parameter', enableCellEdit: false },
-                                {field: 'editStatus', displayName: '', enableCellEdit: false, width: 20}] ;
+                var paramCol = [
+                    {field: 'value', displayName: 'Parameter', enableCellEdit: false },
+                    {field: 'editStatus', displayName: '', enableCellEdit: false, width: 20}
+                ];
                 if ($scope.paramScenario) {
                     paramCol[0].visible = true;
 
@@ -78,7 +77,7 @@ angular.module('lcaApp.lciaMethod.detail',
                         // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
                         paramCol[0].enableCellEdit = true;
                         paramCol[1].cellTemplate =
-'<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="validChange(row)"></span><span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="invalidChange(row)"></span>';
+                            '<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="validChange(row)"></span><span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="invalidChange(row)"></span>';
                         paramCol[1].visible = true;
 
                     } else {
@@ -155,10 +154,10 @@ angular.module('lcaApp.lciaMethod.detail',
                         .getLciaMethodFlowParam($scope.paramScenario.scenarioID, $scope.lciaMethod.lciaMethodID,
                         lf.flowID);
                     if (param) {
-                        lf.paramID = param.paramID;
+                        lf.paramResource = param;
                         lf.value = param.value;
                     } else {
-                        lf.paramID = null;
+                        lf.paramResource = null;
                         lf.value = "";
                     }
                     lf.editStatus = PARAM_VALUE_STATUS.unchanged;
@@ -168,7 +167,7 @@ angular.module('lcaApp.lciaMethod.detail',
 
             function clearParamData() {
                 $scope.lciaFactors.forEach(function (lf) {
-                    lf.paramID = null;
+                    lf.paramResource = null;
                     lf.value = "";
                     lf.editStatus = PARAM_VALUE_STATUS.unchanged;
                 });
@@ -192,47 +191,21 @@ angular.module('lcaApp.lciaMethod.detail',
 
             /**
              * Handle changes to editable cell
-             * @param evt   Event containing row changed.
+             * @param evt   Event object containing row changed.
              */
             function handleCellEdit(evt) {
-                var rowObj = evt.targetScope.row.entity;
-                if (rowObj.value) {
-                    // Param value entered
-                    if (isNaN(rowObj.value) )
-                    {
-                        $window.alert("Parameter value, " + rowObj.value + ", is not numeric.");
-                        rowObj.editStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (+rowObj.value === rowObj.factor) {
-                        $window.alert("Parameter value, " + rowObj.value + ", is the same as factor value.");
-                        rowObj.editStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (rowObj.paramID) {
-                        // Check if param value changed
-                        var origParam = ParamModelService
-                            .getLciaMethodFlowParam($scope.paramScenario.scenarioID, $scope.lciaMethod.lciaMethodID,
-                            rowObj.flowID);
-                        if (origParam.value === +rowObj.value) {
-                            rowObj.editStatus = PARAM_VALUE_STATUS.unchanged;
-                        } else {
-                            rowObj.editStatus = PARAM_VALUE_STATUS.changed;
-                        }
-                    } else {
-                        // No paramID. Interpret this as create
-                        rowObj.editStatus = PARAM_VALUE_STATUS.changed;
-                    }
-                }
-                else {
-                    // No param value. If it has an ID, interpret this as delete.
-                    if (rowObj.paramID) {
-                        rowObj.editStatus = PARAM_VALUE_STATUS.changed;
-                    } else {
-                        rowObj.editStatus = PARAM_VALUE_STATUS.unchanged;
-                    }
+                var rowObj = evt.targetScope.row.entity,
+                    changeStatus = ParamModelService.getParamValueStatus(rowObj.factor, rowObj.paramResource, rowObj.value);
+
+                rowObj.editStatus = changeStatus.paramValueStatus;
+
+                if (rowObj.editStatus === PARAM_VALUE_STATUS.invalid) {
+                    $window.alert(changeStatus.msg);
                 }
             }
 
             function getParamChange(lf) {
-                var obj = { paramID: lf.paramID, value: lf.value }
-                return obj;
+                return { paramResource: lf.paramResource, value: lf.value };
             }
 
-            }]);
+        }]);

@@ -2,12 +2,13 @@
  * Unit test module, lcaApp.models.param
  */
 describe('Unit test Param Model service', function() {
-    var paramModelService, scenarioID, params;
+    var paramModelService, scenarioID, params, statusConstants;
 
     beforeEach(module('lcaApp.models.param', 'lcaApp.mock.params', 'lcaApp.resources.service'));
 
-    beforeEach(inject(function(_ParamModelService_) {
+    beforeEach(inject(function(_ParamModelService_, _PARAM_VALUE_STATUS_) {
         paramModelService = _ParamModelService_;
+        statusConstants = _PARAM_VALUE_STATUS_;
     }));
 
     beforeEach(inject(function( mockParams) {
@@ -84,6 +85,58 @@ describe('Unit test Param Model service', function() {
                                                             mockParam.paramTypeID);
         expect(foundParam).toBeDefined();
         expect(foundParam).toEqual(mockParam);
+    });
+
+    it('should detect invalid change, param value matches default value', function() {
+        var mockParam, result;
+
+        paramModelService.createModel(scenarioID, params);
+        mockParam = params[0];
+        expect(mockParam).toBeDefined();
+        expect(mockParam.value).toBeDefined();
+        result = paramModelService.getParamValueStatus(mockParam.value, null, mockParam.value);
+        expect(result).toBeDefined();
+        expect(result.paramValueStatus).toBe(statusConstants.invalid);
+        result = paramModelService.getParamValueStatus(mockParam.value + 1, mockParam, mockParam.value + 1);
+        expect(result.paramValueStatus).toBe(statusConstants.invalid);
+    });
+
+    it('should detect invalid change, param value is not a number', function() {
+        var result;
+
+        paramModelService.createModel(scenarioID, params);
+        result = paramModelService.getParamValueStatus(1, null, "10s");
+        expect(result).toBeDefined();
+        expect(result.paramValueStatus).toBe(statusConstants.invalid);
+        result = paramModelService.getParamValueStatus(1, params[0], "10s");
+        expect(result.paramValueStatus).toBe(statusConstants.invalid);
+    });
+
+    it('should detect no change', function() {
+        var result, mockParam, baseVal;
+
+        paramModelService.createModel(scenarioID, params);
+        result = paramModelService.getParamValueStatus(1, null, "");
+        expect(result).toBeDefined();
+        expect(result.paramValueStatus).toBe(statusConstants.unchanged);
+        mockParam = params[0];
+        baseVal = mockParam.value - 1;
+        result = paramModelService.getParamValueStatus(baseVal, mockParam, mockParam.value.toString());
+        expect(result.paramValueStatus).toBe(statusConstants.unchanged);
+    });
+
+    it('should detect valid change', function() {
+        var result, mockParam, newVal, baseVal;
+
+        paramModelService.createModel(scenarioID, params);
+        result = paramModelService.getParamValueStatus(1, null, "2.1");
+        expect(result).toBeDefined();
+        expect(result.paramValueStatus).toBe(statusConstants.changed);
+        mockParam = params[0];
+        newVal = mockParam.value - 1;
+        baseVal = mockParam.value + 1;
+        result = paramModelService.getParamValueStatus(baseVal, mockParam, newVal.toString());
+        expect(result.paramValueStatus).toBe(statusConstants.changed);
     });
 
     it('should load param resources', function() {

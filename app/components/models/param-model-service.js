@@ -53,8 +53,8 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 { unchanged: 1, // value did not change
                     changed: 2, // value changed and is valid
                     invalid: 3 }) // value changed and is not valid
-    .factory('ParamModelService', ['ParamService', '$q', 'StatusService', '$log',
-        function(ParamService, $q, StatusService, $log) {
+    .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q', 'StatusService', '$log',
+        function(ParamService, PARAM_VALUE_STATUS, $q, StatusService, $log) {
             var svc = {},
                 model = { scenarios : {} },
                 pendingChanges = { };
@@ -256,6 +256,54 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     getPendingChanges(param.scenarioID).replace.push(param);
                     ParamService.update(param, handleUpdate, StatusService.handleFailure, {scenarioID: param.scenarioID});
                 }
+            };
+
+            /**
+             * Compare input value with the value of original param resource, if it exists.
+             *
+             *  Return change status
+             *  PARAM_VALUE_STATUS.changed for new, updated, and deleted value.
+             *  PARAM_VALUE_STATUS.invalid for invalid value.
+             *  PARAM_VALUE_STATUS.unchanged when new value matches original
+             *
+             *  If input value is invalid, then add error message to returned result.
+             *
+             * @param {number} baseValue Value of the thing to which the param applies
+             * @param {{value: number}} paramResource
+             * @param {string} value Edit value, should be numeric
+             * @returns {{paramValueStatus:number, msg: string }}
+             */
+            svc.getParamValueStatus = function(baseValue, paramResource, value) {
+                var result = { paramValueStatus: null, msg: null };
+                if (value) {
+                    // Value was input
+                    if (isNaN(value) ) {
+                        result.msg = "Parameter value, " + value + ", is not numeric.";
+                        result.paramValueStatus = PARAM_VALUE_STATUS.invalid;
+                    } else if (+value === baseValue) {
+                        result.msg = "Parameter value, " + value + ", is the same as default value.";
+                        result.paramValueStatus = PARAM_VALUE_STATUS.invalid;
+                    } else if (paramResource) {
+                        // Check if param value changed
+                        if (paramResource.value === +value) {
+                            result.paramValueStatus = PARAM_VALUE_STATUS.unchanged;
+                        } else {
+                            result.paramValueStatus = PARAM_VALUE_STATUS.changed;
+                        }
+                    } else {
+                        // No paramResource. Interpret this as create
+                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
+                    }
+                }
+                else {
+                    // No input value. If paramResource exists, interpret this as delete.
+                    if (paramResource) {
+                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
+                    } else {
+                        result.paramValueStatus = PARAM_VALUE_STATUS.unchanged;
+                    }
+                }
+                return result;
             };
 
             return svc;
