@@ -56,7 +56,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 var changedParams = $scope.lciaFactors.filter(function (lf) {
                     return lf.editStatus === PARAM_VALUE_STATUS.changed;
                 });
-                return changedParams.map(getParamChange);
+                return changedParams.map(changeParam);
             };
 
             StatusService.startWaiting();
@@ -204,8 +204,24 @@ angular.module('lcaApp.lciaMethod.detail',
                 }
             }
 
-            function getParamChange(lf) {
-                return { paramResource: lf.paramResource, value: lf.value };
+            function changeParam(lf) {
+                var paramResource = lf.paramResource;
+                if (paramResource) {
+                    if (lf.value) {
+                        paramResource.value = +lf.value;
+                    } else {
+                        paramResource.value = null;
+                    }
+                }
+                else {
+                    paramResource = {
+                        scenarioID : $scope.paramScenario.scenarioID,
+                        lciaMethodID : $scope.lciaMethod.lciaMethodID,
+                        flowID : lf.flowID,
+                        value: +lf.value
+                    }
+                }
+                return paramResource;
             }
 
         }]);

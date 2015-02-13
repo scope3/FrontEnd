@@ -306,6 +306,25 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return result;
             };
 
+            function makeRequest(scenarioID, changedParam) {
+                if (changedParam.hasOwnProperty("paramID")) {
+                    if (changedParam.value) {
+
+                    }
+                }
+            }
+
+            svc.applyChanges = function (scenarioID, changes, successCB, errorCB) {
+                var requests = [];
+                changes.forEach( function (ch) {
+                    var request = makeRequest(scenarioID, ch);
+                    if (request) {
+                        requests.push(request);
+                    }
+                });
+                $q.all(requests).then(successCB, errorCB);
+            };
+
             return svc;
         }
     ]);
