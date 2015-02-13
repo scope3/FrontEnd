@@ -87,13 +87,4 @@ waterfall-chart .y.axis path {
     height: 600px;
 }
 
-.editValid {
-    background-color: darkgreen;
-    color: white;
-}
-
-.editInvalid {
-    background-color: darkred;
-    color: white;
-}
 

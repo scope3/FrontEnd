@@ -36,12 +36,13 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">LCIA Characterization Factors</span>
-        <span class="pull-right">
-            <label for="selectScenario">Scenario</label>
-            <select id="selectScenario" ng-model="paramScenario"
-                    ng-options="scenario.name for scenario in scenarios"
-                    ng-change="onScenarioChange()"></select>
-        </span>
+    </div>
+    <div class="panel-body">
+        <label for="selectScenario">Scenario</label>
+        <select id="selectScenario" ng-model="paramScenario"
+                ng-options="scenario.name for scenario in scenarios"
+                ng-change="onScenarioChange()"></select>
+        <button class="btn btn-sm pull-right" ng-disabled="noValidChanges()" ng-click="applyChanges()">Apply Changes</button>
     </div>
     <div class="gridStyle" ng-grid="gridOptions" ng-style="dynamicGridStyle"></div>
 </div>
