@@ -16,8 +16,25 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                 usSpinnerService.stop(SPINNER_KEY);
             };
 
-            svc.handleFailure = function (errMsg) {
+            /**
+             * Stop waiting and display error.
+             * @param {string | {}} err     httpResponse for failed request or error message
+             */
+            svc.handleFailure = function (err) {
+                var errMsg = "";
                 svc.stopWaiting();
+                if (typeof(err) === "string") {
+                    errMsg = err;
+                } else {
+                    if (err.hasOwnProperty("status")) {
+                        if (err["status"] == 409) {
+                            errMsg = "Web API request conflicts with another request that is in progress.\n";
+                        }
+                    }
+                    if (err.hasOwnProperty("data")) {
+                        errMsg += err["data"]
+                    }
+                }
                 $rootScope.alert = { type: "danger", msg: errMsg };
             };
 
