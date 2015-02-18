@@ -215,6 +215,8 @@ angular.module('lcaApp.lciaMethod.detail',
 
                 rowObj.editStatus = changeStatus.paramValueStatus;
 
+                $scope.$apply();    // Needed for IE
+
                 if (rowObj.editStatus === PARAM_VALUE_STATUS.invalid) {
                     $window.alert(changeStatus.msg);
                 }
