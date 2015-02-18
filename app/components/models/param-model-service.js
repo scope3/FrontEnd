@@ -56,7 +56,8 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
     .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q',
         function(ParamService, PARAM_VALUE_STATUS, $q) {
             var svc = {},
-                model = { scenarios : {} };
+                model = { scenarios : {} },
+                origResources = { scenarios : {} };
 
             function nest(parent, property) {
                 if (! (property in parent)) {
@@ -95,6 +96,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 else {
                     model.scenarios[scenarioID] = null;
                 }
+                origResources.scenarios[scenarioID] = params;
             }
 
             /**
@@ -259,35 +261,31 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return result;
             };
 
-            function makeRequest(changedParam) {
-                var requestResult = null;
-                if (changedParam.hasOwnProperty("paramID")) {
-                    if (changedParam.value) {
-                        requestResult = ParamService.update({scenarioID: changedParam.scenarioID}, changedParam );
-                    } else {
-                        requestResult = ParamService.remove({scenarioID: changedParam.scenarioID}, changedParam);
-                    }
-                } else {
-                    requestResult = ParamService.create({scenarioID: changedParam.scenarioID}, changedParam );
-                }
-                return requestResult.$promise;
-            }
-
             /**
-             * Submit resource change requests, and wait for responses from all.
+             * Send PUT request containing current changes.
+             * @param {Number} scenarioID
              * @param {[]} changes   Array of changed param resources
-             * @param {Function} successCB  Function to call when all requests succeed
-             * @param {Function} errorCB    Function to call when some request fails
+             * @param {Function} successCB  Function to call on success response
+             * @param {Function} errorCB    Function to call on error response
              */
-            svc.applyChanges = function (changes, successCB, errorCB) {
-                var requests = [];
-                changes.forEach( function (ch) {
-                    var request = makeRequest(ch);
-                    if (request) {
-                        requests.push(request);
+            svc.updateResources = function (scenarioID, changes, successCB, errorCB) {
+                var params = origResources.scenarios[scenarioID].slice(0);
+                changes.forEach(function (changedParam) {
+                    if (changedParam.hasOwnProperty("paramID")) {
+                        var origParam = params.find(function (p) {
+                            return p.paramID === changedParam.paramID;
+                        });
+                        if (changedParam.value === null) {
+                            params.splice(params.indexOf(origParam), 1);
+                        } else {
+                            origParam.value = changedParam.value;
+                        }
+                    }
+                    else {
+                        params.push(changedParam);
                     }
                 });
-                $q.all(requests).then(successCB, errorCB);
+                ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
             };
 
             return svc;

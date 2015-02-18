@@ -15,7 +15,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 //                    query: {method: 'GET', cache: true, isArray: true}, // Get array of resources
 //                    // Following actions are only used with scenarios and params
  //                   create: { method: 'POST', isArray:true},    // POST param returns an array containing one param
-                    update: { method: 'PUT' }
+                    update: { method: 'PUT' },
+                    replace: { method: 'PUT', isArray:true }
 //                    , delete: { method: 'DELETE' }
                 };
 
@@ -147,23 +148,29 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
             };
 
             resourceService.addChangeMethods = function(svc) {
-                svc.create = function (params, obj, successCB, errorCB) {
-                    var p = resourceService.addAuthParam(params);
+                svc.create = function (urlParameters, obj, successCB, errorCB) {
+                    var p = resourceService.addAuthParam(urlParameters);
                     svc.objects = null;
                     return svc.resource.save( p, obj, successCB, errorCB);
                 };
                 // avoid using reserved word, delete
-                svc.remove = function(params, obj, successCB, errorCB) {
-                    var p = resourceService.addAuthParam(params);
+                svc.remove = function(urlParameters, obj, successCB, errorCB) {
+                    var p = resourceService.addAuthParam(urlParameters);
                     p[svc.idName] = obj[svc.idName];
                     svc.objects = null;
                     return svc.resource.delete( p, obj, successCB, errorCB);
                 };
 
-                svc.update = function(params, obj, successCB, errorCB) {
-                    var p = resourceService.addAuthParam(params);
+                svc.update = function(urlParameters, obj, successCB, errorCB) {
+                    var p = resourceService.addAuthParam(urlParameters);
                     p[svc.idName] = obj[svc.idName];
                     return svc.resource.update( p, obj, successCB, errorCB);
+                };
+
+                svc.replace = function(urlParameters, objArray, successCB, errorCB) {
+                    var p = resourceService.addAuthParam(urlParameters);
+                    svc.objects = null;
+                    return svc.resource.replace( p, objArray, successCB, errorCB);
                 };
             };
 

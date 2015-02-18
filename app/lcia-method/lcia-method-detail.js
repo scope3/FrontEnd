@@ -35,13 +35,17 @@ angular.module('lcaApp.lciaMethod.detail',
 
             $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
 
-            // Helper functions to display change status in grid
-            $scope.validChange = function (row) {
-                return row.entity.editStatus === PARAM_VALUE_STATUS.changed;
-            };
-
-            $scope.invalidChange = function (row) {
-                return row.entity.editStatus === PARAM_VALUE_STATUS.invalid;
+            $scope.changeClass = function( row) {
+                var iconClass = "";
+                switch (row.entity.editStatus) {
+                    case PARAM_VALUE_STATUS.changed :
+                        iconClass = "glyphicon-ok";
+                        break;
+                    case PARAM_VALUE_STATUS.invalid :
+                        iconClass = "glyphicon-remove";
+                        break;
+                }
+                return iconClass;
             };
 
             /**
@@ -66,7 +70,8 @@ angular.module('lcaApp.lciaMethod.detail',
                     return lf.editStatus === PARAM_VALUE_STATUS.changed;
                 });
                 StatusService.startWaiting();
-                ParamModelService.applyChanges(changedParams.map(changeParam), getParams, StatusService.handleFailure);
+                ParamModelService.updateResources($scope.paramScenario.scenarioID, changedParams.map(changeParam),
+                    getParams, StatusService.handleFailure)
             };
 
             StatusService.startWaiting();
@@ -87,7 +92,7 @@ angular.module('lcaApp.lciaMethod.detail',
                         // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
                         paramCol[0].enableCellEdit = true;
                         paramCol[1].cellTemplate =
-                            '<span class="glyphicon glyphicon-ok" aria-hidden="true" ng-show="validChange(row)"></span><span class="glyphicon glyphicon-remove" aria-hidden="true" ng-show="invalidChange(row)"></span>';
+                            '<span class="glyphicon" ng-class="changeClass(row)"></span>';
                         paramCol[1].visible = true;
 
                     } else {
