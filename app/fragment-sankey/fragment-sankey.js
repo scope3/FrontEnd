@@ -6,12 +6,12 @@ angular.module('lcaApp.fragment.sankey',
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService',
+        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  FormatService, FragmentNavigationService) {
-            var fragmentID = $stateParams.fragmentID,
-                scenarioID = $stateParams.scenarioID,
+                  FormatService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID) {
+            var fragmentID,
+                scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
@@ -19,6 +19,22 @@ angular.module('lcaApp.fragment.sankey',
                 magFormat = FormatService.format();
 
 
+            $scope.color = { domain: (["Fragment", "InputOutput", "Cutoff", "Process", "Background"]), range: colorbrewer.Set3[5], property: "nodeType" };
+            $scope.selectedFlowProperty = null;
+            $scope.selectedNode = null;
+            $scope.mouseOverNode = null;
+            $scope.fragment = null;
+            $scope.scenario = null;
+            $scope.$watch("selectedNode", onNodeSelectionChange);
+            $scope.$watch("mouseOverNode", onMouseOverNode);
+
+            $scope.onScenarioChange = function() {
+                scenarioID = $scope.scenario.scenarioID;
+                ScenarioModelService.setActiveID(scenarioID);
+                getData();
+            };
+
+            // $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
             /**
              * Build sankey graph from loaded data
              * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
@@ -168,7 +184,6 @@ angular.module('lcaApp.fragment.sankey',
                         StatusService.handleFailure("Invalid fragment ID : " + fragmentID);
                     }
                 }
-
                 return $scope.fragment;
             }
 
@@ -194,9 +209,12 @@ angular.module('lcaApp.fragment.sankey',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
+                $scope.scenarios = ScenarioModelService.getAll();
                 $scope.scenario = ScenarioModelService.get(scenarioID);
                 if ($scope.scenario) {
+                    fragmentID = $scope.scenario.topLevelFragmentID;
                     ScenarioModelService.setActiveID(scenarioID);
+                    $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
                     initScopeFragment();
                     getDataForFragment();
                 } else {
@@ -293,7 +311,8 @@ angular.module('lcaApp.fragment.sankey',
                     $log.info("Clicked on node with weight = " + fragmentFlow.nodeWeight);
                     switch (newVal.nodeType) {
                         case "Process" :
-                            $state.go(".process", { scenarioID : scenarioID,
+                            $state.go("fragment-sankey.process", { scenarioID : scenarioID,
+                                                                   fragmentID : fragmentID,
                                                              processID : fragmentFlow.processID,
                                                              activity : $scope.fragment.activityLevel *
                                                                         fragmentFlow.nodeWeight }
@@ -351,16 +370,23 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
-            $scope.color = { domain: (["Fragment", "InputOutput", "Cutoff", "Process", "Background"]), range: colorbrewer.Set3[5], property: "nodeType" };
-            $scope.selectedFlowProperty = null;
-            $scope.selectedNode = null;
-            $scope.mouseOverNode = null;
-            $scope.fragment = null;
-            $scope.scenario = null;
-            $scope.$watch("selectedNode", onNodeSelectionChange);
-            $scope.$watch("mouseOverNode", onMouseOverNode);
+            function getActiveScenarioID() {
+                var activeID = ScenarioModelService.getActiveID();
+                if (activeID) {
+                    scenarioID = activeID;
+                }
+            }
 
-            $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
+            function getStateParams() {
+                if ("scenarioID" in $stateParams) {
+                    scenarioID = +$stateParams.scenarioID;
+                }
+                if ("fragmentID" in $stateParams) {
+                    fragmentID = +$stateParams.fragmentID;
+                }
+            }
 
+            getActiveScenarioID();
+            getStateParams();
             getData();
         }]);

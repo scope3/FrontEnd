@@ -1,7 +1,10 @@
 <!-- Partial html for fragment sankey view -->
 <dl class="dl-horizontal">
     <dt>Scenario</dt>
-    <dd>{{scenario.name}}</dd>
+    <dd>
+        <select ng-model="scenario" ng-options="s.name for s in scenarios"
+                ng-change="onScenarioChange()">
+        </select>
     <dt>Fragment</dt>
     <dd>
         <span ng-repeat="navFrag in navigationService.getAll()">

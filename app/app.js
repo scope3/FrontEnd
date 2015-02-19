@@ -38,6 +38,15 @@ angular.module('lcaApp', [
                         }
                     }
                 })
+                .state('fragment-flows', {
+                    url: '/fragment-sankey',
+                    views: {
+                        "@": {
+                            templateUrl: 'fragment-sankey/fragment-sankey.html',
+                            controller: 'FragmentSankeyCtrl'
+                        }
+                    }
+                })
                 .state('process-lcia', {
                     url: '/process-lcia',
                     views: {
