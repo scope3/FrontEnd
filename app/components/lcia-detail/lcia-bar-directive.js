@@ -140,10 +140,9 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
              * @param {number} catX          X coordinate for flow category
              * @param {number} flowX          X coordinate for flow name
              * @param {number} resultX        X coordinate for result header
-             * @param {number} paramX        X coordinate for param header
              * @param {number} headerY        Y coordinate for headers
              */
-            function makeLegendHeader(catX, flowX, resultX, paramX, headerY) {
+            function makeLegendHeader(catX, flowX, resultX, headerY) {
                 var legendGroup = svg.select(".legend-group");
 
                 legendGroup.append("text").attr({
@@ -164,12 +163,6 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
                     y: headerY
                 })
                     .text("LCIA Result");
-                legendGroup.append("text").attr({
-                    class: "legend-header",
-                    x: paramX,
-                    y: headerY
-                })
-                    .text("Param");
             }
 
             /**
@@ -185,11 +178,11 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
                     boxSize = 18,
                     colPadding = textPadding,
                     textY = 9,
-                    colXs = [0, boxSize + colPadding, width - 350, width - 125, width - 30],
+                    colXs = [0, boxSize + colPadding, width - 350, width - 95],
                     legend,
                     newRows;
 
-                makeLegendHeader(colXs[1], colXs[2], colXs[3], colXs[4], textY);
+                makeLegendHeader(colXs[1], colXs[2], colXs[3], textY);
                 // Update legend data
                 legend = svg.select(".legend-group").selectAll(".legend").data(flowData);
                 newRows = legend.enter().append("g").attr("class", "legend");
@@ -215,14 +208,6 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
                     .attr("y", textY)
                     .attr("dy", ".35em")
                     .attr("class", "lcia-result");
-                newRows.append("text")
-                    .attr("x", colXs[4])
-                    .attr("y", textY)
-                    .attr("dx", "1em")
-                    .attr("dy", ".35em")
-                    .attr("class", "param-check");
-                // Remove unused rows
-                //legend.exit().remove();
 
                 legend.attr("transform", function (d, i) {
                     var rowY = (i + 1) * rowHeight;
@@ -250,13 +235,12 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
                         }
                     });
                 legend.selectAll(".lcia-result")
+                    .style( "font-weight", function(d) {
+                        return d.hasParam ? "bold" : "normal";
+                    })
                     .text(function (d) {
                         //return d.result.toPrecision(4);
                         return legendFormat(d.result);
-                    });
-                legend.selectAll(".param-check")
-                    .text(function (d) {
-                        return d.hasParam ? "X" : "";
                     });
             }
 
