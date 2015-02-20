@@ -18,7 +18,7 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
 
             /**
              * Stop waiting and display error.
-             * @param {string | {}} err     httpResponse for failed request or error message
+             * @param {string | {}} err     httpResponse for failed request, error message, or instance of Error
              */
             svc.handleFailure = function (err) {
                 var errMsg = "";
@@ -30,10 +30,13 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                         if (err["status"] == 409) {
                             errMsg = "Web API request conflicts with another request that is in progress.\n";
                         }
+                        if (err.hasOwnProperty("data")) {
+                            errMsg += err["data"]
+                        }
+                    } else if (err.hasOwnProperty("message") ) {
+                        errMsg = err["message"];
                     }
-                    if (err.hasOwnProperty("data")) {
-                        errMsg += err["data"]
-                    }
+
                 }
                 $rootScope.alert = { type: "danger", msg: errMsg };
             };

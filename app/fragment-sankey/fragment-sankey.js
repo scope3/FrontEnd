@@ -34,23 +34,29 @@ angular.module('lcaApp.fragment.sankey',
                 getData();
             };
 
-            // $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
             /**
              * Build sankey graph from loaded data
              * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
              */
             function buildGraph(makeNew) {
-                var fragmentFlows = FragmentFlowService.getAll();
-                graph.isNew = makeNew;
-                if (makeNew) {
-                    reverseIndex = {};
-                    graph.nodes = [];
-                    // Add a node for every flow
-                    fragmentFlows.forEach(addGraphNode);
+                try {
+                    var fragmentFlows = FragmentFlowService.getAll();
+                    graph.isNew = makeNew;
+                    if (makeNew) {
+                        reverseIndex = {};
+                        graph.nodes = [];
+                        graph.nodes.push(createRootNode());
+                        // Add a node for every flow
+                        fragmentFlows.forEach(addGraphNode);
+                    }
+                    // Add a link for every flow. source and target are indexes into nodes array.
+                    graph.links = [];
+                    fragmentFlows.forEach(addGraphLink);
+                    $scope.graph = graph;
                 }
-                // Add a link for every flow. source and target are indexes into nodes array.
-                graph.links = [];
-                fragmentFlows.forEach(addGraphLink);
+                catch (err) {
+                    StatusService.handleFailure(err);
+                }
             }
 
             /**
@@ -74,6 +80,15 @@ angular.module('lcaApp.fragment.sankey',
                     magnitude = flowPropertyMagnitudes[0].magnitude *  $scope.fragment.activityLevel;
                 }
                 return magnitude;
+            }
+
+            function createRootNode() {
+                return {
+                    nodeType: "InputOutput",
+                    nodeID: 0,
+                    nodeName: "Reference Flow",
+                    toolTip: "<strong>InputOutput</strong>"
+                }
             }
 
             /**
@@ -122,38 +137,44 @@ angular.module('lcaApp.fragment.sankey',
             /**
              * Add graph link for fragmentflow element
              * @param {{fragmentFlowID:Number, parentFragmentFlowID:Number, direction:String, flowPropertyMagnitudes:Array}} element
+             * @exception Error thrown if referenced flow not found
              */
             function addGraphLink(element) {
                 var link, parentIndex,
-                    nodeIndex = reverseIndex[element.fragmentFlowID];
+                    nodeIndex = reverseIndex[element.fragmentFlowID],
+                    magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
+                    value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
+                    flow = FlowForFragmentService.get(element.flowID),
+                    unit = $scope.selectedFlowProperty["referenceUnit"];
 
                 if ("parentFragmentFlowID" in element) {
-                    var magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
-                        value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
-                        flow = FlowForFragmentService.get(element.flowID),
-                        unit = $scope.selectedFlowProperty["referenceUnit"];
-
                     parentIndex = reverseIndex[element.parentFragmentFlowID];
-                    link = {
-                        nodeID: element.fragmentFlowID,
-                        flowID: element.flowID,
-                        value: value
-                    };
+                } else {
+                    parentIndex = 0;
+                }
+                link = {
+                    nodeID: element.fragmentFlowID,
+                    flowID: element.flowID,
+                    value: value
+                };
+                if (flow) {
                     if (magnitude) {
                         link.magnitude = magnitude;
                         link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                     } else {
                         link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
                     }
-                    if (element.direction === "Input") {
-                        link.source = nodeIndex;
-                        link.target = parentIndex;
-                    } else {
-                        link.source = parentIndex;
-                        link.target = nodeIndex;
-                    }
-                    graph.links.push(link);
+                } else {
+                    throw new Error ("Flow with ID, " + flowID + ", was not found.");
                 }
+                if (element.direction === "Input") {
+                    link.source = nodeIndex;
+                    link.target = parentIndex;
+                } else {
+                    link.source = parentIndex;
+                    link.target = nodeIndex;
+                }
+                graph.links.push(link);
             }
 
             /**
@@ -163,7 +184,6 @@ angular.module('lcaApp.fragment.sankey',
                 setFlowProperties();
                 buildGraph(true);
                 StatusService.stopWaiting();
-                $scope.graph = graph;
             }
 
             /**
@@ -284,7 +304,6 @@ angular.module('lcaApp.fragment.sankey',
              */
             $scope.onFlowPropertyChange = function () {
                 buildGraph(false);
-                $scope.graph = graph;
             };
 
             /**
