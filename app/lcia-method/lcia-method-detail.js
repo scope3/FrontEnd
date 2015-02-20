@@ -19,7 +19,8 @@ angular.module('lcaApp.lciaMethod.detail',
                 data: 'lciaFactors',
                 columnDefs: 'gridColumns',
                 enableRowSelection: false,
-                enableCellEditOnFocus: true
+                enableCellEditOnFocus: true,
+                enableHighlighting: true
             };
 
             // Control open/close state of accordion containing LCIA method attributes
