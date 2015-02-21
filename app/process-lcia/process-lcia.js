@@ -201,7 +201,7 @@ angular.module('lcaApp.process.LCIA',
                             fp = FlowPropertyForProcessService.get(pf.flow["referenceFlowPropertyID"]);
                             rowObj = {
                                 name: pf.flow.name,
-                                magnitude: pf.result * activityLevel,
+                                magnitude: pf.quantity * activityLevel,
                                 unit: fp["referenceUnit"]
                             };
                             if (pf.direction === "Input") {
