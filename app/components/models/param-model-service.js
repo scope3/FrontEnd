@@ -262,6 +262,66 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * Compare input value with the value of original param resource, if it exists.
+             *
+             *  Set change status
+             *  PARAM_VALUE_STATUS.changed for new, updated, and deleted value.
+             *  PARAM_VALUE_STATUS.invalid for invalid value.
+             *  PARAM_VALUE_STATUS.unchanged when new value matches original
+             *
+             *  If input value is invalid, then return error message.
+             *
+             * @param {number} baseValue Value of the thing to which the param applies
+             * @param {{paramResource: {}, value: String, editStatus: Number }} paramWrapper
+             * @returns {string}    Error message, if status is invalid
+             */
+            svc.setParamWrapperStatus = function(baseValue, paramWrapper) {
+                var msg = null;
+                if (paramWrapper.value) {
+                    // Value was input
+                    if (isNaN(paramWrapper.value) ) {
+                        msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
+                        paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
+                    } else if (+paramWrapper.value === baseValue) {
+                        msg = "Parameter value, " + paramWrapper.value + ", is the same as default value.";
+                        paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
+                    } else if (paramWrapper.paramResource) {
+                        // Check if param value changed
+                        if (paramWrapper.paramResource.value === +paramWrapper.value) {
+                            paramWrapper.editStatus = PARAM_VALUE_STATUS.unchanged;
+                        } else {
+                            paramWrapper.editStatus = PARAM_VALUE_STATUS.changed;
+                        }
+                    } else {
+                        // No paramResource. Interpret this as create
+                        paramWrapper.editStatus = PARAM_VALUE_STATUS.changed;
+                    }
+                }
+                else {
+                    // No input value. If paramResource exists, interpret this as delete.
+                    if (paramWrapper.paramResource) {
+                        paramWrapper.editStatus = PARAM_VALUE_STATUS.changed;
+                    } else {
+                        paramWrapper.editStatus = PARAM_VALUE_STATUS.unchanged;
+                    }
+                }
+                return msg;
+            };
+
+            /**
+             * Create an object with embedded param resource to be used in editor
+             * @param {{}} paramResource   May be null, when target has no param
+             * @returns {{paramResource: *, value: *, editStatus: number}} the object created
+             */
+            svc.wrapParam = function (paramResource) {
+                return {
+                    paramResource : paramResource,
+                    value : "",
+                    editStatus : PARAM_VALUE_STATUS.unchanged
+                };
+            };
+
+            /**
              * Send PUT request containing current changes.
              * @param {Number} scenarioID
              * @param {[]} changes   Array of changed param resources

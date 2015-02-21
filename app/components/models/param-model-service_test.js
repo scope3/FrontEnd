@@ -87,18 +87,45 @@ describe('Unit test Param Model service', function() {
         expect(foundParam).toEqual(mockParam);
     });
 
-    it('should detect invalid change, param value matches default value', function() {
-        var mockParam, result;
-
-        paramModelService.createModel(scenarioID, params);
+    it('should wrap param resource', function() {
+        var mockParam, paramWrapper;
         mockParam = params[0];
         expect(mockParam).toBeDefined();
         expect(mockParam.value).toBeDefined();
-        result = paramModelService.getParamValueStatus(mockParam.value, null, mockParam.value);
-        expect(result).toBeDefined();
-        expect(result.paramValueStatus).toBe(statusConstants.invalid);
-        result = paramModelService.getParamValueStatus(mockParam.value + 1, mockParam, mockParam.value + 1);
-        expect(result.paramValueStatus).toBe(statusConstants.invalid);
+        paramWrapper = paramModelService.wrapParam(mockParam);
+        expect(paramWrapper).toBeDefined();
+        expect(paramWrapper.paramResource).toBe(mockParam);
+        expect(paramWrapper.value).toNotEqual(mockParam.value);
+        expect(paramWrapper.editStatus).toBe(statusConstants.unchanged);
+    });
+
+    it('should wrap null param', function() {
+        var paramWrapper;
+
+        paramWrapper = paramModelService.wrapParam(null);
+        expect(paramWrapper).toBeDefined();
+        expect(paramWrapper.paramResource).toBe(null);
+        expect(paramWrapper.value).toEqual("");
+        expect(paramWrapper.editStatus).toBe(statusConstants.unchanged);
+    });
+
+    it('should detect invalid change, param value matches default value', function() {
+        var mockParam, errMsg, paramWrapper, baseValue;
+
+        paramModelService.createModel(scenarioID, params);
+        mockParam = params[0];
+        baseValue = mockParam.value + 1;
+
+        paramWrapper = paramModelService.wrapParam(null);
+        paramWrapper.value = baseValue;
+        errMsg = paramModelService.setParamWrapperStatus(baseValue, paramWrapper);
+        expect(errMsg).toBeDefined();
+        expect(paramWrapper.editStatus).toBe(statusConstants.invalid);
+        paramWrapper = paramModelService.wrapParam(mockParam);
+        paramWrapper.value = baseValue;
+        errMsg = paramModelService.setParamWrapperStatus(baseValue, paramWrapper);
+        expect(paramWrapper.editStatus).toBe(statusConstants.invalid);
+        expect(errMsg).toBeDefined();
     });
 
     it('should detect invalid change, param value is not a number', function() {
