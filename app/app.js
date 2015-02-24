@@ -8,6 +8,7 @@ angular.module('lcaApp', [
     'lcaApp.home',
     'lcaApp.fragment.sankey',
     'lcaApp.process.LCIA',
+    'lcaApp.process.flowParam',
     'lcaApp.fragment.LCIA',
     'lcaApp.lciaMethod.detail',
     'lcaApp.scenario.edit',
@@ -53,6 +54,15 @@ angular.module('lcaApp', [
                         "@": {
                             templateUrl: 'process-lcia/process-lcia.html',
                             controller: 'ProcessLciaCtrl'
+                        }
+                    }
+                })
+                .state('process-lcia.flow-param', {
+                    url: '/flow-param/{scenarioID}/{processID}/{lciaMethodID}',
+                    views: {
+                        "@": {
+                            templateUrl: 'process-flow-param/process-flow-param.html',
+                            controller: 'ProcessFlowParamCtrl'
                         }
                     }
                 })

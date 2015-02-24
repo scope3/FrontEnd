@@ -56,6 +56,9 @@
                         <div class="lcia-bar-container">
                             <lcia-bar-chart lcia="lciaResults[method.lciaMethodID].detail"
                                             flows="elementaryFlows"></lcia-bar-chart>
+                            <button class="btn btn-sm pull-right" ng-show="lciaResults[method.lciaMethodID].detail"
+                                    ng-click="viewProcessFlowParam(method.lciaMethodID)">More Details...</button>
+
                         </div>
                     </div>
                 </div>

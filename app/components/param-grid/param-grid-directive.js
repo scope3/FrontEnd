@@ -3,7 +3,7 @@
  * Wraps ngGrid directive
  */
 angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
-.directive('paramGrid', ['PARAM_VALUE_STATUS', 'ParamModelService', '$window',
+.directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window',
     function($compile, PARAM_VALUE_STATUS, ParamModelService, $window) {
         return {
             restrict: 'E',
@@ -11,10 +11,10 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
             scope : { options : '=', data : '=', columns : '=', params : '=' },
             replace : true,
             transclude : false,
-            controller : controller
+            controller : paramGridController
         };
 
-        function controller($scope, $attrs) {
+        function paramGridController($scope, $attrs) {
             var targetField = null;
 
             $scope.dynamicGridStyle = null;
@@ -46,7 +46,8 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
             */
             function handleCellEdit(evt) {
                 var rowObj = evt.targetScope.row.entity,
-                    errMsg = "";
+                    errMsg = "",
+                    targetField = getTargetField();
 
                 if (targetField) {
                     errMsg = ParamModelService.setParamWrapperStatus(rowObj[targetField], rowObj.paramWrapper);
@@ -57,6 +58,14 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         $window.alert(errMsg);
                     }
                 }
+            }
+
+            function setColWidths() {
+                $scope.columns.forEach( function (col) {
+                    if (!col.hasOwnProperty("width")) {
+                        col.width = "*"
+                    }
+                })
             }
 
             function addParamCols() {
@@ -104,16 +113,18 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
 
 
             function getTargetField() {
-                if ( $scope.params.targetIndex && $scope.params.targetIndex >= $scope.columnDefs.length) {
-                    var colDef = $scope.columnDefs[$scope.params.targetIndex];
-                    targetField = colDef.field;
+                if ( $scope.params.targetIndex && $scope.params.targetIndex < $scope.columns.length) {
+                    var colDef = $scope.columns[$scope.params.targetIndex];
+                    return colDef.field;
+                } else {
+                    return null;
                 }
             }
 
             function init() {
                 var options = $scope.options,
                     fixedOptions = {
-                        columnDefs  : 'columnDefs',
+                        columnDefs  : 'columns',
                         data        : 'data'
                     },
                     defaultOptions = {
@@ -121,9 +132,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         enableCellEditOnFocus: true,
                         enableHighlighting: true
                     };
-                addParamCols();
-                getTargetField();
-                adjustHeight();
+
 
                 angular.extend($scope.gridOptions, defaultOptions);
                 angular.extend($scope.gridOptions, options);
@@ -131,8 +140,26 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
 
             }
 
-            init();
+            $scope.$watch('columns', function (newVal) {
+                if (newVal && newVal.length > 0) {
+                    setColWidths();
+                    addParamCols();
+                }
+            });
 
+            $scope.$watch('data', function (newVal) {
+                if (newVal) {
+                    adjustHeight();
+                }
+            });
+
+            $scope.$watch('params', function (newVal) {
+                if (newVal ) {
+                    getTargetField();
+                }
+            });
+
+            init();
 
         }
     }]);

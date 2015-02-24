@@ -240,6 +240,11 @@ angular.module('lcaApp.process.LCIA',
                 getDataFilteredByProcess();
             };
 
+            $scope.viewProcessFlowParam = function (lciaMethodID) {
+                $state.go("process-lcia.flow-param",
+                    {scenarioID: scenarioID, processID: processID, lciaMethodID: lciaMethodID});
+            };
+
             function getActiveScenarioID() {
                 var activeID = ScenarioModelService.getActiveID();
                 if (activeID) {

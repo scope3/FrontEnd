@@ -1,0 +1,42 @@
+<!-- Partial html for process LCIA view -->
+<div>
+    <h4>LCIA Flow Details</h4>
+    <dl class="dl-horizontal">
+        <dt>Scenario</dt>
+        <dd>{{scenario.name}}</dd>
+        <dt>Activity Level</dt>
+        <dd>{{activityLevel | numFormat}}</dd>
+        <dt>Process</dt>
+        <dd>{{process.name}}</dd>
+        <dt>LCIA Method</dt>
+        <dd>{{lciaMethod.name}}</dd>
+    </dl>
+    <div>
+        <button class="btn btn-sm pull-right" ng-disabled="noValidChanges()" ng-click="applyChanges()">Apply Changes
+        </button>
+    </div>
+</div>
+<div class="row"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Emission</span>
+    </div>
+    <div class="panel-body">
+        <param-grid options="emission.options" data="emission.flows" columns="emission.columns" params="emission.params"></param-grid>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Dissipation</span>
+    </div>
+    <div class="panel-body">
+    <param-grid options="dissipation.options" data="dissipation.flows" columns="dissipation.columns" params="dissipation.params"></param-grid>
+    </div>
+</div>
+
+
+
+
+
+
+
