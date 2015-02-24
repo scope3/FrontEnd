@@ -95,7 +95,7 @@ describe('Unit test Param Model service', function() {
         paramWrapper = paramModelService.wrapParam(mockParam);
         expect(paramWrapper).toBeDefined();
         expect(paramWrapper.paramResource).toBe(mockParam);
-        expect(paramWrapper.value).toNotEqual(mockParam.value);
+        expect(paramWrapper.value).toEqual(mockParam.value);
         expect(paramWrapper.editStatus).toBe(statusConstants.unchanged);
     });
 

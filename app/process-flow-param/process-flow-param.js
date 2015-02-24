@@ -183,6 +183,7 @@ angular.module('lcaApp.process.flowParam',
                         $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
                         $scope.elementaryFlows[pf.flow.flowID].quantity = pf.quantity;
                         if (pf.hasOwnProperty("dissipation")) {
+                            $scope.elementaryFlows[pf.flow.flowID].content = pf.content;
                             $scope.elementaryFlows[pf.flow.flowID].dissipation = pf.dissipation;
                         }
                     }

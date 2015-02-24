@@ -244,7 +244,7 @@ angular.module('lcaApp.process.LCIA',
             };
 
             $scope.viewProcessFlowParam = function (lciaMethodID) {
-                $state.go("process-lcia.flow-param",
+                $state.go(".flow-param",
                     {scenarioID: scenarioID, processID: processID, lciaMethodID: lciaMethodID});
             };
 
