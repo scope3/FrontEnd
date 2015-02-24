@@ -4,20 +4,21 @@ angular.module('lcaApp.process.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
                  'lcaApp.fragmentNavigation.service',
-                 'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario'])
+                 'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario', 'LocalStorageModule'])
     .controller('ProcessLciaCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
-         'LciaDetailService', 'ParamModelService',
+         'LciaDetailService', 'ParamModelService', 'localStorageService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
-                  LciaDetailService, ParamModelService) {
+                  LciaDetailService, ParamModelService, localStorageService) {
             var processID = 1,
-                scenarioID = MODEL_BASE_CASE_SCENARIO_ID;
+                scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
+                processStorageKey = "activeProcessID";
 
             /**
              * Extract LCIA results
@@ -67,6 +68,7 @@ angular.module('lcaApp.process.LCIA',
              * Get results from process filtered queries
              */
             function getProcessResults() {
+                setActiveProcessID();
                 getFlowRows();
                 getLciaResults();
             }
@@ -138,6 +140,7 @@ angular.module('lcaApp.process.LCIA',
                 }
                 if ($scope.scenario) {
                     if ($scope.process) {
+                        setActiveProcessID();
                         $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
                             return m.getIsActive();
                         });
@@ -252,6 +255,17 @@ angular.module('lcaApp.process.LCIA',
                 }
             }
 
+            function getActiveProcessID() {
+                var id = localStorageService.get(processStorageKey);
+                if (id) {
+                    processID = +id;
+                }
+            }
+
+            function setActiveProcessID() {
+                localStorageService.set(processStorageKey, processID);
+            }
+
             $scope.process = null;
             $scope.scenario = null;
             $scope.selection = {};
@@ -261,6 +275,7 @@ angular.module('lcaApp.process.LCIA',
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
             getActiveScenarioID();
+            getActiveProcessID();
             getStateParams();
             StatusService.startWaiting();
             getData();
