@@ -316,9 +316,26 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             svc.wrapParam = function (paramResource) {
                 return {
                     paramResource : paramResource,
-                    value : "",
+                    value : paramResource ? paramResource.value : "",
                     editStatus : PARAM_VALUE_STATUS.unchanged
                 };
+            };
+
+            /**
+             * Inspect data array for wrapped param changes
+             * @param {[]} data
+             * @returns {*|boolean} true iff there is at least one valid change and no
+             * invalid change
+             */
+            svc.hasValidChanges = function (data) {
+                return (
+                    data.some(function (d) {
+                        return d.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
+                    }) &&
+                    !data.some(function (d) {
+                        return d.paramWrapper.editStatus === PARAM_VALUE_STATUS.invalid;
+                    })
+                );
             };
 
             /**

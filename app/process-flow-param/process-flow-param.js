@@ -8,11 +8,11 @@ angular.module('lcaApp.process.flowParam',
     ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
         'ProcessForFlowTypeService', 'ProcessFlowService',
         'LciaMethodService', 'LciaResultForProcessService',
-        'ParamModelService',
+        'ParamModelService', 'PARAM_VALUE_STATUS',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
                   ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, LciaResultForProcessService,
-                  ParamModelService) {
+                  ParamModelService, PARAM_VALUE_STATUS) {
             var processID = 0,
                 scenarioID = 0,
                 lciaMethodID = 0;
@@ -22,7 +22,58 @@ angular.module('lcaApp.process.flowParam',
             $scope.dissipation = { options: {}, flows: [], columns: [], params: {}};
             $scope.emission = {options: {}, flows: [], columns: [], params: {}};
             $scope.lciaResults = {};
+            $scope.allFlows = [];
 
+            /**
+             * Function to determine if Apply Changes button should be disabled.
+             * @returns {boolean}
+             */
+            $scope.noValidChanges = function () {
+                return !($scope.scenario &&
+                    ScenarioModelService.canUpdate($scope.scenario) &&
+                    ParamModelService.hasValidChanges( $scope.allFlows));
+            };
+            /**
+             * Gather changes and apply
+             */
+            $scope.applyChanges = function () {
+                var changedParams = $scope.allFlows.filter(function (f) {
+                    return f.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
+                });
+                StatusService.startWaiting();
+                ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
+                    goBack, StatusService.handleFailure);
+            };
+
+            function goBack() {
+                $state.go('^');
+            }
+
+            /**
+             * Apply param change to resource
+             * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
+             * @returns {*} New or updated param resource
+             */
+            function changeParam(f) {
+                var paramResource = f.paramWrapper.paramResource;
+                if (paramResource) {
+                    if (f.paramWrapper.value) {
+                        paramResource.value = +f.paramWrapper.value;
+                    } else {
+                        paramResource.value = null;
+                    }
+                }
+                else {
+                    paramResource = {
+                        scenarioID : $scope.scenario.scenarioID,
+                        processID : $scope.process.processID,
+                        flowID : f.flowID,
+                        value: +f.paramWrapper.value
+                    };
+                    paramResource.paramTypeID = f.hasOwnProperty("dissipation") ? 6 : 8;
+                }
+                return paramResource;
+            }
 
             function getStateParams() {
                 if ("activity" in $stateParams) {
@@ -119,6 +170,7 @@ angular.module('lcaApp.process.flowParam',
                             }
                         }
                     });
+                    $scope.allFlows = $scope.emission.flows.concat($scope.dissipation.flows);
                 }
             }
 
