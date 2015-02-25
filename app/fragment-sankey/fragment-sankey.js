@@ -40,12 +40,29 @@ angular.module('lcaApp.fragment.sankey',
             };
 
             /**
+             * Temporary workaround for flows with problem properties. Hide them
+             * @param fpID
+             * @returns {boolean}
+             */
+            function showFlowProperty(fpID) {
+                var fp = FlowPropertyForFragmentService.get(fpID);
+                return !(fp["referenceUnit"] === "kgP" || fp["referenceUnit"] === "kg-Av" || fp["referenceUnit"] === "MJ-Av");
+            }
+
+
+            function filterFragmentFlow(ff) {
+                return ff.nodeType !== "Cutoff" && ff.flowPropertyMagnitudes &&
+                    showFlowProperty(ff.flowPropertyMagnitudes[0]["flowPropertyID"]);
+            }
+
+            /**
              * Build sankey graph from loaded data
              * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
              */
             function buildGraph(makeNew) {
                 try {
-                    var fragmentFlows = FragmentFlowService.getAll();
+                    var ff = FragmentFlowService.getAll(),
+                        fragmentFlows = ff.filter (filterFragmentFlow);
                     graph.isNew = makeNew;
                     if (makeNew) {
                         reverseIndex = {};
@@ -153,7 +170,12 @@ angular.module('lcaApp.fragment.sankey',
                     unit = $scope.selectedFlowProperty["referenceUnit"];
 
                 if ("parentFragmentFlowID" in element) {
-                    parentIndex = reverseIndex[element.parentFragmentFlowID];
+                    if (element.parentFragmentFlowID in reverseIndex) {
+                        parentIndex = reverseIndex[element.parentFragmentFlowID];
+                    }
+                    else {
+                        return;
+                    }
                 } else {
                     parentIndex = 0;
                 }
