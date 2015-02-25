@@ -161,7 +161,7 @@ angular.module('lcaApp.fragment.flowParam',
                     {field: 'parentName', displayName: 'Parent Fragment Flow', enableCellEdit: false},
                     {field: 'flowName', displayName: 'Flow Name', enableCellEdit: false},
                     {field: 'direction', displayName: 'Direction', enableCellEdit: false},
-                    {field: 'magnitude', displayName: 'Magnitude', enableCellEdit: false},
+                    {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false},
                     {field: 'name', displayName: 'Fragment Flow Name', enableCellEdit: false},
                     {field: 'nodeType', displayName: 'Node Type', enableCellEdit: false}
                 ];
