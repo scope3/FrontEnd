@@ -39,7 +39,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function addTitle() {
                 svg.select(".chart-title").remove();
-                if (scope.title) {
+                if (scope.chartTitle) {
                     var width = waterfall.width();
                     svg.append("g")
                         .attr("class", "chart-title")
@@ -49,7 +49,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         .attr("y", 0)
                         .attr("dy", "-1em")
                         .style("text-anchor", "middle")
-                        .text(scope.title);
+                        .text(scope.chartTitle);
                 }
             }
 
@@ -202,7 +202,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     yAxisWidth = +newVal;
                 }
             });
-            scope.$watch("title", function (newVal) {
+            scope.$watch("chartTitle", function (newVal) {
                 if (newVal) {
                     titleHeight = 20;
                 }
@@ -229,7 +229,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
         return {
             restrict: 'E',
-            scope: { service: '=', index: '=', color: '=', yAxisWidth: '=', title: '=', unit: '='},
+            scope: { service: '=', index: '=', color: '=', yAxisWidth: '=', chartTitle: '=', unit: '='},
             link: link
         }
     }]);
