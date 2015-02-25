@@ -1,11 +1,13 @@
 describe('Unit test param grid directive', function() {
     var $compile,
         $rootScope,
-        $httpBackend,
+        params,
+        paramModelService,
+        scenarioID,
         htmlTemplate = "<param-grid options=\"options\" data=\"data\" columns=\"gridColumns\" params=\"paramData\"></param-grid>";
 
-   // Load the module which contains the directive
-    beforeEach(module('lcaApp.paramGrid.directive'));
+   // Load the module which contains the directive and mock params
+    beforeEach(module('lcaApp.paramGrid.directive', 'lcaApp.mock.params'));
 
 // Store references to $rootScope and $compile
 // so they are available to all tests in this describe block
@@ -15,12 +17,28 @@ describe('Unit test param grid directive', function() {
         $rootScope = _$rootScope_;
     }));
 
+    beforeEach(inject(function(_ParamModelService_, mockParams) {
+        paramModelService = _ParamModelService_;
+        scenarioID = mockParams.filter.scenarioID;
+        params = mockParams.objects;
+    }));
+
+    function addDataColumns() {
+        $rootScope.data = [{ name: "Flow A", factor: 1.1}, { name: "Flow B", factor: 2.2}];
+        $rootScope.gridColumns = [{field: 'name', displayName: 'Flow Name', enableCellEdit: false},
+            {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat', enableCellEdit: false}];
+    }
+
     function compileDirective() {
         // Compile a piece of HTML containing the directive
         var element =
             $compile(htmlTemplate)($rootScope);
         element.scope().$digest();
         return element;
+    }
+
+    function getParam() {
+        return (params.length > 0) ? params[0] : 0;
     }
 
     it('should compile with no data', function() {
@@ -33,9 +51,7 @@ describe('Unit test param grid directive', function() {
     });
 
     it('should handle data with no params', function() {
-        $rootScope.data = [{ name: "Flow A", factor: 1.1}, { name: "Flow B", factor: 2.2}];
-        $rootScope.gridColumns = [{field: 'name', displayName: 'Flow Name', enableCellEdit: false},
-            {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat', enableCellEdit: false}];
+        addDataColumns();
         $rootScope.options = {};
         $rootScope.paramData = {};
 
@@ -47,4 +63,12 @@ describe('Unit test param grid directive', function() {
         expect(elt.html()).toContain($rootScope.gridColumns[1].displayName);
     });
 
+    it('should handle data with param', function() {
+        var param = getParam();
+        addDataColumns();
+        $rootScope.data[0].paramWrapper = paramModelService.wrapParam(param);
+
+        var elt = compileDirective();
+        expect(elt).toBeDefined();
+    });
 });
