@@ -1,7 +1,7 @@
 'use strict';
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
-    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'ngGrid', 'lcaApp.status.service',
+    ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'lcaApp.paramGrid.directive', 'lcaApp.status.service',
         'lcaApp.models.param', 'lcaApp.models.scenario'])
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q', '$log', '$window',
@@ -11,17 +11,10 @@ angular.module('lcaApp.lciaMethod.detail',
                   ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
                   ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
 
-            $scope.lciaFactors = [];    // Data source for ngGrid
-            $scope.gridColumns = [];    // ngGrid column definitions
+            var gridData = [];
 
-            // ngGrid options
-            $scope.gridOptions = {
-                data: 'lciaFactors',
-                columnDefs: 'gridColumns',
-                enableRowSelection: false,
-                enableCellEditOnFocus: true,
-                enableHighlighting: true
-            };
+            $scope.gridData = [];    // Data source for ngGrid
+            $scope.gridColumns = [];    // ngGrid column definitions
 
             // Control open/close state of accordion containing LCIA method attributes
             $scope.accordionStatus = {
@@ -32,47 +25,27 @@ angular.module('lcaApp.lciaMethod.detail',
 
             $scope.onScenarioChange = changeScenario;   // Scenario selection change handler
 
-            $scope.dynamicGridStyle = null;     // Used to change grid style.
-
-            $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
-
-            $scope.changeClass = function( row) {
-                var iconClass = "";
-                switch (row.entity.editStatus) {
-                    case PARAM_VALUE_STATUS.changed :
-                        iconClass = "glyphicon-ok";
-                        break;
-                    case PARAM_VALUE_STATUS.invalid :
-                        iconClass = "glyphicon-remove";
-                        break;
-                }
-                return iconClass;
-            };
-
             /**
              * Function to check if Apply Changes button should be disabled.
              * @returns {boolean}
              */
             $scope.noValidChanges = function () {
-                return !($scope.paramScenario && $scope.lciaFactors.length > 0 &&
+                return !($scope.paramScenario && $scope.gridData.length > 0 &&
                     ScenarioModelService.canUpdate($scope.paramScenario) &&
-                    $scope.lciaFactors.some(function (lf) {
-                        return lf.editStatus === PARAM_VALUE_STATUS.changed;
-                    }) && !$scope.lciaFactors.some(function (lf) {
-                    return lf.editStatus === PARAM_VALUE_STATUS.invalid;
-                }));
+                    ParamModelService.hasValidChanges( $scope.gridData)
+                );
             };
 
             /**
              * Gather changes and apply
              */
             $scope.applyChanges = function () {
-                var changedParams = $scope.lciaFactors.filter(function (lf) {
+                var changedParams = $scope.gridData.filter(function (lf) {
                     return lf.editStatus === PARAM_VALUE_STATUS.changed;
                 });
                 StatusService.startWaiting();
                 ParamModelService.updateResources($scope.paramScenario.scenarioID, changedParams.map(changeParam),
-                    getParams, StatusService.handleFailure)
+                    getParams, StatusService.handleFailure);
             };
 
             StatusService.startWaiting();
@@ -81,48 +54,19 @@ angular.module('lcaApp.lciaMethod.detail',
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
                 handleLciaFactorResults, StatusService.handleFailure);
 
-            function defineParamCol() {
-                var paramCol = [
-                    {field: 'value', displayName: 'Parameter', enableCellEdit: false },
-                    {field: 'editStatus', displayName: '', enableCellEdit: false, width: 20}
-                ];
-                if ($scope.paramScenario) {
-                    paramCol[0].visible = true;
-
-                    if (ScenarioModelService.canUpdate($scope.paramScenario)) {
-                        // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
-                        paramCol[0].enableCellEdit = true;
-                        paramCol[1].cellTemplate =
-                            '<span class="glyphicon" ng-class="changeClass(row)"></span>';
-                        paramCol[1].visible = true;
-
-                    } else {
-                        paramCol[1].visible = false;
-                    }
-                } else {
-                    paramCol[0].visible = false;
-                    paramCol[1].visible = false;
-                }
-                return paramCol;
-            }
-
-
             function setGridColumns() {
-                var paramCol = defineParamCol();
                 $scope.gridColumns = [
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
                     {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
-                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat', enableCellEdit: false},
-                    paramCol[0],
-                    paramCol[1]
+                    {field: 'factor', displayName: 'Factor', cellFilter: 'numFormat', enableCellEdit: false}
                 ];
+                $scope.params = { targetIndex : 2,
+                    canUpdate : $scope.paramScenario && ScenarioModelService.canUpdate($scope.paramScenario) };
             }
 
             function displayLciaFactors() {
-                var lciaFactors = LciaFactorService.getAll(),
-                    gridHeight = lciaFactors.length * 30 + 50;
-                $scope.dynamicGridStyle = { height: gridHeight};
-                $scope.lciaFactors =
+                var lciaFactors = LciaFactorService.getAll();
+                gridData =
                     lciaFactors.map(function (f) {
                         var flow = FlowForFlowTypeService.get(f.flowID);
 
@@ -163,31 +107,23 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function addParamData() {
-
                 StatusService.handleSuccess();
-                $scope.lciaFactors.forEach(function (lf) {
+                gridData.forEach(function (lf) {
                     var param = ParamModelService
                         .getLciaMethodFlowParam($scope.paramScenario.scenarioID, $scope.lciaMethod.lciaMethodID,
                         lf.flowID);
-                    if (param) {
-                        lf.paramResource = param;
-                        lf.value = param.value;
-                    } else {
-                        lf.paramResource = null;
-                        lf.value = "";
-                    }
-                    lf.editStatus = PARAM_VALUE_STATUS.unchanged;
+                    lf.paramWrapper = ParamModelService.wrapParam(param);
                 });
                 setGridColumns();
+                $scope.gridData = gridData;
             }
 
             function clearParamData() {
-                $scope.lciaFactors.forEach(function (lf) {
-                    lf.paramResource = null;
-                    lf.value = "";
-                    lf.editStatus = PARAM_VALUE_STATUS.unchanged;
+                gridData.forEach(function (lf) {
+                    lf.paramWrapper = null;
                 });
                 setGridColumns();
+                $scope.gridData = gridData;
             }
 
             function getParams() {
@@ -204,23 +140,6 @@ angular.module('lcaApp.lciaMethod.detail',
             function changeScenario() {
                 ScenarioModelService.setActiveID($scope.paramScenario.scenarioID);
                 getParams();
-            }
-
-            /**
-             * Handle changes to editable cell
-             * @param evt   Event object containing row changed.
-             */
-            function handleCellEdit(evt) {
-                var rowObj = evt.targetScope.row.entity,
-                    changeStatus = ParamModelService.getParamValueStatus(rowObj.factor, rowObj.paramResource, rowObj.value);
-
-                rowObj.editStatus = changeStatus.paramValueStatus;
-
-                $scope.$apply();    // Needed for IE
-
-                if (rowObj.editStatus === PARAM_VALUE_STATUS.invalid) {
-                    $window.alert(changeStatus.msg);
-                }
             }
 
             function changeParam(lf) {
