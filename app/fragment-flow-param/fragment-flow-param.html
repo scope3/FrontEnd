@@ -1,0 +1,26 @@
+<!-- Partial html for fragment flow param view -->
+<div>
+    <h4>Fragment Flow Details</h4>
+    <dl class="dl-horizontal">
+        <dt>Scenario</dt>
+        <dd>{{scenario.name}}</dd>
+        <!--<dt>Activity Level</dt>-->
+        <!--<dd>{{activityLevel | numFormat}}</dd>-->
+        <dt>Fragment</dt>
+        <dd>{{fragment.name}}</dd>
+    </dl>
+    <div>
+        <button class="btn btn-sm pull-right" ng-style="{'margin-bottom' : 7 }" ng-disabled="noValidChanges()" ng-click="applyChanges()">Apply Changes
+        </button>
+    </div>
+</div>
+<div class="row"></div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Fragment Flows</span>
+    </div>
+    <div class="panel-body">
+        <param-grid options="options" data="gridFlows" columns="columns" params="params"></param-grid>
+    </div>
+</div>
+

@@ -22,7 +22,7 @@ angular.module('lcaApp.process.flowParam',
             $scope.dissipation = { options: {}, flows: [], columns: [], params: {}};
             $scope.emission = {options: {}, flows: [], columns: [], params: {}};
             $scope.lciaResults = {};
-            $scope.allFlows = [];
+            $scope.fragmentFlows = [];
 
             /**
              * Function to determine if Apply Changes button should be disabled.
@@ -31,13 +31,13 @@ angular.module('lcaApp.process.flowParam',
             $scope.noValidChanges = function () {
                 return !($scope.scenario &&
                     ScenarioModelService.canUpdate($scope.scenario) &&
-                    ParamModelService.hasValidChanges( $scope.allFlows));
+                    ParamModelService.hasValidChanges( $scope.fragmentFlows));
             };
             /**
              * Gather changes and apply
              */
             $scope.applyChanges = function () {
-                var changedParams = $scope.allFlows.filter(function (f) {
+                var changedParams = $scope.fragmentFlows.filter(function (f) {
                     return f.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
                 });
                 StatusService.startWaiting();
@@ -170,7 +170,7 @@ angular.module('lcaApp.process.flowParam',
                             }
                         }
                     });
-                    $scope.allFlows = $scope.emission.flows.concat($scope.dissipation.flows);
+                    $scope.fragmentFlows = $scope.emission.flows.concat($scope.dissipation.flows);
                 }
             }
 

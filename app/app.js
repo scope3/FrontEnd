@@ -7,6 +7,7 @@ angular.module('lcaApp', [
     'ui.router',
     'lcaApp.home',
     'lcaApp.fragment.sankey',
+    'lcaApp.fragment.flowParam',
     'lcaApp.process.LCIA',
     'lcaApp.process.flowParam',
     'lcaApp.fragment.LCIA',
@@ -48,12 +49,30 @@ angular.module('lcaApp', [
                         }
                     }
                 })
+                .state('fragment-sankey.fragment-flow-param', {
+                    url: '/fragment-flow-param',
+                    views: {
+                        "@": {
+                            templateUrl: 'fragment-flow-param/fragment-flow-param.html',
+                            controller: 'FragmentFlowParamCtrl'
+                        }
+                    }
+                })
                 .state('fragment-flows', {
                     url: '/fragment-sankey',
                     views: {
                         "@": {
                             templateUrl: 'fragment-sankey/fragment-sankey.html',
                             controller: 'FragmentSankeyCtrl'
+                        }
+                    }
+                })
+                .state('fragment-flows.fragment-flow-param', {
+                    url: '/fragment-flow-param/{scenarioID}/{fragmentID}',
+                    views: {
+                        "@": {
+                            templateUrl: 'fragment-flow-param/fragment-flow-param.html',
+                            controller: 'FragmentFlowParamCtrl'
                         }
                     }
                 })

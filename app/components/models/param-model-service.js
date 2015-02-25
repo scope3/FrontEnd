@@ -2,11 +2,12 @@
  * Service providing data model for LCA parameters.
  * This model facilitates parameter lookup with a nested associative array.
  * Parameters are first indexed by scenarioID. Subsequent nesting depends on parameter type.
- * Currently, only parameter types affecting LCIA results are handled
- * (Characterization Factor, Emission Factor, Dissipation Factor?).
+ * Currently, only parameter types affecting LCIA results and fragment flows are handled
+ * (Characterization Factor, Emission Factor, Dissipation Factor, Dependency ).
  * Other parameter types are ignored until front end usage has been determined.
  * Characterization Factor parameters are indexed by scenarioID, lciaMethodID, flowID.
  * Dissipation and Emission Factor parameters are indexed by scenarioID, processID, flowID, paramTypeID.
+ * Dependency parameters are indexed by fragmentFlowID.
  *
  * Example :
  *
@@ -89,6 +90,10 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         else if ("lciaMethodID" in p ) {
                             nest( nest(m, "lciaMethods"), p.lciaMethodID);
                             associateByFlow(m.lciaMethods[p.lciaMethodID], p);
+                        }
+                        else if (p.hasOwnProperty("fragmentFlowID")) {
+                            nest(m, "fragmentFlows");
+                            m.fragmentFlows[p.fragmentFlowID] = p;
                         }
                     });
                     model.scenarios[scenarioID] = m;
@@ -212,6 +217,24 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 }
             };
 
+            /**
+             * Look up param by scenario and fragment flow
+             * @param { Number } scenarioID
+             * @param { Number } fragmentFlowID
+             * @returns {*}
+             */
+            svc.getFragmentFlowParam = function(scenarioID, fragmentFlowID) {
+                var sModel = svc.getModel(scenarioID),
+                    param = null;
+                if ( sModel &&
+                     sModel.hasOwnProperty("fragmentFlows") ) {
+                    var params = sModel.fragmentFlows;
+                    if (params.hasOwnProperty(fragmentFlowID)) {
+                        param = params[fragmentFlowID];
+                    }
+                }
+                return param;
+            };
 
             /**
              * Compare input value with the value of original param resource, if it exists.

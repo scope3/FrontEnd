@@ -1,0 +1,187 @@
+'use strict';
+/* Controller for Fragment Flow Param view */
+angular.module('lcaApp.fragment.flowParam',
+    ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
+        'lcaApp.format', 'lcaApp.paramGrid.directive',
+        'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario'])
+    .controller('FragmentFlowParamCtrl',
+    ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
+        'FragmentService', 'FragmentFlowService', 'FlowForFragmentService',
+        'ParamModelService', 'PARAM_VALUE_STATUS',
+        function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
+                  FragmentService, FragmentFlowService, FlowForFragmentService,
+                  ParamModelService, PARAM_VALUE_STATUS) {
+            var fragmentID = 0,
+                scenarioID = 0,
+                gridFlows = [];
+
+            $scope.fragment = null;
+            $scope.scenario = null;
+            $scope.gridFlows = [];
+
+            /**
+             * Function to determine if Apply Changes button should be disabled.
+             * @returns {boolean}
+             */
+            $scope.noValidChanges = function () {
+                return !($scope.scenario &&
+                    ScenarioModelService.canUpdate($scope.scenario) &&
+                    ParamModelService.hasValidChanges( $scope.gridFlows));
+            };
+            /**
+             * Gather changes and apply
+             */
+            $scope.applyChanges = function () {
+                var changedParams = $scope.gridFlows.filter(function (f) {
+                    return f.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
+                });
+                StatusService.startWaiting();
+                ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
+                    goBack, StatusService.handleFailure);
+            };
+
+            function goBack() {
+                $state.go('^');
+            }
+
+            /**
+             * Apply param change to resource
+             * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
+             * @returns {*} New or updated param resource
+             */
+            function changeParam(f) {
+                var paramResource = f.paramWrapper.paramResource;
+                if (paramResource) {
+                    if (f.paramWrapper.value) {
+                        paramResource.value = +f.paramWrapper.value;
+                    } else {
+                        paramResource.value = null;
+                    }
+                }
+                else {
+                    paramResource = {
+                        scenarioID : $scope.scenario.scenarioID,
+                        fragmentFlowID : f.fragmentFlowID,
+                        value: +f.paramWrapper.value,
+                        paramTypeID: 1
+                    };
+                }
+                return paramResource;
+            }
+
+            function getStateParams() {
+                if ("scenarioID" in $stateParams) {
+                    scenarioID = +$stateParams.scenarioID;
+                }
+                if ("fragmentID"in $stateParams) {
+                    fragmentID = +$stateParams.fragmentID;
+                }
+            }
+
+            function reportInvalidID(resourceName, id) {
+                StatusService.handleFailure(resourceName + " ID, " + id + ", is invalid.");
+            }
+
+            /**
+             * Function called after requests for resources have been fulfilled.
+             */
+            function handleSuccess() {
+                StatusService.stopWaiting();
+                $scope.scenario = ScenarioModelService.get(scenarioID);
+                if ($scope.scenario) {
+                    $scope.fragment = FragmentService.get(fragmentID);
+                    if ($scope.fragment) {
+                        defineGrids();
+                        extractFragmentFlowData();
+                    }
+                    else {
+                        reportInvalidID("Fragment", fragmentID);
+                    }
+                }
+                else {
+                    reportInvalidID("Scenario", scenarioID);
+                }
+            }
+
+            /**
+             * Get all data, except for LCIA results
+             */
+            function getData() {
+                if ( fragmentID > 0 &&  scenarioID > 0) {
+                    StatusService.startWaiting();
+                    $q.all([ScenarioModelService.load(),
+                        FragmentService.load(),
+                        FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
+                        FlowForFragmentService.load({fragmentID: fragmentID}),
+                        ParamModelService.load(scenarioID)])
+                        .then(handleSuccess,
+                        StatusService.handleFailure);
+                } else {
+                    StatusService.handleFailure("URL must contain scenarioID and fragmentID.");
+                }
+            }
+
+            /**
+             * Create object for grid row
+             * @param {{ fragmentFlowID: Number, shortName: String, nodeType: String, flowID: Number,
+             *          direction: String, parentFragmentFlowID : * , flowPropertyMagnitudes: []
+             *      } } ff   Fragment flow resource
+             */
+            function addGridFlow(ff) {
+                var paramResource = null,
+                    flow = null,
+                    gridFlow = { fragmentFlowID : ff.fragmentFlowID, name : ff.shortName, nodeType : ff.nodeType,
+                                 direction : ff.direction, parentName : "", flowName : "" };
+                if (ff.hasOwnProperty("flowID") ) {
+                    flow = FlowForFragmentService.get(ff.flowID);
+                    gridFlow.flowName = flow.name;
+                }
+                if (ff.hasOwnProperty("parentFragmentFlowID")) {
+                    var parent = FragmentFlowService.get(ff.parentFragmentFlowID);
+                    if (parent) {
+                        gridFlow.parentName = parent["shortName"];
+                    }
+                }
+                if (ff.hasOwnProperty("flowPropertyMagnitudes") && ff.flowPropertyMagnitudes.length > 0) {
+                    gridFlow.magnitude = ff.flowPropertyMagnitudes[0].magnitude;
+                }
+                paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID);
+                gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                gridFlows.push(gridFlow);
+            }
+
+            function extractFragmentFlowData( ) {
+                var fragmentFlows = FragmentFlowService.getAll();
+                fragmentFlows.forEach( addGridFlow);
+                $scope.gridFlows = gridFlows;
+            }
+
+            function defineGridColumns() {
+                $scope.columns = [
+                    {field: 'parentName', displayName: 'Parent Fragment Flow', enableCellEdit: false},
+                    {field: 'flowName', displayName: 'Flow Name', enableCellEdit: false},
+                    {field: 'direction', displayName: 'Direction', enableCellEdit: false},
+                    {field: 'magnitude', displayName: 'Magnitude', enableCellEdit: false},
+                    {field: 'name', displayName: 'Fragment Flow Name', enableCellEdit: false},
+                    {field: 'nodeType', displayName: 'Node Type', enableCellEdit: false}
+                ];
+            }
+
+            function defineGrids() {
+                var canUpdate = ScenarioModelService.canUpdate($scope.scenario);
+                defineGridColumns();
+                $scope.params = { targetIndex : 3, canUpdate : canUpdate };
+            }
+
+            function getActiveScenarioID() {
+                var activeID = ScenarioModelService.getActiveID();
+                if (activeID) {
+                    scenarioID = activeID;
+                }
+            }
+
+            getActiveScenarioID();
+            getStateParams();
+            getData();
+
+        }]);

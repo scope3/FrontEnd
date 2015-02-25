@@ -34,6 +34,11 @@ angular.module('lcaApp.fragment.sankey',
                 getData();
             };
 
+            $scope.viewFragmentFlowParam = function () {
+                $state.go(".fragment-flow-param",
+                    {scenarioID: scenarioID, fragmentID: fragmentID});
+            };
+
             /**
              * Build sankey graph from loaded data
              * @param {Boolean} makeNew  Indicates if new graph should be created. False means update existing graph.
