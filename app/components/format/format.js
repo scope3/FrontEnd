@@ -18,7 +18,7 @@ angular.module('lcaApp.format', ['d3'])
     .filter('numFormat', [ 'FormatService', function(FormatService){
         return function (input, spec) {
             var formatter = FormatService.format(spec);
-            if (input && input.length > 0) {
+            if (input ) {
                 return formatter(input);
             }
             else {
