@@ -167,7 +167,7 @@ angular.module('lcaApp.fragment.flowParam',
                     {field: 'flowName', displayName: 'Flow Name', enableCellEdit: false},
                     {field: 'direction', displayName: 'Direction', cellTemplate: DIRECTION_CELL_TEMPLATE,
                         enableCellEdit: false, width: 65},
-                    {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false},
+                    {field: 'magnitude', displayName: 'Magnitude', enableCellEdit: false},
                     {field: 'unit', displayName: 'Unit', enableCellEdit: false, width: 70},
                     {field: 'name', displayName: 'Node Name', enableCellEdit: false},
                     {field: 'nodeType', displayName: 'Node Type', enableCellEdit: false, width: 80}

@@ -195,12 +195,12 @@ angular.module('lcaApp.process.flowParam',
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
                     {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
                     {field: 'content', displayName: 'Content', cellFilter: 'numFormat', enableCellEdit: false},
-                    {field: 'dissipation', displayName: 'Dissipation Factor', cellFilter: 'numFormat', enableCellEdit: false}
+                    {field: 'dissipation', displayName: 'Dissipation Factor', enableCellEdit: false}
                 ];
                 $scope.emission.columns = [
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
                     {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
-                    {field: 'quantity', displayName: 'Emission Factor', cellFilter: 'numFormat', enableCellEdit: false}
+                    {field: 'quantity', displayName: 'Emission Factor', enableCellEdit: false}
                 ];
             }
 
