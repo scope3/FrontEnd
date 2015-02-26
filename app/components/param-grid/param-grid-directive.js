@@ -35,7 +35,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         iconClass = "glyphicon-ok";
                         break;
                     case PARAM_VALUE_STATUS.invalid :
-                        iconClass = "glyphicon-remove";
+                        iconClass = "glyphicon-exclamation-sign";
                         break;
                 }
                 return iconClass;
