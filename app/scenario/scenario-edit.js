@@ -45,6 +45,7 @@ angular.module('lcaApp.scenario.edit',
             }
 
             function setScope() {
+                StatusService.stopWaiting();
                 if ($stateParams.scenarioID) {
                     // Update an existing scenario
                 }
@@ -55,6 +56,7 @@ angular.module('lcaApp.scenario.edit',
                 }
             }
 
+            StatusService.startWaiting();
             $q.all([ScenarioService.load(), FragmentService.load()])
                 .then(setScope, StatusService.handleFailure);
 

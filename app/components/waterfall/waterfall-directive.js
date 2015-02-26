@@ -62,7 +62,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
             }
 
             function drawXAxis() {
-                var tickValues = [];
+                var tickValues = [], maxTickVal;
                 svg.select(".x.axis").remove();
                 if (waterfall.chartHeight > 0) {
                     var xAxis = d3.svg.axis()
@@ -76,32 +76,29 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         });
                     var lastVal = segments[segments.length-1].endVal;
 
-//                    tickValues.push(maxVal);
-//                    addTick(minVal, tickValues);
-//                    addTick(0, tickValues);
-//                    addTick(lastVal, tickValues);
-
-
-//                    var maxTickVal = d3.max(tickValues);
                     if (minVal > 0) {
                         minVal = 0;
                     }
                     else if (maxVal < 0) {
                         maxVal = 0;
                     }
-                    if ( lastVal > minVal && lastVal < maxVal)  {
-                        tickValues = [lastVal, maxVal];
-                        addTick(minVal, tickValues);
-                    } else {
-                        tickValues = [minVal, maxVal];
+                    tickValues = [lastVal];
+                    if (lastVal !== 0 ) {
+                        addTick(0, tickValues);
                     }
-                    addTick(0, tickValues);
+                    if (maxVal !== 0) {
+                        addTick(maxVal, tickValues);
+                    }
+                    if (minVal !== 0) {
+                        addTick(minVal, tickValues);
+                    }
+                    maxTickVal = d3.max(tickValues);
 
-                    xAxis.tickValues([minVal, maxVal])
+                    xAxis.tickValues(tickValues)
                         .tickFormat(function (d) {
                             var formatted;
                             switch(d) {
-                                case maxVal :
+                                case maxTickVal :
                                     formatted =  labelFormat(d) + " " + scope.unit;
                                     break;
                                 case 0 :
@@ -174,7 +171,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     lineColor = d3.rgb(scope.color).darker(2);
 
                 chartGroup = svg.select(".chart-group");
-                if (segments.length > 0) {
+                if (segments && segments.length > 0) {
                     // Draw bars
                     barGroup = chartGroup.selectAll(".bar.g")
                         .data(segments);
