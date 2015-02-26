@@ -3,8 +3,9 @@
  * Wraps ngGrid directive
  */
 angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
-.directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window',
-    function($compile, PARAM_VALUE_STATUS, ParamModelService, $window) {
+.constant('DIRECTION_CELL_TEMPLATE', '<div class="cellIcon"><span ng-class="directionClass(row)"></span></div>')
+.directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window', 'DIRECTION_CELL_TEMPLATE',
+    function($compile, PARAM_VALUE_STATUS, ParamModelService, $window, DIRECTION_CELL_TEMPLATE) {
         return {
             restrict: 'E',
             template: '<span><div class=\"gridStyle\" ng-grid=\"gridOptions\" ng-style=\"dynamicGridStyle\"></div></span>',
@@ -15,11 +16,11 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
         };
 
         function paramGridController($scope, $attrs) {
-            var targetField = null;
 
             $scope.dynamicGridStyle = null;
             $scope.gridOptions = {};
             $scope.changeClass = getChangeStatusClass;
+            $scope.directionClass = getDirectionClass;
             $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
 
             /**
@@ -35,6 +36,24 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         break;
                     case PARAM_VALUE_STATUS.invalid :
                         iconClass = "glyphicon-remove";
+                        break;
+                }
+                return iconClass;
+            }
+
+            /**
+             * Get icon class for Input / Ouput
+             * @param {{ entity : {paramWrapper : {editStatus : Number}} }} row
+             * @returns {string}
+             */
+            function getDirectionClass( row) {
+                var iconClass = "";
+                switch (row.entity.direction) {
+                    case "Input" :
+                        iconClass = "glyphicon glyphicon-arrow-left";
+                        break;
+                    case "Output" :
+                        iconClass = "glyphicon glyphicon-arrow-right";
                         break;
                 }
                 return iconClass;
@@ -82,7 +101,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
                         paramCol[0].enableCellEdit = true;
                         paramCol[1].cellTemplate =
-                            '<span class="glyphicon" ng-class="changeClass(row)"></span>';
+                            '<div class="cellIcon"><span class="glyphicon" ng-class="changeClass(row)"></span></div>';
                         paramCol[1].visible = true;
 
                     } else {

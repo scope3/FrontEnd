@@ -7,10 +7,10 @@ angular.module('lcaApp.fragment.flowParam',
     .controller('FragmentFlowParamCtrl',
     ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
         'FragmentService', 'FragmentFlowService', 'FlowForFragmentService',
-        'ParamModelService', 'PARAM_VALUE_STATUS',
+        'ParamModelService', 'PARAM_VALUE_STATUS', 'DIRECTION_CELL_TEMPLATE',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
                   FragmentService, FragmentFlowService, FlowForFragmentService,
-                  ParamModelService, PARAM_VALUE_STATUS) {
+                  ParamModelService, PARAM_VALUE_STATUS, DIRECTION_CELL_TEMPLATE) {
             var fragmentID = 0,
                 scenarioID = 0,
                 gridFlows = [];
@@ -130,6 +130,7 @@ angular.module('lcaApp.fragment.flowParam',
             function addGridFlow(ff) {
                 var paramResource = null,
                     flow = null,
+                    parent = null,
                     gridFlow = { fragmentFlowID : ff.fragmentFlowID, name : ff.shortName, nodeType : ff.nodeType,
                                  direction : ff.direction, parentName : "", flowName : "" };
                 if (ff.hasOwnProperty("flowID") ) {
@@ -137,13 +138,17 @@ angular.module('lcaApp.fragment.flowParam',
                     gridFlow.flowName = flow.name;
                 }
                 if (ff.hasOwnProperty("parentFragmentFlowID")) {
-                    var parent = FragmentFlowService.get(ff.parentFragmentFlowID);
+                    parent = FragmentFlowService.get(ff.parentFragmentFlowID);
                     if (parent) {
                         gridFlow.parentName = parent["shortName"];
                     }
                 }
-                if (ff.hasOwnProperty("flowPropertyMagnitudes") && ff.flowPropertyMagnitudes.length > 0) {
+                if (ff.hasOwnProperty("flowPropertyMagnitudes") && ff.flowPropertyMagnitudes.length > 0  ) {
                     gridFlow.magnitude = ff.flowPropertyMagnitudes[0].magnitude;
+                    if (parent && parent.nodeWeight) {
+                        gridFlow.magnitude = gridFlow.magnitude/parent.nodeWeight;
+                    }
+                    gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
                 }
                 paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID);
                 gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
@@ -158,12 +163,14 @@ angular.module('lcaApp.fragment.flowParam',
 
             function defineGridColumns() {
                 $scope.columns = [
-                    {field: 'parentName', displayName: 'Parent Fragment Flow', enableCellEdit: false},
+                    {field: 'parentName', displayName: 'Parent Node', enableCellEdit: false},
                     {field: 'flowName', displayName: 'Flow Name', enableCellEdit: false},
-                    {field: 'direction', displayName: 'Direction', enableCellEdit: false},
+                    {field: 'direction', displayName: 'Direction', cellTemplate: DIRECTION_CELL_TEMPLATE,
+                        enableCellEdit: false, width: 65},
                     {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false},
-                    {field: 'name', displayName: 'Fragment Flow Name', enableCellEdit: false},
-                    {field: 'nodeType', displayName: 'Node Type', enableCellEdit: false}
+                    {field: 'unit', displayName: 'Unit', enableCellEdit: false, width: 70},
+                    {field: 'name', displayName: 'Node Name', enableCellEdit: false},
+                    {field: 'nodeType', displayName: 'Node Type', enableCellEdit: false, width: 80}
                 ];
             }
 
