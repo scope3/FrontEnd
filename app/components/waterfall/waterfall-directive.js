@@ -13,7 +13,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 },
                 parentElement = element[0],
                 yAxisWidth = 110,
-                labelFormat = FormatService.format("^.2r"),// Format numbers with precision 2, centered
+                labelFormat = FormatService.format("^.2g"),// Format numbers with precision 2, centered
                 svg = null,
                 waterfall = null,   // Current waterfall instance
                 segments,           // Waterfall segments for current scenario
@@ -53,7 +53,16 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 }
             }
 
+            function addTick( val, tickValues) {
+                if ( tickValues.every( function (tv) {
+                    return (Math.abs(waterfall.xScale(tv) - waterfall.xScale(val)) > 50 );
+                }) ) {
+                    tickValues.push(val);
+                }
+            }
+
             function drawXAxis() {
+                var tickValues = [];
                 svg.select(".x.axis").remove();
                 if (waterfall.chartHeight > 0) {
                     var xAxis = d3.svg.axis()
@@ -65,18 +74,43 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                         maxVal = d3.max(segments, function (d) {
                             return d.endVal;
                         });
+                    var lastVal = segments[segments.length-1].endVal;
 
+//                    tickValues.push(maxVal);
+//                    addTick(minVal, tickValues);
+//                    addTick(0, tickValues);
+//                    addTick(lastVal, tickValues);
+
+
+//                    var maxTickVal = d3.max(tickValues);
                     if (minVal > 0) {
                         minVal = 0;
                     }
+                    else if (maxVal < 0) {
+                        maxVal = 0;
+                    }
+                    if ( lastVal > minVal && lastVal < maxVal)  {
+                        tickValues = [lastVal, maxVal];
+                        addTick(minVal, tickValues);
+                    } else {
+                        tickValues = [minVal, maxVal];
+                    }
+                    addTick(0, tickValues);
+
                     xAxis.tickValues([minVal, maxVal])
                         .tickFormat(function (d) {
-                            if (d === maxVal && scope.unit) {
-                                return labelFormat(d) + " " + scope.unit;
+                            var formatted;
+                            switch(d) {
+                                case maxVal :
+                                    formatted =  labelFormat(d) + " " + scope.unit;
+                                    break;
+                                case 0 :
+                                    formatted = "0";
+                                    break;
+                                default :
+                                    formatted = labelFormat(d);
                             }
-                            else {
-                                return labelFormat(d)
-                            }
+                            return formatted;
                         });
                     svg.select(".chart-group")
                         .append("g")
