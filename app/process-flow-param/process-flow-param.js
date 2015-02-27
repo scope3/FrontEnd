@@ -3,7 +3,7 @@
 angular.module('lcaApp.process.flowParam',
     ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
         'lcaApp.format', 'lcaApp.paramGrid.directive',
-        'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario'])
+        'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario', 'lcaApp.changeButtons.directive'])
     .controller('ProcessFlowParamCtrl',
     ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
         'ProcessForFlowTypeService', 'ProcessFlowService',
@@ -25,14 +25,31 @@ angular.module('lcaApp.process.flowParam',
             $scope.fragmentFlows = [];
 
             /**
-             * Function to determine if Apply Changes button should be disabled.
+             * Function to determine if Apply Changes button should be enabled.
              * @returns {boolean}
              */
-            $scope.noValidChanges = function () {
-                return !($scope.scenario &&
+            $scope.canApply = function () {
+                return ($scope.scenario &&
                     ScenarioModelService.canUpdate($scope.scenario) &&
-                    ParamModelService.hasValidChanges( $scope.fragmentFlows));
+                    ParamModelService.canApplyChanges( $scope.fragmentFlows));
             };
+            /**
+             * Function to determine if Revert Changes button should be enabled.
+             * @returns {boolean}
+             */
+            $scope.canRevert = function () {
+                return ($scope.scenario &&
+                    ScenarioModelService.canUpdate($scope.scenario) &&
+                    ParamModelService.canRevertChanges( $scope.fragmentFlows));
+            };
+            /**
+             * Function to determine if Back link should be enabled.
+             * @returns {boolean}
+             */
+            $scope.canReturn = function () {
+                return ParamModelService.canAbandonChanges($scope.fragmentFlows);
+            };
+
             /**
              * Gather changes and apply
              */
@@ -43,6 +60,15 @@ angular.module('lcaApp.process.flowParam',
                 StatusService.startWaiting();
                 ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
                     goBack, StatusService.handleFailure);
+            };
+
+            /**
+             * Undo changes
+             */
+            $scope.revertChanges = function () {
+                $scope.fragmentFlows.forEach(function (e) {
+                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
+                });
             };
 
             function goBack() {

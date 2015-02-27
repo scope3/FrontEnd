@@ -20,14 +20,27 @@ angular.module('lcaApp.fragment.flowParam',
             $scope.gridFlows = [];
 
             /**
-             * Function to determine if Apply Changes button should be disabled.
+             * Function to determine if Apply Changes button should be enabled.
              * @returns {boolean}
              */
-            $scope.noValidChanges = function () {
-                return !($scope.scenario &&
+            $scope.canApply = function () {
+                return ($scope.scenario &&
                     ScenarioModelService.canUpdate($scope.scenario) &&
-                    ParamModelService.hasValidChanges( $scope.gridFlows));
+                    ParamModelService.canApplyChanges( $scope.gridFlows));
             };
+            /**
+             * Function to determine if Revert Changes button should be enabled.
+             * @returns {boolean}
+             */
+            $scope.canRevert = function () {
+                return ($scope.scenario &&
+                    ScenarioModelService.canUpdate($scope.scenario) &&
+                    ParamModelService.canRevertChanges( $scope.gridFlows));
+            };
+            $scope.canReturn = function () {
+                return ParamModelService.canAbandonChanges($scope.gridFlows);
+            };
+
             /**
              * Gather changes and apply
              */
@@ -38,6 +51,12 @@ angular.module('lcaApp.fragment.flowParam',
                 StatusService.startWaiting();
                 ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
                     goBack, StatusService.handleFailure);
+            };
+
+            $scope.revertChanges = function () {
+                $scope.gridFlows.forEach(function (e) {
+                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
+                });
             };
 
             function goBack() {

@@ -29,23 +29,41 @@ angular.module('lcaApp.lciaMethod.detail',
              * Function to check if Apply Changes button should be disabled.
              * @returns {boolean}
              */
-            $scope.noValidChanges = function () {
-                return !($scope.paramScenario && $scope.gridData.length > 0 &&
+            $scope.canApply = function () {
+                return ($scope.paramScenario &&
                     ScenarioModelService.canUpdate($scope.paramScenario) &&
-                    ParamModelService.hasValidChanges( $scope.gridData)
+                    ParamModelService.canApplyChanges( $scope.gridData)
                 );
             };
+            /**
+             * Function to determine if Revert Changes button should be enabled.
+             * @returns {boolean}
+             */
+            $scope.canRevert = function () {
+                return ($scope.paramScenario &&
+                    ScenarioModelService.canUpdate($scope.paramScenario) &&
+                    ParamModelService.canRevertChanges( $scope.gridData));
+            };
 
+            $scope.canChangeScenario = function () {
+                return ParamModelService.canAbandonChanges($scope.gridData);
+            };
             /**
              * Gather changes and apply
              */
             $scope.applyChanges = function () {
-                var changedParams = $scope.gridData.filter(function (lf) {
-                    return lf.editStatus === PARAM_VALUE_STATUS.changed;
+                var changedParams = $scope.gridData.filter(function (e) {
+                    return e.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
                 });
                 StatusService.startWaiting();
                 ParamModelService.updateResources($scope.paramScenario.scenarioID, changedParams.map(changeParam),
                     getParams, StatusService.handleFailure);
+            };
+
+            $scope.revertChanges = function () {
+                $scope.gridData.forEach(function (e) {
+                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
+                });
             };
 
             StatusService.startWaiting();
@@ -143,10 +161,10 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function changeParam(lf) {
-                var paramResource = lf.paramResource;
+                var paramResource = lf.paramWrapper.paramResource;
                 if (paramResource) {
-                    if (lf.value) {
-                        paramResource.value = +lf.value;
+                    if (lf.paramWrapper.value) {
+                        paramResource.value = +lf.paramWrapper.value;
                     } else {
                         paramResource.value = null;
                     }
@@ -156,7 +174,7 @@ angular.module('lcaApp.lciaMethod.detail',
                         scenarioID : $scope.paramScenario.scenarioID,
                         lciaMethodID : $scope.lciaMethod.lciaMethodID,
                         flowID : lf.flowID,
-                        value: +lf.value
+                        value: +lf.paramWrapper.value
                     }
                 }
                 return paramResource;

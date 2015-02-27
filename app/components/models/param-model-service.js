@@ -347,10 +347,32 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             /**
              * Inspect data array for wrapped param changes
              * @param {[]} data
+             * @returns {*|boolean} true iff there is at least one change, valid or otherwise
+             */
+            svc.canRevertChanges = function (data) {
+                return data.some(function (d) {
+                        return d.paramWrapper.editStatus !== PARAM_VALUE_STATUS.unchanged;
+                    }) ;
+            };
+
+            /**
+             * Inspect data array for wrapped param changes
+             * @param {[]} data
+             * @returns {*|boolean} false iff there is at least one valid change
+             */
+            svc.canAbandonChanges = function (data) {
+                return !data.some(function (d) {
+                    return d.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
+                }) ;
+            };
+
+            /**
+             * Inspect data array for wrapped param changes
+             * @param {[]} data
              * @returns {*|boolean} true iff there is at least one valid change and no
              * invalid change
              */
-            svc.hasValidChanges = function (data) {
+            svc.canApplyChanges = function (data) {
                 return (
                     data.some(function (d) {
                         return d.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;

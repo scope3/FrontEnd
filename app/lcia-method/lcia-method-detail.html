@@ -41,8 +41,11 @@
         <label for="selectScenario">Scenario</label>
         <select id="selectScenario" ng-model="paramScenario"
                 ng-options="scenario.name for scenario in scenarios"
+                ng-disabled="!canChangeScenario()"
                 ng-change="onScenarioChange()"></select>
-        <button class="btn btn-sm pull-right" ng-disabled="noValidChanges()" ng-click="applyChanges()">Apply Changes</button>
+        <span class="pull-right">
+            <change-buttons></change-buttons>
+        </span>
     </div>
     <param-grid options="options" data="gridData" columns="gridColumns" params="params"></param-grid>
 </div>
