@@ -81,27 +81,43 @@ See also this issue report: https://github.com/bower/bower/issues/689
 
 * app/                --> all of the source files for the application
     * components/           --> shared modules (services and directives)
+        * change-buttons        --> Directive containing buttons to Apply and Revert Changes
         * color-code            --> Maps categories to colors
+        * d3                    --> d3 wrapper service
         * d3-tip                --> d3.tip service
+        * format                --> Formatting service and filter
+        * fragment-navigation   --> Service for keeping track of fragment navigation state
         * idmap                 --> Maps resource ID to resource
-        * version/              --> version related components (came with angular-seed)
-        * lcia-bar-chart        --> LCIA bar chart directive
-        * resources/            --> WebAPI resource service 
+        * lcia-detail           --> LCIA bar chart directive, service, and css
+        * models                --> Services providing models for resource data
+        * name                  --> Resource name transformation service
+        * param-grid            --> Param grid directive
+        * resources-mocks/      --> Mock resource data for unit tests
+        * resources/            --> Web API resource service 
         * sankey/               --> Sankey diagram service and directive   
+        * status/               --> Service for updating shared spinner and alert message  
+        * version/              --> version related components (came with angular-seed)
+        * waterfall/            --> Directive, service, and css used to draw waterfall charts
+    * fragment-flow-param/      --> Fragment Flow Detail view and controller
+    * fragment-lcia/            --> Fragment LCIA view and controller
     * fragment-sankey/          --> Fragment sankey view and controller
+    * home/                     --> Main view and controller
+    * lcia-method/              --> LCIA Method Detail view and controller
+    * process-flow-param/       --> Process Flow Detail view and controller
     * process-lcia/             --> Process LCIA view and controller
-    * scenarios/                --> scenarios view and controller
+    * scenario/                 --> Scenario Editing view and controller
+    * templates/                --> angular-bootstrap HTML templates
 * karma.conf.js         --> config file for running unit tests with Karma
 * e2e-tests/            --> end-to-end tests (not currently implemented)
 
 
 ## Testing
 
-There are two kinds of tests in the angular-seed application: Unit tests and End to End tests.
+Unit tests have been created for almost all modules in this project. End to end tests have not yet been developed.
 
 ### Running Unit Tests
 
-The angular-seed app comes preconfigured with unit tests. These are written in
+The app is preconfigured with unit tests. These are written in
 [Jasmine][jasmine], which we run with the [Karma Test Runner][karma]. We provide a Karma
 configuration file to run them.
 
@@ -130,12 +146,12 @@ npm run test-single-run
 
 ### End to end testing
 
-The angular-seed app comes with end-to-end tests, again written in [Jasmine][jasmine]. These tests
+The angular-seed app came with end-to-end tests, again written in [Jasmine][jasmine]. These tests
 are run with the [Protractor][protractor] End-to-End test runner.  It uses native events and has
 special features for Angular applications.
 
 * the configuration is found at `e2e-tests/protractor-conf.js`
-* the end-to-end tests are found in `e2e-tests/scenarios.js`
+* the end-to-end tests will be created under `e2e-tests`
 
 Protractor simulates interaction with our web app and verifies that the application responds
 correctly. Therefore, our web server needs to be serving up the application, so that Protractor
@@ -186,22 +202,6 @@ bower update
 ```
 
 This will find the latest versions that match the version ranges specified in the `bower.json` file.
-
-
-## Loading Angular Asynchronously
-
-The angular-seed project supports loading the framework and application scripts asynchronously.  The
-special `index-async.html` is designed to support this style of loading.  For it to work you must
-inject a piece of Angular JavaScript into the HTML page.  The project has a predefined script to help
-do this.
-
-```
-npm run update-index-async
-```
-
-This will copy the contents of the `angular-loader.js` library file into the `index-async.html` page.
-You can run this every time you update the version of Angular that you are using.
-
 
 ## Serving the Application Files
 
