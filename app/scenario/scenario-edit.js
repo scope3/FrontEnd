@@ -8,51 +8,59 @@ angular.module('lcaApp.scenario.edit',
      'ScenarioService', 'FragmentService',
         function ($scope, $state, $stateParams, $q, StatusService,
                   ScenarioService, FragmentService) {
-            var existingScenario = null;
+            var existingScenario = null;    // Existing scenario resource, updated on save.
 
             /**
-             * Action for Save button. Currently, only new scenario can be saved.
+             * Action for Save button. Create new scenario or update existing scenario.
              * Setting up a new scenario takes some time, so display the spinner while
              * waiting for a response.
              */
             $scope.save = function () {
                 if ( $scope.form.$valid ) {
-                    if (!existingScenario) {
-                        StatusService.startWaiting();
+                    StatusService.startWaiting();
+                    if (existingScenario) {
+                        angular.copy($scope.scenario, existingScenario);
+                        ScenarioService.update( {scenarioID: existingScenario.scenarioID}, existingScenario,
+                                                handleSuccess, StatusService.handleFailure);
+                    } else {
                         ScenarioService.create(null, $scope.scenario, handleSuccess, StatusService.handleFailure);
                     }
                 }
             };
 
             /**
-             * Action for Cancel button.
-             * Currently, an existing scenario cannot be edited, so this action just navigates back home.
+             * Action for Cancel button. Go back to previous state
              */
             $scope.revertChanges = function () {
-                if ( ! existingScenario) {
-                    $scope.scenario = null;
-                    goHome();
-                }
+                goBack();
             };
 
-            function goHome() {
-                $state.go('home');
+            function goBack() {
+                if ( $stateParams.scenarioID) {
+                    $state.go('^');
+                } else {
+                    $state.go('home');
+                }
             }
 
             function handleSuccess() {
                 StatusService.stopWaiting();
-                goHome();
+                goBack();
             }
 
             function setScope() {
                 StatusService.stopWaiting();
+                $scope.fragments = FragmentService.getAll();
                 if ($stateParams.scenarioID) {
-                    // Update an existing scenario
+                    existingScenario = ScenarioService.get($stateParams.scenarioID);
+                    if (existingScenario) {
+                        $scope.scenario = angular.copy(existingScenario);
+                    }
                 }
                 else {
                     // Create scenario
                     $scope.scenario = { name: "", activityLevel: 1, topLevelFragmentID: null};
-                    $scope.fragments = FragmentService.getAll();
+
                 }
             }
 

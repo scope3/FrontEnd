@@ -12,6 +12,7 @@ angular.module('lcaApp', [
     'lcaApp.process.flowParam',
     'lcaApp.fragment.LCIA',
     'lcaApp.lciaMethod.detail',
+    'lcaApp.scenario.detail',
     'lcaApp.scenario.edit',
     'lcaApp.version'])
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
@@ -120,7 +121,25 @@ angular.module('lcaApp', [
                         controller: 'ScenarioEditController'
                     }
                 }
-            });
+            })
+            .state('scenario', {
+                url: '/scenario/{scenarioID}',
+                views: {
+                    "@": {
+                        templateUrl: 'scenario/scenario-detail.html',
+                        controller: 'ScenarioDetailController'
+                    }
+                }
+            })
+                .state('scenario.edit', {
+                    url: '/edit',
+                    views: {
+                        "@": {
+                            templateUrl: 'scenario/scenario-edit.html',
+                            controller: 'ScenarioEditController'
+                        }
+                    }
+                });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
         }]);
 

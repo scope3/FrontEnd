@@ -15,7 +15,11 @@
         </thead>
         <tbody>
         <tr ng-repeat="scenario in scenarios">
-            <td>{{scenario.name}}</td>
+            <td>
+                <a ui-sref="scenario({scenarioID: scenario.scenarioID})">
+                {{scenario.name}}
+                </a>
+            </td>
             <td>{{scenario.activityLevel | numFormat}}</td>
             <td>
                 <a ui-sref="fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">

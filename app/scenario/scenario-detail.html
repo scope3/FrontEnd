@@ -1,0 +1,31 @@
+<div class="panel panel-default">
+    <div class="panel-heading">
+            <span class="panel-title">Scenario Attributes</span>
+            <button class="btn btn-sm pull-right" ng-click="editScenario()" ng-hide="hideEdit(scenario)">Edit</button>
+            <div class="clearfix"></div>
+        </div>
+    <div class="panel-body">
+        <dl class="dl-horizontal">
+            <dt>Name</dt>
+            <dd>{{scenario["name"]}}</dd>
+            <dt>Top Level Fragment</dt>
+            <dd><a ui-sref="fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
+                {{fragment.name}}
+            </a>
+            </dd>
+            <dt>Activity Level</dt>
+            <dd>{{scenario.activityLevel | numFormat}}</dd>
+        </dl>
+    </div>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Scenario Parameters</span>
+    </div>
+    <div class="panel-body">
+        <span class="pull-right">
+            <change-buttons></change-buttons>
+        </span>
+    </div>
+    <param-grid options="options" data="gridData" columns="gridColumns" params="params"></param-grid>
+</div>
