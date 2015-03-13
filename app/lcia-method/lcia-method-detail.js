@@ -5,10 +5,10 @@ angular.module('lcaApp.lciaMethod.detail',
         'lcaApp.models.param', 'lcaApp.models.scenario'])
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q', '$log', '$window',
-        'ImpactCategoryService', 'LciaMethodService', 'FlowForFlowTypeService', 'LciaFactorService',
+        'ImpactCategoryService', 'LciaMethodService', 'FlowForLciaMethodService', 'LciaFactorService',
         'ScenarioModelService', 'ParamModelService', 'PARAM_VALUE_STATUS', 'StatusService',
         function ($scope, $stateParams, $q, $log, $window,
-                  ImpactCategoryService, LciaMethodService, FlowForFlowTypeService, LciaFactorService,
+                  ImpactCategoryService, LciaMethodService, FlowForLciaMethodService, LciaFactorService,
                   ScenarioModelService, ParamModelService, PARAM_VALUE_STATUS, StatusService) {
 
             var gridData = [];
@@ -68,7 +68,7 @@ angular.module('lcaApp.lciaMethod.detail',
 
             StatusService.startWaiting();
             $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
-                FlowForFlowTypeService.load({flowTypeID: 2}) ,
+                FlowForLciaMethodService.load({lciaMethodID: $stateParams.lciaMethodID}) ,
                 LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
                 handleLciaFactorResults, StatusService.handleFailure);
 
@@ -86,7 +86,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 var lciaFactors = LciaFactorService.getAll();
                 gridData =
                     lciaFactors.map(function (f) {
-                        var flow = FlowForFlowTypeService.get(f.flowID);
+                        var flow = FlowForLciaMethodService.get(f.flowID);
 
                         return {flowID: flow.flowID,
                             category: flow.category,
