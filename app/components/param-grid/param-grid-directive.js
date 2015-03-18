@@ -173,12 +173,6 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                 }
             });
 
-            $scope.$watch('params', function (newVal) {
-                if (newVal ) {
-                    getTargetField();
-                }
-            });
-
             init();
 
         }
