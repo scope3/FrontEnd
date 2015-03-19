@@ -10,14 +10,10 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
             var resourceService = {},   // Singleton creates specific service type objects
                 services = {},          // Services created for, and shared by controllers
                 authToken = '2514bc8', // Authentication token. Placeholder, to be obtained from login in the future
-                actions = {             // Set of all web API actions
-//                    get: {method: 'GET', cache: false, isArray: false}, // Used to get detailed LCIA results for one method
-//                    query: {method: 'GET', cache: true, isArray: true}, // Get array of resources
-//                    // Following actions are only used with scenarios and params
- //                   create: { method: 'POST', isArray:true},    // POST param returns an array containing one param
+                actions = {
+                // Custom actions
                     update: { method: 'PUT' },
                     replace: { method: 'PUT', isArray:true }
-//                    , delete: { method: 'DELETE' }
                 };
 
             resourceService.ROUTES = {
@@ -76,7 +72,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 svc.load = function(filter) {
                     var d = $q.defer(),
                         authFilter = resourceService.addAuthParam(filter);
-                    if (authFilter === svc.loadFilter && svc.objects) {
+                    if (angular.equals(authFilter, svc.loadFilter) && svc.objects) {
                         d.resolve(svc.objects);
                     } else {
                         svc.loadFilter = authFilter;
