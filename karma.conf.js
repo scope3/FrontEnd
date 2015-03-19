@@ -22,6 +22,7 @@ module.exports = function(config){
       'app/fragment-lcia/**/*.js',
       'app/fragment-sankey/**/*.js',
       'app/lcia-method/**/*.js',
+      'app/process-instance/**/*.js',
       'app/process-lcia/**/*.js',
       'app/scenario/**/*.js'
     ],

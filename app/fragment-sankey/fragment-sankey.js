@@ -136,11 +136,8 @@ angular.module('lcaApp.fragment.sankey',
                 }
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
-                    node.selectable = refObj["hasElementaryFlows"];
-                    if (node.selectable) {
-                        selectTip = "Click to perform LCIA";
-                    }
-//                    node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
+                    node.selectable = true;
+                    selectTip = "Click to view process instance";
                 } else if ("subFragmentID" in element) {
                     refObj = FragmentService.get(element.subFragmentID);
                     node.selectable = true;
@@ -357,11 +354,13 @@ angular.module('lcaApp.fragment.sankey',
                     $log.info("Clicked on node with weight = " + fragmentFlow.nodeWeight);
                     switch (newVal.nodeType) {
                         case "Process" :
-                            $state.go("fragment-sankey.process", { scenarioID : scenarioID,
-                                                                   fragmentID : fragmentID,
-                                                             processID : fragmentFlow.processID,
-                                                             activity : $scope.fragment.activityLevel *
-                                                                        fragmentFlow.nodeWeight }
+                            $state.go("fragment-sankey.process-instance", {
+                                    scenarioID: scenarioID,
+                                    fragmentID: fragmentID,
+                                    fragmentFlowID: fragmentFlow.fragmentFlowID,
+                                    activity: $scope.fragment.activityLevel *
+                                    fragmentFlow.nodeWeight
+                                }
                             );
                             break;
                         case "Fragment" :

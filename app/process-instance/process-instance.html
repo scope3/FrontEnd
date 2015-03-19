@@ -1,0 +1,66 @@
+<!-- Partial html for Process Instance view -->
+
+
+<h4>Process Instance</h4>
+<dl class="dl-horizontal">
+    <dt>Scenario</dt>
+    <dd>{{scenario.name}}</dd>
+            <span ng-if="navigationStates.length">
+                <dt>Fragment</dt>
+                <dd>
+                <span ng-repeat="navFrag in navigationStates">
+                     <span><a class="fragment-link" ng-click="goBackToFragment($index)">{{navFrag.name}}</a></span>
+                     <span ng-if="!$last"> > </span>
+                </span>
+                </dd>
+            </span>
+    <dt>Activity Level</dt>
+    <dd>{{activityLevel | numFormat}}</dd>
+    <dt>Process</dt>
+    <dd>{{process.name}}</dd>
+    <dt>Data Source</dt>
+    <dd>{{process.dataSource}}<span ng-if="process.isPrivate"> (private) </span></dd>
+</dl>
+
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Intermediate Flows</span>
+    </div>
+    <div class="panel-body">
+        <param-grid options="options" data="gridFlows" columns="columns" params="params"></param-grid>
+    </div>
+</div>
+
+<ul class="list-unstyled">
+    <li ng-repeat="method in lciaMethods" class="lcia-method">
+        <div class="panel panel-default">
+            <div class="panel-heading" ng-style="panelHeadingStyle[method.lciaMethodID]">
+                <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
+                    <dt>{{method.name}}</dt>
+                </a>
+            </div>
+            <div class="panel-body">
+                <dl class="dl-horizontal">
+                    <dt style="font-weight: normal">Cumulative Result:</dt>
+                    <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}}
+                        {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
+                    <dd>{{method.referenceFlowProperty.name}}</dd>
+                </dl>
+                <div class="lcia-bar-container">
+                    <lcia-bar-chart lcia="lciaResults[method.lciaMethodID].detail"
+                                    flows="elementaryFlows"></lcia-bar-chart>
+                    <button class="btn btn-sm pull-right" ng-show="lciaResults[method.lciaMethodID].detail"
+                            ng-click="viewProcessFlowParam(method.lciaMethodID)">More Details...
+                    </button>
+
+                </div>
+            </div>
+        </div>
+    </li>
+</ul>
+
+
+
+
+
+

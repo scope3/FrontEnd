@@ -2,19 +2,20 @@
 
 // Declare app level module which depends on views, and components
 angular.module('lcaApp', [
-    'angularSpinner',
     'LocalStorageModule',
     'ui.router',
     'lcaApp.home',
     'lcaApp.fragment.sankey',
     'lcaApp.fragment.flowParam',
+    'lcaApp.process.instance',
     'lcaApp.process.LCIA',
     'lcaApp.process.flowParam',
     'lcaApp.fragment.LCIA',
     'lcaApp.lciaMethod.detail',
     'lcaApp.scenario.detail',
-    'lcaApp.scenario.edit',
-    'lcaApp.version'])
+    'lcaApp.scenario.edit'
+    ]
+)
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
         function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
             $urlRouterProvider.otherwise("/");
@@ -32,12 +33,12 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.process', {
-                    url: '/process-lcia/{processID}?activity',
+                .state('fragment-sankey.process-instance', {
+                    url: '/process-instance/{fragmentFlowID}?activity',
                     views: {
                         "@": {
-                            templateUrl: 'process-lcia/process-lcia.html',
-                            controller: 'ProcessLciaCtrl'
+                            templateUrl: 'process-instance/process-instance.html',
+                            controller: 'ProcessInstanceController'
                         }
                     }
                 })
