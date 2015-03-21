@@ -42,8 +42,8 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.process.flow-param', {
-                    url: '/flow-param/{lciaMethodID}',
+                .state('fragment-sankey.process-instance.flow-param', {
+                    url: '/flow-param/{processID}/{lciaMethodID}',
                     views: {
                         "@": {
                             templateUrl: 'process-flow-param/process-flow-param.html',

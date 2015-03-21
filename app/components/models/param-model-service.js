@@ -105,6 +105,36 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             }
 
             /**
+             * Apply change to fragment flow parameter resource
+             * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
+             * @param { Number } scenarioID
+             * @returns {*} New or updated param resource
+             */
+            function changeFragmentFlowParam(f, scenarioID) {
+                var paramResource = f.paramWrapper.paramResource;
+                if (paramResource) {
+                    if (f.paramWrapper.value) {
+                        paramResource.value = +f.paramWrapper.value;
+                    } else {
+                        paramResource.value = null;
+                    }
+                }
+                else {
+                    paramResource = {
+                        scenarioID : scenarioID,
+                        fragmentFlowID : f.fragmentFlowID,
+                        value: +f.paramWrapper.value,
+                        paramTypeID: 1
+                    };
+                }
+                return paramResource;
+            }
+
+            function hasChangedParam(o) {
+                return o.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
+            }
+
+            /**
              * Create model for scenario parameters. If scenario parameters were already modeled, that part of private
              * model will be recreated.
              * @param scenarioID
@@ -408,6 +438,20 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     }
                 });
                 ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
+            };
+
+            /**
+             * Gather Fragment Flow Parameter changes and send to Web API
+             * @param {Number} scenarioID
+             * @param {[]} data   Array of objects containing edited param data
+             * @param {Function} successCB  Function to call on success response
+             * @param {Function} errorCB    Function to call on error response
+             */
+            svc.applyFragmentFlowParamChanges = function (scenarioID, data, successCB, errorCB) {
+                var changedParams = data.filter(hasChangedParam);
+
+                svc.updateResources(scenarioID, changedParams.map(changeFragmentFlowParam),
+                    successCB, errorCB);
             };
 
             return svc;

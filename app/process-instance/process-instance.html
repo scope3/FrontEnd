@@ -24,41 +24,51 @@
 
 <div class="panel panel-default">
     <div class="panel-heading">
-        <span class="panel-title">Intermediate Flows</span>
+        <span class="panel-title">Fragment Flows</span>
+        <span class="pull-right">
+            <change-buttons></change-buttons>
+        </span>
     </div>
     <div class="panel-body">
         <param-grid options="options" data="gridFlows" columns="columns" params="params"></param-grid>
     </div>
 </div>
 
-<ul class="list-unstyled">
-    <li ng-repeat="method in lciaMethods" class="lcia-method">
-        <div class="panel panel-default">
-            <div class="panel-heading" ng-style="panelHeadingStyle[method.lciaMethodID]">
-                <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
-                    <dt>{{method.name}}</dt>
-                </a>
-            </div>
-            <div class="panel-body">
-                <dl class="dl-horizontal">
-                    <dt style="font-weight: normal">Cumulative Result:</dt>
-                    <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}}
-                        {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
-                    <dd>{{method.referenceFlowProperty.name}}</dd>
-                </dl>
-                <div class="lcia-bar-container">
-                    <lcia-bar-chart lcia="lciaResults[method.lciaMethodID].detail"
-                                    flows="elementaryFlows"></lcia-bar-chart>
-                    <button class="btn btn-sm pull-right" ng-show="lciaResults[method.lciaMethodID].detail"
-                            ng-click="viewProcessFlowParam(method.lciaMethodID)">More Details...
-                    </button>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Process LCIA</span>
+    </div>
+    <div class="panel-body">
+        <span>{{lciaMsg}}</span>
+        <ul class="list-unstyled">
+            <li ng-repeat="method in lciaMethods" class="lcia-method">
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-style="panelHeadingStyle[method.lciaMethodID]">
+                        <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
+                            <dt>{{method.name}}</dt>
+                        </a>
+                    </div>
+                    <div class="panel-body">
+                        <dl class="dl-horizontal">
+                            <dt style="font-weight: normal">Cumulative Result:</dt>
+                            <dd><strong>{{lciaResults[method.lciaMethodID].cumulativeResult | numFormat}}
+                                {{method.referenceFlowProperty.referenceUnit}}</strong></dd>
+                            <dd>{{method.referenceFlowProperty.name}}</dd>
+                        </dl>
+                        <div class="lcia-bar-container">
+                            <lcia-bar-chart lcia="lciaResults[method.lciaMethodID].detail"
+                                            flows="elementaryFlows"></lcia-bar-chart>
+                            <button class="btn btn-sm pull-right" ng-show="lciaResults[method.lciaMethodID].detail"
+                                    ng-click="viewProcessFlowParam(method.lciaMethodID)">More Details...
+                            </button>
 
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </div>
-    </li>
-</ul>
-
+            </li>
+        </ul>
+    </div>
+</div>
 
 
 
