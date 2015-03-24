@@ -96,6 +96,15 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 };
 
                 /**
+                 * Clear internal cache before load
+                 * @param filter
+                 */
+                svc.reload = function(filter) {
+                    svc.objects = null;
+                    return svc.load(filter);
+                };
+
+                /**
                  * comparison function for sorting query result objects
                  * by name.
                  */

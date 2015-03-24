@@ -22,7 +22,7 @@ angular.module('lcaApp.process.instance',
                 fragmentID = 0,
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
                 processFragmentFlow = null,
-                gridFlows = [],
+                inputFlows = [], outputFlows = [],
                 intermediateFlows = {},
                 fragmentActivityLevel = 1;
 
@@ -174,6 +174,12 @@ angular.module('lcaApp.process.instance',
                 }
             }
 
+            function updateParamGrid() {
+                StatusService.stopWaiting();
+                processFragmentFlow = FragmentFlowService.get(fragmentFlowID);
+                extractFragmentFlowData();
+            }
+
             /**
              * Get data filtered by processID
              */
@@ -244,20 +250,29 @@ angular.module('lcaApp.process.instance',
                     gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
                 }
                 gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
-                gridFlows.push(gridFlow);
+                if (gridFlow.direction === "Input") {
+                    inputFlows.push(gridFlow);
+                } else {
+                    outputFlows.push(gridFlow);
+                }
             }
 
             function extractFragmentFlowData( ) {
                 var fragmentFlows = FragmentFlowService.getAll(),
                     processFlows = fragmentFlows.filter(isProcessFragmentFlow);
 
-                gridFlows = [];
+                inputFlows = [];
+                outputFlows = [];
                 processFlows.forEach( addGridFlow);
-                $scope.gridFlows = gridFlows;
+                $scope.gridFlows = inputFlows.concat(outputFlows);
             }
 
             function refreshFragmentFlowParams() {
-                StatusService.stopWaiting();
+                $q.all([
+                    FragmentFlowService.reload({scenarioID: scenarioID, fragmentID: fragmentID}),
+                    ParamModelService.load(scenarioID)])
+                    .then(updateParamGrid,
+                    StatusService.handleFailure);
             }
             /**
              * Get flow table content

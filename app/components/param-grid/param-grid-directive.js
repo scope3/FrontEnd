@@ -127,7 +127,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
             }
 
             function adjustHeight() {
-                var gridHeight = $scope.data.length * 30 + 50;
+                var gridHeight = $scope.data ? $scope.data.length * 30 + 50 : 50;
                 $scope.dynamicGridStyle = { height: gridHeight};
             }
 
@@ -168,9 +168,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
             });
 
             $scope.$watch('data', function (newVal) {
-                if (newVal) {
-                    adjustHeight();
-                }
+                adjustHeight();
             });
 
             init();
