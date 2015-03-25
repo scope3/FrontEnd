@@ -4,7 +4,7 @@ angular.module('lcaApp.fragment.flowParam',
     ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
         'lcaApp.format', 'lcaApp.paramGrid.directive',
         'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario'])
-    .controller('FragmentFlowParamCtrl',
+    .controller('FragmentFlowParamController',
     ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
         'FragmentService', 'FragmentFlowService', 'FlowForFragmentService',
         'ParamModelService', 'PARAM_VALUE_STATUS', 'DIRECTION_CELL_TEMPLATE',
@@ -145,7 +145,7 @@ angular.module('lcaApp.fragment.flowParam',
              *      } } ff   Fragment flow resource
              */
             function addGridFlow(ff) {
-                var paramResource = null,
+                var paramResource,
                     flow = null,
                     parent = null,
                     gridFlow = { fragmentFlowID : ff.fragmentFlowID, name : ff.shortName, nodeType : ff.nodeType,
@@ -168,7 +168,11 @@ angular.module('lcaApp.fragment.flowParam',
                     gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
                 }
                 paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID);
-                gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                if (parent && parent.nodeType === "Process") {
+                    gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                } else {
+                    gridFlow.paramWrapper = ParamModelService.naParam();
+                }
                 gridFlows.push(gridFlow);
             }
 
