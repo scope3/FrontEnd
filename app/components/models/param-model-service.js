@@ -375,6 +375,18 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * Create an object to block param editing where param cannot be applied
+             * @returns {{paramResource: *, value: *, editStatus: number}} the object created
+             */
+            svc.naParam = function () {
+                return {
+                    paramResource : null,
+                    value : "N/A",
+                    editStatus : PARAM_VALUE_STATUS.unchanged
+                };
+            };
+
+            /**
              * Inspect data array for wrapped param changes
              * @param {[]} data
              * @returns {*|boolean} true iff there is at least one change, valid or otherwise

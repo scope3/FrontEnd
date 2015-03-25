@@ -59,7 +59,9 @@ angular.module('lcaApp.process.instance',
 
             $scope.revertChanges = function () {
                 $scope.gridFlows.forEach(function (e) {
-                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
+                    if (e.paramWrapper.value !== "N/A") {
+                        e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
+                    }
                 });
             };
 
@@ -237,9 +239,7 @@ angular.module('lcaApp.process.instance',
             function addGridFlow(ff) {
                 var paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID),
                     gridFlow = { fragmentFlowID : ff.fragmentFlowID, direction : ff.direction};
-                if (ff.fragmentFlowID === processFragmentFlow.fragmentFlowID ) {
-                    gridFlow.direction = (ff.direction === "Input") ? "Output" : "Input";
-                }
+
                 if (ff.hasOwnProperty("flowID") ) {
                     var intermediateFlow = intermediateFlows[ff.flowID];
                     gridFlow.flowName = intermediateFlow.name;
@@ -249,7 +249,12 @@ angular.module('lcaApp.process.instance',
                     gridFlow.magnitude = ff.flowPropertyMagnitudes[0].magnitude * fragmentActivityLevel;
                     gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
                 }
-                gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                if (ff.fragmentFlowID === processFragmentFlow.fragmentFlowID ) {
+                    gridFlow.direction = (ff.direction === "Input") ? "Output" : "Input";
+                    gridFlow.paramWrapper = ParamModelService.naParam();
+                } else {
+                    gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                }
                 if (gridFlow.direction === "Input") {
                     inputFlows.push(gridFlow);
                 } else {
