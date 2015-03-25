@@ -56,7 +56,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'fragment-flow-param/fragment-flow-param.html',
-                            controller: 'FragmentFlowParamCtrl'
+                            controller: 'FragmentFlowParamController'
                         }
                     }
                 })
@@ -74,7 +74,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'fragment-flow-param/fragment-flow-param.html',
-                            controller: 'FragmentFlowParamCtrl'
+                            controller: 'FragmentFlowParamController'
                         }
                     }
                 })

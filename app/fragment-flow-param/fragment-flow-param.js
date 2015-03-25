@@ -45,11 +45,8 @@ angular.module('lcaApp.fragment.flowParam',
              * Gather changes and apply
              */
             $scope.applyChanges = function () {
-                var changedParams = $scope.gridFlows.filter(function (f) {
-                    return f.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
-                });
                 StatusService.startWaiting();
-                ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
+                ParamModelService.applyFragmentFlowParamChanges($scope.scenario.scenarioID, $scope.gridFlows,
                     goBack, StatusService.handleFailure);
             };
 
@@ -59,31 +56,6 @@ angular.module('lcaApp.fragment.flowParam',
 
             function goBack() {
                 $state.go('^');
-            }
-
-            /**
-             * Apply param change to resource
-             * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
-             * @returns {*} New or updated param resource
-             */
-            function changeParam(f) {
-                var paramResource = f.paramWrapper.paramResource;
-                if (paramResource) {
-                    if (f.paramWrapper.value) {
-                        paramResource.value = +f.paramWrapper.value;
-                    } else {
-                        paramResource.value = null;
-                    }
-                }
-                else {
-                    paramResource = {
-                        scenarioID : $scope.scenario.scenarioID,
-                        fragmentFlowID : f.fragmentFlowID,
-                        value: +f.paramWrapper.value,
-                        paramTypeID: 1
-                    };
-                }
-                return paramResource;
             }
 
             function getStateParams() {
