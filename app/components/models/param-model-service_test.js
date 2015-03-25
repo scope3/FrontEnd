@@ -166,6 +166,47 @@ describe('Unit test Param Model service', function() {
         expect(result.paramValueStatus).toBe(statusConstants.changed);
     });
 
+    it('should represent Not Applicable param', function() {
+        var paramWrapper;
+
+        paramWrapper = paramModelService.naParam(null);
+        expect(paramWrapper).toBeDefined();
+        expect(paramWrapper.paramResource).toBe(null);
+        expect(paramWrapper.value).toEqual("N/A");
+        expect(paramWrapper.editStatus).toBe(statusConstants.unchanged);
+    });
+
+    it('should detect when changes can be applied', function() {
+        var mockParam, paramWrapper, mockData = [], naParam;
+
+        mockParam = params[0];
+        naParam = paramModelService.naParam();
+        paramWrapper = paramModelService.wrapParam(mockParam);
+        mockData.push( { mockID: 1, paramWrapper: paramWrapper});
+        mockData.push( { mockID: 2, paramWrapper: naParam});
+        paramWrapper.value = mockParam.value + 1;
+        paramModelService.setParamWrapperStatus(mockParam.value, paramWrapper);
+        expect(paramModelService.canApplyChanges(mockData)).toBe(true);
+    });
+
+    it('should be able to revert invalid changes', function() {
+        var mockParam, paramWrapper, mockData = [], naParam;
+
+        mockParam = params[0];
+        naParam = paramModelService.naParam();
+        paramWrapper = paramModelService.wrapParam(mockParam);
+        mockData.push( { mockID: 1, paramWrapper: paramWrapper});
+        mockData.push( { mockID: 2, paramWrapper: naParam});
+        paramWrapper.value = "10s";
+        paramModelService.setParamWrapperStatus(mockParam.value, paramWrapper);
+        expect(paramModelService.canRevertChanges(mockData)).toBe(true);
+        paramModelService.revertChanges(mockData);
+        expect(mockData[0].paramWrapper.value).toEqual(mockParam.value);
+        expect(mockData[1].paramWrapper).toEqual(naParam);
+        expect(paramModelService.canApplyChanges(mockData)).toBe(false);
+        expect(paramModelService.canRevertChanges(mockData)).toBe(false);
+    });
+
     it('should load param resources', function() {
         expect(paramModelService.load(scenarioID)).toBeDefined();
 

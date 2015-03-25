@@ -58,11 +58,7 @@ angular.module('lcaApp.process.instance',
             };
 
             $scope.revertChanges = function () {
-                $scope.gridFlows.forEach(function (e) {
-                    if (e.paramWrapper.value !== "N/A") {
-                        e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
-                    }
-                });
+                ParamModelService.revertChanges($scope.gridFlows);
             };
 
             /**

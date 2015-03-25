@@ -54,9 +54,7 @@ angular.module('lcaApp.fragment.flowParam',
             };
 
             $scope.revertChanges = function () {
-                $scope.gridFlows.forEach(function (e) {
-                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
-                });
+                ParamModelService.revertChanges( $scope.gridFlows);
             };
 
             function goBack() {

@@ -466,6 +466,18 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     successCB, errorCB);
             };
 
+            /**
+             * Revert changes in wrapped parameters
+             * @param {[{{}}]} data  Array of objects with embedded paramWrapper
+             */
+            svc.revertChanges = function (data) {
+                data.forEach(function (e) {
+                    if (e.paramWrapper.value !== "N/A") {
+                        e.paramWrapper = svc.wrapParam(e.paramWrapper.paramResource);
+                    }
+                });
+            };
+
             return svc;
         }
     ]);

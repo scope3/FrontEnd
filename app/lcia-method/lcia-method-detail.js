@@ -61,9 +61,7 @@ angular.module('lcaApp.lciaMethod.detail',
             };
 
             $scope.revertChanges = function () {
-                $scope.gridData.forEach(function (e) {
-                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
-                });
+                ParamModelService.revertChanges( $scope.gridData);
             };
 
             StatusService.startWaiting();

@@ -71,4 +71,13 @@ describe('Unit test param grid directive', function() {
         var elt = compileDirective();
         expect(elt).toBeDefined();
     });
+
+    it('should handle row where param is not applicable', function() {
+        var param = getParam();
+        addDataColumns();
+        $rootScope.data[1].paramWrapper = paramModelService.naParam();
+
+        var elt = compileDirective();
+        expect(elt).toBeDefined();
+    });
 });

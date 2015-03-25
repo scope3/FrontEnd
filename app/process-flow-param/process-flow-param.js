@@ -66,9 +66,7 @@ angular.module('lcaApp.process.flowParam',
              * Undo changes
              */
             $scope.revertChanges = function () {
-                $scope.fragmentFlows.forEach(function (e) {
-                    e.paramWrapper = ParamModelService.wrapParam(e.paramWrapper.paramResource);
-                });
+                ParamModelService.revertChanges( $scope.fragmentFlows);
             };
 
             function goBack() {
