@@ -22,7 +22,7 @@
     <dd>{{process.dataSource}}<span ng-if="process.isPrivate"> (private) </span></dd>
 </dl>
 
-<div class="panel panel-default">
+<div class="panel panel-default" ng-show="flowsVisible">
     <div class="panel-heading">
         <span class="panel-title">Fragment Flows</span>
         <span class="pull-right">

@@ -59,6 +59,10 @@ angular.module('lcaApp.scenario.detail',
                 refreshParameters, StatusService.handleFailure);
         };
 
+        $scope.revertChanges = function () {
+            ParamModelService.revertChanges( $scope.gridData);
+        };
+
         function refreshParameters() {
             ParamModelService.getResources($scope.scenario.scenarioID).then(displayParameters,
                 StatusService.handleFailure);

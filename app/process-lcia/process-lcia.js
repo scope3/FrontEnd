@@ -87,7 +87,7 @@ angular.module('lcaApp.process.LCIA',
                 if ("scenarioID" in $stateParams) {
                     scenarioID = +$stateParams.scenarioID;
                 }
-                if ("processID"in $stateParams) {
+                if ("processID" in $stateParams) {
                     processID = +$stateParams.processID;
                 }
             }

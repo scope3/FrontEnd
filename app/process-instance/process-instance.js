@@ -286,26 +286,27 @@ angular.module('lcaApp.process.instance',
                 $scope.elementaryFlows = {};
                 intermediateFlows = {};
                 $scope.flowsVisible = processFlows.length > 0;
-
-                processFlows.forEach( function (pf) {
-                    var rowObj, fp;
-                    switch (pf.flow.flowTypeID) {
-                        case 1:
-                            fp = FlowPropertyForProcessService.get(pf.flow["referenceFlowPropertyID"]);
-                            rowObj = {
-                                name: pf.flow.name,
-                                quantity: pf.quantity,
-                                unit: fp["referenceUnit"]
-                            };
-                            intermediateFlows[pf.flow.flowID] = rowObj;
-                            break;
-                        case 2:
-                            $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
-                            break;
-                    }
-                });
-                defineGrids();
-                extractFragmentFlowData();
+                if ($scope.flowsVisible) {
+                    processFlows.forEach( function (pf) {
+                        var rowObj, fp;
+                        switch (pf.flow.flowTypeID) {
+                            case 1:
+                                fp = FlowPropertyForProcessService.get(pf.flow["referenceFlowPropertyID"]);
+                                rowObj = {
+                                    name: pf.flow.name,
+                                    quantity: pf.quantity,
+                                    unit: fp["referenceUnit"]
+                                };
+                                intermediateFlows[pf.flow.flowID] = rowObj;
+                                break;
+                            case 2:
+                                $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
+                                break;
+                        }
+                    });
+                    defineGrids();
+                    extractFragmentFlowData();
+                }
             }
 
             /**
@@ -335,6 +336,7 @@ angular.module('lcaApp.process.instance',
             $scope.panelHeadingStyle = {};
             $scope.activityLevel = 1;
             $scope.lciaMsg = "";
+            $scope.flowsVisible = true;
             getStateParams();
             StatusService.startWaiting();
             getData();
