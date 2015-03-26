@@ -54,6 +54,17 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 { unchanged: 1, // value did not change
                     changed: 2, // value changed and is valid
                     invalid: 3 }) // value changed and is not valid
+    .constant('PARAM_TYPE_NAME',
+    {
+        1 : "Dependency",
+        2 : "Conservation",
+        3 : "Distribution",
+        4 : "Flow Property",
+        5 : "Composition",
+        6 : "Process Dissipation",
+        8 : "Process Emission",
+        10 : "LCIA Factor"
+    })
     .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q',
         function(ParamService, PARAM_VALUE_STATUS, $q) {
             var svc = {},
@@ -426,6 +437,24 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * Get param resources, but do not remodel.
+             * @param {Number} scenarioID   ScenarioID filter
+             * @returns {*} promise, model branch for the scenario
+             */
+            svc.getResources = function( scenarioID) {
+                var deferred = $q.defer();
+                ParamService.load({scenarioID: scenarioID})
+                    .then(function(params) {
+                        origResources.scenarios[scenarioID] = params;
+                        deferred.resolve(params);
+                    },
+                    function(err) {
+                        deferred.reject("Param Model load failed. " + err);
+                    });
+                return deferred.promise;
+            };
+
+            /**
              * Send PUT request containing current changes.
              * @param {Number} scenarioID
              * @param {[]} changes   Array of changed param resources
@@ -443,13 +472,16 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                             params.splice(params.indexOf(origParam), 1);
                         } else {
                             origParam.value = changedParam.value;
+                            if (changedParam.hasOwnProperty("name")){
+                                origParam.name = changedParam.name;
+                            }
                         }
                     }
                     else {
                         params.push(changedParam);
                     }
                 });
-                ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
+                return ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
             };
 
             /**

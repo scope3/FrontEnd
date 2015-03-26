@@ -63,6 +63,17 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                       extensionFactory: null // Factory for extending loaded objects
                     };
 
+                svc.handleNewObjects = function(objects) {
+                    if (svc.extensionFactory) {
+                        objects.forEach( function (o) {
+                            angular.extend(o, svc.extensionFactory.createInstance())
+                        });
+                    }
+                    if (svc.idName) {
+                        IdMapService.add(svc.idName, objects);
+                    }
+                };
+
                 /**
                  * Load resources using filter. Cache results using IdMapService
                  * If extension objects exists, extend the resource objects.
@@ -78,14 +89,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                         svc.loadFilter = authFilter;
                         svc.objects = svc.resource.query( authFilter,
                             function(objects) {
-                                if (svc.extensionFactory) {
-                                    objects.forEach( function (o) {
-                                        angular.extend(o, svc.extensionFactory.createInstance())
-                                    });
-                                }
-                                if (svc.idName) {
-                                    IdMapService.add(svc.idName, objects);
-                                }
+                                svc.handleNewObjects(objects);
                                 d.resolve(objects);
                             },
                             function(err) {
@@ -174,8 +178,16 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
                 svc.replace = function(urlParameters, objArray, successCB, errorCB) {
                     var p = resourceService.addAuthParam(urlParameters);
-                    svc.objects = null;
-                    return svc.resource.replace( p, objArray, successCB, errorCB);
+
+                    svc.objects = svc.resource.replace( p, objArray,
+                        function(objects) {
+                            svc.handleNewObjects(objects);
+                            successCB.call(objects);
+                        },
+                        function(err) {
+                            errorCB.call(err);
+                        });
+                    return svc.objects;
                 };
             };
 
