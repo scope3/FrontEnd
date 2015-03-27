@@ -60,6 +60,14 @@ angular.module('lcaApp.scenario.detail',
         };
 
         $scope.revertChanges = function () {
+            $scope.gridData.forEach(function (e) {
+                var origParam = e.paramWrapper.paramResource;
+                if ( origParam && e.hasOwnProperty("name")) {
+                    e.name = origParam.name;
+                } else {
+                    e.name = null;
+                }
+            });
             ParamModelService.revertChanges( $scope.gridData);
         };
 
@@ -90,13 +98,15 @@ angular.module('lcaApp.scenario.detail',
         }
 
         function setGridColumns() {
+            var canUpdate = $scope.scenario && ScenarioModelService.canUpdate($scope.scenario);
+
             $scope.gridColumns = [
                 {field: 'type', displayName: 'Parameter Type', enableCellEdit: false, width: 125},
-                {field: 'name', displayName: 'Parameter Name', enableCellEdit: false, width: 400},
+                {field: 'name', displayName: 'Parameter Name', enableCellEdit: canUpdate, width: 400},
                 {field: 'defaultValue', displayName: 'Default Value', enableCellEdit: false}
             ];
             $scope.params = { targetIndex : 2,
-                canUpdate : $scope.scenario && ScenarioModelService.canUpdate($scope.scenario) };
+                canUpdate : canUpdate };
         }
 
         function displayParameters(params) {
