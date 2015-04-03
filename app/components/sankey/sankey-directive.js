@@ -134,7 +134,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
 
             sankey.nodes(graph.nodes)
                 .links(graph.links)
-                .layout(10);
+                .layout(20);
 
             link = svg.select("#linkGroup").selectAll(".link")
                 .data(graph.links);
