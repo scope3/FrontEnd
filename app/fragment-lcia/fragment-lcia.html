@@ -9,6 +9,9 @@
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">
+                <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
                 <dt>
                     <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
                         {{method.getShortName()}}

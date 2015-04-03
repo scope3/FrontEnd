@@ -159,6 +159,17 @@ angular.module('lcaApp.fragment.LCIA',
                 getLciaResults();
             };
 
+            /**
+             * Remove LCIA method. Used to close panel.
+             * @param m Method displayed by panel to be closed
+             */
+            $scope.removeMethod = function(m) {
+                var index = $scope.methods.indexOf(m);
+                if (index > -1) {
+                    $scope.methods.splice(index, 1);
+                }
+            };
+
             $scope.scenarios = [];
             $scope.fragments = [];
             $scope.methods = [];
