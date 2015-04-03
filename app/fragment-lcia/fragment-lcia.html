@@ -1,11 +1,24 @@
-
+<div class="row">
+    <div class="col-md-6">
     <label>Fragment</label>
     <select id="fragment-select" ng-model="fragment" ng-options="f.name for f in fragments"
             ng-change="onFragmentChange()">
     </select>
-        <p></p>
-
-<div class="row">
+    </div>
+    <div class="col-md-4">
+    <label>Scenarios</label>
+    <span ng-dropdown-multiselect="" options="scenarioSelection.options" selected-model="scenarioSelection.model"
+         extra-settings="scenarioSelection.settings">
+    </span>
+    </div>
+    <div class="col-md-2">
+        <button class="btn btn-sm" ng-click="scenarioSelectionConfirmed()" ng-disabled="!scenarioSelection.model.length">
+            Display Results
+        </button>
+    </div>
+</div>
+<p></p>
+<div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">
             <div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">

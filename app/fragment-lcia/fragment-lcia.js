@@ -2,7 +2,8 @@
 /* Controller for Fragment LCIA Diagram View */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
-                 'lcaApp.colorCode.service', 'lcaApp.waterfall'])
+                 'lcaApp.colorCode.service', 'lcaApp.waterfall',
+                    'angularjs-dropdown-multiselect', 'angular-bootstrap-select'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'StatusService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
@@ -16,6 +17,47 @@ angular.module('lcaApp.fragment.LCIA',
             var fragmentID,
                 stages = [],
                 results = {};
+
+            $scope.onFragmentChange = function () {
+                fragmentID = $scope.fragment.fragmentID;
+                getFragmentScenarios();
+                //getLciaResults();
+            };
+
+            /**
+             * Remove LCIA method. Used to close panel.
+             * @param m Method displayed by panel to be closed
+             */
+            $scope.removeMethod = function(m) {
+                var index = $scope.methods.indexOf(m);
+                if (index > -1) {
+                    $scope.methods.splice(index, 1);
+                }
+            };
+
+            $scope.scenarioSelectionConfirmed = getSelectionResults;
+
+            $scope.scenarios = [];
+            $scope.fragments = [];
+            $scope.methods = [];
+            $scope.colors = {};
+            $scope.waterfalls = {};
+            /**
+             * Flag to indicate if current view supports fragment navigation.
+             * If false, then current view supports selection of top-level fragment and associated scenarios.
+             */
+            $scope.navigationMode = false;
+
+            function getSelectionResults() {
+                $scope.scenarios = [];
+                $scope.scenarioSelection.model.forEach( function (s) {
+                    var selectedScenario = $scope.scenarioSelection.options.find(function(o) {
+                        return s.id === o.scenarioID;
+                    });
+                    $scope.scenarios.push(selectedScenario);
+                });
+                getLciaResults();
+            }
 
             /**
              * Get LCIA results for a scenario and method.
@@ -92,6 +134,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getLciaResults() {
                 var promises = [],
                     result;
+                StatusService.startWaiting();
                 result = FragmentStageService.load({fragmentID: fragmentID});
                 promises.push(result.$promise);
                 $scope.methods.forEach(function (method) {
@@ -109,7 +152,7 @@ angular.module('lcaApp.fragment.LCIA',
 
             function getFragmentScenarios() {
                 var scenarios = ScenarioService.getAll();
-                $scope.scenarios = scenarios.filter(function (s) {
+                $scope.scenarioSelection.options = scenarios.filter(function (s) {
                     return (s.topLevelFragmentID === $scope.fragment.fragmentID);
                 });
             }
@@ -127,9 +170,10 @@ angular.module('lcaApp.fragment.LCIA',
             /**
              * Collect methods and scenarios, then get LCIA results.
              */
-            function getResults() {
+            function displayLoadedData() {
                 var methods = LciaMethodService.getAll(),
                     scenarios = ScenarioService.getAll();
+                StatusService.stopWaiting();
                 $scope.methods = methods.filter( function (m) {
                    return m.getIsActive();
                 });
@@ -138,7 +182,17 @@ angular.module('lcaApp.fragment.LCIA',
                     fragmentID = scenarios[0].topLevelFragmentID;
                     $scope.fragment = FragmentService.get(fragmentID);
                     getFragmentScenarios();
-                    getLciaResults();
+                    //getLciaResults();
+                }
+            }
+
+            function init() {
+                if (! $scope.navigationMode) {
+                    $scope.scenarioSelection = {
+                        options: [],
+                        model: [],
+                        settings: { idProp: "scenarioID", displayProp: "name" }
+                    };
                 }
             }
 
@@ -149,32 +203,11 @@ angular.module('lcaApp.fragment.LCIA',
                 $q.all([FragmentService.load(), ScenarioService.load(),
                     LciaMethodService.load()
                     ])
-                    .then(getResults,
+                    .then(displayLoadedData,
                     StatusService.handleFailure);
             }
 
-            $scope.onFragmentChange = function () {
-                fragmentID = $scope.fragment.fragmentID;
-                getFragmentScenarios();
-                getLciaResults();
-            };
-
-            /**
-             * Remove LCIA method. Used to close panel.
-             * @param m Method displayed by panel to be closed
-             */
-            $scope.removeMethod = function(m) {
-                var index = $scope.methods.indexOf(m);
-                if (index > -1) {
-                    $scope.methods.splice(index, 1);
-                }
-            };
-
-            $scope.scenarios = [];
-            $scope.fragments = [];
-            $scope.methods = [];
-            $scope.colors = {};
-            $scope.waterfalls = {};
+            init();
             StatusService.startWaiting();
             getData();
 

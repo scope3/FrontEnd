@@ -5,6 +5,8 @@
   "dependencies": {
     "angular": "1.3.x",
     "angular-bootstrap": null,
+    "angular-bootstrap-select": null,
+    "angularjs-dropdown-multiselect": null,
     "angular-local-storage": null,
     "angular-resource": "1.3.x",
     "angular-spinner": null,
@@ -12,11 +14,13 @@
     "angular-ui-router": "0.2.x",
     "array.prototype.find": null,
     "bootstrap": "~3.2",
+    "bootstrap-select" : null,
     "colorbrewer": null,
     "d3": "~3",
     "d3-plugins": null,
     "d3-tip": null,
     "jquery": "2.1.3",
+    "lodash": null,
     "ng-grid": "2.x",
     "normalize.css": null
   },
