@@ -23,7 +23,6 @@ angular.module('lcaApp.process.instance',
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
                 processFragmentFlow = null,
                 inputFlows = [], outputFlows = [],
-                intermediateFlows = {},
                 fragmentActivityLevel = 1;
 
             /**
@@ -204,10 +203,10 @@ angular.module('lcaApp.process.instance',
 
             function defineGridColumns() {
                 $scope.columns = [
-                    {field: 'flowName', displayName: 'Flow Name', enableCellEdit: false},
+                    {field: 'name', displayName: 'Name', enableCellEdit: false},
                     {field: 'direction', displayName: 'Direction', enableCellEdit: false, width: 70},
                     {field: 'quantity', displayName: 'Quantity', enableCellEdit: false},
-                    {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false},
+                    {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false, width: 120},
                     {field: 'unit', displayName: 'Unit', enableCellEdit: false, width: 70}
                 ];
             }
@@ -234,15 +233,17 @@ angular.module('lcaApp.process.instance',
              */
             function addGridFlow(ff) {
                 var paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID),
-                    gridFlow = { fragmentFlowID : ff.fragmentFlowID, direction : ff.direction};
-
-                if (ff.hasOwnProperty("flowID") ) {
-                    var intermediateFlow = intermediateFlows[ff.flowID];
-                    gridFlow.flowName = intermediateFlow.name;
-                    gridFlow.quantity = intermediateFlow.quantity;
+                    gridFlow = { fragmentFlowID : ff.fragmentFlowID, direction : ff.direction, name : ff.name } ,
+                    nodeWeight = processFragmentFlow.hasOwnProperty("nodeWeight") ? processFragmentFlow.nodeWeight : 1;
+                
+                if (paramResource) {
+                    gridFlow.quantity = paramResource.defaultValue;
                 }
                 if (ff.hasOwnProperty("flowPropertyMagnitudes") && ff.flowPropertyMagnitudes.length > 0  ) {
-                    gridFlow.magnitude = ff.flowPropertyMagnitudes[0].magnitude * fragmentActivityLevel;
+                    var ffMagnitude = ff.flowPropertyMagnitudes[0].magnitude;
+                    gridFlow.quantity =  gridFlow.hasOwnProperty("quantity") ?
+                                            gridFlow.quantity : ffMagnitude / nodeWeight;
+                    gridFlow.magnitude = ffMagnitude * fragmentActivityLevel;
                     gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
                 }
                 if (ff.fragmentFlowID === processFragmentFlow.fragmentFlowID ) {
@@ -276,32 +277,18 @@ angular.module('lcaApp.process.instance',
                     StatusService.handleFailure);
             }
             /**
-             * Get flow table content
-             * For each intermediate process flow, get
-             * flow name, magnitude and unit associated with reference flow property.
+             * Get elementary flows referenced in process LCIA result legends and
+             * populate fragment flow grid.
              */
             function getFlowRows() {
                 var processFlows = ProcessFlowService.getAll();
 
                 $scope.elementaryFlows = {};
-                intermediateFlows = {};
                 $scope.flowsVisible = processFlows.length > 0;
                 if ($scope.flowsVisible) {
                     processFlows.forEach( function (pf) {
-                        var rowObj, fp;
-                        switch (pf.flow.flowTypeID) {
-                            case 1:
-                                fp = FlowPropertyForProcessService.get(pf.flow["referenceFlowPropertyID"]);
-                                rowObj = {
-                                    name: pf.flow.name,
-                                    quantity: pf.quantity,
-                                    unit: fp["referenceUnit"]
-                                };
-                                intermediateFlows[pf.flow.flowID] = rowObj;
-                                break;
-                            case 2:
-                                $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
-                                break;
+                        if (pf.flow.flowTypeID === 2) {
+                            $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
                         }
                     });
                     defineGrids();

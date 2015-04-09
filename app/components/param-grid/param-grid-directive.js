@@ -4,8 +4,8 @@
  */
 angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
 .constant('DIRECTION_CELL_TEMPLATE', '<div class="cellIcon"><span ng-class="directionClass(row)"></span></div>')
-.directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window', 'DIRECTION_CELL_TEMPLATE',
-    function($compile, PARAM_VALUE_STATUS, ParamModelService, $window, DIRECTION_CELL_TEMPLATE) {
+.directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window',
+    function($compile, PARAM_VALUE_STATUS, ParamModelService, $window) {
         return {
             restrict: 'E',
             template: '<span><div class=\"gridStyle\" ng-grid=\"gridOptions\" ng-style=\"dynamicGridStyle\"></div></span>',
@@ -150,7 +150,8 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                     defaultOptions = {
                         enableRowSelection: false,
                         enableCellEditOnFocus: true,
-                        enableHighlighting: true
+                        enableHighlighting: true,
+                        enableColumnResize: true
                     };
 
 
