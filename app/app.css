@@ -75,9 +75,14 @@
     shape-rendering: crispEdges;
 }
 
+.starting-line {
+    fill: none;
+    stroke: #000;
+}
+
 waterfall-chart .y.axis path {
-    /*display: none; */
-    stroke-opacity: 0.2;
+    display: none;
+    /*stroke-opacity: 0.2;*/
 }
 
 .top.axis path {

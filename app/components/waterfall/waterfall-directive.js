@@ -66,17 +66,28 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function drawStartingLine() {
                 svg.select(".top.axis").remove();
+                svg.select(".starting-line").remove();
                 if (waterfall.chartHeight > 0) {
                     var xAxis = d3.svg.axis()
                         .scale(waterfall.xScale)
                         .orient("top")
                         .tickValues([0])
-                        .tickFormat(d3.format("d"));
-                    svg.select(".chart-group")
-                        .append("g")
+                        .tickFormat(d3.format("d")),
+                        x0 = waterfall.xScale(0),
+                        chartGroup = svg.select(".chart-group");
+
+                    chartGroup.append("g")
                         .attr("class", "top axis")
                         .call(xAxis);
+
+                    chartGroup.append("line")
+                        .attr("class", "starting-line")
+                        .attr("x1", x0)
+                        .attr("y1", 0)
+                        .attr("x2", x0)
+                        .attr("y2", waterfall.chartHeight);
                 }
+
             }
 
             function drawXAxis() {
