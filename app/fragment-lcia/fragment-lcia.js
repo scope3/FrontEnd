@@ -23,6 +23,7 @@ angular.module('lcaApp.fragment.LCIA',
                 results = {};
 
             $scope.onFragmentChange = function () {
+                $scope.fragment =  $scope.fragmentSelection.model[0];
                 fragmentID = $scope.fragment.fragmentID;
                 getFragmentScenarios();
             };
@@ -38,10 +39,7 @@ angular.module('lcaApp.fragment.LCIA',
                 }
             };
 
-            $scope.scenarioSelectionConfirmed = getSelectionResults;
-
             $scope.scenarios = [];
-            $scope.fragments = [];
             $scope.methods = [];
             $scope.colors = {};
             $scope.waterfalls = {};
@@ -166,7 +164,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getTopLevelFragments() {
                 var fragments = FragmentService.getAll(),
                     scenarios = ScenarioService.getAll();
-                $scope.fragments = fragments.filter(function (f) {
+                $scope.fragmentSelection.options = fragments.filter(function (f) {
                     return scenarios.some(function (s) {
                         return s.topLevelFragmentID === f.fragmentID;
                     });
@@ -194,9 +192,16 @@ angular.module('lcaApp.fragment.LCIA',
                         //
                         if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
                             fragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
+                            $scope.fragmentSelection.options.forEach(function(fs) {
+                                fs.selected = (fs.fragmentID === fragmentID);
+                            });
                         }
                         else {
-                            fragmentID = scenarios[0].topLevelFragmentID;
+                            if ($scope.fragmentSelection.options.length > 1) {
+                                var firstFragment = $scope.fragmentSelection.options[0];
+                                fragmentID = firstFragment.fragmentID;
+                                firstFragment.selected = true;
+                            }
                         }
                         $scope.fragment = FragmentService.get(fragmentID);
                         getFragmentScenarios();
@@ -221,7 +226,11 @@ angular.module('lcaApp.fragment.LCIA',
                         options: [],
                         model: []
                     };
-
+                    $scope.selectionConfirmed = getSelectionResults;
+                    $scope.fragmentSelection = {
+                        options: [],
+                        model: []
+                    };
                 }
             }
 

@@ -1,10 +1,18 @@
 <div>
-    <label>Fragment</label>
-    <select id="fragment-select" ng-model="fragment" ng-options="f.name for f in fragments"
-            ng-change="onFragmentChange()">
-    </select>
-
-    <label>Scenarios</label>
+    <div class="float-block">
+        <label>Fragment</label>
+    <span isteven-multi-select
+          button-label="name"
+          item-label="name"
+          input-model="fragmentSelection.options"
+          output-model="fragmentSelection.model"
+          tick-property="selected"
+          selection-mode="single"
+          on-item-click="onFragmentChange()">
+    </span>
+    </div>
+    <div class="float-block">
+        <label>Scenarios</label>
     <span isteven-multi-select
           button-label="name"
           item-label="name"
@@ -12,13 +20,15 @@
           output-model="scenarioSelection.model"
           tick-property="selected">
     </span>
-
-    <button type="button" class="btn btn-primary btn-sm pull-right" ng-click="scenarioSelectionConfirmed()"
-            ng-disabled="!scenarioSelection.model.length">
-        Display Results
-    </button>
+    </div>
+    <div class="float-block">
+        <button type="button" class="btn btn-primary btn-sm" ng-click="selectionConfirmed()"
+                ng-disabled="!scenarioSelection.model.length">
+            Display Results
+        </button>
+    </div>
 </div>
-<p></p>
+
 <div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">
