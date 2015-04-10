@@ -1,21 +1,22 @@
-<div class="row">
-    <div class="col-md-6">
+<div>
     <label>Fragment</label>
     <select id="fragment-select" ng-model="fragment" ng-options="f.name for f in fragments"
             ng-change="onFragmentChange()">
     </select>
-    </div>
-    <div class="col-md-4">
+
     <label>Scenarios</label>
-    <span ng-dropdown-multiselect="" options="scenarioSelection.options" selected-model="scenarioSelection.model"
-         extra-settings="scenarioSelection.settings">
+    <span isteven-multi-select
+          button-label="name"
+          item-label="name"
+          input-model="scenarioSelection.options"
+          output-model="scenarioSelection.model"
+          tick-property="selected">
     </span>
-    </div>
-    <div class="col-md-2">
-        <button class="btn btn-sm" ng-click="scenarioSelectionConfirmed()" ng-disabled="!scenarioSelection.model.length">
-            Display Results
-        </button>
-    </div>
+
+    <button type="button" class="btn btn-primary btn-sm pull-right" ng-click="scenarioSelectionConfirmed()"
+            ng-disabled="!scenarioSelection.model.length">
+        Display Results
+    </button>
 </div>
 <p></p>
 <div class="row" ng-if="scenarios.length">

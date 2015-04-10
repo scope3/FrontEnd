@@ -93,7 +93,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
             function drawXAxis() {
                 var tickValues = [], maxTickVal;
                 svg.select(".x.axis").remove();
-                if (waterfall.chartHeight > 0) {
+                if (waterfall.chartHeight > 0 && segments && segments.length > 0) {
                     var xAxis = d3.svg.axis()
                             .scale(waterfall.xScale)
                             .orient("bottom"),

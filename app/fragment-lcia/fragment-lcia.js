@@ -3,7 +3,7 @@
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
-                    'angularjs-dropdown-multiselect', 'angular-bootstrap-select'])
+                    'isteven-multi-select'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'StatusService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
@@ -49,13 +49,7 @@ angular.module('lcaApp.fragment.LCIA',
             $scope.navigationMode = false;
 
             function getSelectionResults() {
-                $scope.scenarios = [];
-                $scope.scenarioSelection.model.forEach( function (s) {
-                    var selectedScenario = $scope.scenarioSelection.options.find(function(o) {
-                        return s.id === o.scenarioID;
-                    });
-                    $scope.scenarios.push(selectedScenario);
-                });
+                $scope.scenarios = $scope.scenarioSelection.model;
                 getLciaResults();
             }
 
@@ -151,10 +145,15 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             function getFragmentScenarios() {
-                var scenarios = ScenarioService.getAll();
-                $scope.scenarioSelection.options = scenarios.filter(function (s) {
+                var scenarios = ScenarioService.getAll(),
+                    fragmentScenarios;
+                fragmentScenarios = scenarios.filter(function (s) {
                     return (s.topLevelFragmentID === $scope.fragment.fragmentID);
                 });
+                fragmentScenarios.forEach(function(fs) {
+                    fs.selected = true;
+                });
+                $scope.scenarioSelection.options = fragmentScenarios;
             }
 
             function getTopLevelFragments() {
@@ -190,8 +189,7 @@ angular.module('lcaApp.fragment.LCIA',
                 if (! $scope.navigationMode) {
                     $scope.scenarioSelection = {
                         options: [],
-                        model: [],
-                        settings: { idProp: "scenarioID", displayProp: "name" }
+                        model: []
                     };
                 }
             }
