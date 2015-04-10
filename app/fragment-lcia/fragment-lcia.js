@@ -3,16 +3,20 @@
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
-                    'isteven-multi-select'])
+                    'isteven-multi-select', 'lcaApp.selection.service'])
+    .constant('SELECTION_KEYS', {
+        topLevelFragmentID : "TLF",
+        fragmentScenarios : "FS"
+    })
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', 'StatusService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
-         'ColorCodeService', 'WaterfallService',
+         'ColorCodeService', 'WaterfallService', 'SelectionService', 'SELECTION_KEYS',
         function ($scope, $stateParams, StatusService, $q, ScenarioService,
                   FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService, WaterfallService ) {
+                  ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS ) {
 
             var fragmentID,
                 stages = [],
@@ -21,7 +25,6 @@ angular.module('lcaApp.fragment.LCIA',
             $scope.onFragmentChange = function () {
                 fragmentID = $scope.fragment.fragmentID;
                 getFragmentScenarios();
-                //getLciaResults();
             };
 
             /**
@@ -51,6 +54,9 @@ angular.module('lcaApp.fragment.LCIA',
             function getSelectionResults() {
                 $scope.scenarios = $scope.scenarioSelection.model;
                 getLciaResults();
+                // Save selections for return to view in same session
+                SelectionService.set(SELECTION_KEYS.topLevelFragmentID, $scope.fragment.fragmentID);
+                SelectionService.set(SELECTION_KEYS.fragmentScenarios, $scope.scenarioSelection.model);
             }
 
             /**
@@ -147,6 +153,7 @@ angular.module('lcaApp.fragment.LCIA',
             function getFragmentScenarios() {
                 var scenarios = ScenarioService.getAll(),
                     fragmentScenarios;
+
                 fragmentScenarios = scenarios.filter(function (s) {
                     return (s.topLevelFragmentID === $scope.fragment.fragmentID);
                 });
@@ -176,12 +183,35 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.methods = methods.filter( function (m) {
                    return m.getIsActive();
                 });
-                getTopLevelFragments();
-                if (scenarios.length > 0 ) {
-                    fragmentID = scenarios[0].topLevelFragmentID;
-                    $scope.fragment = FragmentService.get(fragmentID);
-                    getFragmentScenarios();
-                    //getLciaResults();
+                if (! $scope.navigationMode) {
+
+                    getTopLevelFragments();
+                    if (scenarios.length > 0 ) {
+                        //
+                        // If fragment and scenarios were previously selected,
+                        // apply the same selections and display results.
+                        // Otherwise, select first fragment and all its scenarios. Wait for user to click button.
+                        //
+                        if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
+                            fragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
+                        }
+                        else {
+                            fragmentID = scenarios[0].topLevelFragmentID;
+                        }
+                        $scope.fragment = FragmentService.get(fragmentID);
+                        getFragmentScenarios();
+                        if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios) ) {
+                            var selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios);
+                            $scope.scenarioSelection.options.forEach(function(fs) {
+                                fs.selected = selectedScenarios.some( function(s) {
+                                    return fs.scenarioID === s.scenarioID;
+                                });
+                            });
+
+                            $scope.scenarios = selectedScenarios;
+                            getLciaResults();
+                        }
+                    }
                 }
             }
 
@@ -191,6 +221,7 @@ angular.module('lcaApp.fragment.LCIA',
                         options: [],
                         model: []
                     };
+
                 }
             }
 
