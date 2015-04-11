@@ -51,12 +51,12 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.fragment-flow-param', {
-                    url: '/fragment-flow-param',
+                .state('fragment-sankey.fragment-lcia', {
+                    url: '/fragment-lcia',
                     views: {
                         "@": {
-                            templateUrl: 'fragment-flow-param/fragment-flow-param.html',
-                            controller: 'FragmentFlowParamController'
+                            templateUrl: 'fragment-lcia/fragment-lcia.html',
+                            controller: 'FragmentLciaCtrl'
                         }
                     }
                 })
@@ -69,12 +69,12 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-flows.fragment-flow-param', {
-                    url: '/fragment-flow-param/{scenarioID}/{fragmentID}',
+                .state('fragment-flows.fragment-lcia', {
+                    url: '/fragment-lcia/{scenarioID}/{fragmentID}',
                     views: {
                         "@": {
-                            templateUrl: 'fragment-flow-param/fragment-flow-param.html',
-                            controller: 'FragmentFlowParamController'
+                            templateUrl: 'fragment-lcia/fragment-lcia.html',
+                            controller: 'FragmentLciaCtrl'
                         }
                     }
                 })
