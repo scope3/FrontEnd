@@ -23,9 +23,13 @@ angular.module('lcaApp.fragment.LCIA',
                 results = {};
 
             $scope.onFragmentChange = function () {
-                $scope.fragment =  $scope.fragmentSelection.model[0];
-                fragmentID = $scope.fragment.fragmentID;
-                getFragmentScenarios();
+                var selectedFragment = $scope.fragmentSelection.model[0];
+                if (selectedFragment.fragmentID !== fragmentID) {
+                    clearWaterfalls();
+                    $scope.fragment = selectedFragment;
+                    fragmentID = selectedFragment.fragmentID;
+                    getFragmentScenarios();
+                }
             };
 
             /**
@@ -79,6 +83,10 @@ angular.module('lcaApp.fragment.LCIA',
 
             function getName(o) {
                 return o.name;
+            }
+
+            function clearWaterfalls() {
+                $scope.waterfalls = {};
             }
 
             /**

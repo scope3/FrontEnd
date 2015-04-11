@@ -285,6 +285,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     }
                     drawWaterfall();
                     drawXAxis();
+                } else {
+                    if (svg) {
+                        svg.remove();
+                    }
+                    createSvg();
                 }
             });
         }
