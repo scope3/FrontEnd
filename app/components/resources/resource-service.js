@@ -184,9 +184,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                             svc.handleNewObjects(objects);
                             successCB.call(objects);
                         },
-                        function(err) {
-                            errorCB.call(err);
-                        });
+                        errorCB);
                     return svc.objects;
                 };
             };

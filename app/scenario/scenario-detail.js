@@ -84,13 +84,8 @@ angular.module('lcaApp.scenario.detail',
         }
 
         function changeParam(p) {
-            var paramResource = p.paramWrapper.paramResource;
+            var paramResource = ParamModelService.changeExistingParam(p.paramWrapper);
 
-            if (p.paramWrapper.value) {
-                paramResource.value = +p.paramWrapper.value;
-            } else {
-                paramResource.value = null;
-            }
             if (p.name) {
                 paramResource.name = p.name;
             }

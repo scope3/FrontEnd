@@ -31,7 +31,16 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                             errMsg = "Web API request conflicts with another request that is in progress.\n";
                         }
                         if (err.hasOwnProperty("data")) {
-                            errMsg += err["data"]
+                            if (typeof (err["data"])  === "string") {
+                                errMsg += err["data"];
+                            }
+                            else {
+                                var errData = err["data"];
+                                if (errData.hasOwnProperty("exceptionMessage")) {
+                                    errMsg = 'Web API Exception : "' + errData["exceptionMessage"] +
+                                    '" See console for details.';
+                                }
+                            }
                         }
                     } else if (err.hasOwnProperty("message") ) {
                         errMsg = err["message"];

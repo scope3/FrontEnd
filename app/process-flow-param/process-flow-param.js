@@ -79,15 +79,8 @@ angular.module('lcaApp.process.flowParam',
              * @returns {*} New or updated param resource
              */
             function changeParam(f) {
-                var paramResource = f.paramWrapper.paramResource;
-                if (paramResource) {
-                    if (f.paramWrapper.value) {
-                        paramResource.value = +f.paramWrapper.value;
-                    } else {
-                        paramResource.value = null;
-                    }
-                }
-                else {
+                var paramResource = ParamModelService.changeExistingParam(f.paramWrapper);
+                if (!paramResource) {
                     paramResource = {
                         scenarioID : $scope.scenario.scenarioID,
                         processID : $scope.process.processID,

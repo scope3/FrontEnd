@@ -159,15 +159,8 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function changeParam(lf) {
-                var paramResource = lf.paramWrapper.paramResource;
-                if (paramResource) {
-                    if (lf.paramWrapper.value) {
-                        paramResource.value = +lf.paramWrapper.value;
-                    } else {
-                        paramResource.value = null;
-                    }
-                }
-                else {
+                var paramResource = ParamModelService.changeExistingParam(lf.paramWrapper);
+                if (!paramResource) {
                     paramResource = {
                         scenarioID : $scope.paramScenario.scenarioID,
                         lciaMethodID : $scope.lciaMethod.lciaMethodID,

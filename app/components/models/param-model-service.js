@@ -115,22 +115,20 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 origResources.scenarios[scenarioID] = params;
             }
 
+            function valueInput(paramWrapper) {
+                return paramWrapper.value !== "";
+            }
+
             /**
              * Apply change to fragment flow parameter resource
              * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
              * @param { Number } scenarioID
              * @returns {*} New or updated param resource
              */
-            function changeFragmentFlowParam(f, scenarioID) {
-                var paramResource = f.paramWrapper.paramResource;
-                if (paramResource) {
-                    if (f.paramWrapper.value) {
-                        paramResource.value = +f.paramWrapper.value;
-                    } else {
-                        paramResource.value = null;
-                    }
-                }
-                else {
+            svc.changeFragmentFlowParam = function(f, scenarioID) {
+                var paramResource = svc.changeExistingParam(f.paramWrapper);
+                if (!paramResource)
+                {
                     paramResource = {
                         scenarioID : scenarioID,
                         fragmentFlowID : f.fragmentFlowID,
@@ -139,11 +137,28 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     };
                 }
                 return paramResource;
-            }
+            };
 
             function hasChangedParam(o) {
                 return o.paramWrapper.editStatus === PARAM_VALUE_STATUS.changed;
             }
+
+            /**
+             * If parameter resource exists, update it with change in parameter wrapper.
+             * @param paramWrapper
+             * @returns {{value} | null} updated paramResource referenced by paramWrapper
+             */
+            svc.changeExistingParam = function (paramWrapper) {
+                var paramResource = paramWrapper.paramResource;
+                if (paramResource) {
+                    if (valueInput(paramWrapper)) {
+                        paramResource.value = +paramWrapper.value;
+                    } else {
+                        paramResource.value = null;
+                    }
+                }
+                return paramResource;
+            };
 
             /**
              * Create model for scenario parameters. If scenario parameters were already modeled, that part of private
@@ -293,8 +308,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              * @returns {{paramValueStatus:number, msg: string }}
              */
             svc.getParamValueStatus = function(baseValue, paramResource, value) {
-                var result = { paramValueStatus: null, msg: null };
-                if (value) {
+                var result = { paramValueStatus: PARAM_VALUE_STATUS.unchanged, msg: "" };
+                if (value === "") {
+                    // No input value. If paramResource exists, interpret this as delete.
+                    if (paramResource) {
+                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
+                    }
+                }
+                else {
                     // Value was input
                     if (isNaN(value) ) {
                         result.msg = "Parameter value, " + value + ", is not numeric.";
@@ -304,9 +325,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         result.paramValueStatus = PARAM_VALUE_STATUS.invalid;
                     } else if (paramResource) {
                         // Check if param value changed
-                        if (paramResource.value === +value) {
-                            result.paramValueStatus = PARAM_VALUE_STATUS.unchanged;
-                        } else {
+                        if (paramResource.value !== +value)  {
                             result.paramValueStatus = PARAM_VALUE_STATUS.changed;
                         }
                     } else {
@@ -314,14 +333,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         result.paramValueStatus = PARAM_VALUE_STATUS.changed;
                     }
                 }
-                else {
-                    // No input value. If paramResource exists, interpret this as delete.
-                    if (paramResource) {
-                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
-                    } else {
-                        result.paramValueStatus = PARAM_VALUE_STATUS.unchanged;
-                    }
-                }
+
                 return result;
             };
 
@@ -341,7 +353,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              */
             svc.setParamWrapperStatus = function(baseValue, paramWrapper) {
                 var msg = null;
-                if (paramWrapper.value) {
+                if (valueInput(paramWrapper)) {
                     // Value was input
                     if (isNaN(paramWrapper.value) ) {
                         msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
@@ -494,13 +506,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             svc.applyFragmentFlowParamChanges = function (scenarioID, data, successCB, errorCB) {
                 var changedParams = data.filter(hasChangedParam);
 
-                svc.updateResources(scenarioID, changedParams.map(changeFragmentFlowParam),
+                svc.updateResources(scenarioID, changedParams.map(svc.changeFragmentFlowParam),
                     successCB, errorCB);
             };
 
             /**
              * Revert changes in wrapped parameters
-             * @param {[{{}}]} data  Array of objects with embedded paramWrapper
+             * @param {[{paramWrapper: { value : String }}]} data  Array of objects with embedded paramWrapper
              */
             svc.revertChanges = function (data) {
                 data.forEach(function (e) {
