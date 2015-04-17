@@ -423,10 +423,10 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function getStateParams() {
-                if ("scenarioID" in $stateParams) {
+                if ( $stateParams.hasOwnProperty("scenarioID") && $stateParams.scenarioID !== undefined) {
                     scenarioID = +$stateParams.scenarioID;
                 }
-                if ("fragmentID" in $stateParams) {
+                if ($stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
                     fragmentID = +$stateParams.fragmentID;
                 }
             }

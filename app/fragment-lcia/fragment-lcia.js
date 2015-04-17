@@ -3,20 +3,23 @@
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
-                    'isteven-multi-select', 'lcaApp.selection.service'])
+                    'isteven-multi-select', 'lcaApp.selection.service',
+                    'lcaApp.fragmentNavigation.service'])
     .constant('SELECTION_KEYS', {
         topLevelFragmentID : "TLF",
         fragmentScenarios : "FS"
     })
     .controller('FragmentLciaCtrl',
-        ['$scope', '$stateParams', 'StatusService', '$q', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioService',
          'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
          'ColorCodeService', 'WaterfallService', 'SelectionService', 'SELECTION_KEYS',
-        function ($scope, $stateParams, StatusService, $q, ScenarioService,
+            'FragmentNavigationService',
+        function ($scope, $stateParams, $state, StatusService, $q, ScenarioService,
                   FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS ) {
+                  ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS,
+                  FragmentNavigationService ) {
 
             var fragmentID,
                 stages = [],
@@ -48,10 +51,20 @@ angular.module('lcaApp.fragment.LCIA',
             $scope.colors = {};
             $scope.waterfalls = {};
             /**
-             * Flag to indicate if current view supports fragment navigation.
-             * If false, then current view supports selection of top-level fragment and associated scenarios.
+             * Navigation object created if current view supports fragment navigation.
+             * If null, then current view supports selection of top-level fragment and associated scenarios.
              */
-            $scope.navigationMode = false;
+            $scope.navigation = null;
+
+            /**
+             * Set fragment navigation state, and
+             * go back to fragment sankey view
+             * @param navIndex  Index to fragment navigation state selected by user
+             */
+            $scope.goBackToFragment = function(navIndex) {
+                FragmentNavigationService.setLast(navIndex);
+                $state.go('^');
+            };
 
             function getSelectionResults() {
                 $scope.scenarios = $scope.scenarioSelection.model;
@@ -189,7 +202,17 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.methods = methods.filter( function (m) {
                    return m.getIsActive();
                 });
-                if (! $scope.navigationMode) {
+                if ( $scope.navigation) {
+                    var scenarioID = $scope.navigation.scenarioID;
+                    $scope.scenario = ScenarioService.get(scenarioID);
+                    if ($scope.scenario) {
+                        $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
+                            $scope.scenario.topLevelFragmentID).getAll();
+                    } else {
+                        StatusService.handleFailure("Invalid scenario ID : ", scenarioID);
+                    }
+                }
+                else {
 
                     getTopLevelFragments();
                     if (scenarios.length > 0 ) {
@@ -228,8 +251,19 @@ angular.module('lcaApp.fragment.LCIA',
                 }
             }
 
+            function getStateParams() {
+                if ( $stateParams.hasOwnProperty("scenarioID")) {
+                    $scope.navigation = { scenarioID : +$stateParams.scenarioID };
+
+                }
+                if ($stateParams.hasOwnProperty("fragmentID")) {
+                    fragmentID = +$stateParams.fragmentID;
+                }
+            }
+
             function init() {
-                if (! $scope.navigationMode) {
+                getStateParams();
+                if (! $scope.navigation) {
                     $scope.scenarioSelection = {
                         options: [],
                         model: []
