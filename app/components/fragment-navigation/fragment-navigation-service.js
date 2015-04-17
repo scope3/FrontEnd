@@ -7,8 +7,8 @@ angular.module('lcaApp.fragmentNavigation.service', [])
         var svc = {},
             stack = [],
             context = {
-                "fragmentID" : null,
-                "scenarioID" : null
+                "fragmentID" : 0,
+                "scenarioID" : 0
             }
             ;
 
@@ -33,6 +33,14 @@ angular.module('lcaApp.fragmentNavigation.service', [])
             context.scenarioID = sID;
 
             return svc;
+        };
+
+        /**
+         * Get current navigation context
+         * @returns {{fragmentID: number, scenarioID: number}}
+         */
+        svc.getContext = function () {
+            return context;
         };
 
         /**

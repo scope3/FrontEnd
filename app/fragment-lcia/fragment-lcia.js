@@ -10,12 +10,12 @@ angular.module('lcaApp.fragment.LCIA',
         fragmentScenarios : "FS"
     })
     .controller('FragmentLciaCtrl',
-        ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioService',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'FragmentService', 'FragmentStageService',
          'LciaMethodService', 'LciaResultForFragmentService',
          'ColorCodeService', 'WaterfallService', 'SelectionService', 'SELECTION_KEYS',
             'FragmentNavigationService',
-        function ($scope, $stateParams, $state, StatusService, $q, ScenarioService,
+        function ($scope, $stateParams, $state, StatusService, $q, ScenarioService, MODEL_BASE_CASE_SCENARIO_ID,
                   FragmentService, FragmentStageService,
                   LciaMethodService, LciaResultForFragmentService,
                   ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS,
@@ -51,19 +51,24 @@ angular.module('lcaApp.fragment.LCIA',
             $scope.colors = {};
             $scope.waterfalls = {};
             /**
-             * Navigation object created if current view supports fragment navigation.
+             * Navigation service set if current view supports fragment navigation.
              * If null, then current view supports selection of top-level fragment and associated scenarios.
              */
-            $scope.navigation = null;
+            $scope.navigationService = null;
+
 
             /**
-             * Set fragment navigation state, and
-             * go back to fragment sankey view
-             * @param navIndex  Index to fragment navigation state selected by user
+             * Called when a parent fragment is selected from fragment breadcrumbs.
+             * Updates fragment breadcrumbs and gets new fragment data.
+             * @param fragment  Fragment selected
+             * @param index     Breadcrumb index
              */
-            $scope.goBackToFragment = function(navIndex) {
-                FragmentNavigationService.setLast(navIndex);
-                $state.go('^');
+            $scope.onParentFragmentSelected = function (fragment, index) {
+                fragmentID = fragment.fragmentID;
+                $scope.fragment = fragment;
+                FragmentNavigationService.setLast(index);
+                clearWaterfalls();
+                getLciaResults();
             };
 
             function getSelectionResults() {
@@ -82,11 +87,16 @@ angular.module('lcaApp.fragment.LCIA',
              */
             function extractResult(lciaResult) {
                 var scenario = ScenarioService.get(lciaResult.scenarioID),
-                    result = {};
+                    result = {},
+                    activityLevel = scenario.activityLevel;
+
+                if ($scope.navigationService && $scope.fragment.hasOwnProperty("activityLevel")) {
+                    activityLevel = $scope.fragment.activityLevel;
+                }
                 lciaResult.lciaScore.forEach(
                     /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
                     function ( score) {
-                        result[score["fragmentStageID"]] = score.cumulativeResult * scenario.activityLevel;
+                        result[score["fragmentStageID"]] = score.cumulativeResult * activityLevel;
                 });
                 if (! (lciaResult.lciaMethodID in results)) {
                     results[lciaResult.lciaMethodID] = {};
@@ -192,78 +202,112 @@ angular.module('lcaApp.fragment.LCIA',
                 });
             }
 
-            /**
-             * Collect methods and scenarios, then get LCIA results.
-             */
-            function displayLoadedData() {
-                var methods = LciaMethodService.getAll(),
-                    scenarios = ScenarioService.getAll();
-                StatusService.stopWaiting();
-                $scope.methods = methods.filter( function (m) {
-                   return m.getIsActive();
-                });
-                if ( $scope.navigation) {
-                    var scenarioID = $scope.navigation.scenarioID;
-                    $scope.scenario = ScenarioService.get(scenarioID);
-                    if ($scope.scenario) {
-                        $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
-                            $scope.scenario.topLevelFragmentID).getAll();
-                    } else {
-                        StatusService.handleFailure("Invalid scenario ID : ", scenarioID);
-                    }
+            function getBaseCase() {
+                var baseScenario = ScenarioService.get(MODEL_BASE_CASE_SCENARIO_ID);
+                if (baseScenario) {
+                    $scope.scenarios.push(baseScenario);
                 }
-                else {
+            }
 
-                    getTopLevelFragments();
-                    if (scenarios.length > 0 ) {
-                        //
-                        // If fragment and scenarios were previously selected,
-                        // apply the same selections and display results.
-                        // Otherwise, select first fragment and all its scenarios. Wait for user to click button.
-                        //
-                        if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
-                            fragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
-                            $scope.fragmentSelection.options.forEach(function(fs) {
-                                fs.selected = (fs.fragmentID === fragmentID);
-                            });
-                        }
-                        else {
-                            if ($scope.fragmentSelection.options.length > 1) {
-                                var firstFragment = $scope.fragmentSelection.options[0];
-                                fragmentID = firstFragment.fragmentID;
-                                firstFragment.selected = true;
-                            }
-                        }
-                        $scope.fragment = FragmentService.get(fragmentID);
-                        getFragmentScenarios();
-                        if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios) ) {
-                            var selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios);
-                            $scope.scenarioSelection.options.forEach(function(fs) {
-                                fs.selected = selectedScenarios.some( function(s) {
-                                    return fs.scenarioID === s.scenarioID;
-                                });
-                            });
+            function displayFragmentNavigation() {
+                var context = FragmentNavigationService.getContext(),
+                    scenario = ScenarioService.get(context.scenarioID),
+                    done = false;
 
-                            $scope.scenarios = selectedScenarios;
-                            getLciaResults();
+                if (scenario) {
+                    var fragState = FragmentNavigationService.getLast();
+                    $scope.navigationScenario = scenario;
+                    if (scenario.scenarioID !== MODEL_BASE_CASE_SCENARIO_ID) {
+                        $scope.scenarios.push(scenario);
+                    }
+                    if (fragState) {
+                        $scope.fragment = fragState;
+                        fragmentID = $scope.fragment.fragmentID;
+                        done = true;
+                    } else {
+                        $scope.fragment = FragmentService.get(context.fragmentID);
+                        if ($scope.fragment) {
+                            $scope.fragment.activityLevel = scenario["activityLevel"];
+                            FragmentNavigationService.add($scope.fragment);
+                            done = true;
+                        } else {
+                            StatusService.handleFailure("Invalid fragment ID : " + fragmentID);
                         }
+                    }
+                } else {
+                    StatusService.handleFailure("Invalid scenario ID : ", context.scenarioID);
+                }
+                return done;
+            }
+
+            function displayTopLevelFragmentScenarios () {
+                var scenarios = ScenarioService.getAll();
+
+                getTopLevelFragments();
+                if (scenarios.length > 0) {
+                    //
+                    // If fragment and scenarios were previously selected,
+                    // apply the same selections and display results.
+                    // Otherwise, select first fragment and all its scenarios. Wait for user to click button.
+                    //
+                    if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
+                        fragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
+                        $scope.fragmentSelection.options.forEach(function (fs) {
+                            fs.selected = (fs.fragmentID === fragmentID);
+                        });
+                    }
+                    else {
+                        if ($scope.fragmentSelection.options.length > 1) {
+                            var firstFragment = $scope.fragmentSelection.options[0];
+                            fragmentID = firstFragment.fragmentID;
+                            firstFragment.selected = true;
+                        }
+                    }
+                    $scope.fragment = FragmentService.get(fragmentID);
+                    getFragmentScenarios();
+                    if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios)) {
+                        var selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios);
+                        $scope.scenarioSelection.options.forEach(function (fs) {
+                            fs.selected = selectedScenarios.some(function (s) {
+                                return fs.scenarioID === s.scenarioID;
+                            });
+                        });
+                        $scope.scenarios = selectedScenarios;
                     }
                 }
             }
 
-            function getStateParams() {
-                if ( $stateParams.hasOwnProperty("scenarioID")) {
-                    $scope.navigation = { scenarioID : +$stateParams.scenarioID };
-
+            /**
+             * Collect methods and scenarios, then get LCIA results.
+             */
+            function displayLoadedData() {
+                var methods = LciaMethodService.getAll();
+                StatusService.stopWaiting();
+                $scope.methods = methods.filter( function (m) {
+                   return m.getIsActive();
+                });
+                if ( $scope.navigationService) {
+                    getBaseCase();
+                    if ( displayFragmentNavigation()) {
+                        getLciaResults();
+                    }
                 }
-                if ($stateParams.hasOwnProperty("fragmentID")) {
-                    fragmentID = +$stateParams.fragmentID;
+                else {
+                    displayTopLevelFragmentScenarios();
+                }
+            }
+
+            function getStateParams() {
+                if ( $stateParams.hasOwnProperty("scenarioID") && $stateParams.scenarioID !== undefined &&
+                    $stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
+                    $scope.navigationService = FragmentNavigationService.setContext(+$stateParams.scenarioID,
+                        +$stateParams.fragmentID);
                 }
             }
 
             function init() {
                 getStateParams();
-                if (! $scope.navigation) {
+                if (! $scope.navigationService) {
                     $scope.scenarioSelection = {
                         options: [],
                         model: []

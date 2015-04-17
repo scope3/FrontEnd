@@ -1,4 +1,4 @@
-<div>
+<div ng-if="navigationService===null">
     <div class="float-block">
         <label>Fragment</label>
     <span isteven-multi-select
@@ -28,7 +28,34 @@
         </button>
     </div>
 </div>
+<div ng-if="navigationService" class="row">
+    <div class="col-md-9">
+        <h4>Fragment LCIA</h4>
+        <dl class="dl-horizontal">
+            <dt>Scenario</dt>
+            <dd>{{navigationScenario.name}}</dd>
+            <dt>Fragment</dt>
+            <dd>
+        <span ng-repeat="navFrag in navigationService.getAll()">
+            <ng-switch on="$last">
+                <span ng-switch-when="true">{{navFrag.name}}</span>
+                <span ng-switch-default><a class="fragment-link" ng-click="onParentFragmentSelected(navFrag,$index)">{{navFrag.name}}</a>
+             ></span>
+            </ng-switch>
+        </span>
+            </dd>
 
+            <dt>Activity Level</dt>
+            <dd>{{fragment.activityLevel | numFormat }}</dd>
+        </dl>
+    </div>
+    <div class="col-md-3">
+        <button type="button" class="btn btn-link pull-right"
+                ui-sref="^">
+            Back to Sankey Diagram
+        </button>
+    </div>
+</div>
 <div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">

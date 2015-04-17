@@ -25,7 +25,7 @@ angular.module('lcaApp', [
                 controller: 'HomeCtrl'
             })
                 .state('fragment-sankey', {
-                    url: '/fragment-sankey/?scenarioID?fragmentID',
+                    url: '/fragment-sankey?scenarioID&fragmentID',
                     views: {
                         "@": {
                             templateUrl: 'fragment-sankey/fragment-sankey.html',
