@@ -11,12 +11,12 @@ angular.module('lcaApp.fragment.LCIA',
     })
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioService', 'MODEL_BASE_CASE_SCENARIO_ID',
-         'FragmentService', 'FragmentStageService',
+         'FragmentService', 'FragmentStageService', 'FragmentFlowService',
          'LciaMethodService', 'LciaResultForFragmentService',
          'ColorCodeService', 'WaterfallService', 'SelectionService', 'SELECTION_KEYS',
             'FragmentNavigationService',
         function ($scope, $stateParams, $state, StatusService, $q, ScenarioService, MODEL_BASE_CASE_SCENARIO_ID,
-                  FragmentService, FragmentStageService,
+                  FragmentService, FragmentStageService, FragmentFlowService,
                   LciaMethodService, LciaResultForFragmentService,
                   ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS,
                   FragmentNavigationService ) {
@@ -32,6 +32,14 @@ angular.module('lcaApp.fragment.LCIA',
                     $scope.fragment = selectedFragment;
                     fragmentID = selectedFragment.fragmentID;
                     getFragmentScenarios();
+                }
+            };
+
+            $scope.onFragmentNavigation = function () {
+                var fragmentFlow = $scope.navigationSelection.model[0];
+                if (fragmentFlow) {
+                    clearWaterfalls();
+                    navigateSubFragment(fragmentFlow);
                 }
             };
 
@@ -68,7 +76,7 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.fragment = fragment;
                 FragmentNavigationService.setLast(index);
                 clearWaterfalls();
-                getLciaResults();
+                loadSubFragments();
             };
 
             function getSelectionResults() {
@@ -77,6 +85,25 @@ angular.module('lcaApp.fragment.LCIA',
                 // Save selections for return to view in same session
                 SelectionService.set(SELECTION_KEYS.topLevelFragmentID, $scope.fragment.fragmentID);
                 SelectionService.set(SELECTION_KEYS.fragmentScenarios, $scope.scenarioSelection.model);
+            }
+
+            /**
+             * Prepare to display sub-fragment
+             * Calculate sub-fragment activity level, push current fragment on breadcrumb stack
+             * @param {{subFragmentID: Number, nodeWeight: Number}} fragmentFlow  containing selected sub-fragment
+             */
+            function navigateSubFragment( fragmentFlow) {
+                var subFragment = FragmentService.get(fragmentFlow.subFragmentID);
+                if (subFragment) {
+                    subFragment.activityLevel = $scope.fragment.activityLevel * fragmentFlow.nodeWeight;
+                    fragmentID = fragmentFlow.subFragmentID;
+                    $scope.fragment = subFragment;
+                    FragmentNavigationService.add($scope.fragment);
+                    clearWaterfalls();
+                    loadSubFragments();
+                } else {
+                    StatusService.handleFailure("Invalid sub-fragment ID : " + fragmentFlow.subFragmentID);
+                }
             }
 
             /**
@@ -202,6 +229,18 @@ angular.module('lcaApp.fragment.LCIA',
                 });
             }
 
+            function getSubFragments(fragmentFlows) {
+                $scope.navigationSelection.options = fragmentFlows.filter(function (ff) {
+                    return ff.nodeType === "Fragment";
+                });
+                getLciaResults();
+            }
+
+            function loadSubFragments() {
+                FragmentFlowService.load({scenarioID: $scope.navigationScenario.scenarioID, fragmentID: fragmentID})
+                    .then(getSubFragments, StatusService.handleFailure);
+            }
+
             function getBaseCase() {
                 var baseScenario = ScenarioService.get(MODEL_BASE_CASE_SCENARIO_ID);
                 if (baseScenario) {
@@ -289,7 +328,7 @@ angular.module('lcaApp.fragment.LCIA',
                 if ( $scope.navigationService) {
                     getBaseCase();
                     if ( displayFragmentNavigation()) {
-                        getLciaResults();
+                        loadSubFragments();
                     }
                 }
                 else {
@@ -302,12 +341,19 @@ angular.module('lcaApp.fragment.LCIA',
                     $stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
                     $scope.navigationService = FragmentNavigationService.setContext(+$stateParams.scenarioID,
                         +$stateParams.fragmentID);
+                    fragmentID = +$stateParams.fragmentID;
                 }
             }
 
             function init() {
                 getStateParams();
-                if (! $scope.navigationService) {
+                if ( $scope.navigationService) {
+                    $scope.navigationSelection = {
+                        options: [],
+                        model: []
+                    };
+                }
+                else {
                     $scope.scenarioSelection = {
                         options: [],
                         model: []
