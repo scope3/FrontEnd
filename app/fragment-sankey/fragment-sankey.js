@@ -46,7 +46,8 @@ angular.module('lcaApp.fragment.sankey',
              */
             function showFlowProperty(fpID) {
                 var fp = FlowPropertyForFragmentService.get(fpID);
-                return !(fp["referenceUnit"] === "kgP" || fp["referenceUnit"] === "kg-Av" || fp["referenceUnit"] === "MJ-Av");
+                return fp &&
+                    !(fp["referenceUnit"] === "kgP" || fp["referenceUnit"] === "kg-Av" || fp["referenceUnit"] === "MJ-Av");
             }
 
 
