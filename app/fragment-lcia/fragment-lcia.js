@@ -85,26 +85,26 @@ angular.module('lcaApp.fragment.LCIA',
                 loadSubFragments();
             };
 
+            /**
+             * Watch for changes to scenario selections
+             */
             $scope.$watch('scenarioSelection.model', function() {
+                // TODO : Only clear waterfalls for scenarios that are no longer selected,
+                // and do not recreate waterfalls for previously selected scenarios
                 clearWaterfalls();
-                $scope.scenarios = $scope.scenarioSelection.model;
-                getSelectionResults();
-            });
-
-            function resetFragmentNavigation() {
-                var context = FragmentNavigationService.getContext();
-                if (context.fragmentID !== $scope.fragment.fragmentID) {
-                    FragmentNavigationService.setContext($scope.scenarios[0].scenarioID, $scope.fragment.fragmentID);
+                if ($scope.hasOwnProperty("scenarioSelection") && $scope.scenarioSelection.hasOwnProperty("model")) {
+                    $scope.scenarios = $scope.scenarioSelection.model;
+                    getSelectionResults();
                 }
-            }
+            });
 
             function getSelectionResults() {
                 if ($scope.scenarios.length > 0) {
                     getLciaResults();
-                    // Save selections for return to view in same session
+                    // Save selections for return to view in same session. Also used for default selections in
+                    // Fragment Sankey view.
                     SelectionService.set(SELECTION_KEYS.topLevelFragmentID, $scope.fragment.fragmentID);
                     SelectionService.set(SELECTION_KEYS.fragmentScenarios, $scope.scenarioSelection.model);
-                    resetFragmentNavigation();
                 }
             }
 
