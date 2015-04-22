@@ -2,16 +2,20 @@
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.status.service',
-                 'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario'])
+                 'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario',
+                    'lcaApp.selection.service'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
+            'SelectionService', 'SELECTION_KEYS',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  FormatService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID) {
-            var fragmentID,
+                  FormatService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
+                  SelectionService, SELECTION_KEYS) {
+            var fragmentID = 0,
                 scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
+                topLevelFragmentID = 0,
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
@@ -30,13 +34,9 @@ angular.module('lcaApp.fragment.sankey',
 
             $scope.onScenarioChange = function() {
                 scenarioID = $scope.scenario.scenarioID;
+                topLevelFragmentID = $scope.scenario.topLevelFragmentID;
                 ScenarioModelService.setActiveID(scenarioID);
                 getData();
-            };
-
-            $scope.viewFragmentFlowParam = function () {
-                $state.go(".fragment-flow-param",
-                    {scenarioID: scenarioID, fragmentID: fragmentID});
             };
 
             /**
@@ -253,13 +253,38 @@ angular.module('lcaApp.fragment.sankey',
             /**
              * Function called after requests for resources have been fulfilled.
              */
-            function handleSuccess() {
+            function displayLoadedData() {
+                var scenario;
                 $scope.scenarios = ScenarioModelService.getAll();
-                $scope.scenario = ScenarioModelService.get(scenarioID);
-                if ($scope.scenario) {
-                    fragmentID = $scope.scenario.topLevelFragmentID;
+
+                scenario = ScenarioModelService.get(scenarioID);
+                if (scenario) {
+                    if (topLevelFragmentID === 0) {
+                        topLevelFragmentID = scenario.topLevelFragmentID;
+                    } else if (scenario.topLevelFragmentID !== topLevelFragmentID) {
+                        var newScenario = null;
+                        //
+                        // If topLevelFragmentID comes from Fragment LCIA, then it may not be the top-level fragment of the
+                        // current scenario. In this case, activate first scenario selected in Fragment LCIA,
+                        // if one exists. Otherwise, set topLevelFragmentID to top-level fragment ID of current scenario.
+                        //
+                        if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios)) {
+                            var selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios);
+                            if (selectedScenarios) {
+                                newScenario = ScenarioModelService.get(selectedScenarios[0].scenarioID);
+                            }
+                        }
+                        if (newScenario === null) {
+                            topLevelFragmentID = scenario.topLevelFragmentID;
+                        } else {
+                            scenario = newScenario;
+                            scenarioID = scenario.scenarioID;
+                        }
+                    }
+                    fragmentID = topLevelFragmentID;
+                    $scope.scenario = scenario;
                     ScenarioModelService.setActiveID(scenarioID);
-                    $scope.navigationService = FragmentNavigationService.setContext(scenarioID, fragmentID);
+                    $scope.navigationService = FragmentNavigationService.setContext(scenarioID, topLevelFragmentID);
                     initScopeFragment();
                     getDataForFragment();
                 } else {
@@ -305,7 +330,7 @@ angular.module('lcaApp.fragment.sankey',
             function getData() {
                 StatusService.startWaiting();
                 $q.all([ScenarioModelService.load(), FragmentService.load(), ProcessService.load()])
-                    .then(handleSuccess,
+                    .then(displayLoadedData,
                     StatusService.handleFailure);
             }
 
@@ -416,6 +441,12 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
+            function getSelectedFragmentID() {
+                if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
+                    topLevelFragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
+                }
+            }
+
             function getActiveScenarioID() {
                 var activeID = ScenarioModelService.getActiveID();
                 if (activeID) {
@@ -428,10 +459,11 @@ angular.module('lcaApp.fragment.sankey',
                     scenarioID = +$stateParams.scenarioID;
                 }
                 if ($stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
-                    fragmentID = +$stateParams.fragmentID;
+                    topLevelFragmentID = +$stateParams.fragmentID;
                 }
             }
 
+            getSelectedFragmentID();
             getActiveScenarioID();
             getStateParams();
             getData();

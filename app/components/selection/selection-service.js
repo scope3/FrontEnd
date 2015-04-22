@@ -2,6 +2,10 @@
  * Service for recalling selections during web app session.
  */
 angular.module('lcaApp.selection.service', [])
+    .constant('SELECTION_KEYS', {
+        topLevelFragmentID : "TLF",
+        fragmentScenarios : "FS"
+    })
     .factory('SelectionService', function () {
         var selections = {};
 
