@@ -21,6 +21,12 @@ angular.module('lcaApp.home',
             }
         };
 
+        $scope.cloneScenario = function(scenario) {
+            var urlParam = { cloneScenario : scenario.scenarioID};
+            StatusService.startWaiting();
+            ScenarioService.create(urlParam, scenario, reloadScenarios, StatusService.handleFailure);
+        };
+
         $scope.hideDelete = function(scenario) {
             return ! ScenarioService.canDelete(scenario);
         };
