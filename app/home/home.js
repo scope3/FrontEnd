@@ -1,26 +1,56 @@
 'use strict';
-
+/**
+ * Home page view controller
+ */
 angular.module('lcaApp.home',
-               ['lcaApp.resources.service', 'lcaApp.status.service', 'ui.bootstrap', 'ui.router', 'lcaApp.scenario.clone'])
+               ['lcaApp.resources.service', 'lcaApp.status.service', 'ui.bootstrap', 'ui.router',
+                   'lcaApp.scenario.clone', 'lcaApp.modal.confirm'])
 .controller('HomeCtrl', ['$scope', '$window', 'StatusService', '$state',
             'ScenarioService', 'FragmentService', 'LciaMethodService', '$q', '$modal',
     function($scope, $window, StatusService, $state,
              ScenarioService, FragmentService, LciaMethodService, $q, $modal) {
 
-        $scope.fragments = {};
+        $scope.fragments = {};  // Fragment resources, indexed by scenarioID
 
+        /**
+         * Click handler for New Scenario button.
+         * Route to New Scenario view.
+         */
         $scope.createScenario = function() {
             $state.go("new-scenario");
         };
 
+        /**
+         * Click handler for Delete Scenario button.
+         * Make web API delete request after user confirms.
+         * @param {{ scenarioID: number, name: string }} scenario  Scenario on button row.
+         */
         $scope.deleteScenario = function(scenario) {
-            var msg = "Delete scenario, " + scenario.name + "?";
-            if ( $window.confirm(msg)) {
-                StatusService.startWaiting();
-                ScenarioService.remove(null, scenario, reloadScenarios, StatusService.handleFailure);
-            }
+            var question = "Are you sure you want to permanently delete scenario, " + scenario.name + "?",
+                modalParameters = {
+                    title : "Confirm Delete",
+                    question : question,
+                    result : scenario
+                },
+                modalInstance = $modal.open({
+                    templateUrl: 'components/modal/modal-confirm.html',
+                    controller: 'ModalConfirmController',
+                    size: 'sm',
+                    resolve: {
+                        parameters: function () {
+                            return modalParameters;
+                        }
+                    }
+                });
+
+            modalInstance.result.then(requestDelete);
         };
 
+        /**
+         * Click handler for Clone Scenario button.
+         * Make web API clone request after user edits copied name.
+         * @param {{ scenarioID: number, name: string }} scenario  Scenario on button row.
+         */
         $scope.cloneScenario = function(scenario) {
             var copiedScenario = angular.copy(scenario),
                 modalInstance = $modal.open({
@@ -37,6 +67,12 @@ angular.module('lcaApp.home',
             modalInstance.result.then(requestClone);
         };
 
+        /**
+         * Determines if Delete button should be hidden on row.
+         * Delete button is hidden if user does not have access to delete the scenario on button row.
+         * @param {{ scenarioID: number, name: string }} scenario
+         * @returns {boolean}
+         */
         $scope.hideDelete = function(scenario) {
             return ! ScenarioService.canDelete(scenario);
         };
@@ -45,7 +81,13 @@ angular.module('lcaApp.home',
             var urlParam = { cloneScenario : scenario.scenarioID};
             StatusService.startWaiting();
             ScenarioService.create(urlParam, scenario, reloadScenarios, StatusService.handleFailure);
-        };
+        }
+
+        function requestDelete(scenario) {
+            StatusService.startWaiting();
+            ScenarioService.remove(null, scenario, reloadScenarios, StatusService.handleFailure);
+
+        }
 
         function reloadScenarios() {
             ScenarioService.load().then(function() {
