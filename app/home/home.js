@@ -1,11 +1,11 @@
 'use strict';
 
 angular.module('lcaApp.home',
-               ['lcaApp.resources.service', 'lcaApp.status.service'])
+               ['lcaApp.resources.service', 'lcaApp.status.service', 'ui.bootstrap', 'ui.router', 'lcaApp.scenario.clone'])
 .controller('HomeCtrl', ['$scope', '$window', 'StatusService', '$state',
-            'ScenarioService', 'FragmentService', 'LciaMethodService', '$q',
+            'ScenarioService', 'FragmentService', 'LciaMethodService', '$q', '$modal',
     function($scope, $window, StatusService, $state,
-             ScenarioService, FragmentService, LciaMethodService, $q) {
+             ScenarioService, FragmentService, LciaMethodService, $q, $modal) {
 
         $scope.fragments = {};
 
@@ -22,13 +22,29 @@ angular.module('lcaApp.home',
         };
 
         $scope.cloneScenario = function(scenario) {
-            var urlParam = { cloneScenario : scenario.scenarioID};
-            StatusService.startWaiting();
-            ScenarioService.create(urlParam, scenario, reloadScenarios, StatusService.handleFailure);
+            var copiedScenario = angular.copy(scenario),
+                modalInstance = $modal.open({
+                templateUrl: 'scenario/scenario-clone.html',
+                controller: 'ScenarioCloneController',
+                size: 'sm',
+                resolve: {
+                    scenario: function () {
+                        return copiedScenario;
+                    }
+                }
+            });
+
+            modalInstance.result.then(requestClone);
         };
 
         $scope.hideDelete = function(scenario) {
             return ! ScenarioService.canDelete(scenario);
+        };
+
+        function requestClone(scenario) {
+            var urlParam = { cloneScenario : scenario.scenarioID};
+            StatusService.startWaiting();
+            ScenarioService.create(urlParam, scenario, reloadScenarios, StatusService.handleFailure);
         };
 
         function reloadScenarios() {

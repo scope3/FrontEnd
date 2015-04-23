@@ -24,6 +24,7 @@ module.exports = function(config){
       'app/fragment-flow-param/**/*.js',
       'app/fragment-lcia/**/*.js',
       'app/fragment-sankey/**/*.js',
+      'app/home/**/*.js',
       'app/lcia-method/**/*.js',
       'app/process-instance/**/*.js',
       'app/process-lcia/**/*.js',
