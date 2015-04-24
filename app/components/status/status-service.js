@@ -3,8 +3,8 @@
  */
 angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert'])
     .constant("SPINNER_KEY", "spinner-lca")
-    .factory('StatusService', [ 'usSpinnerService', 'SPINNER_KEY', '$rootScope',
-        function (usSpinnerService, SPINNER_KEY, $rootScope) {
+    .factory('StatusService', [ 'usSpinnerService', 'SPINNER_KEY', '$rootScope', '$log',
+        function (usSpinnerService, SPINNER_KEY, $rootScope, $log) {
             var svc = { };
 
             svc.startWaiting = function () {
@@ -37,8 +37,8 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                             else {
                                 var errData = err["data"];
                                 if (errData.hasOwnProperty("exceptionMessage")) {
-                                    errMsg = 'Web API Exception : "' + errData["exceptionMessage"] +
-                                    '" See console for details.';
+                                    errMsg = 'Web API Exception : ' + errData["exceptionMessage"];
+                                    $log.error(JSON.stringify(err));
                                 }
                             }
                         }
