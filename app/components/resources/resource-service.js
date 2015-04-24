@@ -70,6 +70,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                         });
                     }
                     if (svc.idName) {
+                        IdMapService.clear(svc.idName);
                         IdMapService.add(svc.idName, objects);
                     }
                 };

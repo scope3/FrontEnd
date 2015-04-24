@@ -18,6 +18,10 @@ angular.module('lcaApp.idmap.service', [])
                 });
                 return idMap[idName];
             },
+            clear: function (idName) {
+                idMap[idName] = {};
+                return idMap[idName];
+            },
             get: function (idName, idValue) {
                 if (idName in idMap && idValue in idMap[idName]) {
                     return idMap[idName][idValue];

@@ -6,19 +6,18 @@ angular.module('lcaApp.fragment.LCIA',
                     'isteven-multi-select', 'lcaApp.selection.service',
                     'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario'])
     .controller('FragmentLciaCtrl',
-        ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService', 'MODEL_BASE_CASE_SCENARIO_ID',
+        ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService',
          'FragmentService', 'FragmentStageService', 'FragmentFlowService',
          'LciaMethodService', 'LciaResultForFragmentService',
-         'ColorCodeService', 'WaterfallService', 'SelectionService', 'SELECTION_KEYS',
+         'ColorCodeService', 'WaterfallService',
             'FragmentNavigationService',
-        function ($scope, $stateParams, $state, StatusService, $q, ScenarioModelService, MODEL_BASE_CASE_SCENARIO_ID,
+        function ($scope, $stateParams, $state, StatusService, $q, ScenarioModelService,
                   FragmentService, FragmentStageService, FragmentFlowService,
                   LciaMethodService, LciaResultForFragmentService,
-                  ColorCodeService, WaterfallService, SelectionService, SELECTION_KEYS,
+                  ColorCodeService, WaterfallService,
                   FragmentNavigationService ) {
 
-            var fragmentID,     // ID of current fragment
-                stages = [],    // Current fragment stages
+            var stages = [],    // Current fragment stages
                 results = {};   // Fragment LCIA results
 
             /**
@@ -26,10 +25,9 @@ angular.module('lcaApp.fragment.LCIA',
              */
             $scope.onFragmentChange = function () {
                 var selectedFragment = $scope.fragmentSelection.model[0];
-                if (selectedFragment.fragmentID !== fragmentID) {
+                if (selectedFragment.fragmentID !== $scope.fragment.fragmentID) {
                     clearWaterfalls();
                     $scope.fragment = selectedFragment;
-                    fragmentID = selectedFragment.fragmentID;
                     getFragmentScenarios();
                     getSelectionResults();
                 }
@@ -74,7 +72,6 @@ angular.module('lcaApp.fragment.LCIA',
              * @param index     Breadcrumb index
              */
             $scope.onParentFragmentSelected = function (fragment, index) {
-                fragmentID = fragment.fragmentID;
                 $scope.fragment = fragment;
                 FragmentNavigationService.setLast(index);
                 clearWaterfalls();
@@ -85,8 +82,6 @@ angular.module('lcaApp.fragment.LCIA',
              * Watch for changes to scenario selections
              */
             $scope.$watch('scenarioSelection.model', function() {
-                // TODO : Only clear waterfalls for scenarios that are no longer selected,
-                // and do not recreate waterfalls for previously selected scenarios
                 clearWaterfalls();
                 if ($scope.hasOwnProperty("scenarioSelection") && $scope.scenarioSelection.hasOwnProperty("model")) {
                     $scope.scenarios = $scope.scenarioSelection.model;
@@ -99,8 +94,8 @@ angular.module('lcaApp.fragment.LCIA',
                     getLciaResults();
                     // Save selections for return to view in same session. Also used for default selections in
                     // Fragment Sankey view.
-                    SelectionService.set(SELECTION_KEYS.topLevelFragmentID, $scope.fragment.fragmentID);
-                    SelectionService.set(SELECTION_KEYS.fragmentScenarios, $scope.scenarioSelection.model);
+                    ScenarioModelService.selectFragmentScenarioIDs($scope.fragment.fragmentID,
+                                                                    $scope.scenarioSelection.model);
                 }
             }
 
@@ -113,7 +108,6 @@ angular.module('lcaApp.fragment.LCIA',
                 var subFragment = FragmentService.get(fragmentFlow.subFragmentID);
                 if (subFragment) {
                     subFragment.activityLevel = $scope.fragment.activityLevel * fragmentFlow.nodeWeight;
-                    fragmentID = fragmentFlow.subFragmentID;
                     $scope.fragment = subFragment;
                     FragmentNavigationService.add($scope.fragment);
                     clearWaterfalls();
@@ -207,20 +201,22 @@ angular.module('lcaApp.fragment.LCIA',
             function getLciaResults() {
                 var promises = [],
                     result;
-                StatusService.startWaiting();
-                result = FragmentStageService.load({fragmentID: fragmentID});
-                promises.push(result.$promise);
-                $scope.methods.forEach(function (method) {
-                    $scope.scenarios.forEach( function (scenario){
-                        result = LciaResultForFragmentService
-                            .get({ scenarioID: scenario.scenarioID,
-                                lciaMethodID: method.lciaMethodID,
-                                fragmentID: fragmentID },
-                            extractResult);
-                        promises.push(result.$promise);
+                if ($scope.fragment) {
+                    StatusService.startWaiting();
+                    result = FragmentStageService.load({fragmentID: $scope.fragment.fragmentID});
+                    promises.push(result.$promise);
+                    $scope.methods.forEach(function (method) {
+                        $scope.scenarios.forEach( function (scenario){
+                            result = LciaResultForFragmentService
+                                .get({ scenarioID: scenario.scenarioID,
+                                    lciaMethodID: method.lciaMethodID,
+                                    fragmentID: $scope.fragment.fragmentID },
+                                extractResult);
+                            promises.push(result.$promise);
+                        });
                     });
-                });
-                $q.all(promises).then(buildWaterfalls, StatusService.handleFailure);
+                    $q.all(promises).then(buildWaterfalls, StatusService.handleFailure);
+                }
             }
 
             function getFragmentScenarios() {
@@ -244,10 +240,10 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.scenarioSelection.options = fragmentScenarios;
             }
 
-            function getTopLevelFragments() {
-                var fragments = FragmentService.getAll(),
-                    scenarios = ScenarioModelService.getAll();
-                $scope.fragmentSelection.options = fragments.filter(function (f) {
+            function getTopLevelFragments(scenarios) {
+                var fragments = FragmentService.getAll();
+
+                return fragments.filter(function (f) {
                     return scenarios.some(function (s) {
                         return s.topLevelFragmentID === f.fragmentID;
                     });
@@ -262,100 +258,145 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             function loadSubFragments() {
-                FragmentFlowService.load({scenarioID: $scope.navigationScenario.scenarioID, fragmentID: fragmentID})
-                    .then(getSubFragments, StatusService.handleFailure);
+                if ($scope.fragment) {
+                    FragmentFlowService.load({scenarioID: $scope.navigationScenario.scenarioID, fragmentID: $scope.fragment.fragmentID})
+                        .then(getSubFragments, StatusService.handleFailure);
+                }
             }
 
             function getBaseCase() {
-                var baseScenario = ScenarioModelService.get(MODEL_BASE_CASE_SCENARIO_ID);
+                var baseScenario = ScenarioModelService.getBaseCase();
                 if (baseScenario) {
                     $scope.scenarios.push(baseScenario);
                 }
             }
 
+            /**
+             * In fragment navigation mode, scenario is pre-selected and cannot change.
+             * Display current fragment navigation state for the scenario.
+             * @returns {boolean}   Indicates if this operation was successful.
+             *                      Failure occurs when resource IDs are not valid.
+             */
             function displayFragmentNavigation() {
-                var context = FragmentNavigationService.getContext(),
-                    scenario = ScenarioModelService.get(context.scenarioID),
+                var scenarioID = +$stateParams.scenarioID,
+                    scenario = ScenarioModelService.get(scenarioID),
                     done = false;
 
                 if (scenario) {
-                    var fragState = FragmentNavigationService.getLast();
+                    var fragState;
+
+                    FragmentNavigationService.setContext(scenario.scenarioID, scenario.topLevelFragmentID);
+                    fragState = FragmentNavigationService.getLast();
                     $scope.navigationScenario = scenario;
-                    if (scenario.scenarioID !== MODEL_BASE_CASE_SCENARIO_ID) {
+                    if (! ScenarioModelService.isBaseCase(scenario)) {
                         $scope.scenarios.push(scenario);
                     }
                     if (fragState) {
                         $scope.fragment = fragState;
-                        fragmentID = $scope.fragment.fragmentID;
                         done = true;
                     } else {
-                        $scope.fragment = FragmentService.get(context.fragmentID);
+                        $scope.fragment = FragmentService.get(scenario.topLevelFragmentID);
                         if ($scope.fragment) {
                             $scope.fragment.activityLevel = scenario["activityLevel"];
                             FragmentNavigationService.add($scope.fragment);
                             done = true;
                         } else {
-                            StatusService.handleFailure("Invalid fragment ID : " + fragmentID);
+                            StatusService.handleFailure("Scenario, " + scenario.name + ", has invalid fragment ID : "
+                                                        + scenario.topLevelFragmentID);
                         }
                     }
                 } else {
-                    StatusService.handleFailure("Invalid scenario ID : ", context.scenarioID);
+                    StatusService.handleFailure("Invalid scenario ID : " + scenarioID);
                 }
                 return done;
             }
 
+            /**
+             * Apply previous fragment and scenario selections.
+             * May not be possible in case a scenario was deleted or its top-level fragment changed.
+             * @param {[]} topLevelFragments
+             * @param {[]} scenarios
+             * @param {number} selectFragmentID
+             * @param {[]} selectScenarioIDs
+             */
+            function applySelections( topLevelFragments, scenarios, selectFragmentID, selectScenarioIDs) {
+                topLevelFragments.forEach(function (fs) {
+                    if (fs.fragmentID === selectFragmentID) {
+                        fs.selected = true;
+                        $scope.fragment = fs;
+                    }
+                    else {
+                        fs.selected = false;
+                    }
+                });
+                topLevelFragments.sort(FragmentService.compareByName);
+                $scope.fragmentSelection.options = topLevelFragments;
+                if ($scope.fragment) {
+                    var fragmentScenarios = scenarios.filter(function (s) {
+                        return (s.topLevelFragmentID === $scope.fragment.fragmentID);
+                    });
+                    if (selectScenarioIDs.length > 0) {
+                        fragmentScenarios.forEach(function (fs) {
+                            if ( selectScenarioIDs.some(function (s) {
+                                    return fs.scenarioID === s;
+                                })) {
+                                fs.selected = true;
+                                $scope.scenarios.push(fs);
+                            }
+                            else {
+                                fs.selected = false;
+                            }
+                        });
+
+                    }
+                    $scope.scenarioSelection.options = fragmentScenarios;
+                }
+            }
+
+            /**
+             * Load selection controls and try to apply previous selections.
+             */
             function displayTopLevelFragmentScenarios () {
                 var scenarios = ScenarioModelService.getAll(),
-                    selectedScenarios = null;
+                    topLevelFragments = getTopLevelFragments(scenarios),  // Top-level fragments from all scenarios
+                    selectFragmentID = 0,
+                    selectScenarioIDs = [];
 
+                $scope.fragment = null;
                 $scope.scenarios = [];
-                getTopLevelFragments();
 
-                if (scenarios.length > 0) {
+                if (scenarios.length > 0 && topLevelFragments.length > 0) {
                     //
                     // If some scenario was selected in another view, select its top-level fragment.
                     //
                     var activeID = ScenarioModelService.getActiveID();
-                    fragmentID = 0;
                     if (activeID) {
                         var activeScenario = ScenarioModelService.get(activeID);
                         if (activeScenario) {
-                            fragmentID = activeScenario.topLevelFragmentID;
+                            selectFragmentID = activeScenario.topLevelFragmentID;
+                            // Select active scenario
+                            selectScenarioIDs.push(activeID);
+                            //
+                            // If top-level fragment has not changed, reselect scenarios
+                            //
+                            if (selectFragmentID === ScenarioModelService.getSelectedTopLevelFragmentID()) {
+                                ScenarioModelService.getSelectedScenarioIDs().forEach(function (s) {
+                                    if (s !== activeID) {
+                                        selectScenarioIDs.push(s);
+                                    }
+                                });
+                            }
                         }
                     }
-                    if (fragmentID === 0) {
+                    if (selectFragmentID === 0) {
                         //
                         // If no one scenario is active, but fragment and scenarios were previously selected in this view,
                         // apply the same selections.
-                        // Otherwise, select first fragment.
                         //
-                        if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
-                            fragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
-                            if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios)) {
-                                selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios)
-                            }
-                        }
-                        else {
-                            if ($scope.fragmentSelection.options.length > 1) {
-                                var firstFragment = $scope.fragmentSelection.options[0];
-                                fragmentID = firstFragment.fragmentID;
-                                firstFragment.selected = true;
-                            }
-                        }
+                        selectFragmentID = ScenarioModelService.getSelectedTopLevelFragmentID();
+                        selectScenarioIDs = ScenarioModelService.getSelectedScenarioIDs();
                     }
-                    $scope.fragmentSelection.options.forEach(function (fs) {
-                        fs.selected = (fs.fragmentID === fragmentID);
-                    });
-                    $scope.fragment = FragmentService.get(fragmentID);
-                    getFragmentScenarios();
-                    if (selectedScenarios) {
-                        $scope.scenarioSelection.options.forEach(function (fs) {
-                            fs.selected = selectedScenarios.some(function (s) {
-                                return fs.scenarioID === s.scenarioID;
-                            });
-                        });
-                        $scope.scenarios = selectedScenarios;
-                    }
+                    applySelections( topLevelFragments, scenarios, selectFragmentID, selectScenarioIDs);
                 }
             }
 
@@ -382,18 +423,14 @@ angular.module('lcaApp.fragment.LCIA',
                 }
             }
 
-            function getStateParams() {
-                if ( $stateParams.hasOwnProperty("scenarioID") && $stateParams.scenarioID !== undefined &&
-                    $stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
-                    $scope.navigationService = FragmentNavigationService.setContext(+$stateParams.scenarioID,
-                        +$stateParams.fragmentID);
-                    fragmentID = +$stateParams.fragmentID;
-                }
+            function navigationMode() {
+                return ( $stateParams.hasOwnProperty("scenarioID") && $stateParams.scenarioID !== undefined &&
+                    $stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) ;
             }
 
             function init() {
-                getStateParams();
-                if ( $scope.navigationService) {
+                if ( navigationMode()) {
+                    $scope.navigationService = FragmentNavigationService;
                     $scope.navigationSelection = {
                         options: [],
                         model: []
@@ -404,7 +441,6 @@ angular.module('lcaApp.fragment.LCIA',
                         options: [],
                         model: []
                     };
-                    //$scope.selectionConfirmed = getSelectionResults;
                     $scope.fragmentSelection = {
                         options: [],
                         model: []

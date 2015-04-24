@@ -64,12 +64,6 @@ angular.module('lcaApp.lciaMethod.detail',
                 ParamModelService.revertChanges( $scope.gridData);
             };
 
-            StatusService.startWaiting();
-            $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
-                FlowForLciaMethodService.load({lciaMethodID: $stateParams.lciaMethodID}) ,
-                LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
-                handleLciaFactorResults, StatusService.handleFailure);
-
             function setGridColumns() {
                 $scope.gridColumns = [
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
@@ -98,12 +92,10 @@ angular.module('lcaApp.lciaMethod.detail',
 
             function selectActiveScenario() {
                 var scenarioID = ScenarioModelService.getActiveID();
-                if (scenarioID) {
-                    var scenario = ScenarioModelService.get(scenarioID);
-                    if (scenario) {
-                        $scope.paramScenario = scenario;
-                    }
+                if (!scenarioID) {
+                    scenarioID = ScenarioModelService.getBaseCaseID();
                 }
+                $scope.paramScenario = ScenarioModelService.get(scenarioID);
             }
 
             /**
@@ -170,5 +162,13 @@ angular.module('lcaApp.lciaMethod.detail',
                 }
                 return paramResource;
             }
+
+
+            StatusService.startWaiting();
+            $q.all([LciaMethodService.load(), ImpactCategoryService.load(), ScenarioModelService.load(),
+                FlowForLciaMethodService.load({lciaMethodID: $stateParams.lciaMethodID}) ,
+                LciaFactorService.load({lciaMethodID: $stateParams.lciaMethodID})]).then(
+                handleLciaFactorResults, StatusService.handleFailure);
+
 
         }]);

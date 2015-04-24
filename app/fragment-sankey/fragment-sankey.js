@@ -258,6 +258,14 @@ angular.module('lcaApp.fragment.sankey',
                 $scope.scenarios = ScenarioModelService.getAll();
 
                 scenario = ScenarioModelService.get(scenarioID);
+                if (!scenario) {
+                    // Active scenario may have been deleted
+                    // Grab first one in list
+                    if ($scope.scenarios.length > 0) {
+                        scenario = $scope.scenarios[0];
+                        scenarioID = scenario.scenarioID;
+                    }
+                }
                 if (scenario) {
                     if (topLevelFragmentID === 0) {
                         topLevelFragmentID = scenario.topLevelFragmentID;
