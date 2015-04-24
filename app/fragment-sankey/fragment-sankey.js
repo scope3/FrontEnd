@@ -7,14 +7,12 @@ angular.module('lcaApp.fragment.sankey',
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
-            'SelectionService', 'SELECTION_KEYS',
+        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  FormatService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
-                  SelectionService, SELECTION_KEYS) {
+                  FormatService, FragmentNavigationService) {
             var fragmentID = 0,
-                scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
+                scenarioID = ScenarioModelService.getBaseCaseID(),
                 topLevelFragmentID = 0,
             //
                 graph = {},
@@ -276,11 +274,9 @@ angular.module('lcaApp.fragment.sankey',
                         // current scenario. In this case, activate first scenario selected in Fragment LCIA,
                         // if one exists. Otherwise, set topLevelFragmentID to top-level fragment ID of current scenario.
                         //
-                        if (SelectionService.contains(SELECTION_KEYS.fragmentScenarios)) {
-                            var selectedScenarios = SelectionService.get(SELECTION_KEYS.fragmentScenarios);
-                            if (selectedScenarios) {
-                                newScenario = ScenarioModelService.get(selectedScenarios[0].scenarioID);
-                            }
+                        var selectedScenarios = ScenarioModelService.getSelectedScenarioIDs();
+                        if (selectedScenarios.length > 0) {
+                            newScenario = ScenarioModelService.get(selectedScenarios[0]);
                         }
                         if (newScenario === null) {
                             topLevelFragmentID = scenario.topLevelFragmentID;
@@ -450,8 +446,9 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function getSelectedFragmentID() {
-                if (SelectionService.contains(SELECTION_KEYS.topLevelFragmentID)) {
-                    topLevelFragmentID = SelectionService.get(SELECTION_KEYS.topLevelFragmentID);
+                var selectedTopLevelFragmentID = ScenarioModelService.getSelectedTopLevelFragmentID();
+                if (selectedTopLevelFragmentID) {
+                    topLevelFragmentID = selectedTopLevelFragmentID;
                 }
             }
 
