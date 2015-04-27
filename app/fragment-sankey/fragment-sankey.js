@@ -160,7 +160,7 @@ angular.module('lcaApp.fragment.sankey',
                 var link, parentIndex,
                     nodeIndex = reverseIndex[element.fragmentFlowID],
                     magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
-                    value = (magnitude === null || magnitude <= 0) ? baseValue : baseValue + magnitude,
+                    value = (magnitude) ? baseValue + Math.abs(magnitude) : baseValue,
                     flow = FlowForFragmentService.get(element.flowID),
                     unit = $scope.selectedFlowProperty["referenceUnit"];
 
