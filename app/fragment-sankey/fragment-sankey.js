@@ -11,9 +11,8 @@ angular.module('lcaApp.fragment.sankey',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   FormatService, FragmentNavigationService) {
-            var fragmentID = 0,
-                scenarioID = ScenarioModelService.getBaseCaseID(),
-                topLevelFragmentID = 0,
+            var defaultScenarioID = ScenarioModelService.getBaseCaseID(),
+                defaultFragmentID = 0,
             //
                 graph = {},
                 reverseIndex = {},  // map fragmentFlowID to graph.nodes and graph.links
@@ -31,9 +30,6 @@ angular.module('lcaApp.fragment.sankey',
             $scope.$watch("mouseOverNode", onMouseOverNode);
 
             $scope.onScenarioChange = function() {
-                scenarioID = $scope.scenario.scenarioID;
-                topLevelFragmentID = $scope.scenario.topLevelFragmentID;
-                ScenarioModelService.setActiveID(scenarioID);
                 getData();
             };
 
@@ -44,6 +40,9 @@ angular.module('lcaApp.fragment.sankey',
              */
             function showFlowProperty(fpID) {
                 var fp = FlowPropertyForFragmentService.get(fpID);
+                if (!fp) {
+                    StatusService.handleFailure("Unable to get data for flow property with ID: " + fpID);
+                }
                 return fp &&
                     !(fp["referenceUnit"] === "kgP" || fp["referenceUnit"] === "kg-Av" || fp["referenceUnit"] === "MJ-Av");
             }
@@ -217,14 +216,14 @@ angular.module('lcaApp.fragment.sankey',
                 var fragState = FragmentNavigationService.getLast();
                 if (fragState) {
                     $scope.fragment = fragState;
-                    fragmentID = $scope.fragment.fragmentID;
                 } else {
-                    $scope.fragment = FragmentService.get(fragmentID);
+                    $scope.fragment = FragmentService.get($scope.scenario.topLevelFragmentID);
                     if ($scope.fragment) {
                         $scope.fragment.activityLevel = $scope.scenario["activityLevel"];
                         FragmentNavigationService.add($scope.fragment);
                     } else {
-                        StatusService.handleFailure("Invalid fragment ID : " + fragmentID);
+                        StatusService.handleFailure("Scenario, " + $scope.scenario.name + ", has invalid fragment ID : "
+                        + $scope.scenario.topLevelFragmentID);
                     }
                 }
                 return $scope.fragment;
@@ -239,7 +238,6 @@ angular.module('lcaApp.fragment.sankey',
                 var subFragment = FragmentService.get(fragmentFlow.subFragmentID);
                 if (subFragment) {
                     subFragment.activityLevel = $scope.fragment.activityLevel * fragmentFlow.nodeWeight;
-                    fragmentID = fragmentFlow.subFragmentID;
                     $scope.fragment = subFragment;
                     FragmentNavigationService.add($scope.fragment);
                     getDataForFragment();
@@ -249,50 +247,53 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             /**
-             * Function called after requests for resources have been fulfilled.
+             * Initialize scenario selection
              */
-            function displayLoadedData() {
+            function initScopeScenario() {
                 var scenario;
+
                 $scope.scenarios = ScenarioModelService.getAll();
 
-                scenario = ScenarioModelService.get(scenarioID);
+                scenario = ScenarioModelService.get(defaultScenarioID);
                 if (!scenario) {
                     // Active scenario may have been deleted
                     // Grab first one in list
                     if ($scope.scenarios.length > 0) {
                         scenario = $scope.scenarios[0];
-                        scenarioID = scenario.scenarioID;
                     }
                 }
                 if (scenario) {
-                    if (topLevelFragmentID === 0) {
-                        topLevelFragmentID = scenario.topLevelFragmentID;
-                    } else if (scenario.topLevelFragmentID !== topLevelFragmentID) {
-                        var newScenario = null;
+                    if (defaultFragmentID && scenario.topLevelFragmentID !== defaultFragmentID) {
                         //
-                        // If topLevelFragmentID comes from Fragment LCIA, then it may not be the top-level fragment of the
+                        // Previously selected fragmentID  may no longer be the top-level fragment of the
                         // current scenario. In this case, activate first scenario selected in Fragment LCIA,
-                        // if one exists. Otherwise, set topLevelFragmentID to top-level fragment ID of current scenario.
+                        // if one exists.
                         //
                         var selectedScenarios = ScenarioModelService.getSelectedScenarioIDs();
                         if (selectedScenarios.length > 0) {
-                            newScenario = ScenarioModelService.get(selectedScenarios[0]);
-                        }
-                        if (newScenario === null) {
-                            topLevelFragmentID = scenario.topLevelFragmentID;
-                        } else {
-                            scenario = newScenario;
-                            scenarioID = scenario.scenarioID;
+                            var newScenario = ScenarioModelService.get(selectedScenarios[0]);
+                            if (newScenario) {
+                                scenario = newScenario;
+                            }
                         }
                     }
-                    fragmentID = topLevelFragmentID;
                     $scope.scenario = scenario;
-                    ScenarioModelService.setActiveID(scenarioID);
-                    $scope.navigationService = FragmentNavigationService.setContext(scenarioID, topLevelFragmentID);
+                }
+            }
+
+            /**
+             * Function called after requests for resources have been fulfilled.
+             */
+            function displayLoadedData() {
+                if (!$scope.scenario) {
+                    initScopeScenario();
+                }
+                if ($scope.scenario) {
+                    ScenarioModelService.setActiveID($scope.scenario.scenarioID);
+                    $scope.navigationService =
+                        FragmentNavigationService.setContext($scope.scenario.scenarioID, $scope.scenario.topLevelFragmentID);
                     initScopeFragment();
                     getDataForFragment();
-                } else {
-                    StatusService.handleFailure("Invalid scenarioID: " + scenarioID);
                 }
             }
 
@@ -344,9 +345,10 @@ angular.module('lcaApp.fragment.sankey',
              * If successful, visualize selected fragment.
              */
             function getDataForFragment() {
+                var fragmentID = $scope.fragment.fragmentID;
                 StatusService.startWaiting();
                 $q.all([FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
-                    FragmentFlowService.load({scenarioID: scenarioID, fragmentID: fragmentID}),
+                    FragmentFlowService.load({scenarioID: $scope.scenario.scenarioID, fragmentID: fragmentID}),
                     FlowForFragmentService.load({fragmentID: fragmentID})])
                     .then(visualizeFragment,
                     StatusService.handleFailure);
@@ -367,7 +369,6 @@ angular.module('lcaApp.fragment.sankey',
              * @param index     Breadcrumb index
              */
             $scope.onParentFragmentSelected = function (fragment, index) {
-                fragmentID = fragment.fragmentID;
                 $scope.fragment = fragment;
                 FragmentNavigationService.setLast(index);
                 getDataForFragment();
@@ -385,8 +386,8 @@ angular.module('lcaApp.fragment.sankey',
                     switch (newVal.nodeType) {
                         case "Process" :
                             $state.go("fragment-sankey.process-instance", {
-                                    scenarioID: scenarioID,
-                                    fragmentID: fragmentID,
+                                    scenarioID: $scope.scenario.scenarioID,
+                                    fragmentID: $scope.fragment.fragmentID,
                                     fragmentFlowID: fragmentFlow.fragmentFlowID,
                                     activity: $scope.fragment.activityLevel *
                                     fragmentFlow.nodeWeight
@@ -448,23 +449,23 @@ angular.module('lcaApp.fragment.sankey',
             function getSelectedFragmentID() {
                 var selectedTopLevelFragmentID = ScenarioModelService.getSelectedTopLevelFragmentID();
                 if (selectedTopLevelFragmentID) {
-                    topLevelFragmentID = selectedTopLevelFragmentID;
+                    defaultFragmentID = selectedTopLevelFragmentID;
                 }
             }
 
             function getActiveScenarioID() {
                 var activeID = ScenarioModelService.getActiveID();
                 if (activeID) {
-                    scenarioID = activeID;
+                    defaultScenarioID = activeID;
                 }
             }
 
             function getStateParams() {
                 if ( $stateParams.hasOwnProperty("scenarioID") && $stateParams.scenarioID !== undefined) {
-                    scenarioID = +$stateParams.scenarioID;
+                    defaultScenarioID = +$stateParams.scenarioID;
                 }
                 if ($stateParams.hasOwnProperty("fragmentID") && $stateParams.fragmentID !== undefined) {
-                    topLevelFragmentID = +$stateParams.fragmentID;
+                    defaultFragmentID = +$stateParams.fragmentID;
                 }
             }
 
