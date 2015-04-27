@@ -19,7 +19,7 @@ sankey-diagram .link:hover {
 }
 
 sankey-diagram .node rect {
-    cursor: move;
+    /*cursor: move;*/
     shape-rendering: crispEdges;
     opacity: 1;
     stroke-width:2;

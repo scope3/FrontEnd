@@ -135,11 +135,11 @@ angular.module('lcaApp.fragment.sankey',
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
                     node.selectable = true;
-                    selectTip = "Double click to view process instance";
+                    selectTip = "Click to view process instance";
                 } else if ("subFragmentID" in element) {
                     refObj = FragmentService.get(element.subFragmentID);
                     node.selectable = true;
-                    selectTip = "Double click to descend";
+                    selectTip = "Click to descend";
                 }
                 if (refObj) {
                     node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
@@ -383,7 +383,6 @@ angular.module('lcaApp.fragment.sankey',
             function onNodeSelectionChange(newVal) {
                 if (newVal) {
                     var fragmentFlow = FragmentFlowService.get(newVal.nodeID);
-                    $log.info("Clicked on node with weight = " + fragmentFlow.nodeWeight);
                     switch (newVal.nodeType) {
                         case "Process" :
                             $state.go("fragment-sankey.process-instance", {
