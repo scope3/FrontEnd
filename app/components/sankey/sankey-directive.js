@@ -115,6 +115,18 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             });
         }
 
+        /**
+         * Handle node drag move
+         * @param {{ x: number, y: number }} d Reference to graph node data
+         */
+        function onDragMove(d) {
+            d3.select(this).attr("transform",
+                "translate(" + d.x + "," + (
+                    d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
+                ) + ")");
+            sankey.relayout();
+            svg.select("#linkGroup").selectAll(".link").attr("d", sankey.link());
+        }
 
         /**
          * Draw the sankey graph
@@ -177,6 +189,13 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                     return "translate(" + d.x + "," + d.y + ")";
                 })
                 .style("opacity", 1);
+
+            node.call(d3.behavior.drag()
+                    .origin(function(d) { return d; })
+                    .on("dragstart", function() {
+                        this.parentNode.appendChild(this); })
+                    .on("drag", onDragMove));
+
             node.selectAll("rect")
                 .transition().duration(transitionTime)
                 .attr("height", function (n) {
@@ -215,7 +234,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                 .filter(function (d) {
                     return (d.selectable);
                 })
-                .style("cursor", "pointer")
+                //.style("cursor", "pointer")
                 .on("click", onNodeClick)
                 .style("stroke", function (n) {
                     return d3.rgb(n.color).darker(1);

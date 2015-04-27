@@ -135,11 +135,11 @@ angular.module('lcaApp.fragment.sankey',
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
                     node.selectable = true;
-                    selectTip = "Click to view process instance";
+                    selectTip = "Double click to view process instance";
                 } else if ("subFragmentID" in element) {
                     refObj = FragmentService.get(element.subFragmentID);
                     node.selectable = true;
-                    selectTip = "Click to descend";
+                    selectTip = "Double click to descend";
                 }
                 if (refObj) {
                     node.toolTip = node.toolTip + "<p>" + refObj.name + "</p>";
@@ -161,7 +161,7 @@ angular.module('lcaApp.fragment.sankey',
                     nodeIndex = reverseIndex[element.fragmentFlowID],
                     magnitude = getMagnitude(element, $scope.selectedFlowProperty["flowPropertyID"]),
                     value = (magnitude) ? baseValue + Math.abs(magnitude) : baseValue,
-                    flow = FlowForFragmentService.get(element.flowID),
+                    flow = (element.hasOwnProperty("flowID") ? FlowForFragmentService.get(element.flowID) : null),
                     unit = $scope.selectedFlowProperty["referenceUnit"];
 
                 if ("parentFragmentFlowID" in element) {
@@ -174,29 +174,30 @@ angular.module('lcaApp.fragment.sankey',
                 } else {
                     parentIndex = 0;
                 }
-                link = {
-                    nodeID: element.fragmentFlowID,
-                    flowID: element.flowID,
-                    value: value
-                };
+
                 if (flow) {
+                    link = {
+                        nodeID: element.fragmentFlowID,
+                        flowID: element.flowID,
+                        value: value
+                    };
                     if (magnitude) {
                         link.magnitude = magnitude;
                         link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                     } else {
                         link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
                     }
+                    if (element.direction === "Input") {
+                        link.source = nodeIndex;
+                        link.target = parentIndex;
+                    } else {
+                        link.source = parentIndex;
+                        link.target = nodeIndex;
+                    }
+                    graph.links.push(link);
                 } else {
                     throw new Error ("Flow with ID, " + flowID + ", was not found.");
                 }
-                if (element.direction === "Input") {
-                    link.source = nodeIndex;
-                    link.target = parentIndex;
-                } else {
-                    link.source = parentIndex;
-                    link.target = nodeIndex;
-                }
-                graph.links.push(link);
             }
 
             /**
