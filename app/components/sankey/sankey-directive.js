@@ -1,7 +1,7 @@
 /**
  * Directive for reusable d3 sankey diagram
  */
-angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
+angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
 .directive('sankeyDiagram', ['SankeyService', 'TipService', function( SankeyService, TipService) {
 
     function link(scope, element, attrs) {
@@ -64,10 +64,15 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
         function restoreView() {
             svg.selectAll(".node")
                 .transition()
-                .style("opacity", opacity.node);
+                .style("opacity", opacity.node)
+                .select(".node-label")
+                .style("visibility", "visible");
             svg.selectAll(".link")
                 .transition()
+                .select("path")
                 .style("stroke-opacity", opacity.link);
+            svg.selectAll(".link-label")
+                .style("visibility", "hidden");
             TipService.hide();
             scope.$apply(function(){
                 scope.mouseOverNode = null;
@@ -95,21 +100,56 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
          * @param {Number}  index   D3 data index
          */
         function onMouseOverNode(node, index) {
+            var nodeSelection, linkSelection;
+
             d3.event.stopPropagation();
-            svg.selectAll(".node")
+            nodeSelection = svg.selectAll(".node")
                 .transition()
                 .style("opacity", function (d, i) {
                     return i === index ? opacity.node : 0.5;
                 });
 
-            svg.selectAll(".link")
-                .transition()
+            linkSelection = svg.selectAll(".link");
+            linkSelection.transition()
+                .select("path")
                 .style("stroke-opacity", function (l) {
                     return (
                         (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID) ?
                             0.5 : opacity.link);
                 });
+
             TipService.show(node, index);
+            nodeSelection.selectAll(".node-label").style("visibility", "hidden");
+            linkSelection.filter( function(l) {
+                    return l.source.nodeID === node.nodeID;
+                })
+                .select(".link-label")
+                .attr("x", node.x + 6 + sankey.nodeWidth())
+                .attr("text-anchor", "start")
+                .attr("y", function(d) { return node.y + d.sy + (d.dy / 2) });
+            linkSelection
+                .select(".link-label")
+                .style("visibility", function (l) {
+                    return (
+                        (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID)  ?
+                            "visible" : "hidden");
+                })
+                .text(function (d) {
+                    if ("toolTip" in d)
+                        return d["toolTip"];
+                });
+
+            //    .filter(function(d)
+            //    .attr("x", -6)
+            //    .attr("y", function(d) { return d.dy / 2; })
+            //    .attr("dy", ".35em")
+            //    .attr("text-anchor", "end")
+            //    .attr("transform", null)
+            //    .text(function(d) { return d.name; })
+            //    .filter(function(d) { return d.x < width / 2; })
+            //    .attr("x", 6 + sankey.nodeWidth())
+            //    .attr("text-anchor", "start");
+
             scope.$apply(function(){
                 scope.mouseOverNode = node;
             });
@@ -152,11 +192,13 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             link = svg.select("#linkGroup").selectAll(".link")
                 .data(graph.links);
             if (rebuild) {
-                link.enter().append("path")
-                    .attr("class", "link")
-                    .append("title");
+                link.enter().append("g")
+                    .attr("class", "link");
+                link.append("path");
+                link.append("text").attr("class", "link-label");
+
             }
-            link.transition().duration(transitionTime)
+            link.select("path").transition().duration(transitionTime)
                 .attr("d", path)
                 .style("stroke-width", function (d) {
                     return Math.max(minNodeHeight, d.dy);
@@ -167,8 +209,14 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                 .style("stroke-opacity", 0.2)
                 .sort(function (a, b) {
                     return b.dy - a.dy;
-                });
+                })
+            ;
             link.select("title")
+                .text(function (d) {
+                    if ("toolTip" in d)
+                        return d["toolTip"];
+                });
+            link.select("link-label")
                 .text(function (d) {
                     if ("toolTip" in d)
                         return d["toolTip"];
@@ -183,7 +231,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
                 node.enter().append("g")
                     .attr("class", "node");
                 node.append("rect");
-                node.append("text");
+                node.append("text").attr("class", "node-label");
             }
             node.transition().duration(transitionTime)
                 .attr("transform", function (d) {
@@ -213,15 +261,14 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey', 'd3.tip'])
             node.on('mouseover', onMouseOverNode);
 
             //
-            // Position fragment flow name to the right or left of node.
+            // Position fragment flow name to the right of node.
             //
-            node.selectAll("text")
+            node.selectAll(".node-label")
                 .transition().duration(transitionTime)
                 .attr("y", function (d) {
                     return Math.max(minNodeHeight, d.dy) / 2;
                 })
                 .attr("dy", ".35em")
-                .attr("text-anchor", "end")
                 .attr("transform", null)
                 .text(function (d) {
                     return getNodeLabel(d);

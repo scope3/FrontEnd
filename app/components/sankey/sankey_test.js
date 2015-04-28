@@ -7,7 +7,7 @@ describe('Unit test sankey diagram directive', function() {
 
 
 // Load the module which contains the directive
-    beforeEach(module('lcaApp.sankey'));
+    beforeEach(module('lcaApp.sankey.directive'));
 
 
 // Store references to $rootScope and $compile
@@ -96,7 +96,7 @@ describe('Unit test sankey diagram directive', function() {
 describe('Unit test d3.sankey service', function() {
 
     // load modules
-    beforeEach(module('d3.sankey'));
+    beforeEach(module('d3.sankey.service'));
 
     // Test service availability
     it('check the existence of SankeyService factory', inject(function(SankeyService) {

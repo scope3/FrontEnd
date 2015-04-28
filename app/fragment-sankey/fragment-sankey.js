@@ -1,7 +1,7 @@
 'use strict';
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
-                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.status.service',
+                ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario',
                     'lcaApp.selection.service'])
     .controller('FragmentSankeyCtrl',

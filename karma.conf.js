@@ -14,6 +14,7 @@ module.exports = function(config){
       'app/bower_components/isteven-angular-multiselect/isteven-multi-select.js',
       'app/bower_components/colorbrewer/colorbrewer.js',
       'app/bower_components/d3/d3.js',
+      'app/bower_components/d3-plugins/sankey/sankey.js',
       'app/bower_components/d3-tip/index.js',
       'app/bower_components/spin.js/spin.js',
       'app/bower_components/angular-spinner/angular-spinner.js',
