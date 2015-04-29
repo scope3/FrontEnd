@@ -18,6 +18,8 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
             sankeyWidth = width - 150, // leave room for labels on right
             svg,
             color = d3.scale.ordinal(),
+            // TODO : make sankey link colors configurable
+            linkColors = { positive : colorbrewer.Set2[8][6], negative : colorbrewer.Set2[8][7] },
             /**
              * sankey variables
              */
@@ -28,7 +30,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
             graph = {},
             baseValue = 1E-14,  // sankey link base value (replaces 0).
             minNodeHeight = 3,  // Minimum height of sankey node/link
-            opacity = { node: 1, link: 0.2 }; // default opacity settings
+            opacity = { node: 1, link: 0.5 }; // default opacity settings
 
         /**
          * Initial preparation of svg element.
@@ -106,7 +108,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
             nodeSelection = svg.selectAll(".node")
                 .transition()
                 .style("opacity", function (d, i) {
-                    return i === index ? opacity.node : 0.5;
+                    return i === index ? 0.9 : 0.2;
                 });
 
             linkSelection = svg.selectAll(".link");
@@ -115,7 +117,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 .style("stroke-opacity", function (l) {
                     return (
                         (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID) ?
-                            0.3 : opacity.link);
+                            opacity.link : 0.2);
                 });
 
             TipService.show(node, index);
@@ -206,7 +208,10 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 .style("stroke-dasharray", function (d) {
                     return (d.value === baseValue) ? "5,5" : null;
                 })
-                .style("stroke-opacity", 0.2)
+                .style("stroke", function (d) {
+                    return (d.hasOwnProperty("magnitude") && d.magnitude > 0) ? linkColors.positive : linkColors.negative;
+                })
+                .style("stroke-opacity", opacity.link)
                 .sort(function (a, b) {
                     return b.dy - a.dy;
                 })
@@ -233,7 +238,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 .attr("transform", function (d) {
                     return "translate(" + d.x + "," + d.y + ")";
                 })
-                .style("opacity", 1);
+                .style("opacity", opacity.node);
 
             //node.call(d3.behavior.drag()
             //        .origin(function(d) { return d; })

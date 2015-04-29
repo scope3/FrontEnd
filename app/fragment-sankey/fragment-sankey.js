@@ -20,7 +20,7 @@ angular.module('lcaApp.fragment.sankey',
                 magFormat = FormatService.format();
 
 
-            $scope.color = { domain: (["Fragment", "InputOutput", "Cutoff", "Process", "Background"]), range: colorbrewer.Set3[5], property: "nodeType" };
+            $scope.color = { domain: (["Fragment", "InputOutput", "Process", "Cutoff",  "Background"]), range: colorbrewer.Set2[5], property: "nodeType" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
