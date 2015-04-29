@@ -10,7 +10,6 @@ module.exports = function(config){
       'app/bower_components/angular-ui-router/release/angular-ui-router.js',
       'app/bower_components/angular-resource/angular-resource.js',
       'app/bower_components/angular-mocks/angular-mocks.js',
-      'app/bower_components/lodash/dist/lodash.min.js',
       'app/bower_components/isteven-angular-multiselect/isteven-multi-select.js',
       'app/bower_components/colorbrewer/colorbrewer.js',
       'app/bower_components/d3/d3.js',
