@@ -181,11 +181,13 @@ angular.module('lcaApp.fragment.sankey',
                         flowID: element.flowID,
                         value: value
                     };
-                    if (magnitude) {
-                        link.magnitude = magnitude;
-                        link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
-                    } else {
+                    if (magnitude === null) {
+                        link.unit = "N/A";
                         link.toolTip = flow.name;
+                    } else {
+                        link.magnitude = magnitude;
+                        link.unit = unit;
+                        link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                     }
                     if (element.direction === "Input") {
                         link.source = nodeIndex;

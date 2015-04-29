@@ -39,49 +39,35 @@
     </div>
 </div>
 <div class="row">
-        <div class="sankey-container">
-            <!--suppress HtmlUnknownTag -->
-            <sankey-diagram graph="graph" color="color" selected-node="selectedNode"
-                            mouse-over-node="mouseOverNode"></sankey-diagram>
-        </div>
-    <div class="row">
-        <div class="flow-container" ng-show="mouseOverNode">
-            <label>Input Flows</label>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Magnitude</th>
-                    <th>Unit</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="if in inputFlows">
-                    <td>{{if.name}}</td>
-                    <td>{{if.magnitude | numFormat}}</td>
-                    <td>{{if.unit}}</td>
-                </tr>
-                </tbody>
-            </table>
-            <label>Output Flows</label>
-            <table class="table">
-                <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Magnitude</th>
-                    <th>Unit</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="of in outputFlows">
-                    <td>{{of.name}}</td>
-                    <td>{{of.magnitude | numFormat}}</td>
-                    <td>{{of.unit}}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+    <div class="sankey-container">
+        <!--suppress HtmlUnknownTag -->
+        <sankey-diagram graph="graph" color="color" selected-node="selectedNode"
+                        mouse-over-node="mouseOverNode"></sankey-diagram>
     </div>
 </div>
+<div class="row">
+    <div class="flow-container" ng-show="graph">
+        <label>Fragment Flows</label>
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Source Node</th>
+                <th>Target Node</th>
+                <th>Magnitude</th>
+                <th>Unit</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr ng-repeat="f in graph.links">
+                <td>{{f.source.nodeName}}</td>
+                <td>{{f.target.nodeName}}</td>
+                <td>{{f.magnitude | numFormat}}</td>
+                <td>{{f.unit}}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 
 
