@@ -3,12 +3,12 @@ sankey-diagram text {
     font: 10px sans-serif;
 }
 
-sankey-diagram .node text {
-    pointer-events: none;
-    text-shadow: 0 1px 0 #fff;
-}
+/*sankey-diagram text {*/
+    /*pointer-events: none;*/
+    /*text-shadow: 0 1px 0 #fff;*/
+/*}*/
 
-sankey-diagram .link {
+sankey-diagram .link path {
     fill: none;
     stroke: #000;
     stroke-opacity: .2;
@@ -23,10 +23,6 @@ sankey-diagram .node rect {
     shape-rendering: crispEdges;
     opacity: 1;
     stroke-width:2;
-}
-
-sankey-diagram .node text {
-    text-shadow: 0 1px 0 #fff;
 }
 
 sankey-diagram {

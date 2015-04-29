@@ -185,7 +185,7 @@ angular.module('lcaApp.fragment.sankey',
                         link.magnitude = magnitude;
                         link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                     } else {
-                        link.toolTip = flow.name + " does not have property : " + $scope.selectedFlowProperty["name"];
+                        link.toolTip = flow.name;
                     }
                     if (element.direction === "Input") {
                         link.source = nodeIndex;

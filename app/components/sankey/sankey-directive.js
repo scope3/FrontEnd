@@ -100,7 +100,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
          * @param {Number}  index   D3 data index
          */
         function onMouseOverNode(node, index) {
-            var nodeSelection, linkSelection;
+            var nodeSelection, linkSelection, linkLabels;
 
             d3.event.stopPropagation();
             nodeSelection = svg.selectAll(".node")
@@ -115,40 +115,42 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 .style("stroke-opacity", function (l) {
                     return (
                         (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID) ?
-                            0.5 : opacity.link);
+                            0.3 : opacity.link);
                 });
 
             TipService.show(node, index);
             nodeSelection.selectAll(".node-label").style("visibility", "hidden");
-            linkSelection.filter( function(l) {
-                    return l.source.nodeID === node.nodeID;
-                })
-                .select(".link-label")
-                .attr("x", node.x + 6 + sankey.nodeWidth())
-                .attr("text-anchor", "start")
-                .attr("y", function(d) { return node.y + d.sy + (d.dy / 2) });
-            linkSelection
-                .select(".link-label")
-                .style("visibility", function (l) {
-                    return (
-                        (l.source.nodeID === node.nodeID || l.target.nodeID === node.nodeID)  ?
-                            "visible" : "hidden");
-                })
-                .text(function (d) {
-                    if ("toolTip" in d)
-                        return d["toolTip"];
+
+            linkLabels = linkSelection.select(".link-label")
+                .style("visibility", "hidden")
+                .filter( function(l) {
+                    return l.hasOwnProperty("source") && l.hasOwnProperty("target") &&
+                        l.source && l.target;
                 });
 
-            //    .filter(function(d)
-            //    .attr("x", -6)
-            //    .attr("y", function(d) { return d.dy / 2; })
-            //    .attr("dy", ".35em")
-            //    .attr("text-anchor", "end")
-            //    .attr("transform", null)
-            //    .text(function(d) { return d.name; })
-            //    .filter(function(d) { return d.x < width / 2; })
-            //    .attr("x", 6 + sankey.nodeWidth())
-            //    .attr("text-anchor", "start");
+            linkLabels.filter( function(l) {
+                    return l.source.nodeID === node.nodeID;
+                })
+                .attr("x", function(l) {
+                    return l.target.x - 6;
+                })
+                .attr("text-anchor", "end")
+                .attr("y", function(l) {
+                    return l.target.y + l.ty + l.dy / 2
+                })
+                .style("visibility", "visible");
+
+            linkLabels.filter( function(l) {
+                    return l.target.nodeID === node.nodeID;
+                })
+                .attr("x", function(l) {
+                    return l.source.x + 6 + sankey.nodeWidth();
+                })
+                .attr("text-anchor", "start")
+                .attr("y", function(l) {
+                    return l.source.y + l.sy + l.dy / 2
+                })
+                .style("visibility", "visible");
 
             scope.$apply(function(){
                 scope.mouseOverNode = node;
@@ -194,9 +196,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
             if (rebuild) {
                 link.enter().append("g")
                     .attr("class", "link");
-                link.append("path");
-                link.append("text").attr("class", "link-label");
-
+                link.append("path").append("title");
             }
             link.select("path").transition().duration(transitionTime)
                 .attr("d", path)
@@ -211,16 +211,11 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                     return b.dy - a.dy;
                 })
             ;
-            link.select("title")
+            link.select("path").select("title")
                 .text(function (d) {
-                    if ("toolTip" in d)
-                        return d["toolTip"];
+                    return d["toolTip"];
                 });
-            link.select("link-label")
-                .text(function (d) {
-                    if ("toolTip" in d)
-                        return d["toolTip"];
-                });
+
 
             if (rebuild) {
                 svg.append("g").attr("id", "nodeGroup");
@@ -232,6 +227,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                     .attr("class", "node");
                 node.append("rect");
                 node.append("text").attr("class", "node-label");
+                link.append("text").attr("class", "link-label");
             }
             node.transition().duration(transitionTime)
                 .attr("transform", function (d) {
@@ -275,6 +271,13 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 })
                 .attr("x", 6 + sankey.nodeWidth())
                 .attr("text-anchor", "start");
+            link.select(".link-label")
+                .style("visibility", "hidden")
+                .attr("dy", ".35em")
+                .attr("transform", null)
+                .text(function (d) {
+                    return d["toolTip"];
+                });
             //
             // Nodes with click behavior
             //
