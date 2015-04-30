@@ -6,13 +6,13 @@ angular.module('lcaApp.home',
                ['lcaApp.resources.service', 'lcaApp.models.scenario', 'lcaApp.status.service', 'ui.bootstrap', 'ui.router',
                    'lcaApp.scenario.clone', 'lcaApp.modal.confirm'])
 .controller('HomeCtrl', ['$scope', '$window', 'StatusService', '$state',
-            'ScenarioModelService', 'FragmentService', 'LciaMethodService', '$q', '$modal',
+            'ScenarioModelService', 'ScenarioGroupService', 'FragmentService', 'LciaMethodService', '$q', '$modal',
     function($scope, $window, StatusService, $state,
-             ScenarioModelService, FragmentService, LciaMethodService, $q, $modal) {
+             ScenarioModelService, ScenarioGroupService, FragmentService, LciaMethodService, $q, $modal) {
 
         $scope.fragments = {};  // Fragment resources, indexed by scenarioID
 
-        $scope.canCreate = ScenarioModelService.canCreate;
+        $scope.canCreate = false;
 
         /**
          * Click handler for New Scenario button.
@@ -69,15 +69,7 @@ angular.module('lcaApp.home',
             modalInstance.result.then(requestClone);
         };
 
-        /**
-         * Determines if Delete button should be hidden on row.
-         * Delete button is hidden if user does not have access to delete the scenario on button row.
-         * @param {{ scenarioID: number, name: string }} scenario
-         * @returns {boolean}
-         */
-        $scope.hideDelete = function(scenario) {
-            return ! ScenarioModelService.canDelete(scenario);
-        };
+        $scope.canDelete = ScenarioModelService.canDelete;
 
         function requestClone(scenario) {
             var urlParam = { cloneScenario : scenario.scenarioID};
@@ -103,6 +95,7 @@ angular.module('lcaApp.home',
 
         function displayScenarios() {
             var scenarios = ScenarioModelService.getAll();
+
             scenarios.forEach(function (scenario) {
                 $scope.fragments[scenario.topLevelFragmentID] = FragmentService.get(scenario.topLevelFragmentID);
             });
@@ -119,11 +112,13 @@ angular.module('lcaApp.home',
         }
 
         StatusService.startWaiting();
-        $q.all([ScenarioModelService.load(), FragmentService.load(), LciaMethodService.load()]).then (
-            function() {
-                StatusService.handleSuccess();
-                displayScenarios();
-                displayLciaMethods();
-            }, StatusService.handleFailure);
+        $q.all([ScenarioModelService.load(), ScenarioGroupService.load(), FragmentService.load(),
+            LciaMethodService.load()]).then(
+                function () {
+                    StatusService.handleSuccess();
+                    $scope.canCreate = ScenarioModelService.canCreateScenario(ScenarioGroupService.getAll());
+                    displayScenarios();
+                    displayLciaMethods();
+                }, StatusService.handleFailure);
 
 }]);

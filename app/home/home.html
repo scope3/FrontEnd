@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <span>Scenarios</span>
-        <button class="btn btn-link pull-right" ng-show="canCreate()" ng-click="createScenario()">New</button>
+        <button class="btn btn-link pull-right" ng-show="canCreate" ng-click="createScenario()">New</button>
         <div class="clearfix"></div>
     </div>
     <table class="table table-condensed">
@@ -28,11 +28,11 @@
             </td>
             <td>
                 <button type="button" class="btn btn-default btn-sm" title="Clone" ng-click="cloneScenario(scenario)"
-                        ng-show="canCreate()">
+                        ng-show="canCreate">
                     <span class="glyphicon glyphicon-duplicate" aria-hidden="true"  ></span>
                 </button>
                 <button type="button" class="btn btn-default btn-sm" title="Delete" ng-click="deleteScenario(scenario)"
-                        ng-hide="hideDelete(scenario)" >
+                        ng-show="canDelete(scenario)" >
                     <span class="glyphicon glyphicon-trash" aria-hidden="true"  ></span>
                 </button>
             </td>

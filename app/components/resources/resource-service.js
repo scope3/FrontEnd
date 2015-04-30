@@ -34,7 +34,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "process" : API_ROOT + "processes",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
                 "processFlow" : API_ROOT + "processes/:processID/processflows",
-                "scenario" : API_ROOT + "scenarios/:scenarioID"
+                "scenario" : API_ROOT + "scenarios/:scenarioID",
+                "scenarioGroup" : API_ROOT + "scenariogroups/:scenarioGroupID"
             };
 
             resourceService.getResource = function( routeKey) {
@@ -80,8 +81,12 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     { loadFilter: null,
                       resource: resourceService.getResource(routeKey), // Instance of $resource
                       objects: null,    // Loaded objects
-                      extensionFactory: null // Factory for extending loaded objects
+                      extensionFactory: null, // Factory for extending loaded objects
+                      authenticated : false   // Web API requests are unauthenticated unless this
+                                              // application's URL contains auth parameter
                     };
+
+                svc.authenticated = resourceService.getAuthParam() != null;
 
                 svc.handleNewObjects = function(objects) {
                     if (svc.extensionFactory) {
@@ -282,6 +287,11 @@ angular.module('lcaApp.resources.service')
             };
 
             return svc;
+        }
+    ])
+    .factory('ScenarioGroupService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('ScenarioGroupService', "scenarioGroup", "scenarioGroupID");
         }
     ])
     .factory('FragmentService', ['ResourceService',

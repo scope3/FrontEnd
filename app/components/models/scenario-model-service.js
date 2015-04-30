@@ -52,6 +52,13 @@ angular.module('lcaApp.models.scenario', ['lcaApp.resources.service', 'LocalStor
                 return fs ? fs : [];
             };
 
+            svc.canCreateScenario = function (scenarioGroups) {
+                return svc.authenticated &&
+                    scenarioGroups.some( function(sg) {
+                        return sg.hasOwnProperty("visibility") && sg.visibility === "Private";
+                });
+            };
+
             return svc;
         }
     ]);
