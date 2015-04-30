@@ -38,7 +38,7 @@ angular.module('lcaApp.idmap.service', [])
              * Get the object with a given object ID
              * @param {string} routeKey     Key to the associative array
              * @param {number} idValue      Object ID value
-             * @returns {{}}                The object, if found. Otherwise, null.
+             * @returns {null | {}}                The object, if found. Otherwise, null.
              */
             get: function (routeKey, idValue) {
                 if (idMap.hasOwnProperty(routeKey) && idMap[routeKey].hasOwnProperty(idValue)) {

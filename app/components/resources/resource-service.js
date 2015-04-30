@@ -5,11 +5,11 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
     .constant('API_ROOT', "http://localhost:60393/api/")
     .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
     .constant('BASE_SCENARIO_GROUP_ID', 1)
-    .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q',
-        function($resource, API_ROOT, IdMapService, $q){
+    .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q', '$location',
+        function($resource, API_ROOT, IdMapService, $q, $location){
             var resourceService = {},   // Singleton creates specific service type objects
                 services = {},          // Services created for, and shared by controllers
-                authToken = '2514bc8', // Authentication token. Placeholder, to be obtained from login in the future
+                authParamObject = null, // '2514bc8' - Authentication token is now extracted from URL
                 actions = {
                 // Custom actions
                     update: { method: 'PUT' },
@@ -43,9 +43,29 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 }
             };
 
+            /**
+             * Extract auth token from current URL. Only do this once per app session.
+             * @returns { string | null }
+             */
+            resourceService.getAuthParam = function() {
+                if (authParamObject === null) {
+                    authParamObject = $location.search();
+                }
+                return authParamObject.hasOwnProperty("auth") ? authParamObject.auth : null;
+            };
+
+            /**
+             * Add auth token to web API request
+             * @param filter
+             * @returns {*|{}}
+             */
             resourceService.addAuthParam = function( filter) {
-                var paramFilter = filter || {};
-                paramFilter.auth = authToken;
+                var paramFilter = filter || {},
+                    authParam = resourceService.getAuthParam();
+
+                if (authParam) {
+                    paramFilter.auth = authParam;
+                }
                 return paramFilter;
             };
 
@@ -136,8 +156,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                     svc.idName = idName;
                     /**
                      * Get loaded resource by object ID
-                     * @param id    Object ID value
-                     * @returns loaded resource, if found.
+                     * @param { number } id     Object ID value
+                     * @returns { null | {} }   Loaded resource, if found.
                      */
                     svc.get = function(id) {
                        return IdMapService.get(routeKey, id);
@@ -250,6 +270,15 @@ angular.module('lcaApp.resources.service')
              */
             svc.canUpdate = function (scenario) {
                 return scenario.scenarioGroupID !== BASE_SCENARIO_GROUP_ID;
+            };
+
+            /**
+             * Can user create scenario? Any authenticated user should be able to create scenario.
+             * If URL does not contain auth param, then user cannot be authenticated.
+             * @returns {boolean}
+             */
+            svc.canCreate = function () {
+                return ResourceService.getAuthParam() !== null;
             };
 
             return svc;

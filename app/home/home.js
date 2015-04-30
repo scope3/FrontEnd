@@ -12,12 +12,14 @@ angular.module('lcaApp.home',
 
         $scope.fragments = {};  // Fragment resources, indexed by scenarioID
 
+        $scope.canCreate = ScenarioModelService.canCreate;
+
         /**
          * Click handler for New Scenario button.
          * Route to New Scenario view.
          */
         $scope.createScenario = function() {
-            $state.go("new-scenario");
+            $state.go(".new-scenario");
         };
 
         /**

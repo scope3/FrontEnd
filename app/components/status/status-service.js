@@ -27,8 +27,13 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                     errMsg = err;
                 } else {
                     if (err.hasOwnProperty("status")) {
-                        if (err["status"] == 409) {
-                            errMsg = "Web API request conflicts with another request that is in progress.\n";
+                        switch (+err["status"]) {
+                            case 401 :
+                                errMsg = "Web API authorization failed.\n";
+                                break;
+                            case 409 :
+                                errMsg = "Web API request conflicts with another request that is in progress.\n";
+                                break;
                         }
                         if (err.hasOwnProperty("data")) {
                             if (typeof (err["data"])  === "string") {

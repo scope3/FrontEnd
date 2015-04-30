@@ -25,7 +25,7 @@ angular.module('lcaApp.fragment.LCIA',
              */
             $scope.onFragmentChange = function () {
                 var selectedFragment = $scope.fragmentSelection.model[0];
-                if (selectedFragment.fragmentID !== $scope.fragment.fragmentID) {
+                if (!$scope.fragment || selectedFragment.fragmentID !== $scope.fragment.fragmentID) {
                     clearWaterfalls();
                     $scope.fragment = selectedFragment;
                     getFragmentScenarios();

@@ -18,13 +18,22 @@ angular.module('lcaApp', [
 )
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
         function ($stateProvider, $urlRouterProvider, localStorageServiceProvider) {
-            $urlRouterProvider.otherwise("/");
+            //$urlRouterProvider.otherwise("/");
+            // Invalid route, go home with extracted auth parameter
+            $urlRouterProvider.otherwise(function($injector, $location){
+                var homeURL = "/home",
+                    searchObject = $location.search();
+                if ( searchObject && searchObject.hasOwnProperty("auth")) {
+                    homeURL = "/home?auth=" + searchObject.auth;
+                }
+                return homeURL;
+            });
             $stateProvider.state('home', {
-                url: "/",
+                url: "/home?auth",
                 templateUrl: 'home/home.html',
                 controller: 'HomeCtrl'
             })
-                .state('fragment-sankey', {
+                .state('home.fragment-sankey', {
                     url: '/fragment-sankey?scenarioID&fragmentID',
                     views: {
                         "@": {
@@ -33,7 +42,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.process-instance', {
+                .state('home.fragment-sankey.process-instance', {
                     url: '/process-instance/{fragmentFlowID}?activity',
                     views: {
                         "@": {
@@ -42,7 +51,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.process-instance.flow-param', {
+                .state('home.fragment-sankey.process-instance.flow-param', {
                     url: '/flow-param/{processID}/{lciaMethodID}',
                     views: {
                         "@": {
@@ -51,7 +60,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-sankey.fragment-lcia', {
+                .state('home.fragment-sankey.fragment-lcia', {
                     url: '/fragment-lcia',
                     views: {
                         "@": {
@@ -60,7 +69,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('process-lcia', {
+                .state('home.process-lcia', {
                     url: '/process-lcia',
                     views: {
                         "@": {
@@ -69,7 +78,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('process-lcia.flow-param', {
+                .state('home.process-lcia.flow-param', {
                     url: '/flow-param/{scenarioID}/{processID}/{lciaMethodID}',
                     views: {
                         "@": {
@@ -78,7 +87,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-                .state('fragment-lcia', {
+                .state('home.fragment-lcia', {
                     url: '/fragment-lcia',
                     views: {
                         "@": {
@@ -87,7 +96,7 @@ angular.module('lcaApp', [
                         }
                     }
                 })
-            .state('lcia-method', {
+            .state('home.lcia-method', {
                 url: '/lcia-method/{lciaMethodID}',
                 views: {
                     "@": {
@@ -96,7 +105,7 @@ angular.module('lcaApp', [
                     }
                 }
             })
-            .state('new-scenario', {
+            .state('home.new-scenario', {
                 url: '/scenario/new',
                 views: {
                     "@": {
@@ -105,7 +114,7 @@ angular.module('lcaApp', [
                     }
                 }
             })
-            .state('scenario', {
+            .state('home.scenario', {
                 url: '/scenario/{scenarioID}',
                 views: {
                     "@": {
@@ -114,7 +123,7 @@ angular.module('lcaApp', [
                     }
                 }
             })
-                .state('scenario.edit', {
+                .state('home.scenario.edit', {
                     url: '/edit',
                     views: {
                         "@": {

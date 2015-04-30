@@ -2,7 +2,7 @@
 <div class="panel panel-default">
     <div class="panel-heading">
         <span>Scenarios</span>
-        <button class="btn btn-sm pull-right" ng-click="createScenario()">New</button>
+        <button class="btn btn-link pull-right" ng-show="canCreate()" ng-click="createScenario()">New</button>
         <div class="clearfix"></div>
     </div>
     <table class="table table-condensed">
@@ -16,18 +16,19 @@
         <tbody>
         <tr ng-repeat="scenario in scenarios">
             <td>
-                <a ui-sref="scenario({scenarioID: scenario.scenarioID})">
+                <a ui-sref=".scenario({scenarioID: scenario.scenarioID})">
                 {{scenario.name}}
                 </a>
             </td>
             <td>{{scenario.activityLevel | numFormat}}</td>
             <td>
-                <a ui-sref="fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
+                <a ui-sref=".fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
                     {{fragments[scenario.topLevelFragmentID].name}}
                 </a>
             </td>
             <td>
-                <button type="button" class="btn btn-default btn-sm" title="Clone" ng-click="cloneScenario(scenario)">
+                <button type="button" class="btn btn-default btn-sm" title="Clone" ng-click="cloneScenario(scenario)"
+                        ng-show="canCreate()">
                     <span class="glyphicon glyphicon-duplicate" aria-hidden="true"  ></span>
                 </button>
                 <button type="button" class="btn btn-default btn-sm" title="Delete" ng-click="deleteScenario(scenario)"
@@ -57,7 +58,7 @@
                 </label>
             </td>
             <td ng-style="{'background-color' : method.getDefaultColor()}">
-                <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
+                <a ui-sref=".lcia-method({lciaMethodID: method.lciaMethodID})">
                     {{method.name}}
                 </a>
             </td>

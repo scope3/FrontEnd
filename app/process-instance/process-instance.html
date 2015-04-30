@@ -44,7 +44,7 @@
             <li ng-repeat="method in lciaMethods" class="lcia-method">
                 <div class="panel panel-default">
                     <div class="panel-heading" ng-style="panelHeadingStyle[method.lciaMethodID]">
-                        <a ui-sref="lcia-method({lciaMethodID: method.lciaMethodID})">
+                        <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
                             <dt>{{method.name}}</dt>
                         </a>
                     </div>
