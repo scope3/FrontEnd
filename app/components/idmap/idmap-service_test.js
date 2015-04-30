@@ -26,6 +26,7 @@ describe('Unit test idmap resources', function() {
             "name":"Process Substitution"
         }
         ],
+        testKey = "scenarioKey",
         idMapService;
 
 
@@ -41,11 +42,11 @@ describe('Unit test idmap resources', function() {
     });
 
     it('should be able to add objects, get by ID', function() {
-        var testMap = idMapService.add("scenarioID", testData),
+        var testMap = idMapService.add(testKey, "scenarioID", testData),
             testObj;
         expect(testMap).toBeDefined();
         expect(testMap.length === testData.length);
-        testObj = idMapService.get("scenarioID", testData[1].scenarioID);
+        testObj = idMapService.get(testKey, testData[1].scenarioID);
         expect(testObj).not.toBe(null);
         expect(testObj).toEqual(testData[1]);
     });
@@ -54,10 +55,10 @@ describe('Unit test idmap resources', function() {
         var testMap,
             testObj;
 
-        idMapService.add("scenarioID", testData);
-        testMap = idMapService.clear("scenarioID");
+        idMapService.add(testKey, "scenarioID", testData);
+        testMap = idMapService.clear(testKey);
         expect(testMap).toBeDefined();
-        testObj = idMapService.get("scenarioID", testData[1].scenarioID);
+        testObj = idMapService.get("testKey", testData[1].scenarioID);
         expect(testObj).toBe(null);
     });
 });

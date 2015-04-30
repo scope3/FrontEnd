@@ -70,8 +70,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                         });
                     }
                     if (svc.idName) {
-                        IdMapService.clear(svc.idName);
-                        IdMapService.add(svc.idName, objects);
+                        IdMapService.clear(routeKey);
+                        IdMapService.add(routeKey, svc.idName, objects);
                     }
                 };
 
@@ -140,7 +140,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                      * @returns loaded resource, if found.
                      */
                     svc.get = function(id) {
-                       return IdMapService.get(svc.idName, id);
+                       return IdMapService.get(routeKey, id);
                     };
                 }
 

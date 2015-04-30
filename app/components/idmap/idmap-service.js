@@ -1,30 +1,48 @@
 /**
- * Service that maps object ID to object
+ * Service that maintains associative arrays mapping object ID to object
  */
 angular.module('lcaApp.idmap.service', [])
     .factory('IdMapService', function () {
         var idMap = {};
 
         return {
-            add: function (idName, objectArray) {
-                if (!(idName in idMap)) {
-                    idMap[idName] = {};
+            /**
+             * Add objects to an associative array.
+             * @param {string} routeKey     Key to the associative array
+             * @param (string} idName       Object ID property name
+             * @param {[{}]} objectArray    Array of objects to be added
+             * @returns {{}}                Associative array, indexed by object ID
+             */
+            add: function (routeKey, idName, objectArray) {
+                if (!idMap.hasOwnProperty(routeKey)) {
+                    idMap[routeKey] = {};
                 }
                 objectArray.forEach(function (d) {
-                    if (idName in d) {
+                    if (d.hasOwnProperty(idName)) {
                         var idVal = d[idName];
-                        idMap[idName][idVal] = d;
+                        idMap[routeKey][idVal] = d;
                     }
                 });
-                return idMap[idName];
+                return idMap[routeKey];
             },
-            clear: function (idName) {
-                idMap[idName] = {};
-                return idMap[idName];
+            /**
+             * Create an empty associative array
+             * @param {string} routeKey     Key to the associative array
+             * @returns {{}}                Empty associative array
+             */
+            clear: function (routeKey) {
+                idMap[routeKey] = {};
+                return idMap[routeKey];
             },
-            get: function (idName, idValue) {
-                if (idName in idMap && idValue in idMap[idName]) {
-                    return idMap[idName][idValue];
+            /**
+             * Get the object with a given object ID
+             * @param {string} routeKey     Key to the associative array
+             * @param {number} idValue      Object ID value
+             * @returns {{}}                The object, if found. Otherwise, null.
+             */
+            get: function (routeKey, idValue) {
+                if (idMap.hasOwnProperty(routeKey) && idMap[routeKey].hasOwnProperty(idValue)) {
+                    return idMap[routeKey][idValue];
                 }
                 else {
                     return null;
