@@ -295,51 +295,6 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             /**
              * Compare input value with the value of original param resource, if it exists.
              *
-             *  Return change status
-             *  PARAM_VALUE_STATUS.changed for new, updated, and deleted value.
-             *  PARAM_VALUE_STATUS.invalid for invalid value.
-             *  PARAM_VALUE_STATUS.unchanged when new value matches original
-             *
-             *  If input value is invalid, then add error message to returned result.
-             *
-             * @param {Number} baseValue Value of the thing to which the param applies
-             * @param {{value: number}} paramResource
-             * @param {String} value Edit value, should be numeric
-             * @returns {{paramValueStatus:number, msg: string }}
-             */
-            svc.getParamValueStatus = function(baseValue, paramResource, value) {
-                var result = { paramValueStatus: PARAM_VALUE_STATUS.unchanged, msg: "" };
-                if (value === "") {
-                    // No input value. If paramResource exists, interpret this as delete.
-                    if (paramResource) {
-                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
-                    }
-                }
-                else {
-                    // Value was input
-                    if (isNaN(value) ) {
-                        result.msg = "Parameter value, " + value + ", is not numeric.";
-                        result.paramValueStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (+value === baseValue) {
-                        result.msg = "Parameter value, " + value + ", is the same as default value.";
-                        result.paramValueStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (paramResource) {
-                        // Check if param value changed
-                        if (paramResource.value !== +value)  {
-                            result.paramValueStatus = PARAM_VALUE_STATUS.changed;
-                        }
-                    } else {
-                        // No paramResource. Interpret this as create
-                        result.paramValueStatus = PARAM_VALUE_STATUS.changed;
-                    }
-                }
-
-                return result;
-            };
-
-            /**
-             * Compare input value with the value of original param resource, if it exists.
-             *
              *  Set change status
              *  PARAM_VALUE_STATUS.changed for new, updated, and deleted value.
              *  PARAM_VALUE_STATUS.invalid for invalid value.
@@ -358,10 +313,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     if (isNaN(paramWrapper.value) ) {
                         msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
                         paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (+paramWrapper.value === baseValue) {
-                        msg = "Parameter value, " + paramWrapper.value + ", is the same as default value.";
-                        paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
-                    } else if (paramWrapper.paramResource) {
+                    }
+                    // Issue #203 - the following condition is not consdered an error
+                    // else if (+paramWrapper.value === baseValue) {
+                    //    msg = "Parameter value, " + paramWrapper.value + ", is the same as default value.";
+                    //    paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
+                    //
+                    else if (paramWrapper.paramResource) {
                         // Check if param value changed
                         if (paramWrapper.paramResource.value === +paramWrapper.value) {
                             paramWrapper.editStatus = PARAM_VALUE_STATUS.unchanged;
