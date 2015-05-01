@@ -17,7 +17,7 @@ angular.module('lcaApp.process.LCIA',
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService, localStorageService) {
             var processID = 1,
-                scenarioID = MODEL_BASE_CASE_SCENARIO_ID,
+                defaultScenarioID = MODEL_BASE_CASE_SCENARIO_ID,
                 processStorageKey = "activeProcessID";
 
             /**
@@ -34,7 +34,7 @@ angular.module('lcaApp.process.LCIA',
                     lciaDetail = LciaDetailService.createInstance();
                     lciaDetail.colors(colors)
                         .activityLevel(activityLevel)
-                        .scenarioID(scenarioID)
+                        .scenarioID($scope.scenario.scenarioID)
                         .processID(processID)
                         .lciaMethodID(result.lciaMethodID)
                         .resultDetails(result.lciaScore[0].lciaDetail)
@@ -54,7 +54,7 @@ angular.module('lcaApp.process.LCIA',
 
             function getLciaResult(lciaMethod) {
                 LciaResultForProcessService
-                    .get({scenarioID: scenarioID, lciaMethodID: lciaMethod.lciaMethodID, processID:processID},
+                    .get({scenarioID: $scope.scenario.scenarioID, lciaMethodID: lciaMethod.lciaMethodID, processID:processID},
                     extractResult);
             }
 
@@ -85,7 +85,7 @@ angular.module('lcaApp.process.LCIA',
                     $scope.activityLevel = +$stateParams.activity;
                 }
                 if ("scenarioID" in $stateParams) {
-                    scenarioID = +$stateParams.scenarioID;
+                    defaultScenarioID = +$stateParams.scenarioID;
                 }
                 if ("processID" in $stateParams) {
                     processID = +$stateParams.processID;
@@ -93,60 +93,48 @@ angular.module('lcaApp.process.LCIA',
             }
 
             /**
-             * Prepare view for ui-router state, fragment-sankey.process
-             * Display scenario, fragment navigation state, and process from selected fragment node.
-             */
-            function prepareViewWithFragmentNavigation() {
-                $scope.scenario = ScenarioModelService.get(scenarioID);
-                if ($scope.scenario) {
-                    $scope.navigationStates = FragmentNavigationService.setContext(scenarioID,
-                        $scope.scenario.topLevelFragmentID).getAll();
-                } else {
-                    StatusService.handleFailure("Invalid scenario ID : ", scenarioID);
-                }
-                $scope.process = ProcessForFlowTypeService.get(processID);
-                if (!$scope.process) StatusService.handleFailure("Invalid process ID : ", processID);
-            }
-
-            /**
              * Prepare view for ui-router state, process-lcia
              * Populate selection controls with scenarios and processes.
              */
             function prepareViewWithSelection() {
+                var scenario = ScenarioModelService.get(defaultScenarioID);
                 $scope.scenarios = ScenarioModelService.getAll();
-                // HTML has multiple scopes
-                $scope.selection.scenario = $scope.scenario = $scope.scenarios.find(function (element) {
-                    return (element["scenarioID"] === scenarioID);
-                });
-
-                var processes = ProcessForFlowTypeService.getAll();
-                processes.sort(ProcessForFlowTypeService.compareByName);
-                $scope.processes = processes;
-                $scope.selection.process = $scope.process = $scope.processes.find(function (element) {
-                    return (element["processID"] === processID);
-                });
-
+                if (!scenario) {
+                    // Active scenario may have been deleted
+                    // Grab first one in list
+                    if ($scope.scenarios.length > 0) {
+                        scenario = $scope.scenarios[0];
+                    }
+                }
+                if (scenario) {
+                    var processes;
+                    // HTML has multiple scopes
+                    $scope.selection.scenario = $scope.scenario = $scope.scenarios.find(function (element) {
+                        return (element["scenarioID"] === scenario.scenarioID);
+                    });
+                    processes = ProcessForFlowTypeService.getAll();
+                    processes.sort(ProcessForFlowTypeService.compareByName);
+                    $scope.processes = processes;
+                    $scope.selection.process = $scope.process = $scope.processes.find(function (element) {
+                        return (element["processID"] === processID);
+                    });
+                }
             }
 
             /**
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
-                if ($scope.activityLevel) {
-                    prepareViewWithFragmentNavigation();
-                }
-                else {
-                    prepareViewWithSelection();
+                prepareViewWithSelection();
+                if ($scope.process) {
+                    setActiveProcessID();
+                    $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
+                        return m.getIsActive();
+                    });
+                    getFlowRows();
                 }
                 if ($scope.scenario) {
-                    if ($scope.process) {
-                        setActiveProcessID();
-                        $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
-                            return m.getIsActive();
-                        });
-                        getFlowRows();
-                        getLciaResults();
-                    }
+                    getDataFilteredByScenario();
                 }
             }
 
@@ -165,7 +153,7 @@ angular.module('lcaApp.process.LCIA',
              * Get data filtered by scenarioID
              */
             function getDataFilteredByScenario() {
-                    ParamModelService.load(scenarioID)
+                    ParamModelService.load($scope.scenario.scenarioID)
                     .then(getScenarioResults,
                     StatusService.handleFailure);
             }
@@ -178,8 +166,7 @@ angular.module('lcaApp.process.LCIA',
                     ProcessForFlowTypeService.load({flowTypeID:2}),
                     LciaMethodService.load(),
                     ProcessFlowService.load({processID:processID}),
-                    FlowPropertyForProcessService.load({processID: processID}),
-                    ParamModelService.load(scenarioID)])
+                    FlowPropertyForProcessService.load({processID: processID})])
                     .then(handleSuccess,
                     StatusService.handleFailure);
             }
@@ -232,8 +219,7 @@ angular.module('lcaApp.process.LCIA',
 
             $scope.onScenarioChange = function() {
                 $scope.scenario = $scope.selection.scenario;
-                scenarioID = $scope.scenario.scenarioID;
-                ScenarioModelService.setActiveID(scenarioID);
+                ScenarioModelService.setActiveID($scope.scenario.scenarioID);
                 getDataFilteredByScenario();
             };
 
@@ -245,13 +231,13 @@ angular.module('lcaApp.process.LCIA',
 
             $scope.viewProcessFlowParam = function (lciaMethodID) {
                 $state.go(".flow-param",
-                    {scenarioID: scenarioID, processID: processID, lciaMethodID: lciaMethodID});
+                    {scenarioID: $scope.scenario.scenarioID, processID: processID, lciaMethodID: lciaMethodID});
             };
 
             function getActiveScenarioID() {
                 var activeID = ScenarioModelService.getActiveID();
                 if (activeID) {
-                   scenarioID = activeID;
+                    defaultScenarioID = activeID;
                 }
             }
 
