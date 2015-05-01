@@ -176,6 +176,8 @@ angular.module('lcaApp.process.flowParam',
                             flow = null;
                         if (ld.hasOwnProperty("flowID") && ld.flowID in $scope.elementaryFlows) {
                             flow = $scope.elementaryFlows[ld.flowID];
+                            flow.factor = ld.factor;
+                            flow.result = ld.result * $scope.activityLevel;
                             if (flow.hasOwnProperty("dissipation")) {
                                 paramResource = ParamModelService.getProcessFlowParam(scenarioID, processID, ld.flowID, 6);
                                 flow.paramWrapper = ParamModelService.wrapParam(paramResource);
@@ -212,12 +214,16 @@ angular.module('lcaApp.process.flowParam',
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
                     {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
                     {field: 'content', displayName: 'Content', cellFilter: 'numFormat', enableCellEdit: false},
-                    {field: 'dissipation', displayName: 'Dissipation Factor', enableCellEdit: false}
+                    {field: 'dissipation', displayName: 'Dissipation Factor', enableCellEdit: false},
+                    {field: 'factor', displayName: 'LCIA Factor', cellFilter: 'numFormat', enableCellEdit: false},
+                    {field: 'result', displayName: 'LCIA Result', cellFilter: 'numFormat', enableCellEdit: false}
                 ];
                 $scope.emission.columns = [
                     {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
                     {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
-                    {field: 'quantity', displayName: 'Emission Factor', enableCellEdit: false}
+                    {field: 'quantity', displayName: 'Emission Factor', enableCellEdit: false},
+                    {field: 'factor', displayName: 'LCIA Factor', cellFilter: 'numFormat', enableCellEdit: false},
+                    {field: 'result', displayName: 'LCIA Result', cellFilter: 'numFormat', enableCellEdit: false}
                 ];
             }
 
