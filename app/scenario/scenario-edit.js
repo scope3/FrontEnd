@@ -54,7 +54,14 @@ angular.module('lcaApp.scenario.edit',
                 if ($stateParams.scenarioID) {
                     existingScenario = ScenarioService.get($stateParams.scenarioID);
                     if (existingScenario) {
-                        $scope.scenario = angular.copy(existingScenario);
+                        $scope.scenario = {
+                            scenarioID: existingScenario.scenarioID,
+                            name: existingScenario.name,
+                            activityLevel: existingScenario.activityLevel,
+                            topLevelFragmentID: existingScenario.topLevelFragmentID
+                        };
+                    } else {
+                        StatusService.handleFailure("Invalid scenarioID : " + $stateParams.scenarioID);
                     }
                 }
                 else {
