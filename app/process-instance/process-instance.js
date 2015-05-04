@@ -5,7 +5,7 @@ angular.module('lcaApp.process.instance',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
                  'lcaApp.fragmentNavigation.service',
                  'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
-                    'lcaApp.paramGrid.directive'])
+                 'lcaApp.referenceLink.directive', 'lcaApp.paramGrid.directive'])
     .controller('ProcessInstanceController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
          'ProcessService', 'ProcessFlowService',

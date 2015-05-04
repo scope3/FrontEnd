@@ -2,7 +2,7 @@
 /* Controller for LCIA Method Detail View */
 angular.module('lcaApp.lciaMethod.detail',
     ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'lcaApp.paramGrid.directive', 'lcaApp.status.service',
-        'lcaApp.models.param', 'lcaApp.models.scenario'])
+        'lcaApp.models.param', 'lcaApp.models.scenario', 'lcaApp.referenceLink.directive'])
     .controller('LciaMethodDetailController', [
         '$scope', '$stateParams', '$q', '$log', '$window',
         'ImpactCategoryService', 'LciaMethodService', 'FlowForLciaMethodService', 'LciaFactorService',
