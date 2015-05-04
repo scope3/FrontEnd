@@ -302,8 +302,12 @@ angular.module('lcaApp.process.instance',
              * @param navIndex  Index to fragment navigation state selected by user
              */
             $scope.goBackToFragment = function(navIndex) {
+                var context = FragmentNavigationService.getContext();
                 FragmentNavigationService.setLast(navIndex);
-                $state.go('^');
+                $state.go('^', {
+                    scenarioID: context.scenarioID,
+                    fragmentID: context.fragmentID
+                });
             };
 
 
