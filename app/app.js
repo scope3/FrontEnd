@@ -6,7 +6,6 @@ angular.module('lcaApp', [
     'ui.router',
     'lcaApp.home',
     'lcaApp.fragment.sankey',
-    'lcaApp.fragment.flowParam',
     'lcaApp.process.instance',
     'lcaApp.process.LCIA',
     'lcaApp.process.flowParam',

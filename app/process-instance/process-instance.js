@@ -248,9 +248,13 @@ angular.module('lcaApp.process.instance',
                 }
                 if (ff.fragmentFlowID === processFragmentFlow.fragmentFlowID ) {
                     gridFlow.direction = (ff.direction === "Input") ? "Output" : "Input";
-                    gridFlow.paramWrapper = ParamModelService.naParam();
+                    gridFlow.paramWrapper = ParamModelService.naParam("reference");
                 } else {
-                    gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                    if (ff["isBalanceFlow"]) {
+                        gridFlow.paramWrapper = ParamModelService.naParam("balance");
+                    } else {
+                        gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                    }
                 }
                 if (gridFlow.direction === "Input") {
                     inputFlows.push(gridFlow);

@@ -116,7 +116,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             }
 
             function valueInput(paramWrapper) {
-                return paramWrapper.value !== "";
+                return paramWrapper.enableEdit && paramWrapper.value !== "";
             }
 
             /**
@@ -351,18 +351,22 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return {
                     paramResource : paramResource,
                     value : paramResource ? paramResource.value : "",
+                    enableEdit : true,
                     editStatus : PARAM_VALUE_STATUS.unchanged
                 };
             };
 
             /**
              * Create an object to block param editing where param cannot be applied
+             * @param {string} [value="N/A"]    Optional value string. Defaults to "N/A"
              * @returns {{paramResource: *, value: *, editStatus: number}} the object created
              */
-            svc.naParam = function () {
+            svc.naParam = function ( value ) {
+                var naVal =  (arguments.length) ? value : "N/A";
                 return {
                     paramResource : null,
-                    value : "N/A",
+                    value : naVal,
+                    enableEdit : false,
                     editStatus : PARAM_VALUE_STATUS.unchanged
                 };
             };
@@ -474,7 +478,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              */
             svc.revertChanges = function (data) {
                 data.forEach(function (e) {
-                    if (e.paramWrapper.value !== "N/A") {
+                    if (e.paramWrapper.enableEdit) {
                         e.paramWrapper = svc.wrapParam(e.paramWrapper.paramResource);
                     }
                 });

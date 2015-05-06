@@ -90,7 +90,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
             function addParamCols() {
                 var paramCol = [
                         {field: 'paramWrapper.value', displayName: 'Parameter',
-                         enableCellEdit: false, cellEditableCondition: 'row.getProperty(\'paramWrapper.value\') != \'N/A\'' },
+                         enableCellEdit: false, cellEditableCondition: 'row.getProperty(\'paramWrapper.enableEdit\')' },
                         {field: 'paramWrapper.editStatus', displayName: '', enableCellEdit: false, width: 20}
                     ],
                     cols = $scope.columns;

@@ -98,7 +98,6 @@ See also this issue report: https://github.com/bower/bower/issues/689
         * status/               --> Service for updating shared spinner and alert message  
         * version/              --> version related components (came with angular-seed)
         * waterfall/            --> Directive, service, and css used to draw waterfall charts
-    * fragment-flow-param/      --> Fragment Flow Detail view and controller
     * fragment-lcia/            --> Fragment LCIA view and controller
     * fragment-sankey/          --> Fragment sankey view and controller
     * home/                     --> Main view and controller

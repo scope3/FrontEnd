@@ -156,7 +156,7 @@ describe('Unit test Param Model service', function() {
     it('should represent Not Applicable param', function() {
         var paramWrapper;
 
-        paramWrapper = paramModelService.naParam(null);
+        paramWrapper = paramModelService.naParam();
         expect(paramWrapper).toBeDefined();
         expect(paramWrapper.paramResource).toBe(null);
         expect(paramWrapper.value).toEqual("N/A");
