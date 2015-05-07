@@ -7,94 +7,89 @@
     <meta name="description" content="Used Oil LCA - Help">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <style type='text/css'><!--
+    h1, h2, h3, h4, h5, h6 {
+        font-family: helvetica, monaco, "MS Sans Serif", arial, sans-serif;
+        font-weight: bold; font-style: normal;
+        font-size: small;
+    }
+    p.topics { font-size: small; font-weight: bold; margin-left: 3em; }
 
+    </style>
 </head>
 <body>
 <div class="container">
-    <nav class="navbar navbar-default">
-        <div class="container-fluid">
-            <div class="navbar-header">
-                <a class="navbar-brand" href="#">Used Oil LCA Help</a>
-            </div>
-            <ul class="nav navbar-nav">
-                <li><a href="#fragment">Fragment</a></li>
-            </ul>
-        </div>
-    </nav>
-    <div class="row">
-        <div class="col-md-12">
-            <p>
-                Used Oil LCA is an online tool for defining parametric Life Cycle Assessment (LCA) models of motor oil,
-                performing Life Cycle Impact Assessment (LCIA), and visualizing results.
-            </p>
+    <h1>Used Oil LCA Help</h1>
+    <p>
+        Used Oil LCA is an online tool for assessing and visualizing the environmental impacts associated with recycling
+        used motor oil. The life cycle of used motor oil is modeled with <a href="#scenario">scenarios</a> and
+        <a href="#fragment">fragments</a> and model components can be altered using parameters.
+    </p>
 
-            <h2>
-                <a id="scenario">
-                    Scenario
-                </a>
-            </h2>
+    <a name="topics"></a>
+<h2>Help Topics</h2>
+    <p class="topics">
+        <a href="#scenario">Scenario</a><br>
+        <a href="#params">Scenario Parameters</a><br>
+        <a href="#fragment">Fragment</a><br>
+        <a href="#fragment-flows">Fragment Flows</a><br>
+        <a href="#method">LCIA Methods</a><br>
+        <a href="#fragment-lcia">Fragment LCIA</a><br>
+        <a href="#process-lcia">Process LCIA</a><br>
+    </p>
 
-            <p>
-                A scenario is an LCA model composed of a top-level <a href="#fragment">fragment</a> and a list of
-                parameters of
-                various types. The LCA Tool contains the following
-                two scenarios which are visible to all users.
-            </p>
-            <ul>
-                <li>Model Base Case</li>
-                <li>Default Scenario</li>
-            </ul>
+    <a id="scenario"></a>
 
+    <h2>Scenario</h2>
 
-            <h3>Parameters</h3>
+    <p>
+        A scenario is composed of a top-level <a href="#fragment">fragment</a> and a list of
+        parameters of
+        various types. The LCA Tool contains the following
+        two scenarios which are visible to all users.
+    </p>
+    <ul>
+        <li>Model Base Case</li>
+        <li>Default Scenario</li>
+    </ul>
 
-            <p>Help on parameters</p>
+    <h3>Scenario Parameters</h3>
 
-            <h2><a id="fragment">
-                Fragment
-            </a>
-            </h2>
+    <p>Scenario parameters are used to override the default value of a model component.</p>
 
-            <p>
-                Define fragments
-            </p>
+    <a id="fragment"></a>
 
-            <h3>
-                <a id="fragment-flows">
-                    Fragment Flows
-                </a>
-            </h3>
+    <h2>Fragment</h2>
 
-            <p>Describe Fragment Flows</p>
+    <p>
+        Define fragments
+    </p>
 
+    <a id="fragment-flows"></a>
 
-            <h2>
-                <a id="method">
-                    LCIA Methods
-            </a>
-            </h2>
+    <h3>Fragment Flows</h3>
 
-            <p>Help on LCIA Methods</p>
+    <p>Describe Fragment Flows</p>
 
-            <h2>
-                <a id="fragment-lcia">
-                Fragment LCIA
-                    </a>
-            </h2>
+    <a id="method"></a>
 
-            <p>Help on Fragment LCIA</p>
+    <h2>LCIA Methods</h2>
 
-            <h2>
-                <a id="process-lcia">
-                Process LCIA
-                    </a>
-            </h2>
+    <p>Help on LCIA Methods</p>
 
-            <p>Describe Process LCIA</p>
+    <a id="fragment-lcia"></a>
+
+    <h2>Fragment LCIA</h2>
+
+    <p>Help on Fragment LCIA</p>
+
+    <a id="process-lcia"></a>
+
+    <h2>Process LCIA</h2>
+
+    <p>Describe Process LCIA</p>
 
 
-        </div>
-    </div>
 </div>
 </body>
 </html>
