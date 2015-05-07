@@ -8,13 +8,31 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
     <style type='text/css'><!--
-    h1, h2, h3, h4, h5, h6 {
+    h1 {
+        font-family: helvetica, monaco, "MS Sans Serif", arial, sans-serif;
+        font-weight: bold; font-style: normal;
+        font-size: very-large;
+    }
+	   
+    h2 {
+        font-family: helvetica, monaco, "MS Sans Serif", arial, sans-serif;
+        font-weight: bold; font-style: normal;
+        font-size: large;
+    }
+	h3, h4, h5, h6 {
         font-family: helvetica, monaco, "MS Sans Serif", arial, sans-serif;
         font-weight: bold; font-style: normal;
         font-size: small;
     }
     p.topics { font-size: small; font-weight: bold; margin-left: 3em; }
-
+	
+	img.floatright { margin-left: 5em; margin-bottom: 5em; float: right;  }
+	
+	div.figure { margin-top: 5em; margin-bottom: 0.2em; }
+	div.figure p img { display:block; margin-left: auto; margin-right: auto; }
+	
+	div.figure p.caption { font-weight: bold; text-align: center; }
+-->
     </style>
 </head>
 <body>
@@ -26,17 +44,71 @@
         <a href="#fragment">fragments</a> and model components can be altered using parameters.
     </p>
 
+	<h2>Project Origin</h2>
+	<p>In 2009 the California Senate passed a law, known as SB 546, which changed
+how the state regulated the management of used motor oil.  In order to
+support future policy making, the bill required the state to perform a life
+cycle assessment of the used oil management system in place.  That study
+was conducted by researchers at the University of California, Santa
+Barbara, in collaboration with a group of industry stakeholders, a panel of
+critical reviewers, and several consulting firms.  The study was overseen
+by the California Department of Resources Recycling and Recovery
+(CalRecycle).  The study resulted in a number of technical documents
+available online:</p>
+
+	<ul class="docs">
+		<li> UCSB: <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1465">Used Oil LCA Report</a></li>
+		<li> ICF: <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1467">Direct Impacts Model</a> and <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1466">Distributional Impacts + CBA</a></li>
+		<li> Kline: California Lubricants Segmented Market Analysis <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1511">Consumption</a> and <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1512">Recoverability</a></li>
+		<li> Solomon: Rerefining effects on <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1481">Virgin Crude Oil Refining</a></li>
+		<li> Critical Review <a href="http://www.calrecycle.ca.gov/publications/Detail.aspx?PublicationID=1468">Report</a></li>
+	</ul>
+
+	<p><img src="img/antelope-small-AL.png" class="floatright" />
+	Upon completion in July of 2013, it was desirable for the resulting
+technical report to be accompanied by an interactive version of the
+inventory model that was created for the study.  However, existing
+technologies fell short of the agency's requirements for transparency,
+cost, and ease of use. A new project was conceived to enable the study's
+results to be published openly and at zero cost to data users and members
+of the public.  That project (DRR-13026) began in September, 2013 and
+concludes in September, 2015.  <em>Antelope</em> is the nickname of the
+deliverable software elements and specifications for that project.
+</p>
+
+	
     <a name="topics"></a>
 <h2>Help Topics</h2>
     <p class="topics">
-        <a href="#scenario">Scenario</a><br>
-        <a href="#params">Scenario Parameters</a><br>
         <a href="#fragment">Fragment</a><br>
         <a href="#fragment-flows">Fragment Flows</a><br>
+        <a href="#scenario">Scenario</a><br>
+        <a href="#params">Scenario Parameters</a><br>
         <a href="#method">LCIA Methods</a><br>
-        <a href="#fragment-lcia">Fragment LCIA</a><br>
         <a href="#process-lcia">Process LCIA</a><br>
+        <a href="#fragment-lcia">Fragment LCIA</a><br>
     </p>
+
+    <a id="fragment"></a>
+
+    <h2>Fragment</h2>
+
+	<p>
+    A life cycle inventory fragment is a piece of a life cycle inventory model.  A fragment  can be described as a set of nodes connected by links without any loops.
+	Each node in a fragment is either a process, a sub-fragment, or an input or output flow that is exchanged with the external world.  A fragment has an implicit 
+	"system boundary" defined by the nodes it contains.  Input or output flows cross the system boundary.
+    </p>
+	
+	<div class="figure" >
+	<p class="img"> <img src="img/UOM-fragment.png" width="800px"></p>
+	<p class="caption"> A Fragment showing the top level of the Used Oil Management LCI model.</p>
+	</div>
+
+    <a id="fragment-flows"></a>
+
+    <h3>Fragment Flows</h3>
+
+    <p>Describe Fragment Flows</p>
 
     <a id="scenario"></a>
 
@@ -57,25 +129,17 @@
 
     <p>Scenario parameters are used to override the default value of a model component.</p>
 
-    <a id="fragment"></a>
-
-    <h2>Fragment</h2>
-
-    <p>
-        Define fragments
-    </p>
-
-    <a id="fragment-flows"></a>
-
-    <h3>Fragment Flows</h3>
-
-    <p>Describe Fragment Flows</p>
-
     <a id="method"></a>
 
     <h2>LCIA Methods</h2>
 
     <p>Help on LCIA Methods</p>
+
+    <a id="process-lcia"></a>
+
+    <h2>Process LCIA</h2>
+
+    <p>Describe Process LCIA</p>
 
     <a id="fragment-lcia"></a>
 
@@ -83,11 +147,6 @@
 
     <p>Help on Fragment LCIA</p>
 
-    <a id="process-lcia"></a>
-
-    <h2>Process LCIA</h2>
-
-    <p>Describe Process LCIA</p>
 
 
 </div>
