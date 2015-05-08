@@ -6,19 +6,21 @@ See [h5bp-docs](https://github.com/mklabs/h5bp-docs) readme
 
 ### Usage
 
-Clone the wiki repository, 'https://github.com/uo-lca/CalRecycleLCA.wiki.git'
+Clone the wiki repository, 'https://github.com/uo-lca/CalRecycleLCA.wiki.git'.
 
-cd to this directory (CalRecycleLCA/FrontEnd/help) in your local repository.
+H5bp-docs seems to have some trouble with repository paths that do not have a common parent. Therefore, clone CalRecycleLCA.wiki.git into the same directory where CalRecycleLCA.git is cloned.
+
+cd to this directory (CalRecycleLCA/FrontEnd/help) in your local CalRecycleLCA.git repository.
 
 Execute
 
-h5bp-docs --src *local wiki repository path*/CalRecycleLCA.wiki --config conf/config.js
+`h5bp-docs --src ../../../CalRecycleLCA.wiki --config conf/config.js`
 
 append `--server` flag to start a static server that will host the generated directory. `--baseurl` allows you to change the location where you'd like to test things locally (localhost:4000/docs/ or localhost:4000/wikis/ for example)
 
 #### File generation
 
-    The h5bp-docs command creates files under home, the root of the help web site
+The h5bp-docs command creates files under `home`, the root of the help web site
 
 ### Customizing Help
 
