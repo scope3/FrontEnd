@@ -1,51 +1,56 @@
 <div ng-if="navigationService===null">
-    <div class="float-block">
-        <label>Fragment</label>
-    <span isteven-multi-select
-          button-label="name"
-          item-label="name"
-          input-model="fragmentSelection.options"
-          output-model="fragmentSelection.model"
-          tick-property="selected"
-          selection-mode="single"
-          on-item-click="onFragmentChange()">
-    </span>
-    </div>
-    <div class="float-block">
-        <label>Scenarios</label>
-    <span isteven-multi-select
-          button-label="name"
-          item-label="name"
-          input-model="scenarioSelection.options"
-          output-model="scenarioSelection.model"
-          tick-property="selected">
-    </span>
-    </div>
-    <div class="float-block pull-right">
-        <button class="btn btn-default btn-small" ng-csv="csv.data" csv-header="csv.header"
-                filename="csv.fileName" lazy-load="true" ng-click="export()" ng-disabled="disableExport()">
-            Export Results
-        </button>
-
-    </div>
+    <dl class="dl-horizontal">
+        <dt>Fragment</dt>
+        <dd>
+            <span isteven-multi-select
+                  button-label="name"
+                  item-label="name"
+                  input-model="fragmentSelection.options"
+                  output-model="fragmentSelection.model"
+                  tick-property="selected"
+                  selection-mode="single"
+                  on-item-click="onFragmentChange()">
+            </span>
+            <button type="button" class="btn btn-default btn-small pull-right" ng-csv="getCsvData()" csv-header="csvHeader"
+                    filename="{{csvFileName}}" lazy-load="true" ng-disabled="disableExport()">
+                Export to CSV
+            </button>
+        </dd>
+        <dt>Scenarios</dt>
+        <dd>
+            <span isteven-multi-select
+                  button-label="name"
+                  item-label="name"
+                  input-model="scenarioSelection.options"
+                  output-model="scenarioSelection.model"
+                  tick-property="selected">
+            </span>
+        </dd>
+    </dl>
 </div>
 <div ng-if="navigationService">
     <div class="row">
-        <div class="col-md-9">
+        <div class="col-md-6">
             <h4>Fragment LCIA</h4>
         </div>
-        <div class="col-md-3">
-            <button type="button" class="btn btn-link pull-right"
-                    ui-sref="^">
-                Back to Sankey Diagram
-            </button>
+        <div class="col-md-6">
+            <div class="pull-right">
+                <button type="button" class="btn btn-link "
+                        ui-sref="^">
+                    Back to Sankey Diagram
+                </button>
+                <button type="button" class="btn btn-default btn-small" ng-csv="getCsvData()" csv-header="csvHeader"
+                        filename="{{csvFileName}}" lazy-load="true" ng-disabled="disableExport()">
+                    Export to CSV
+                </button>
+            </div>
         </div>
     </div>
-        <dl class="dl-horizontal">
-            <dt>Scenario</dt>
-            <dd>{{navigationScenario.name}}</dd>
-            <dt>Fragment</dt>
-            <dd>
+    <dl class="dl-horizontal">
+        <dt>Scenario</dt>
+        <dd>{{navigationScenario.name}}</dd>
+        <dt>Fragment</dt>
+        <dd>
                 <span ng-repeat="navFrag in navigationService.getAll()">
                     <ng-switch on="$last">
                         <span ng-switch-when="true">{{navFrag.name}}</span>
@@ -54,11 +59,11 @@
                      ></span>
                     </ng-switch>
                 </span>
-            </dd>
-            <dt>Sub-fragments</dt>
-            <dd ng-if="!navigationSelection.options.length">
-            </dd>
-            <dd ng-if="navigationSelection.options.length > 0">
+        </dd>
+        <dt>Sub-fragments</dt>
+        <dd ng-if="!navigationSelection.options.length">
+        </dd>
+        <dd ng-if="navigationSelection.options.length > 0">
                <span isteven-multi-select
                      button-label="name"
                      item-label="name"
@@ -68,10 +73,10 @@
                      selection-mode="single"
                      on-item-click="onFragmentNavigation()">
                 </span>
-            </dd>
-            <dt>Activity Level</dt>
-            <dd>{{fragment.activityLevel | numFormat }}</dd>
-        </dl>
+        </dd>
+        <dt>Activity Level</dt>
+        <dd>{{fragment.activityLevel | numFormat }}</dd>
+    </dl>
 </div>
 <div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">

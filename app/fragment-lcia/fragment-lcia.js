@@ -4,7 +4,7 @@ angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
                     'isteven-multi-select', 'lcaApp.selection.service',
-                    'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario'])
+                    'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario','ngSanitize', 'ngCsv'])
     .controller('FragmentLciaCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService',
          'FragmentService', 'FragmentStageService', 'FragmentFlowService',
@@ -89,16 +89,34 @@ angular.module('lcaApp.fragment.LCIA',
                 }
             });
 
-            $scope.export = exportWaterfalls;
+            /**
+             * Get array of LCIA results to download
+             * @returns {*}
+             */
+            $scope.getCsvData = function () {
+                if ($scope.disableExport()) {
+                    return null;
+                } else {
+                    exportWaterfalls();
+                    return $scope.csvData;
+                }
+
+            };
+
+            /**
+             * Disable Export button when no resources have been selected.
+             * @returns {boolean}
+             */
             $scope.disableExport = function () {
                 return !$scope.fragment || !$scope.scenarios.length || !$scope.methods.length;
             };
 
-            $scope.csv = {
-                data : [],
-                header : [],
-                fileName : "Fragment_LCIA.csv"
-            };
+            /**
+             * ng-csv attributes
+             */
+            $scope.csvData =  null;
+            $scope.csvHeader = null;
+            $scope.csvFileName = null;
 
             function getSelectionResults() {
                 if ($scope.scenarios.length > 0) {
@@ -235,12 +253,12 @@ angular.module('lcaApp.fragment.LCIA',
                         exportMethodResults(m, rows);
                     });
 
-                    $scope.csv.fileName = "Fragment_LCIA_" + $scope.fragment.name.split(" ").join("_") + ".csv";
+                    $scope.csvFileName = "Fragment_LCIA_" + $scope.fragment.name.split(" ").join("_") + ".csv";
 
-                    $scope.csv.header = ["LCIA Method", "ILCD Reference", "Fragment Stage"]
+                    $scope.csvHeader = ["LCIA Method", "ILCD Reference", "Fragment Stage"]
                         .concat(scenarioNames, "Unit");
                 }
-                $scope.csv.data = rows;
+                $scope.csvData = rows;
             }
 
             /**

@@ -38,7 +38,7 @@ angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service', 'Loca
                             return l["rel"] === "reference";
                         });
                         if (xmlLink) {
-                            xmlLink = xmlLink["href"];
+                            refLink = xmlLink["href"];
                         }
                     }
                     return refLink;
