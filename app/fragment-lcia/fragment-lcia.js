@@ -89,6 +89,17 @@ angular.module('lcaApp.fragment.LCIA',
                 }
             });
 
+            $scope.export = exportWaterfalls;
+            $scope.disableExport = function () {
+                return !$scope.fragment || !$scope.scenarios.length || !$scope.methods.length;
+            };
+
+            $scope.csv = {
+                data : [],
+                header : [],
+                fileName : "Fragment_LCIA.csv"
+            };
+
             function getSelectionResults() {
                 if ($scope.scenarios.length > 0) {
                     getLciaResults();
@@ -191,6 +202,45 @@ angular.module('lcaApp.fragment.LCIA',
                         $scope.waterfalls[m.lciaMethodID] = null;
                     }
                 });
+            }
+
+            function exportMethodResults(m, rows) {
+                var refLink = m.getReferenceLink(),
+                    refUnit = m.getReferenceUnit(),
+                    wf = $scope.waterfalls[m.lciaMethodID];
+
+                if (wf) {
+                    var stages = wf.stages(),
+                        values = wf.values(),
+                        i, j;
+
+                    for (j = 0; j < stages.length; j++) {
+                        var row = [m.name, refLink];
+                        row.push(stages[j]);
+                        for (i = 0; i < $scope.scenarios.length; i++) {
+                            row.push(values[i][j]);
+                        }
+                        row.push(refUnit);
+                        rows.push(row);
+                    }
+                }
+            }
+
+            function exportWaterfalls() {
+                var rows = [],
+                    scenarioNames = $scope.scenarios.map(getName);
+
+                if ($scope.fragment) {
+                    $scope.methods.forEach( function (m) {
+                        exportMethodResults(m, rows);
+                    });
+
+                    $scope.csv.fileName = "Fragment_LCIA_" + $scope.fragment.name.split(" ").join("_") + ".csv";
+
+                    $scope.csv.header = ["LCIA Method", "ILCD Reference", "Fragment Stage"]
+                        .concat(scenarioNames, "Unit");
+                }
+                $scope.csv.data = rows;
             }
 
             /**

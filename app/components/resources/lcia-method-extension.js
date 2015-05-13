@@ -27,6 +27,36 @@ angular.module('lcaApp.resources.lciaMethod', ['lcaApp.colorCode.service', 'Loca
                     return ColorCodeService.getImpactCategoryColors(this["impactCategoryID"]);
                 };
 
+                /**
+                 * Helper function to find and return reference link to ILCD XML
+                 */
+                extension.getReferenceLink = function () {
+                    var refLink = null;
+
+                    if (this.hasOwnProperty("links")) {
+                        var xmlLink = this.links.find( function (l) {
+                            return l["rel"] === "reference";
+                        });
+                        if (xmlLink) {
+                            xmlLink = xmlLink["href"];
+                        }
+                    }
+                    return refLink;
+                };
+
+                /**
+                 * Helper function to find and return reference flow property unit
+                 */
+                extension.getReferenceUnit = function () {
+                    var refUnit = null;
+
+                    if (this.hasOwnProperty("referenceFlowProperty") &&
+                        this["referenceFlowProperty"].hasOwnProperty("referenceUnit")) {
+                        refUnit = this["referenceFlowProperty"]["referenceUnit"];
+                    }
+                    return refUnit;
+                };
+
                 extension.getShortName = function () {
                     if (!shortName) {
                         var parts = this.name.split("; ");

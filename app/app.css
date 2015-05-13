@@ -108,7 +108,7 @@ waterfall-chart .y.axis path {
 /* Override multiselect styles */
 /* Make it look like html select */
 .multiSelect > button {
-    padding: 1px 1px 1px 1px;
+    /*padding: 1px 1px 1px 1px;*/
     min-height : 20px !important;
     border-radius: 0px;
     color: #333;
@@ -117,7 +117,7 @@ waterfall-chart .y.axis path {
 
 /* labels on the button */
 .multiSelect .buttonLabel {
-    padding: 0px 0px 0px 0px;
+    /*padding: 0px 0px 0px 0px;*/
 }
 
 /* downward pointing arrow */
