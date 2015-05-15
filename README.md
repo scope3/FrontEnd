@@ -89,26 +89,30 @@ See also this issue report: https://github.com/bower/bower/issues/689
         * fragment-navigation   --> Service for keeping track of fragment navigation state
         * idmap                 --> Maps resource ID to resource
         * lcia-detail           --> LCIA bar chart directive, service, and css
+        * modal                 --> template html and controller used with UI Bootstrap modal window service
         * models                --> Services providing models for resource data
         * name                  --> Resource name transformation service
         * param-grid            --> Param grid directive
+        * reference-link/       --> Directive for displaying resource link reference (ILCD XML)
         * resources-mocks/      --> Mock resource data for unit tests
-        * resources/            --> Web API resource service 
+        * resources/            --> Web API resource service
         * sankey/               --> Sankey diagram service and directive   
-        * status/               --> Service for updating shared spinner and alert message  
+        * selection/            --> Service for recalling selections during web app session
+        * status/               --> Service for updating shared spinner and alert message
         * version/              --> version related components (came with angular-seed)
         * waterfall/            --> Directive, service, and css used to draw waterfall charts
-    * fragment-lcia/            --> Fragment LCIA view and controller
-    * fragment-sankey/          --> Fragment sankey view and controller
-    * home/                     --> Main view and controller
-    * lcia-method/              --> LCIA Method Detail view and controller
-    * process-flow-param/       --> Process Flow Detail view and controller
-    * process-lcia/             --> Process LCIA view and controller
-    * scenario/                 --> Scenario Editing view and controller
-    * templates/                --> angular-bootstrap HTML templates
+    * fragment-lcia/        --> Fragment LCIA view and controller
+    * fragment-sankey/      --> Fragment sankey view and controller
+    * home/                 --> Main view and controller
+    * lcia-method/          --> LCIA Method Detail view and controller
+    * process-flow-param/   --> Process Flow Detail view and controller
+    * process-instance/     --> Process Instance view and controller
+    * process-lcia/         --> Process LCIA view and controller
+    * scenario/             --> Scenario Editing view and controller
+    * templates/            --> angular-bootstrap HTML templates
 * karma.conf.js         --> config file for running unit tests with Karma
 * e2e-tests/            --> end-to-end tests (not currently implemented)
-
+* help/             --> Contains application Help files (see README in that folder)
 
 ## Testing
 
@@ -182,9 +186,7 @@ development server.
 
 ## Updating Angular
 
-Previously we recommended that you merge in changes to angular-seed into your own fork of the project.
-Now that the angular framework library code and tools are acquired through package managers (npm and
-bower) you can use these tools instead to update the dependencies.
+Use package managers, npm and bower, to update dependencies.
 
 You can update the tool dependencies by running:
 
