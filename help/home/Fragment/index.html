@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
   <meta charset="utf-8">
 
-  <title>Fragment</title>
+  <title>Help - Fragment</title>
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -39,8 +39,27 @@
           <p>A life cycle inventory fragment is a piece of a life cycle inventory model.  A fragment  can be described as a set of nodes connected by links without any loops.
     Each node in a fragment is either a process, a sub-fragment, or an input or output flow that is exchanged with the external world.  A fragment has an implicit 
     &quot;system boundary&quot; defined by the nodes it contains.  Input or output flows cross the system boundary.</p>
-<p><img src="https://github.com/uo-lca/CalRecycleLCA/blob/master/FrontEnd/app/img/UOM-fragment.png" alt="Fragment Sankey Diagram">
+<p><img src="/img/UOM-fragment.png" alt="Fragment Sankey Diagram">
 <strong>A Fragment showing the top level of the Used Oil Management LCI model.</strong></p>
+<h2 id="fragment-flows">Fragment Flows</h2>
+<p>This view displays fragment nodes and edges with a sankey diagram. Hover over a node to see a tool-tip displaying the node
+ type and name.</p>
+<h3 id="node-types">Node Types</h3>
+<p><span style="background-color:#8da0cb">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+A <strong>Process</strong> node represents a unit process transforming input flows into output flows within the system boundary.
+Click on a process node to navigate to the Process Instance view.</p>
+<p><span style="background-color:#66c2a5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+A <strong>Sub-Fragment</strong> node represents another fragment within the current fragment. Click on a sub-fragment node to navigate to an
+expanded view of the sub-fragment.</p>
+<p><span style="background-color:#fc8d62">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+An <strong>InputOutput</strong> node represents an input or output flow exchanged with the external world.</p>
+<h3 id="links">Links</h3>
+<p>Sankey diagram links represent flows within the system. Hover over a link to see the flow name and its magnitude.
+Flow direction is from left to right.</p>
+<p><span style="background-color:#e5c494">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Flows with positive magnitude.</p>
+<p><span style="background-color:#b3b3b3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Flows with negative magnitude.</p>
 
 
       </div>

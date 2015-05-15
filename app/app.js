@@ -2,6 +2,7 @@
 
 // Declare app level module which depends on views, and components
 angular.module('lcaApp', [
+        'lcaApp.config',
     'LocalStorageModule',
     'ui.router',
     'lcaApp.home',
@@ -132,5 +133,10 @@ angular.module('lcaApp', [
                     }
                 });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
-        }]);
-
+        }])
+    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT',
+        function($rootScope, HELP_ROOT) {
+            $rootScope.helpPage = HELP_ROOT;
+        }
+    ])
+;

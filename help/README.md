@@ -18,6 +18,8 @@ Execute
 
 append `--server` flag to start a static server that will host the generated directory. `--baseurl` allows you to change the location where you'd like to test things locally (localhost:4000/docs/ or localhost:4000/wikis/ for example)
 
+After wiki has been updated, pull changes and rerun command above.
+
 #### File generation
 
 The h5bp-docs command creates files under `home`, the root of the help web site

@@ -40,6 +40,7 @@
     <script src="bower_components/array.prototype.find/index.js"></script>
     <script src="bower_components/ng-csv/build/ng-csv.min.js"></script>
     <script src="bower_components/ng-grid/build/ng-grid.min.js"></script>
+    <script src="config.js"></script>
     <script src="app.js"></script>
     <script src="components/change-buttons/change-buttons-directive.js"></script>
     <script src="components/color-code/color-code.js"></script>
@@ -81,7 +82,7 @@
 
 </head>
 <body ng-app="lcaApp">
-<div class="container">
+<div ng-controller="LcaAppController" class="container">
     <nav class="navbar navbar-default" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
@@ -93,7 +94,7 @@
                 <li ui-sref-active="active"><a ui-sref="home.fragment-sankey">Fragment Flows</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="help.html" target="_blank">Help</a></li>
+                <li><a href="{{helpPage}}" target="_blank">Help</a></li>
             </ul>
         </div>
     </nav>

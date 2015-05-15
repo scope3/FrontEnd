@@ -1,8 +1,7 @@
 /**
  * Service to manage access to resources from web API
  */
-angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod' ])
-    .constant('API_ROOT', "http://publictest.calrecycle.ca.gov/lcatoolapi/api/")
+angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod', 'lcaApp.config' ])
     .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
     .constant('BASE_SCENARIO_GROUP_ID', 1)
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q', '$location',

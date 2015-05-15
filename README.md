@@ -240,6 +240,8 @@ Install dependencies as described above.
 
 Copy the `app/` folder to a web server host. In IIS, create a web app that points to the app folder.
 
-Change `API_ROOT` setting to the base URI of the web API. Edit `app/components/resources/resource-service.js`. Update the value of the `API_ROOT` constant at the top of the file.
+Edit `app/config.js`.
+Change `API_ROOT` setting to the base URI of the web API.
+Change `HELP_ROOT` setting to the help web site URL (see README in help subfolder).
 
 Configure the web app to enable loading of application JSON files. In IIS, add MIME type extension: `.json`,  MIME type: `application/json`.
