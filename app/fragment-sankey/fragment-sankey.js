@@ -2,15 +2,15 @@
 /* Controller for Fragment Sankey Diagram View */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
-                 'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario',
+                 'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
                     'lcaApp.selection.service'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
-        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService',
+        'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'ParamModelService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  FormatService, FragmentNavigationService) {
+                  FormatService, FragmentNavigationService, ParamModelService) {
             var defaultScenarioID = ScenarioModelService.getBaseCaseID(),
                 defaultFragmentID = 0,
             //
@@ -27,11 +27,10 @@ angular.module('lcaApp.fragment.sankey',
             $scope.fragment = null;
             $scope.scenario = null;
             $scope.$watch("selectedNode", onNodeSelectionChange);
-            $scope.$watch("mouseOverNode", onMouseOverNode);
+            //$scope.$watch("mouseOverNode", onMouseOverNode);
 
-            $scope.onScenarioChange = function() {
-                getData();
-            };
+            $scope.onScenarioChange = activateScenario;
+            $scope.gridFlows = [];
 
             /**
              * Temporary workaround for flows with problem properties. Hide them
@@ -212,6 +211,7 @@ angular.module('lcaApp.fragment.sankey',
             function visualizeFragment() {
                 setFlowProperties();
                 buildGraph(true);
+                loadGrid();
                 StatusService.stopWaiting();
             }
 
@@ -289,12 +289,9 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             /**
-             * Function called after requests for resources have been fulfilled.
+             * Activate scenario and get its top-level fragment data.
              */
-            function displayLoadedData() {
-                if (!$scope.scenario) {
-                    initScopeScenario();
-                }
+            function activateScenario() {
                 if ($scope.scenario) {
                     ScenarioModelService.setActiveID($scope.scenario.scenarioID);
                     $scope.navigationService =
@@ -302,6 +299,16 @@ angular.module('lcaApp.fragment.sankey',
                     initScopeFragment();
                     getDataForFragment();
                 }
+            }
+
+            /**
+             * Function called after requests for resources have been fulfilled.
+             */
+            function displayLoadedData() {
+                if (!$scope.scenario) {
+                    initScopeScenario();
+                }
+                activateScenario();
             }
 
             /**
@@ -347,7 +354,7 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             /**
-             * Get data resources that are filtered by fragment.
+             * Get data resources that are associated with fragment.
              * Called after fragment selection changes.
              * If successful, visualize selected fragment.
              */
@@ -356,7 +363,8 @@ angular.module('lcaApp.fragment.sankey',
                 StatusService.startWaiting();
                 $q.all([FlowPropertyForFragmentService.load({fragmentID: fragmentID}),
                     FragmentFlowService.load({scenarioID: $scope.scenario.scenarioID, fragmentID: fragmentID}),
-                    FlowForFragmentService.load({fragmentID: fragmentID})])
+                    FlowForFragmentService.load({fragmentID: fragmentID}),
+                    ParamModelService.load($scope.scenario.scenarioID)])
                     .then(visualizeFragment,
                     StatusService.handleFailure);
             }
@@ -407,50 +415,50 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
-            /**
-             * Get flow table content
-             * For each Sankey link provided, get
-             * flow name, magnitude and unit associated with selected flow property.
-             * If the link does have the selected flow property, display
-             * magnitude and unit for the
-             * reference flow property.
-             *
-             * @param {Array}  nodeLinks     Sankey links
-             * @return {Array}  Data for display in table
-             */
-            function getFlowRows(nodeLinks) {
-                var flowData = [];
-
-                nodeLinks.forEach( function (l) {
-                    if ("flowID" in l) {
-                        var flow = FlowForFragmentService.get(l.flowID),
-                            flowPropertyID = $scope.selectedFlowProperty["flowPropertyID"],
-                            magnitude = l.magnitude,
-                            unit = "";
-                        if (magnitude) {
-                            unit = $scope.selectedFlowProperty["referenceUnit"];
-                        } else  {
-                            var fp, ff;
-                            ff = FragmentFlowService.get(l.nodeID);
-                            flowPropertyID = flow["referenceFlowPropertyID"];
-                            magnitude = getMagnitude(ff, flowPropertyID);
-                            fp = FlowPropertyForFragmentService.get(flowPropertyID);
-                            if (fp) {
-                               unit = fp["referenceUnit"];
-                            }
-                        }
-                        flowData.push({ name: flow.name, magnitude: magnitude, unit: unit });
-                    }
-                });
-                return flowData;
-            }
-
-            function onMouseOverNode(node) {
-                if (node) {
-                    $scope.inputFlows = getFlowRows(node.targetLinks);
-                    $scope.outputFlows = getFlowRows(node.sourceLinks);
-                }
-            }
+            ///**
+            // * Get flow table content
+            // * For each Sankey link provided, get
+            // * flow name, magnitude and unit associated with selected flow property.
+            // * If the link does have the selected flow property, display
+            // * magnitude and unit for the
+            // * reference flow property.
+            // *
+            // * @param {Array}  nodeLinks     Sankey links
+            // * @return {Array}  Data for display in table
+            // */
+            //function getFlowRows(nodeLinks) {
+            //    var flowData = [];
+            //
+            //    nodeLinks.forEach( function (l) {
+            //        if ("flowID" in l) {
+            //            var flow = FlowForFragmentService.get(l.flowID),
+            //                flowPropertyID = $scope.selectedFlowProperty["flowPropertyID"],
+            //                magnitude = l.magnitude,
+            //                unit = "";
+            //            if (magnitude) {
+            //                unit = $scope.selectedFlowProperty["referenceUnit"];
+            //            } else  {
+            //                var fp, ff;
+            //                ff = FragmentFlowService.get(l.nodeID);
+            //                flowPropertyID = flow["referenceFlowPropertyID"];
+            //                magnitude = getMagnitude(ff, flowPropertyID);
+            //                fp = FlowPropertyForFragmentService.get(flowPropertyID);
+            //                if (fp) {
+            //                   unit = fp["referenceUnit"];
+            //                }
+            //            }
+            //            flowData.push({ name: flow.name, magnitude: magnitude, unit: unit });
+            //        }
+            //    });
+            //    return flowData;
+            //}
+            //
+            //function onMouseOverNode(node) {
+            //    if (node) {
+            //        $scope.inputFlows = getFlowRows(node.targetLinks);
+            //        $scope.outputFlows = getFlowRows(node.sourceLinks);
+            //    }
+            //}
 
             function getSelectedFragmentID() {
                 var selectedTopLevelFragmentID = ScenarioModelService.getSelectedTopLevelFragmentID();
@@ -475,8 +483,61 @@ angular.module('lcaApp.fragment.sankey',
                 }
             }
 
+            function defineGridColumns() {
+                $scope.columns = [
+                    {field: 'link.source.nodeName', displayName: 'Source Node', enableCellEdit: false},
+                    {field: 'link.target.nodeName', displayName: 'Target Node', enableCellEdit: false, width: 70},
+                    {field: 'quantity', displayName: 'Quantity', enableCellEdit: false},
+                    {field: 'link.magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false, width: 120},
+                    {field: 'link.unit', displayName: 'Unit', enableCellEdit: false, width: 70}
+                ];
+            }
+
+            function defineGrids() {
+                defineGridColumns();
+                $scope.params = { targetIndex : 2, canUpdate : false };
+            }
+
+
+            function loadGrid() {
+                var gridFlows = [];
+                graph.links.forEach( function(l) {
+                    var fragmentFlowID = l.nodeID,
+                        paramResource = ParamModelService.getFragmentFlowParam($scope.scenario.scenarioID, fragmentFlowID),
+                        gridFlow = {link: l},
+                        fragmentFlow = FragmentFlowService.get(fragmentFlowID)
+                        ;
+                    if (paramResource) {
+                        gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                        gridFlow.quantity = paramResource.defaultValue;
+                    } else if (fragmentFlow) {
+                        gridFlow.quantity =  fragmentFlow.magnitude / fragmentFlow.nodeWeight;
+                        if (fragmentFlow.nodeType === "Process")
+                        {
+                            gridFlow.paramWrapper = ParamModelService.naParam("reference");
+                        }
+                        else if (fragmentFlow["isBalanceFlow"]) {
+                            gridFlow.paramWrapper = ParamModelService.naParam("balance");
+                        } else {
+                            if (fragmentFlow.parentFragmentFlowID) {
+                                var parent = FragmentFlowService.get(fragmentFlow.parentFragmentFlowID);
+                                if (parent && parent.nodeType === "Process") {
+                                    gridFlow.paramWrapper = ParamModelService.wrapParam(null);
+                                }
+                            }
+                            if (!gridFlow.paramWrapper) {
+                                gridFlow.paramWrapper = ParamModelService.naParam();
+                            }
+                        }
+                    }
+                    gridFlows.push(gridFlow);
+                });
+                $scope.gridFlows = gridFlows;
+            }
+
             getSelectedFragmentID();
             getActiveScenarioID();
             getStateParams();
+            defineGrids();
             getData();
         }]);

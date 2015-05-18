@@ -29,7 +29,8 @@ module.exports = function(config){
       'app/lcia-method/**/*.js',
       'app/process-instance/**/*.js',
       'app/process-lcia/**/*.js',
-      'app/scenario/**/*.js'
+      'app/scenario/**/*.js',
+        'app/config.js'
     ],
 
     autoWatch : true,
@@ -39,12 +40,12 @@ module.exports = function(config){
     plugins : [
           'karma-chrome-launcher',
           'karma-firefox-launcher',
-          'karma-ie-launcher',
+          //'karma-ie-launcher',
           'karma-jasmine',
           'karma-junit-reporter'
       ],
 
-    browsers : ['Chrome', 'Firefox', 'IE'],
+    browsers : ['Chrome', 'Firefox'],
 
     junitReporter : {
       outputFile: 'test_out/unit.xml',
