@@ -2,13 +2,15 @@
  * Directive for grids containing one modifiable LCA param.
  * Wraps ngGrid directive
  */
-angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
+angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', 'lcaApp.format'])
 .constant('DIRECTION_CELL_TEMPLATE', '<div class="cellIcon"><span ng-class="directionClass(row)"></span></div>')
+.constant('PARAM_HINT_CELL_TEMPLATE',
+    '<div class="ngCellText" ng-class="col.colIndex()"><span ng-cell-text ng-style="paramHintStyle(row)">{{row.getProperty(col.field) | numFormat}}</span></div>')
 .directive('paramGrid', ['$compile', 'PARAM_VALUE_STATUS', 'ParamModelService', '$window',
     function($compile, PARAM_VALUE_STATUS, ParamModelService, $window) {
         return {
             restrict: 'E',
-            template: '<span><div class=\"gridStyle\" ng-grid=\"gridOptions\" ng-style=\"dynamicGridStyle\"></div></span>',
+            template: '<span><div class=\"gridStyle\" ng-grid=\"gridOptions\"></div></span>',
             scope : { options : '=', data : '=', columns : '=', params : '=' },
             replace : true,
             transclude : false,
@@ -16,11 +18,10 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
         };
 
         function paramGridController($scope, $attrs) {
-
-            $scope.dynamicGridStyle = null;
             $scope.gridOptions = {};
             $scope.changeClass = getChangeStatusClass;
             $scope.directionClass = getDirectionClass;
+            $scope.paramHintStyle = getParamHintStyle;
             $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
 
             /**
@@ -57,6 +58,16 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         break;
                 }
                 return iconClass;
+            }
+
+            /**
+             * Get style for hinting that current cell value is affected by parameter
+             * @param {{ entity : {paramWrapper : {paramResource : null | {}}} }} row
+             * @returns {string}
+             */
+            function getParamHintStyle( row) {
+               return (row.entity.paramWrapper && row.entity.paramWrapper.paramResource) ?
+                   {'font-weight' : 'bold'} : {};
             }
 
             /**
@@ -126,12 +137,6 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                 }
             }
 
-            function adjustHeight() {
-                var gridHeight = $scope.data ? $scope.data.length * 30 + 50 : 50;
-                $scope.dynamicGridStyle = { height: gridHeight};
-            }
-
-
             function getTargetField() {
                 if ( $scope.params.targetIndex && $scope.params.targetIndex < $scope.columns.length) {
                     var colDef = $scope.columns[$scope.params.targetIndex];
@@ -151,7 +156,8 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                         enableRowSelection: false,
                         enableCellEditOnFocus: true,
                         enableHighlighting: true,
-                        enableColumnResize: true
+                        enableColumnResize: true,
+                        plugins: [new ngGridFlexibleHeightPlugin()]
                     };
 
 
@@ -166,10 +172,6 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param'])
                     setColWidths();
                     addParamCols();
                 }
-            });
-
-            $scope.$watch('data', function (newVal) {
-                adjustHeight();
             });
 
             init();

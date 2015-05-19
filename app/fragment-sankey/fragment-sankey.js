@@ -3,14 +3,16 @@
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
-                    'lcaApp.selection.service'])
+                    'lcaApp.selection.service', 'lcaApp.paramGrid.directive'])
     .controller('FragmentSankeyCtrl',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'ParamModelService',
+            'PARAM_HINT_CELL_TEMPLATE',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
-                  FormatService, FragmentNavigationService, ParamModelService) {
+                  FormatService, FragmentNavigationService, ParamModelService,
+                  PARAM_HINT_CELL_TEMPLATE) {
             var defaultScenarioID = ScenarioModelService.getBaseCaseID(),
                 defaultFragmentID = 0,
             //
@@ -209,10 +211,10 @@ angular.module('lcaApp.fragment.sankey',
              * Prepare fragment data for visualization
              */
             function visualizeFragment() {
+                StatusService.stopWaiting();
                 setFlowProperties();
                 buildGraph(true);
-                loadGrid();
-                StatusService.stopWaiting();
+                loadGrid(true);
             }
 
             /**
@@ -375,6 +377,7 @@ angular.module('lcaApp.fragment.sankey',
              */
             $scope.onFlowPropertyChange = function () {
                 buildGraph(false);
+                loadGrid(false);
             };
 
             /**
@@ -484,52 +487,41 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function defineGridColumns() {
+                //$scope.columns = [
+                //    {field: 'link.source.nodeName', displayName: 'Source Node', enableCellEdit: false},
+                //    {field: 'link.target.nodeName', displayName: 'Target Node', enableCellEdit: false},
+                //    {field: 'link.magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false},
+                //    {field: 'link.unit', displayName: 'Unit', enableCellEdit: false, width: 70}
+                //];
                 $scope.columns = [
-                    {field: 'link.source.nodeName', displayName: 'Source Node', enableCellEdit: false},
-                    {field: 'link.target.nodeName', displayName: 'Target Node', enableCellEdit: false, width: 70},
-                    {field: 'quantity', displayName: 'Quantity', enableCellEdit: false},
-                    {field: 'link.magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false, width: 120},
+                    {field: 'sourceName', displayName: 'Source Node', enableCellEdit: false},
+                    {field: 'targetName', displayName: 'Target Node', enableCellEdit: false},
+                    {field: 'link.magnitude', displayName: 'Magnitude', enableCellEdit: false,
+                        cellTemplate: PARAM_HINT_CELL_TEMPLATE },
                     {field: 'link.unit', displayName: 'Unit', enableCellEdit: false, width: 70}
                 ];
             }
 
             function defineGrids() {
                 defineGridColumns();
-                $scope.params = { targetIndex : 2, canUpdate : false };
             }
 
 
             function loadGrid() {
                 var gridFlows = [];
-                graph.links.forEach( function(l) {
-                    var fragmentFlowID = l.nodeID,
-                        paramResource = ParamModelService.getFragmentFlowParam($scope.scenario.scenarioID, fragmentFlowID),
-                        gridFlow = {link: l},
-                        fragmentFlow = FragmentFlowService.get(fragmentFlowID)
+
+                graph.links.forEach(function (l) {
+                    var paramResource = ParamModelService.getFragmentFlowParam($scope.scenario.scenarioID, l.nodeID),
+                        //gridFlow = {link: l, paramWrapper: paramResource}
+                        gridFlow
                         ;
-                    if (paramResource) {
-                        gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
-                        gridFlow.quantity = paramResource.defaultValue;
-                    } else if (fragmentFlow) {
-                        gridFlow.quantity =  fragmentFlow.magnitude / fragmentFlow.nodeWeight;
-                        if (fragmentFlow.nodeType === "Process")
-                        {
-                            gridFlow.paramWrapper = ParamModelService.naParam("reference");
-                        }
-                        else if (fragmentFlow["isBalanceFlow"]) {
-                            gridFlow.paramWrapper = ParamModelService.naParam("balance");
-                        } else {
-                            if (fragmentFlow.parentFragmentFlowID) {
-                                var parent = FragmentFlowService.get(fragmentFlow.parentFragmentFlowID);
-                                if (parent && parent.nodeType === "Process") {
-                                    gridFlow.paramWrapper = ParamModelService.wrapParam(null);
-                                }
-                            }
-                            if (!gridFlow.paramWrapper) {
-                                gridFlow.paramWrapper = ParamModelService.naParam();
-                            }
-                        }
-                    }
+
+                    gridFlow = {
+                        sourceName :  graph.nodes[l.source].nodeName,
+                        targetName :  graph.nodes[l.target].nodeName,
+                        link : l,
+                        paramWrapper: ParamModelService.wrapParam(paramResource)
+                    };
                     gridFlows.push(gridFlow);
                 });
                 $scope.gridFlows = gridFlows;
