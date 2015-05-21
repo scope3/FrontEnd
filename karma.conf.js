@@ -21,6 +21,7 @@ module.exports = function(config){
       'app/bower_components/angular-bootstrap/ui-bootstrap.js',
       'app/bower_components/ng-csv/build/ng-csv.js',
       'app/bower_components/ng-grid/build/ng-grid.js',
+      'app/bower_components/ng-grid/plugins/ng-grid-flexible-height.js',
       'app/bower_components/array.prototype.find/index.js',
       'app/components/**/*.js',
       'app/fragment-lcia/**/*.js',
@@ -29,7 +30,8 @@ module.exports = function(config){
       'app/lcia-method/**/*.js',
       'app/process-instance/**/*.js',
       'app/process-lcia/**/*.js',
-      'app/scenario/**/*.js'
+      'app/scenario/**/*.js',
+        'app/config.js'
     ],
 
     autoWatch : true,
@@ -40,11 +42,15 @@ module.exports = function(config){
           'karma-chrome-launcher',
           'karma-firefox-launcher',
           'karma-ie-launcher',
+          'karma-safari-launcher',
           'karma-jasmine',
           'karma-junit-reporter'
       ],
 
-    browsers : ['Chrome', 'Firefox', 'IE'],
+    browsers : ['Chrome', 'Firefox',
+      //'IE',
+      'Safari'
+    ],
 
     junitReporter : {
       outputFile: 'test_out/unit.xml',
