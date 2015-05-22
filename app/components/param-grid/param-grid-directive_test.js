@@ -80,4 +80,14 @@ describe('Unit test param grid directive', function() {
         var elt = compileDirective();
         expect(elt).toBeDefined();
     });
+
+    it('should handle both types of param values in one grid', function() {
+        var param = getParam();
+        addDataColumns();
+        $rootScope.data[0].paramWrapper = paramModelService.wrapParam(param);
+        $rootScope.data[1].paramWrapper = paramModelService.naParam();
+
+        var elt = compileDirective();
+        expect(elt).toBeDefined();
+    });
 });

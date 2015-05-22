@@ -17,7 +17,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             controller : paramGridController
         };
 
-        function paramGridController($scope, $attrs) {
+        function paramGridController($scope) {
             $scope.gridOptions = {};
             $scope.changeClass = getChangeStatusClass;
             $scope.directionClass = getDirectionClass;
@@ -43,7 +43,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             }
 
             /**
-             * Get icon class for Input / Ouput
+             * Get icon class for Input / Output
              * @param {{ entity : {paramWrapper : {editStatus : Number}} }} row
              * @returns {string}
              */
@@ -75,7 +75,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             * @param evt   Event object containing row changed.
             */
             function handleCellEdit(evt) {
-                var rowObj = evt.targetScope.row.entity,
+                var rowObj = evt.targetScope.row["entity"],
                     errMsg = "",
                     targetField = getTargetField();
 
@@ -98,10 +98,31 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                 })
             }
 
+            function compare(a, b) {
+                if (a < b) {
+                    return -1;
+                }
+                else if (a > b) {
+                    return 1;
+                }
+                else {
+                    return 0;
+                }
+            }
+
+            function sortParam (a, b) {
+                if (typeof(a) === typeof(b)) {
+                    return compare(a, b);
+                } else {
+                    return typeof(a) === "number" ? -1 : 1;
+                }
+            }
+
             function addParamCols() {
                 var paramCol = [
                         {field: 'paramWrapper.value', displayName: 'Parameter',
-                         enableCellEdit: false, cellEditableCondition: 'row.getProperty(\'paramWrapper.enableEdit\')' },
+                         enableCellEdit: false, cellEditableCondition: 'row.getProperty(\'paramWrapper.enableEdit\')',
+                            sortFn: sortParam },
                         {field: 'paramWrapper.editStatus', displayName: '', enableCellEdit: false, width: 20}
                     ],
                     cols = $scope.columns;
