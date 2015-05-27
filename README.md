@@ -233,14 +233,32 @@ http-server -a localhost -p 8000
 Alternatively, you can choose to configure your own webserver, such as apache or nginx. Just
 configure your server to serve the files under the `app/` directory.
 
+## Production 
+
+### Release build
+
+Use grunt commandline interface. To install it globally, run the following command as Windows Adminstrator.
+
+```
+npm install -g grunt-cli
+```
+
+Command to concatenate and minify files:
+
+```
+grunt release
+```
+
+Result is in dist folder.
+
 
 ### How to Publish on Production Server
 
 Install dependencies as described above.
 
-Copy the `app/` folder to a web server host. In IIS, create a web app that points to the app folder.
+Copy the `dist/` folder to a web server host. In IIS, create a web app that points to the dist folder.
 
-Edit `app/config.js`.
+Edit `dist/config.js`.
 Change `API_ROOT` setting to the base URI of the web API.
 Change `HELP_ROOT` setting to the help web site URL (see README in help subfolder).
 

@@ -1,10 +1,10 @@
 'use strict';
-
 // Declare app level module which depends on views, and components
 angular.module('lcaApp', [
         'lcaApp.config',
     'LocalStorageModule',
     'ui.router',
+    'lcaApp.html',
     'lcaApp.home',
     'lcaApp.fragment.sankey',
     'lcaApp.process.instance',
