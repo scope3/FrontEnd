@@ -7,6 +7,7 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bower-concat');
   grunt.loadNpmTasks('grunt-html2js');
 
+  grunt.registerTask('test', ['clean','html2js','concat','copy', 'bower_concat']);
   grunt.registerTask('release', ['clean','html2js','uglify','concat:index', 'concat:css','copy', 'bower_concat']);
 
   // Print a timestamp (useful for when watching)
@@ -26,6 +27,10 @@ module.exports = function (grunt) {
     ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>\n */\n',
     src: {
       js: ['app/**/*.js', '!app/bower_components/**/*.js', '!app/**/*_test.js', '!app/**/placeholder.js'],
+      plugins: [
+        'app/bower_components/d3-plugins/sankey/sankey.js',
+        'app/bower_components/ng-grid/plugins/ng-grid-flexible-height.js'
+      ],
       jsTpl: ['<%= builddir %>/templates/**/*.js'],
       specs: ['app/**/*_test.js'],
       html: ['<%= builddir %>/index.html'],
@@ -83,6 +88,10 @@ module.exports = function (grunt) {
         },
         src:['<%= src.js %>' ,'<%= src.jsTpl %>'],
         dest:'<%= distdir %>/<%= pkg.name %>.min.js'
+      },
+      plugins: {
+        src: ['<%= src.plugins %>'],
+        dest: '<%= distdir %>/plugins.min.js'
       }
     },
     bower_concat: {
@@ -92,7 +101,8 @@ module.exports = function (grunt) {
         exclude: [
           'jquery',
           'angular',
-          'angular-mocks'
+          'angular-mocks',
+          'd3-plugins'
         ],
         callback: function(mainFiles, component) {
           return mainFiles.map( function(filepath) {
@@ -100,9 +110,6 @@ module.exports = function (grunt) {
             var min = filepath.replace(/\.js$/, '.min.js');
             return grunt.file.exists(min) ? min : filepath;
           });
-        },
-        mainFiles: {
-          'd3-plugins': 'app/bower_components/d3-plugins/sankey/sankey.js'
         }
       }
     }

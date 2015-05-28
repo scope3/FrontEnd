@@ -47,9 +47,9 @@ module.exports = function(config){
           'karma-junit-reporter'
       ],
 
-    browsers : ['Chrome', 'Firefox',
-      //'IE',
-      'Safari'
+    browsers : ['Chrome', 'Firefox'
+      //',IE'
+      //,'Safari'
     ],
 
     junitReporter : {

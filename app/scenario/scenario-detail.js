@@ -1,7 +1,8 @@
 'use strict';
 /* Controller for Scenario Detail View */
 angular.module('lcaApp.scenario.detail',
-               ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario', 'lcaApp.models.param'])
+               ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario', 'lcaApp.models.param',
+                   'lcaApp.paramGrid.directive'])
 .controller('ScenarioDetailController', ['$scope', '$window', 'StatusService', '$state', '$stateParams',
             'ScenarioModelService', 'FragmentService', 'ParamModelService', 'PARAM_TYPE_NAME',
             'PARAM_VALUE_STATUS', '$q',

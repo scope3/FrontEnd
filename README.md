@@ -237,7 +237,9 @@ configure your server to serve the files under the `app/` directory.
 
 ### Release build
 
-Use grunt commandline interface. To install it globally, run the following command as Windows Adminstrator.
+Install dependencies using npm install.
+
+Use grunt commandline interface to build. To install it globally, run the following command as Windows Adminstrator.
 
 ```
 npm install -g grunt-cli
@@ -254,7 +256,6 @@ Result is in dist folder.
 
 ### How to Publish on Production Server
 
-Install dependencies as described above.
 
 Copy the `dist/` folder to a web server host. In IIS, create a web app that points to the dist folder.
 
