@@ -26,7 +26,8 @@ module.exports = function (grunt) {
     ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>\n */\n',
     appFile: '<%= pkg.name %>.js',
     src: {
-      js: ['app/**/*.js', '!app/bower_components/**/*.js', '!app/components/resource-mocks/*.js', '!app/**/*_test.js', '!app/**/placeholder.js'],
+      js: ['app/**/*.js', '!app/bower_components/**/*.js', '!app/components/resource-mocks/*.js', '!app/**/*_test.js',
+        '!app/**/placeholder.js', '!app/**/config.js'],
       plugins: [
         'app/bower_components/d3-plugins/sankey/sankey.js',
         'app/bower_components/ng-grid/plugins/ng-grid-flexible-height.js'
