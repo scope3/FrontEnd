@@ -7,12 +7,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-bower-concat');
   grunt.loadNpmTasks('grunt-html2js');
 
-  grunt.registerTask('release', ['clean','html2js','concat', 'uglify', 'copy', 'bower_concat']);
-
-  // Print a timestamp (useful for when watching)
-  grunt.registerTask('timestamp', function() {
-    grunt.log.subhead(Date());
-  });
+  //grunt.registerTask('release', ['clean','html2js','concat', 'uglify', 'copy', 'bower_concat']);
+  grunt.registerTask('release', ['clean','html2js','concat:css', 'concat:index', 'uglify', 'copy', 'bower_concat']);
 
   // Project configuration.
   grunt.initConfig({
@@ -22,18 +18,19 @@ module.exports = function (grunt) {
     banner:
     '/*! <%= pkg.title || pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %>\n' +
     '<%= pkg.homepage ? " * " + pkg.homepage + "\\n" : "" %>' +
-    ' * Copyright (c) <%= grunt.template.today("yyyy") %> <%= pkg.author %>;\n' +
-    ' * Licensed <%= _.pluck(pkg.licenses, "type").join(", ") %>\n */\n',
-    appFile: '<%= pkg.name %>.js',
+    '<%= pkg.copyright ? " * " + pkg.copyright + "\\n" : "" %>' +
+    ' */\n',
+    minFile: '<%= pkg.name %>.min.js',
+    concatFile: '<%= pkg.name %>.cc.js',
     src: {
-      js: ['app/**/*.js', '!app/bower_components/**/*.js', '!app/components/resource-mocks/*.js', '!app/**/*_test.js',
+      jsApp: ['app/**/*.js', '!app/bower_components/**/*.js', '!app/components/resource-mocks/*.js', '!app/**/*_test.js',
         '!app/**/placeholder.js', '!app/**/config.js'],
+      cssApp: ['app/**/*.css', '!app/bower_components/**/*.css'],
       plugins: [
         'app/bower_components/d3-plugins/sankey/sankey.js',
         'app/bower_components/ng-grid/plugins/ng-grid-flexible-height.js'
       ],
       jsTpl: ['<%= buildDir %>/templates/**/*.js'],
-      specs: ['app/**/*_test.js'],
       html: ['<%= buildDir %>/index.html'],
       tpl: {
         app: ['app/**/*.html', '!app/bower_components/**/*.html', '!app/index.html']
@@ -62,16 +59,14 @@ module.exports = function (grunt) {
     },
     concat:{
       css: {
-        src: [
-          'app/**/*.css', '!app/bower_components/**/*.css'
-        ],
+        src: [ '<%= src.cssApp %>' ],
         dest: '<%= distDir %>/<%= pkg.name %>.css'
       },
       js:{
         options: {
-          banner: "<%= banner %>",
+          banner: "<%= banner %>"
         },
-        src:['<%= src.js %>'],
+        src:['<%= src.jsApp %>'],
         dest:'<%= distDir %>/<%= pkg.name %>.js'
       },
       index: {
@@ -83,9 +78,17 @@ module.exports = function (grunt) {
       }
     },
     uglify: {
-      js:{
-        src:['<%= buildDir %>/templates.js', '<%= src.plugins %>'],
-        dest:'<%= distDir %>/tp.min.js'
+      jsApp:{
+        options: {
+          banner: "<%= banner %>",
+          mangle: false
+        },
+        src: ['<%= src.jsApp %>', '<%= buildDir %>/templates.js'],
+        dest: '<%= distDir %>/<%= minFile %>'
+      },
+      plugins: {
+        src: ['<%= src.plugins %>'],
+        dest: '<%= distDir %>/plugins.min.js'
       }
     },
     bower_concat: {
@@ -99,7 +102,7 @@ module.exports = function (grunt) {
           'angular-mocks',
           'd3-plugins'
         ],
-        callback: function(mainFiles, component) {
+        callback: function(mainFiles) {
           return mainFiles.map( function(filepath) {
             // Use minified files if available
             var min = filepath.replace(/\.js$/, '.min.js');

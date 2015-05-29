@@ -2,6 +2,7 @@
   "name": "lca-app",
   "version": "0.0.1",
   "private": true,
+  "copyright"  : "Copyright (c) (2015) California Department of Resources Recycling and Recovery (CalRecycle). All rights reserved.",
   "devDependencies": {
     "karma": "~0.10",
     "protractor": "^1.1.1",
