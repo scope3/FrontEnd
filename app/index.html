@@ -13,7 +13,8 @@
     <title>Used Oil LCA</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">
+    <!--<link rel="stylesheet" href="bower_components/bootstrap/dist/css/bootstrap.min.css">-->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
     <link rel="stylesheet" href="bower_components/isteven-angular-multiselect/isteven-multi-select.css">
     <link rel="stylesheet" href="bower_components/ng-grid/ng-grid.min.css">
     <link rel="stylesheet" href="components/lcia-detail/lcia-bar-chart.css">
@@ -23,9 +24,11 @@
     <link rel="icon" type="image/png" href="favicon.ico" sizes="16x16">
 
     <!--Use CDN when network connection is more reliable -->
-    <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>-->
-    <script src="bower_components/jquery/dist/jquery.min.js"></script>
-    <script src="bower_components/angular/angular.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+
+    <!--<script src="bower_components/jquery/dist/jquery.min.js"></script>-->
+    <!--<script src="bower_components/angular/angular.min.js"></script>-->
     <script src="bower_components/angular-bootstrap/ui-bootstrap-tpls.min.js"></script>
     <script src="bower_components/angular-local-storage/dist/angular-local-storage.min.js"></script>
     <script src="bower_components/angular-spinner/angular-spinner.min.js"></script>
@@ -42,15 +45,14 @@
     <script src="bower_components/ng-csv/build/ng-csv.min.js"></script>
     <script src="bower_components/ng-grid/build/ng-grid.min.js"></script>
     <script src="bower_components/ng-grid/plugins/ng-grid-flexible-height.js"></script>
-    <script src="config.js"></script>
-    <script src="app.js"></script>
+
     <script src="components/change-buttons/change-buttons-directive.js"></script>
     <script src="components/color-code/color-code.js"></script>
-    <script src="components/d3/d3-service.js"></script>
     <script src="components/d3-tip/tip-service.js"></script>
-    <script src="components/idmap/idmap-service.js"></script>
+    <script src="components/d3/d3-service.js"></script>
     <script src="components/format/format.js"></script>
     <script src="components/fragment-navigation/fragment-navigation-service.js"></script>
+    <script src="components/idmap/idmap-service.js"></script>
     <script src="components/lcia-detail/lcia-bar-directive.js"></script>
     <script src="components/lcia-detail/lcia-detail-service.js"></script>
     <script src="components/modal/modal-confirm.js"></script>
@@ -65,22 +67,25 @@
     <script src="components/sankey/sankey-service.js"></script>
     <script src="components/selection/selection-service.js"></script>
     <script src="components/status/status-service.js"></script>
+    <script src="components/version/interpolate-filter.js"></script>
+    <script src="components/waterfall/waterfall.js"></script>
+    <script src="components/waterfall/waterfall-directive.js"></script>
+    <script src="components/waterfall/waterfall-service.js"></script>
+    <script src="components/version/version.js"></script>
+    <script src="components/version/version-directive.js"></script>
+    <script src="config.js"></script>
+    <script src="app.js"></script>
     <script src="home/home.js"></script>
     <script src="fragment-lcia/fragment-lcia.js"></script>
     <script src="fragment-sankey/fragment-sankey.js"></script>
+    <script src="lcia-method/lcia-method-detail.js"></script>
     <script src="process-flow-param/process-flow-param.js"></script>
     <script src="process-instance/process-instance.js"></script>
     <script src="process-lcia/process-lcia.js"></script>
     <script src="scenario/scenario-clone.js"></script>
     <script src="scenario/scenario-detail.js"></script>
     <script src="scenario/scenario-edit.js"></script>
-    <script src="components/version/version.js"></script>
-    <script src="components/version/version-directive.js"></script>
-    <script src="components/version/interpolate-filter.js"></script>
-    <script src="components/waterfall/waterfall.js"></script>
-    <script src="components/waterfall/waterfall-directive.js"></script>
-    <script src="components/waterfall/waterfall-service.js"></script>
-    <script src="lcia-method/lcia-method-detail.js"></script>
+
     <script src="template/placeholder.js"></script>
 
 </head>

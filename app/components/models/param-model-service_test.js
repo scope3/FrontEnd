@@ -4,7 +4,7 @@
 describe('Unit test Param Model service', function() {
     var paramModelService, scenarioID, params, statusConstants;
 
-    beforeEach(module('lcaApp.models.param', 'lcaApp.mock.params', 'lcaApp.resources.service'));
+    beforeEach(module('lcaApp.models.param', 'lcaApp.mock.params'));
 
     beforeEach(inject(function(_ParamModelService_, _PARAM_VALUE_STATUS_) {
         paramModelService = _ParamModelService_;
