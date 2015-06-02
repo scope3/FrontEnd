@@ -1,0 +1,130 @@
+<!doctype html>
+<!--[if lt IE 7 ]> <html lang="en-us" dir="ltr" class="no-js ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en-us" dir="ltr" class="no-js ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en-us" dir="ltr" class="no-js ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en-us" dir="ltr" class="no-js ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en-us" dir="ltr" class="no-js"> <!--<![endif]-->
+<head>
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge;chrome=1" >
+  <meta charset="utf-8">
+
+  <title>Help - LCIA</title>
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="/normalize.css">
+    <link rel="stylesheet" href="/main.css">
+    <link rel="stylesheet" href="/public/css/docs.css" >
+    <link rel="stylesheet" href="/help.css" >
+
+</head>
+<body>
+  <div id="container" class="wikiconvertor">
+
+    <div id="header">
+        <h1>Used Oil LCA Help</h1>
+    </div>
+
+    <div id="body">
+      <div class="wikiconvertor-pages">
+          <ul>
+              <li><a href="&#x2F;Fragment&#x2F;">Fragment</a></li>
+              <li><a href="&#x2F;">Home</a></li>
+              <li><a href="&#x2F;LCIA&#x2F;">LCIA</a></li>
+              <li><a href="&#x2F;Scenario&#x2F;">Scenario</a></li>
+          </ul>
+      </div>
+
+      <div class="wikiconvertor-content wikistyle relative">
+
+          <p>LCIA (Life Cycle Impact Assessment) is a phase of life cycle assessment where potential environmental impacts are calculated.</p>
+<h2 id="lcia-method">LCIA Method</h2>
+<p>An LCIA method defines a methodology for assessing a particular type of potential impact, such as global warming. 
+The impact category indicator and reference quantity specify how impact is quantified.</p>
+<p>LCIA methods are activated in the Used Oil LCA tool by checking boxes in the <strong>Active</strong> column of the LCIA Methods 
+table on the tool&#39;s default view (Home). LCIA methods are color coded by impact category as follows.</p>
+<p><span style="background-color:#efedf5">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Abiotic resource depletion</p>
+<p><span style="background-color:#edf8b1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Acidification</p>
+<p><span style="background-color:#e0f3db">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Aquatic eco-toxicity</p>
+<p><span style="background-color:#e5f5e0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Aquatic Eutrophication</p>
+<p><span style="background-color:#e5f5e0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Biotic resource depletion</p>
+<p><span style="background-color:#fee0d2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Cancer human health effects</p>
+<p><span style="background-color:#ffeda0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Climate change</p>
+<p><span style="background-color:#deebf7">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Ionizing radiation</p>
+<p><span style="background-color:#fff7bc">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Land use</p>
+<p><span style="background-color:#e5f5f9">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Non-cancer human health effects</p>
+<p><span style="background-color:#ece2f0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Ozone depletion</p>
+<p><span style="background-color:#edf8b1">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Photochemical ozone creation</p>
+<p><span style="background-color:#f0f0f0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Respiratory inorganics</p>
+<p><span style="background-color:#e5f5e0">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+Terrestrial Eutrophication</p>
+<p>Click on an LCIA method name to navigate to the LCIA Method view.
+This view displays important LCIA method attributes and characterization factors. 
+To see the data source, an ILCD* formatted XML file, 
+click on the <strong>ILCD Reference</strong> LCIA Method Data Set link. </p>
+<p>* ILCD : International Reference Life Cycle Data System, developed by the European Commission. </p>
+<h3 id="characterization-factors">Characterization Factors</h3>
+<p>Characterization factors associate impact factors with elementary flows. 
+An elementary flow is material or energy that is directly input to or output from the environment.</p>
+<h2 id="lcia-result">LCIA Result</h2>
+<p>An LCIA result is impact measured in the common unit of the LCIA method&#39;s reference quantity. The result is computed by 
+applying characterization factors to life cycle inventory analysis.
+Life cycle inventory analysis is another phase of
+life cycle assessment that 
+compiles a list of quantified flows for a given fragment or process. </p>
+<h3 id="fragment-lcia">Fragment LCIA</h3>
+<p>The Fragment LCIA view contains waterfall charts showing LCIA results for a fragment and one or more scenarios. 
+Scenario selection is constrained to those scenarios whose top-level fragment is the selected fragment.</p>
+<p>Each active LCIA method has a panel containing waterfall charts for each selected scenario. A waterfall 
+chart shows the cumulative LCIA result at each stage of the selected fragment&#39;s life cycle. 
+Fragment stages form the vertical axis of each chart. The horizontal axis represents impact quantity. Its range is 
+consistent across scenarios to facilitate comparison. </p>
+<h3 id="process-lcia">Process LCIA</h3>
+<p>The Process LCIA view displays LCIA results for one scenario selection and one process selection. </p>
+<p>Click on the <strong>ILCD Reference</strong> Process Data Set link to see information about the selected process. </p>
+<p>If the process <strong>Data Source</strong> is private, then Input and Output flows are not displayed, 
+and only cumulative LCIA results are shown.</p>
+<p>If the data source is not private, each active LCIA method with positive results has a bar chart showing positive impacts 
+associated with
+the selected process flows. In each bar chart, elementary flows are sorted in descending order by LCIA result. 
+Positive results too small to display are grouped together as Aggregate flow.</p>
+<p>Click on the Flow Details button to see all of the process&#39; elementary flows and associated parameters.</p>
+
+
+      </div>
+
+    </div>
+    <div id="footer">
+
+    </div>
+
+
+  </div>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
+  <script>window.jQuery || document.write('<script src="/public/js/jquery.min.js"><\/script>')</script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+  <script>window.JSON || document.write("<script src='/public/js/json2.js'>\x3C/script>")</script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.1.6/underscore-min.js"></script>
+  <script>window._ || document.write("<script src='/public/js/underscore.min.js'>\x3C/script>")</script>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/0.5.0/backbone-min.js"></script>
+  <script>window.Backbone || document.write("<script src='/public/js/backbone.min.js'>\x3C/script>")</script>
+
+  <script src="/public/js/script.js"></script>
+</body>
+</html>
