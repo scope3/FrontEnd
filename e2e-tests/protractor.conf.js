@@ -2,7 +2,7 @@ exports.config = {
   allScriptsTimeout: 11000,
 
   specs: [
-    '*.js'
+    'test_scenarios.js'
   ],
 
   capabilities: {
@@ -16,4 +16,5 @@ exports.config = {
   jasmineNodeOpts: {
     defaultTimeoutInterval: 30000
   }
+
 };
