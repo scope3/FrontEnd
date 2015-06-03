@@ -270,3 +270,27 @@ Change `API_ROOT` setting to the base URI of the web API.
 Change `HELP_ROOT` setting to the help web site URL (see README in help subfolder).
 
 Configure the web app to enable loading of application JSON files. In IIS, add MIME type extension: `.json`,  MIME type: `application/json`.
+
+### Test
+
+Test the deployed web app using protractor.  
+
+Edit e2e-tests/protractor.conf.js and change the baseUrl setting
+to the base URL of the deployed web app (Example: http://kbcalr.isber.ucsb.edu/app/dist/).
+
+If you have not already done so, install and run WebDriver by executing the following commands in the FrontEnd directory.
+
+```
+npm run update-webdriver
+npm run start-webdriver
+```
+
+Once our web app and WebDriver web server are both running, open a new window and 
+run the end-to-end tests using the supplied npm script:
+
+```
+npm run protractor
+```
+
+
+
