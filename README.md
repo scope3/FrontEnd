@@ -165,7 +165,7 @@ npm start
 ```
 
 In addition, since Protractor is built upon WebDriver we need to install this.  The angular-seed
-project comes with a predefined script to do this:
+project comes with a predefined script to do this. Open a new window and run the following command in this directory.
 
 ```
 npm run update-webdriver
@@ -173,8 +173,14 @@ npm run update-webdriver
 
 This will download and install the latest version of the stand-alone WebDriver tool.
 
-Once you have ensured that the development web server hosting our application is up and running
-and WebDriver is updated, you can run the end-to-end tests using the supplied npm script:
+Start WebDriver by executing 
+
+```
+npm run start-webdriver
+```
+
+Once our web app and WebDriver web server are both running, open a new window and 
+run the end-to-end tests using the supplied npm script:
 
 ```
 npm run protractor

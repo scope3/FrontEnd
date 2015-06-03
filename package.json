@@ -5,7 +5,7 @@
   "copyright"  : "Copyright (c) (2015) California Department of Resources Recycling and Recovery (CalRecycle). All rights reserved.",
   "devDependencies": {
     "karma": "~0.10",
-    "protractor": "^1.1.1",
+    "protractor": "2.0.0",
     "http-server": "^0.6.1",
     "bower": "^1.4.1",
     "shelljs": "^0.2.6",
@@ -31,7 +31,7 @@
     "test-single-run": "karma start karma.conf.js  --single-run",
     "preupdate-webdriver": "npm install",
     "update-webdriver": "webdriver-manager update",
-    "preprotractor": "npm run update-webdriver",
+    "start-webdriver": "webdriver-manager start",
     "protractor": "protractor e2e-tests/protractor.conf.js"
   }
 }
