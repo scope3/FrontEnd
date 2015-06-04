@@ -93,8 +93,8 @@ module.exports = function (grunt) {
     },
     bower_concat: {
       all: {
-        dest: 'dist/_bower.js',
-        cssDest: 'dist/_bower.css',
+        dest: '<%= distDir %>/bower.cc.js',
+        cssDest: '<%= distDir %>/bower.cc.css',
         exclude: [
             'bootstrap',
           'jquery',
