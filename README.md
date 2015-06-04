@@ -112,7 +112,7 @@ See also this issue report: https://github.com/bower/bower/issues/689
     * templates/            --> angular-bootstrap HTML templates
 * karma.conf.js         --> config file for running unit tests with Karma
 * e2e-tests/            --> end-to-end tests (not currently implemented)
-* help/             --> Contains application Help files (see README in that folder)
+
 
 ## Testing
 
