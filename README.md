@@ -267,7 +267,7 @@ Copy the `dist/` folder to a web server host. In IIS, create a web app that poin
 
 Edit `dist/config.js`.
 Change `API_ROOT` setting to the base URI of the web API.
-Change `HELP_ROOT` setting to the help web site URL (see README in help subfolder).
+Change `HELP_ROOT` setting to the help web site URL. Currently, it is set to the wiki of the project's GitHub Pages.
 
 Configure the web app to enable loading of application JSON files. In IIS, add MIME type extension: `.json`,  MIME type: `application/json`.
 
