@@ -6,9 +6,10 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks('grunt-bower-concat');
   grunt.loadNpmTasks('grunt-html2js');
+  grunt.loadNpmTasks('grunt-ngdocs');
 
-  //grunt.registerTask('release', ['clean','html2js','concat', 'uglify', 'copy', 'bower_concat']);
   grunt.registerTask('release', ['clean','html2js','concat:css', 'concat:index', 'uglify', 'copy', 'bower_concat']);
+  grunt.registerTask('docs', ['clean', 'ngdocs']);
 
   // Project configuration.
   grunt.initConfig({
@@ -38,7 +39,7 @@ module.exports = function (grunt) {
       less: [], // recess:build doesn't accept ** in its file patterns
       lessWatch: []
     },
-    clean: [ '<%= buildDir %>/*.js' , '<%= distDir %>/*'],
+    clean: [ '<%= buildDir %>/*.js' , '<%= distDir %>/*', 'docs'],
     copy: {
       assets: {
         files: [{ dest: '<%= distDir %>', src : 'favicon.ico', expand: true, cwd: 'app' }]
@@ -91,6 +92,13 @@ module.exports = function (grunt) {
         dest: '<%= distDir %>/plugins.min.js'
       }
     },
+    ngdocs: {
+        options: {
+          scripts: ['angular.js', '../app/*.js'],
+          html5Mode: false
+        },
+        app: {src: ['<%= src.jsApp %>'], title: 'App Documentation'}
+      },
     bower_concat: {
       all: {
         dest: '<%= distDir %>/bower.cc.js',

@@ -239,9 +239,7 @@ http-server -a localhost -p 8000
 Alternatively, you can choose to configure your own webserver, such as apache or nginx. Just
 configure your server to serve the files under the `app/` directory.
 
-## Production 
-
-### Release build
+## Grunt builds
 
 Install dependencies using npm install.
 
@@ -250,6 +248,17 @@ Use grunt commandline interface to build. To install it globally, run the follow
 ```
 npm install -g grunt-cli
 ```
+
+### Internal documentation
+
+To generate internal documentation site from JavasScript comments, execute
+
+```
+grunt docs
+```
+ 
+### Release build
+
 
 Command to concatenate and minify files:
 
@@ -260,7 +269,7 @@ grunt release
 Result is in dist folder.
 
 
-### How to Publish on Production Server
+#### How to Publish on Production Server
 
 
 Copy the `dist/` folder to a web server host. In IIS, create a web app that points to the dist folder.
@@ -271,7 +280,7 @@ Change `HELP_ROOT` setting to the help web site URL. Currently, it is set to the
 
 Configure the web app to enable loading of application JSON files. In IIS, add MIME type extension: `.json`,  MIME type: `application/json`.
 
-### Test
+#### Test
 
 Test the deployed web app using protractor.  
 
