@@ -1,5 +1,11 @@
 /**
- * Directive for reusable waterfall chart
+ * @ngdoc directive
+ * @name lcaApp.waterfall.directive:waterfallChart
+ * @restrict E
+ * @function
+ *
+ * @description
+ * Reusable waterfall chart. Set wf attribute to instance of WaterfallService
  */
 angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
     .directive('waterfallChart', ['WaterfallService', 'FormatService', function (WaterfallService, FormatService) {

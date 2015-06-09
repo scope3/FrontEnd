@@ -65,7 +65,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'fragment-lcia/fragment-lcia.html',
-                            controller: 'FragmentLciaCtrl'
+                            controller: 'FragmentLciaController'
                         }
                     }
                 })
@@ -92,7 +92,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'fragment-lcia/fragment-lcia.html',
-                            controller: 'FragmentLciaCtrl'
+                            controller: 'FragmentLciaController'
                         }
                     }
                 })

@@ -1,11 +1,16 @@
 'use strict';
-/* Controller for Fragment LCIA Diagram View */
+/**
+ * @ngdoc controller
+ * @name lcaApp.fragment.LCIA:FragmentLciaController
+ * @description
+ * Controller for Fragment LCIA View
+ */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
                     'isteven-multi-select', 'lcaApp.selection.service',
                     'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario','ngSanitize', 'ngCsv'])
-    .controller('FragmentLciaCtrl',
+    .controller('FragmentLciaController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService',
          'FragmentService', 'FragmentStageService', 'FragmentFlowService',
          'LciaMethodService', 'LciaResultForFragmentService',

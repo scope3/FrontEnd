@@ -8,8 +8,8 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-html2js');
   grunt.loadNpmTasks('grunt-ngdocs');
 
-  grunt.registerTask('release', ['clean','html2js','concat:css', 'concat:index', 'uglify', 'copy', 'bower_concat']);
-  grunt.registerTask('docs', ['clean', 'ngdocs']);
+  grunt.registerTask('release', ['clean:build','html2js','concat:css', 'concat:index', 'uglify', 'copy', 'bower_concat']);
+  grunt.registerTask('docs', ['clean:docs', 'ngdocs']);
 
   // Project configuration.
   grunt.initConfig({
@@ -39,7 +39,7 @@ module.exports = function (grunt) {
       less: [], // recess:build doesn't accept ** in its file patterns
       lessWatch: []
     },
-    clean: [ '<%= buildDir %>/*.js' , '<%= distDir %>/*', 'docs'],
+    clean: { build : [ '<%= buildDir %>/*.js' , '<%= distDir %>/*'], docs : ['docs']} ,
     copy: {
       assets: {
         files: [{ dest: '<%= distDir %>', src : 'favicon.ico', expand: true, cwd: 'app' }]
@@ -94,10 +94,13 @@ module.exports = function (grunt) {
     },
     ngdocs: {
         options: {
+          startPage: '/app',
+          titleLink: "/app",
           scripts: ['angular.js', '../app/*.js'],
-          html5Mode: false
+          html5Mode: false,
+          sourceLink: '../{{file}}'
         },
-        app: {src: ['<%= src.jsApp %>'], title: 'App Documentation'}
+        app: {src: ['<%= src.jsApp %>'], title: 'Angular App Documentation'}
       },
     bower_concat: {
       all: {

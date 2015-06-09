@@ -8,7 +8,7 @@ describe('lcaApp.fragment.LCIA module', function() {
 
     beforeEach(inject(function ($controller, $rootScope) {
         scope = $rootScope.$new();
-        ctrl = $controller('FragmentLciaCtrl', {$scope: scope});
+        ctrl = $controller('FragmentLciaController', {$scope: scope});
     }));
 
 

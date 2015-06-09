@@ -2,11 +2,11 @@
  * @ngdoc service
  * @name lcaApp.waterfall.service.WaterfallService
  * @description
- * Factory Service. Returns singleton that calculates size and position of waterfall chart components.
+ * Factory Service. Creates objects that calculate size and position of waterfall chart components.
  */
-angular.module('lcaApp.waterfall.service', [])
-    .factory('WaterfallService', [ function () {
-        /*global d3 */
+angular.module('lcaApp.waterfall.service', ['d3'])
+    .factory('WaterfallService', [ 'd3Service', function(d3Service) {
+
         function Instance() {
             var waterfall = {},
             // Input
@@ -21,17 +21,19 @@ angular.module('lcaApp.waterfall.service', [])
                 show0Result = true,        // Show stage that has no result
             // Output
                 segments = [],    // 2D array of waterfall segments
-                xScale = d3.scale.linear(),             // d3 scale maps aggregate value to chart's x axis
-                yScale = d3.scale.ordinal(); // d3 scale maps stages to chart's y axis
+                xScale = d3Service.scale.linear(),             // d3 scale maps aggregate value to chart's x axis
+                yScale = d3Service.scale.ordinal(); // d3 scale maps stages to chart's y axis
+
+            /** @namespace waterfall
+              * @instance
+              **/
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#show0Result
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#show0Result
              * @description
              * Getter/setter for show0Result, option to show stage with no result.
              * @param {boolean} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.show0Result = function (_) {
                 if (!arguments.length) {
@@ -42,13 +44,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#colors
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#colors
              * @description
              * Getter/setter for color array (one for every stage)
              * @param {array} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.colors = function (_) {
                 if (!arguments.length) {
@@ -59,13 +59,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#width
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#width
              * @description
              * Getter/setter for chart width, in pixels
              * @param {number} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.width = function (_) {
                 if (!arguments.length) {
@@ -76,13 +74,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#segmentHeight
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#segmentHeight
              * @description
              * Getter/setter for segmentHeight, in pixels
              * @param {number} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.segmentHeight = function (_) {
                 if (!arguments.length) {
@@ -93,13 +89,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#segmentHeight
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#segmentHeight
              * @description
              * Getter/setter for segmentHeight, in pixels
              * @param {number} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.segmentPadding = function (_) {
                 if (!arguments.length) {
@@ -110,13 +104,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#labelWidth
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#labelWidth
              * @description
              * Getter/setter for labelWidth, in pixels
              * @param {number} _ Setter argument
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.labelWidth = function (_) {
                 if (!arguments.length) {
@@ -127,13 +119,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#scenarios
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#scenarios
              * @description
              * Getter/setter for scenarios, first dimension
              * @param {array} _ scenarios
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.scenarios = function (_) {
                 if (!arguments.length) {
@@ -144,13 +134,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#stages
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#stages
              * @description
              * Getter/setter for stages, second dimension
              * @param {array} _ stages
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.stages = function (_) {
                 if (!arguments.length) {
@@ -161,13 +149,11 @@ angular.module('lcaApp.waterfall.service', [])
             };
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#values
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#values
              * @description
              * Getter/setter for values, 2-D array, dimensions: (scenarios, stages)
              * @param {array} _ values ([[number]])
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.values = function (_) {
                 if (!arguments.length) {
@@ -209,13 +195,11 @@ angular.module('lcaApp.waterfall.service', [])
             }
 
             /**
-             * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#layout
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @function waterfall#layout
              * @description
              * Function to calculate positions and sizes.
              * Call after property setters.
-             * @returns {object}    service singleton
+             * @returns {object}    waterfall object
              */
             waterfall.layout = function () {
                 var i, j = 0, minVal = 0.0, maxVal = 0.0;
@@ -281,6 +265,14 @@ angular.module('lcaApp.waterfall.service', [])
         }
 
         return {
+            /**
+             * @ngdoc
+             * @name lcaApp.waterfall.service.WaterfallService#createInstance
+             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @description
+             * Creates waterfall object
+             * @returns {object}    waterfall object
+             */
             createInstance: function () {
                 return new Instance();
             }
