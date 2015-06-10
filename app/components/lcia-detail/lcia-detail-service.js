@@ -1,6 +1,10 @@
 /**
- * Angular service for handling LCIA details.
- * Provides data model for Process LCIA bar chart.
+ * @ngdoc service
+ * @module lcaApp.lciaDetail.service
+ * @name LciaDetailService
+ * @memberOf lcaApp.lciaDetail.service
+ * @description
+ * Factory service. Creates objects that prepare LCIA bar chart data.
  */
 angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
     .factory('LciaDetailService', [ 'ParamModelService', function (ParamModelService) {
@@ -14,6 +18,16 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 lciaMethodID = 0,
                 resultDetails = [];
 
+            /** @namespace model */
+
+            /**
+             * @function model.activityLevel
+             * @description
+             * Get/set activityLevel, from fragment navigation
+             *
+             * @param {number} _ , set argument
+             * @returns {object} model
+             */
             model.activityLevel = function (_) {
                 if (!arguments.length) {
                     return activityLevel;
@@ -22,6 +36,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 return model;
             };
 
+            /**
+             * @function model.colors
+             * @description
+             * Get/set array of colors to use in bar chart
+             *
+             * @param {array} _ , set argument
+             * @returns {object} model
+             */
             model.colors = function (_) {
                 if (!arguments.length) {
                     return colors;
@@ -30,6 +52,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 return model;
             };
 
+            /**
+             * @function model.scenarioID
+             * @description
+             * Get/set scenarioID of selected scenario
+             *
+             * @param {number} _ , set argument
+             * @returns {object} model
+             */
             model.scenarioID = function (_) {
                 if (!arguments.length) {
                     return scenarioID;
@@ -38,6 +68,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 return model;
             };
 
+            /**
+             * @function model.processID
+             * @description
+             * Get/set processID of selected process
+             *
+             * @param {number} _ , set argument
+             * @returns {object} model
+             */
             model.processID = function (_) {
                 if (!arguments.length) {
                     return processID;
@@ -46,6 +84,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 return model;
             };
 
+            /**
+             * @function model.lciaMethodID
+             * @description
+             * Get/set lciaMethodID of selected LCIA method
+             *
+             * @param {number} _ , set argument
+             * @returns {object} model
+             */
             model.lciaMethodID = function (_) {
                 if (!arguments.length) {
                     return lciaMethodID;
@@ -54,6 +100,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 return model;
             };
 
+            /**
+             * @function model.resultDetails
+             * @description
+             * Get/set resultDetails, from web API property, lciaDetail
+             *
+             * @param {array} _ , set argument
+             * @returns {object} model
+             */
             model.resultDetails = function (_) {
                 if (!arguments.length) {
                     return resultDetails;
@@ -72,6 +126,13 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
                 model.methodFlowParams = ParamModelService.getLciaMethodFlowParams(scenarioID, lciaMethodID);
             }
 
+            /**
+             * @function model.prepareBarChartData
+             * @description
+             * Method to prepare bar chart data.
+             * Call after model properties have been set
+             * @returns {object}    model
+             */
             model.prepareBarChartData = function () {
                 var positiveResults = [],
                     positiveSum = 0;
@@ -96,6 +157,14 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
         }
 
         return {
+            /**
+             * @ngdoc
+             * @name LciaDetailService#createInstance
+             * @methodOf LciaDetailService
+             * @description
+             * Creates data model object
+             * @returns {object}    data model object
+             */
             createInstance: function () {
                 return new Instance();
             }

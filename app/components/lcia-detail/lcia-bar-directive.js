@@ -1,5 +1,16 @@
 /**
- * Directive for reusable LCIA bar chart
+ * @ngdoc directive
+ * @name lcaApp.lciaBar.directive:lciaBarChart
+ * @restrict E
+ * @function
+ * @scope
+ *
+ * @description
+ * LCIA bar chart directive.
+ *
+ * @param {object} lcia Initialized instance of LciaDetailService.
+ * @param {object} flows   Associative array of objects, indexed by flowID, providing flow name and category. { number : { name : string, category : string } }
+ *
  */
 angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
     .directive('lciaBarChart', ['FormatService', 'NameService', function( FormatService, NameService ) {

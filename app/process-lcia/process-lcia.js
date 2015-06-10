@@ -1,11 +1,16 @@
 'use strict';
-/* Controller for Process LCIA Diagram View */
+/**
+ * @ngdoc controller
+ * @name lcaApp.process.LCIA:ProcessLciaController
+ * @description
+ * Controller for Process LCIA view
+ */
 angular.module('lcaApp.process.LCIA',
     ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
         'lcaApp.referenceLink.directive', 'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',
         'lcaApp.fragmentNavigation.service',
         'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario', 'LocalStorageModule'])
-    .controller('ProcessLciaCtrl',
+    .controller('ProcessLciaController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
          'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',

@@ -3,9 +3,17 @@
  * @name lcaApp.waterfall.directive:waterfallChart
  * @restrict E
  * @function
+ * @scope
  *
  * @description
- * Reusable waterfall chart. Set wf attribute to instance of WaterfallService
+ * Waterfall chart directive.
+ *
+ * @param {object} wf    Initialized instance of WaterfallService.
+ * @param {number} index Index to chart in series of charts.
+ * @param {number} yAxisWidth    Width of vertical axis.
+ * @param {string} chartTitle    Displayed above chart.
+ * @param {string} unit  Unit of measure to be displayed on horizontal axis.
+ *
  */
 angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
     .directive('waterfallChart', ['WaterfallService', 'FormatService', function (WaterfallService, FormatService) {

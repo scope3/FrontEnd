@@ -1,10 +1,15 @@
 'use strict';
-/* Controller for Fragment Sankey Diagram View */
+/**
+ * @ngdoc controller
+ * @name lcaApp.fragment.sankey:FragmentSankeyController
+ * @description
+ * Controller for Fragment Flows view
+ */
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
                     'lcaApp.selection.service', 'lcaApp.paramGrid.directive'])
-    .controller('FragmentSankeyCtrl',
+    .controller('FragmentSankeyController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'ParamModelService',

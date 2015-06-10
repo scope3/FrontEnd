@@ -3,7 +3,7 @@
  * @ngdoc controller
  * @name lcaApp.fragment.LCIA:FragmentLciaController
  * @description
- * Controller for Fragment LCIA View
+ * Controller for Fragment LCIA view
  */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',

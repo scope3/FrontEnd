@@ -38,7 +38,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'fragment-sankey/fragment-sankey.html',
-                            controller: 'FragmentSankeyCtrl'
+                            controller: 'FragmentSankeyController'
                         }
                     }
                 })
@@ -74,7 +74,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'process-lcia/process-lcia.html',
-                            controller: 'ProcessLciaCtrl'
+                            controller: 'ProcessLciaController'
                         }
                     }
                 })

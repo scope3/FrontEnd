@@ -111,7 +111,7 @@ See also this issue report: https://github.com/bower/bower/issues/689
     * scenario/             --> Scenario Editing view and controller
     * templates/            --> angular-bootstrap HTML templates
 * karma.conf.js         --> config file for running unit tests with Karma
-* e2e-tests/            --> end-to-end tests (not currently implemented)
+* e2e-tests/            --> end-to-end protractor tests (WIP)
 
 
 ## Testing
@@ -251,11 +251,13 @@ npm install -g grunt-cli
 
 ### Internal documentation
 
-To generate internal documentation site from JavasScript comments, execute
+To generate internal documentation site from comments with @ngdoc tag, execute
 
 ```
 grunt docs
 ```
+
+Result is in docs folder.
  
 ### Release build
 

@@ -1,5 +1,10 @@
 'use strict';
-/* Controller for Process Instance View */
+/**
+ * @ngdoc controller
+ * @name lcaApp.process.instance:ProcessInstanceController
+ * @description
+ * Controller for Process Instance view
+ */
 angular.module('lcaApp.process.instance',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.lciaBar.directive', 'lcaApp.colorCode.service', 'lcaApp.format',

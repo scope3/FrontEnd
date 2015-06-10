@@ -1,6 +1,8 @@
 /**
  * @ngdoc service
- * @name lcaApp.waterfall.service.WaterfallService
+ * @module lcaApp.waterfall.service
+ * @name WaterfallService
+ * @memberOf lcaApp.waterfall.service
  * @description
  * Factory Service. Creates objects that calculate size and position of waterfall chart components.
  */
@@ -267,8 +269,8 @@ angular.module('lcaApp.waterfall.service', ['d3'])
         return {
             /**
              * @ngdoc
-             * @name lcaApp.waterfall.service.WaterfallService#createInstance
-             * @methodOf lcaApp.waterfall.service.WaterfallService
+             * @name WaterfallService#createInstance
+             * @methodOf WaterfallService
              * @description
              * Creates waterfall object
              * @returns {object}    waterfall object

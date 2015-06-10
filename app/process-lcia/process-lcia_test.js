@@ -8,7 +8,7 @@ describe('lcaApp.process.LCIA module', function() {
 
     beforeEach(inject(function ($controller, $rootScope) {
         scope = $rootScope.$new();
-        ctrl = $controller('ProcessLciaCtrl', {$scope: scope});
+        ctrl = $controller('ProcessLciaController', {$scope: scope});
     }));
 
 

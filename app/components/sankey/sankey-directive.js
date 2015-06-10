@@ -1,5 +1,18 @@
 /**
- * Directive for reusable d3 sankey diagram
+ * @ngdoc directive
+ * @name lcaApp.sankey.directive:sankeyDiagram
+ * @restrict E
+ * @function
+ * @scope
+ *
+ * @description
+ * Sankey diagram directive.
+ *
+ * @param {object}  graph   Has nodes array and links array for SankeyService.
+ * @param {object}  color   Has domain (array of node types) and range (array of fill colors).
+ * @param {object}  selectedNode   Out - set to currently selected graph node.
+ * @param {object}  mouseOverNode   Out - set to graph node where mouse is hovering.
+ *
  */
 angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
 .directive('sankeyDiagram', ['SankeyService', 'TipService', function( SankeyService, TipService) {

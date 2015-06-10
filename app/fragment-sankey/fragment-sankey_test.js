@@ -8,7 +8,7 @@ describe('lcaApp.fragment.sankey module', function() {
 
   beforeEach(inject(function ($controller, $rootScope) {
         scope = $rootScope.$new();
-        ctrl = $controller('FragmentSankeyCtrl', {$scope: scope});
+        ctrl = $controller('FragmentSankeyController', {$scope: scope});
     }));
 
 
