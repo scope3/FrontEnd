@@ -41,7 +41,7 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
              * @description
              * Get/set array of colors to use in bar chart
              *
-             * @param {array} _ , set argument
+             * @param {[]} _ , set argument
              * @returns {object} model
              */
             model.colors = function (_) {
@@ -105,7 +105,7 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
              * @description
              * Get/set resultDetails, from web API property, lciaDetail
              *
-             * @param {array} _ , set argument
+             * @param {[]} _ , set argument
              * @returns {object} model
              */
             model.resultDetails = function (_) {

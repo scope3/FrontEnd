@@ -15,7 +15,7 @@
 angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
     .directive('lciaBarChart', ['FormatService', 'NameService', function( FormatService, NameService ) {
 
-        function link(scope, element, attrs) {
+        function link(scope, element) {
 
             var margin = {
                     top: 30,
@@ -182,7 +182,7 @@ angular.module('lcaApp.lciaBar.directive', ['lcaApp.format', 'lcaApp.name'])
              * Flows that cannot be charted because the result is very small or negative are listed
              * below the legend colors.
              *
-             * @param {Array} flowData          Flows sorted by LCIA result in descending order.
+             * @param {[]} flowData          Flows sorted by LCIA result in descending order.
              */
             function makeLegend(flowData) {
                 var rowHeight = legendRowHeight,

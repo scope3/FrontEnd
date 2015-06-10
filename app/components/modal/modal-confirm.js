@@ -1,3 +1,9 @@
+/**
+ * @ngdoc controller
+ * @name lcaApp.modal.confirm:ModalConfirmController
+ * @description
+ * Controller for modal confirmation dialog.
+ */
 angular.module('lcaApp.modal.confirm', ['ui.bootstrap'])
     .controller('ModalConfirmController', function ($scope, $modalInstance, parameters) {
 

@@ -1,3 +1,11 @@
+/**
+ * @ngdoc service
+ * @module lcaApp.colorCode.service
+ * @name ColorCodeService
+ * @memberOf lcaApp.colorCode.service
+ * @description
+ * Factory service. Maps Impact Category ID to colorbrewer color scale
+ */
 angular.module('lcaApp.colorCode.service',
     [])
     .constant('IMPACT_CATEGORY_COLORS',
@@ -20,6 +28,16 @@ angular.module('lcaApp.colorCode.service',
     .factory('ColorCodeService', ['IMPACT_CATEGORY_COLORS',
         function (IMPACT_CATEGORY_COLORS) {
             var svc = {};
+            /**
+             * @ngdoc
+             * @name ColorCodeService#getImpactCategoryColors
+             * @methodOf ColorCodeService
+             * @description
+             * Get color scale for impact category
+             *
+             * @param {number} impactCategoryID impact category ID
+             * @returns {object} colorbrewer property
+             */
             svc.getImpactCategoryColors = function (impactCategoryID) {
                 if (impactCategoryID in IMPACT_CATEGORY_COLORS) {
                     return IMPACT_CATEGORY_COLORS[impactCategoryID];

@@ -18,7 +18,7 @@
 angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
     .directive('waterfallChart', ['WaterfallService', 'FormatService', function (WaterfallService, FormatService) {
 
-        function link(scope, element, attrs) {
+        function link(scope, element) {
             var margin = {
                     top: 5,
                     right: 50,

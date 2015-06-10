@@ -48,6 +48,15 @@
         }
     }}}
  */
+//noinspection JSValidateJSDoc
+/**
+ * @ngdoc service
+ * @module lcaApp.models.param
+ * @name ParamModelService
+ * @memberOf lcaApp.models.param
+ * @description
+ * Factory service providing data model for scenario parameters.
+ */
 angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service'] )
     // Status relevant to editor views.
     .constant('PARAM_VALUE_STATUS',
@@ -120,10 +129,16 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             }
 
             /**
-             * Apply change to fragment flow parameter resource
-             * @param {{ flowID : Number, paramWrapper : {} }} f Record containing change
-             * @param { Number } scenarioID
-             * @returns {*} New or updated param resource
+             * @ngdoc
+             * @name ParamModelService#changeFragmentFlowParam
+             * @methodOf ParamModelService
+             * @description
+             * Apply change in paramWrapper to param resource.
+             * @param {object} f Record containing change
+             * @param {number} f.flowID ID of related flow
+             * @param {object} f.paramWrapper Param resource wrapper
+             * @param {number} scenarioID ID of parameter scenario
+             * @returns {object} New or updated param resource
              */
             svc.changeFragmentFlowParam = function(f, scenarioID) {
                 var paramResource = svc.changeExistingParam(f.paramWrapper);
@@ -144,9 +159,16 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             }
 
             /**
-             * If parameter resource exists, update it with change in parameter wrapper.
-             * @param paramWrapper
-             * @returns {{value} | null} updated paramResource referenced by paramWrapper
+             * @ngdoc
+             * @name ParamModelService#changeExistingParam
+             * @methodOf ParamModelService
+             * @description
+             * If paramWrapper.paramResource exists, update it with change in paramWrapper.value.
+             * @param {object} paramWrapper Param resource wrapper
+             * @param {number} paramWrapper.editStatus Member of PARAM_VALUE_STATUS
+             * @param {?object} paramWrapper.paramResource ParamService resource
+             * @param {number} paramWrapper.value Edited param value
+             * @returns {?object} paramWrapper.paramResource
              */
             svc.changeExistingParam = function (paramWrapper) {
                 var paramResource = paramWrapper.paramResource;
@@ -161,11 +183,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#createModel
+             * @methodOf ParamModelService
+             * @description
              * Create model for scenario parameters. If scenario parameters were already modeled, that part of private
              * model will be recreated.
-             * @param scenarioID
-             * @param params    Loaded param resources
-             * @returns {{scenarios: {}}}
+             * @param {number} scenarioID Model scenarioID
+             * @param {[]} params Loaded param resources
+             * @returns {object} Scenario's parameter model.
              */
             svc.createModel = function (scenarioID, params) {
                 updateModel(scenarioID, params);
@@ -173,9 +199,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getModel
+             * @methodOf ParamModelService
+             * @description
              * Getter function for scenario parameter model.
-             * @param scenarioID
-             * @returns {*}
+             * @param {number} scenarioID Model scenarioID
+             * @returns {object} Scenario's parameter model.
              */
             svc.getModel = function(scenarioID) {
                 if (scenarioID in model.scenarios) {
@@ -187,9 +217,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#load
+             * @methodOf ParamModelService
+             * @description
              * Load param resources
-             * @param {Number} scenarioID   ScenarioID filter
-             * @returns {*} promise, model branch for the scenario
+             * @param {number} scenarioID   ScenarioID filter
+             * @returns {Deferred} promise. Resolves to model for scenario containing loaded resources.
              */
             svc.load = function( scenarioID) {
                 var deferred = $q.defer();
@@ -204,10 +238,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getProcessFlowParams
+             * @methodOf ParamModelService
+             * @description
              * Look up params by scenario and process
-             * @param scenarioID
-             * @param processID
-             * @returns {*} If found, associative array of params, keyed by flowID. Otherwise null.
+             * @param {number} scenarioID Scenario key
+             * @param {number} processID Process key
+             * @returns {?object} If found, associative array of params, keyed by flowID. Otherwise null.
              */
             svc.getProcessFlowParams = function(scenarioID, processID) {
                 var sModel = svc.getModel(scenarioID);
@@ -223,10 +261,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getLciaMethodFlowParams
+             * @methodOf ParamModelService
+             * @description
              * Look up params by scenario and LCIA method
-             * @param scenarioID
-             * @param lciaMethodID
-             * @returns {*} If found, associative array of params, keyed by flowID. Otherwise null.
+             * @param {number} scenarioID Scenario key
+             * @param {number} lciaMethodID LCIA method key
+             * @returns {?object} If found, associative array of params, keyed by flowID. Otherwise null.
              */
             svc.getLciaMethodFlowParams = function(scenarioID, lciaMethodID) {
                 var sModel = svc.getModel(scenarioID);
@@ -242,11 +284,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getLciaMethodFlowParam
+             * @methodOf ParamModelService
+             * @description
              * Look up param by scenario, LCIA method, and flow
-             * @param scenarioID
-             * @param lciaMethodID
-             * @param flowID
-             * @returns {*}
+             * @param {number} scenarioID Scenario key
+             * @param {number} lciaMethodID LCIA method key
+             * @param {number} flowID Flow key
+             * @returns {?object} Param resource if found, otherwise, null.
              */
             svc.getLciaMethodFlowParam = function(scenarioID, lciaMethodID, flowID) {
                 var params = svc.getLciaMethodFlowParams(scenarioID, lciaMethodID);
@@ -254,12 +300,16 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getProcessFlowParam
+             * @methodOf ParamModelService
+             * @description
              * Look up param by scenario, process, flow, and type
-             * @param scenarioID
-             * @param processID
-             * @param flowID
-             * @param paramTypeID
-             * @returns {*}
+             * @param {number} scenarioID Scenario key
+             * @param {number} processID Process key
+             * @param {number} flowID Flow key
+             * @param {number} paramTypeID Param type key
+             * @returns {?object} Param resource if found, otherwise, null.
              */
             svc.getProcessFlowParam = function(scenarioID, processID, flowID, paramTypeID) {
                 var params = svc.getProcessFlowParams(scenarioID, processID);
@@ -274,10 +324,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getFragmentFlowParam
+             * @methodOf ParamModelService
+             * @description
              * Look up param by scenario and fragment flow
-             * @param { Number } scenarioID
-             * @param { Number } fragmentFlowID
-             * @returns {*}
+             * @param {number} scenarioID Scenario key
+             * @param { number } fragmentFlowID Fragment flow key
+             * @returns {?object} Param resource if found, otherwise, null.
              */
             svc.getFragmentFlowParam = function(scenarioID, fragmentFlowID) {
                 var sModel = svc.getModel(scenarioID),
@@ -293,18 +347,28 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#setParamWrapperStatus
+             * @methodOf ParamModelService
+             * @description
              * Compare input value with the value of original param resource, if it exists.
              *
-             *  Set change status
-             *  PARAM_VALUE_STATUS.changed for new, updated, and deleted value.
-             *  PARAM_VALUE_STATUS.invalid for invalid value.
-             *  PARAM_VALUE_STATUS.unchanged when new value matches original
+             *  Update paramWrapper.editStatus to PARAM_VALUE_STATUS property,
+             *
+             *  ```changed``` for new, updated, and deleted value
+             *
+             *  ```invalid``` for invalid value
+             *
+             *  ```unchanged``` when new value matches original
              *
              *  If input value is invalid, then return error message.
              *
              * @param {number} baseValue Value of the thing to which the param applies
-             * @param {{paramResource: {}, value: String, editStatus: Number }} paramWrapper
-             * @returns {string}    Error message, if status is invalid
+             * @param {object} paramWrapper Param resource wrapper
+             * @param {number} paramWrapper.editStatus Status property to be updated.
+             * @param {?object} paramWrapper.paramResource ParamService resource
+             * @param {number} paramWrapper.value Edited param value
+             * @returns {string}    Error message, if status is invalid.
              */
             svc.setParamWrapperStatus = function(baseValue, paramWrapper) {
                 var msg = null;
@@ -343,9 +407,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Create an object with embedded param resource to be used in editor
-             * @param {{}} paramResource   May be null, when target has no param
-             * @returns {{paramResource: *, value: *, editStatus: number}} the object created
+             * @ngdoc
+             * @name ParamModelService#wrapParam
+             * @methodOf ParamModelService
+             * @description
+             * Create an object with embedded param resource to be used in editor.
+             * @param {?object} paramResource   May be null, when target has no param
+             * @param {number} paramResource.value  Existing param value
+             * @returns {object} the object created
              */
             svc.wrapParam = function (paramResource) {
                 return {
@@ -357,9 +426,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Create an object to block param editing where param cannot be applied
-             * @param {string} [value="N/A"]    Optional value string. Defaults to "N/A"
-             * @returns {{paramResource: *, value: *, editStatus: number}} the object created
+             * @ngdoc
+             * @name ParamModelService#naParam
+             * @methodOf ParamModelService
+             * @description
+             * Create an object to block param editing where param cannot be applied.
+             * @param {string} [value="N/A"]    Optional value string.
+             * @returns {object} the object created
              */
             svc.naParam = function ( value ) {
                 var naVal =  (arguments.length) ? value : "N/A";
@@ -372,9 +445,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Inspect data array for wrapped param changes
-             * @param {[]} data
-             * @returns {*|boolean} true iff there is at least one change, valid or otherwise
+             * @ngdoc
+             * @name ParamModelService#canRevertChanges
+             * @methodOf ParamModelService
+             * @description
+             * Check data for revertible changes.
+             * @param {[]} data Array of objects having wrappedParam property
+             * @returns {boolean} true iff there is at least one change, valid or otherwise
              */
             svc.canRevertChanges = function (data) {
                 return data.some(function (d) {
@@ -383,9 +460,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Inspect data array for wrapped param changes
-             * @param {[]} data
-             * @returns {*|boolean} false iff there is at least one valid change
+             * @ngdoc
+             * @name ParamModelService#canAbandonChanges
+             * @methodOf ParamModelService
+             * @description
+             * Check data for changes that can be abandoned.
+             * @param {[]} data  Array of objects having wrappedParam property
+             * @returns {boolean} false iff there is at least one valid change
              */
             svc.canAbandonChanges = function (data) {
                 return !data.some(function (d) {
@@ -394,9 +475,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Inspect data array for wrapped param changes
-             * @param {[]} data
-             * @returns {*|boolean} true iff there is at least one valid change and no
+             * @ngdoc
+             * @name ParamModelService#canApplyChanges
+             * @methodOf ParamModelService
+             * @description
+             * Check data for changes that can be applied.
+             * @param {[]} data Array of objects having wrappedParam property
+             * @returns {boolean} true iff there is at least one valid change and no
              * invalid change
              */
             svc.canApplyChanges = function (data) {
@@ -411,9 +496,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#getResources
+             * @methodOf ParamModelService
+             * @description
              * Get param resources, but do not remodel.
-             * @param {Number} scenarioID   ScenarioID filter
-             * @returns {*} promise, model branch for the scenario
+             * @param {number} scenarioID   ScenarioID filter
+             * @returns {Deferred} promise. Resolves to loaded resources.
              */
             svc.getResources = function( scenarioID) {
                 var deferred = $q.defer();
@@ -429,11 +518,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#updateResources
+             * @methodOf ParamModelService
+             * @description
              * Send PUT request containing current changes.
-             * @param {Number} scenarioID
+             * @param {number} scenarioID   Request scenarioID
              * @param {[]} changes   Array of changed param resources
-             * @param {Function} successCB  Function to call on success response
-             * @param {Function} errorCB    Function to call on error response
+             * @param {function} successCB  Function to call on success response
+             * @param {function} errorCB    Function to call on error response
              */
             svc.updateResources = function (scenarioID, changes, successCB, errorCB) {
                 var params = origResources.scenarios[scenarioID].slice(0);
@@ -459,11 +552,15 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
+             * @ngdoc
+             * @name ParamModelService#applyFragmentFlowParamChanges
+             * @methodOf ParamModelService
+             * @description
              * Gather Fragment Flow Parameter changes and send to Web API
-             * @param {Number} scenarioID
+             * @param {number} scenarioID   Parameters' scenarioID
              * @param {[]} data   Array of objects containing edited param data
-             * @param {Function} successCB  Function to call on success response
-             * @param {Function} errorCB    Function to call on error response
+             * @param {function} successCB  Function to call on success response
+             * @param {function} errorCB    Function to call on error response
              */
             svc.applyFragmentFlowParamChanges = function (scenarioID, data, successCB, errorCB) {
                 var changedParams = data.filter(hasChangedParam);
@@ -473,8 +570,12 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             /**
-             * Revert changes in wrapped parameters
-             * @param {[{paramWrapper: { value : String }}]} data  Array of objects with embedded paramWrapper
+             * @ngdoc
+             * @name ParamModelService#revertChanges
+             * @methodOf ParamModelService
+             * @description
+             * Revert changes in wrapped parameters.
+             * @param {[]} data  Array of objects with embedded paramWrapper
              */
             svc.revertChanges = function (data) {
                 data.forEach(function (e) {

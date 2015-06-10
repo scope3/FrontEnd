@@ -1,3 +1,22 @@
+/**
+ * @ngdoc directive
+ * @name lcaApp.changeButtons.directive:changeButtons
+ * @restrict E
+ * @function
+ *
+ * @description
+ * Directive implementing buttons to Apply and Revert Changes.
+ *
+ * Controller must implement the following scope methods.
+ *
+ *  canApply    : Return boolean indicating if Apply button should be enabled.
+ *
+ *  canRevert   : Return boolean indicating if Revert button should be enabled.
+ *
+ *  applyChanges    : Invoked when user clicks Apply button.
+ *
+ *  revertChanges   : Invoked when user clicks Revert button.
+ */
 angular.module('lcaApp.changeButtons.directive', [])
     .directive('changeButtons', function () {
         return {

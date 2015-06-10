@@ -49,7 +49,7 @@ angular.module('lcaApp.waterfall.service', ['d3'])
              * @function waterfall#colors
              * @description
              * Getter/setter for color array (one for every stage)
-             * @param {array} _ Setter argument
+             * @param {[]} _ Setter argument
              * @returns {object}    waterfall object
              */
             waterfall.colors = function (_) {
@@ -124,7 +124,7 @@ angular.module('lcaApp.waterfall.service', ['d3'])
              * @function waterfall#scenarios
              * @description
              * Getter/setter for scenarios, first dimension
-             * @param {array} _ scenarios
+             * @param {[]} _ scenarios
              * @returns {object}    waterfall object
              */
             waterfall.scenarios = function (_) {
@@ -139,7 +139,7 @@ angular.module('lcaApp.waterfall.service', ['d3'])
              * @function waterfall#stages
              * @description
              * Getter/setter for stages, second dimension
-             * @param {array} _ stages
+             * @param {[]} _ stages
              * @returns {object}    waterfall object
              */
             waterfall.stages = function (_) {
@@ -154,7 +154,7 @@ angular.module('lcaApp.waterfall.service', ['d3'])
              * @function waterfall#values
              * @description
              * Getter/setter for values, 2-D array, dimensions: (scenarios, stages)
-             * @param {array} _ values ([[number]])
+             * @param {[]} _ values ([[number]])
              * @returns {object}    waterfall object
              */
             waterfall.values = function (_) {

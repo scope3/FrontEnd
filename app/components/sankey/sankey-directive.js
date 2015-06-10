@@ -17,7 +17,7 @@
 angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
 .directive('sankeyDiagram', ['SankeyService', 'TipService', function( SankeyService, TipService) {
 
-    function link(scope, element, attrs) {
+    function link(scope, element) {
 
         var margin = {
                 top: 10,

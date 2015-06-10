@@ -150,7 +150,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
 
                 /**
                  * Get query results
-                 * @return {Array} the results
+                 * @return {[]} the results
                  */
                 svc.getAll = function () {
                     return svc.objects;
