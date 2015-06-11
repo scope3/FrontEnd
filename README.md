@@ -109,7 +109,7 @@ See also this issue report: https://github.com/bower/bower/issues/689
     * process-instance/     --> Process Instance view and controller
     * process-lcia/         --> Process LCIA view and controller
     * scenario/             --> Scenario Editing view and controller
-    * templates/            --> angular-bootstrap HTML templates
+    * template/             --> Contains placeholder for file generated during grunt build
 * karma.conf.js         --> config file for running unit tests with Karma
 * e2e-tests/            --> end-to-end protractor tests (WIP)
 
@@ -287,7 +287,7 @@ Configure the web app to enable loading of application JSON files. In IIS, add M
 Test the deployed web app using protractor.  
 
 Edit e2e-tests/protractor.conf.js and change the baseUrl setting
-to the base URL of the deployed web app (Example: http://kbcalr.isber.ucsb.edu/app/dist/).
+to the base URL of the deployed web app (Example: 'http://uo-lca.github.io/dist/').
 
 If you have not already done so, install and run WebDriver by executing the following commands in the FrontEnd directory.
 
