@@ -137,6 +137,43 @@ angular.module('lcaApp', [
     .controller('LcaAppController', ['$rootScope', 'HELP_ROOT',
         function($rootScope, HELP_ROOT) {
             $rootScope.helpPage = HELP_ROOT;
+
+            $rootScope.$on('$stateChangeStart',
+                function(event, toState) {
+                    //
+                    // Help context is derived from last part of toState name
+                    //
+                    var lastPos = toState.name.lastIndexOf('.'),
+                        helpPage = HELP_ROOT;
+
+                    if (lastPos >= 0) {
+                        var context = toState.name.slice(lastPos+1);
+
+                        switch (context) {
+                            case 'fragment-sankey' :
+                                helpPage += '/Fragment';
+                                break;
+                            case 'fragment-lcia' :
+                                helpPage += '/LCIA#fragment-lcia';
+                                break;
+                            case 'lcia-method' :
+                                helpPage += '/LCIA#lcia-method';
+                                break;
+                            case 'process-instance' :
+                            case 'process-lcia' :
+                                helpPage += '/Process';
+                                break;
+                            case 'flow-param' :
+                                helpPage += '/LCIA#lcia-flow-details';
+                                break;
+                            case 'scenario' :
+                                helpPage += '/Scenario';
+                                break;
+                        }
+                    }
+                    $rootScope.helpPage = helpPage;
+                }
+            );
         }
     ])
 ;
