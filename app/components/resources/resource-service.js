@@ -1,5 +1,10 @@
 /**
- * Service to manage access to resources from web API
+ * @ngdoc service
+ * @module lcaApp.resources.service
+ * @name ResourceService
+ * @memberOf lcaApp.resources.service
+ * @description
+ * Factory service that creates other services based on $resource.
  */
 angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod', 'lcaApp.config' ])
     .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
@@ -37,6 +42,15 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "scenarioGroup" : API_ROOT + "scenariogroups/:scenarioGroupID"
             };
 
+            /**
+             * @ngdoc
+             * @name ResourceService#getResource
+             * @methodOf ResourceService
+             * @description
+             * Create an instance of $resource
+             * @param { string } routeKey Key in associative array, ResourceService.ROUTES
+             * @returns {object} the resource object
+             */
             resourceService.getResource = function( routeKey) {
                 if ( routeKey in this.ROUTES) {
                     return $resource(this.ROUTES[routeKey], {}, actions);
@@ -44,8 +58,12 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
             };
 
             /**
+             * @ngdoc
+             * @name ResourceService#getAuthParam
+             * @methodOf ResourceService
+             * @description
              * Extract auth token from current URL. Only do this once per app session.
-             * @returns { string | null }
+             * @returns { ?string } the auth token if found, otherwise, null
              */
             resourceService.getAuthParam = function() {
                 if (authParamObject === null) {
@@ -55,9 +73,13 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
             };
 
             /**
-             * Add auth token to web API request
-             * @param filter
-             * @returns {*|{}}
+             * @ngdoc
+             * @name ResourceService#getAuthParam
+             * @methodOf ResourceService
+             * @description
+             * Add auth token to web API request parameters
+             * @param {?object} filter Existing request parameters
+             * @returns {object} request parameters with auth property set to auth token, if it exists
              */
             resourceService.addAuthParam = function( filter) {
                 var paramFilter = filter || {},

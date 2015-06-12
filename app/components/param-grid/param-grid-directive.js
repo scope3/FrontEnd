@@ -1,6 +1,25 @@
 /**
+ * @ngdoc directive
+ * @name lcaApp.paramGrid.directive:paramGrid
+ * @restrict E
+ * @function
+ * @scope
+ *
+ * @description
  * Directive for grids containing one modifiable LCA param.
- * Wraps ngGrid directive
+ * Wraps ngGrid directive -  {@link http://angular-ui.github.com/ng-grid/ ngGrid}.
+ *
+ * @param {object} options Override default ngGrid gridOptions
+ * @param {object} data    Data to be referenced by gridOptions.data
+ * @param {object} data.paramWrapper    Wraps LCA param. Created by ParamModelService.wrapParam.
+ * @param {object} columns Column defs to be referenced by gridOptions.columnDefs. This directive will add
+ * columns for Parameter value and edit status.
+ * @param {object} params Provides information on how to handle Parameter data. If not provided, Parameter columns
+ * will not be visible.
+ * @param {boolean} params.canUpdate Does user have access to edit parameters?
+ * @param {number} params.targetIndex Index of column containing parameterizable field. Parameter column will be inserted
+ * after that column.
+ *
  */
 angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', 'lcaApp.format'])
 .constant('DIRECTION_CELL_TEMPLATE', '<div class="cellIcon"><span ng-class="directionClass(row)"></span></div>')

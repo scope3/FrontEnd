@@ -56,7 +56,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'process-flow-param/process-flow-param.html',
-                            controller: 'ProcessFlowParamCtrl'
+                            controller: 'ProcessFlowParamController'
                         }
                     }
                 })
@@ -83,7 +83,7 @@ angular.module('lcaApp', [
                     views: {
                         "@": {
                             templateUrl: 'process-flow-param/process-flow-param.html',
-                            controller: 'ProcessFlowParamCtrl'
+                            controller: 'ProcessFlowParamController'
                         }
                     }
                 })

@@ -1,5 +1,15 @@
 /**
+ * @ngdoc directive
+ * @name lcaApp.referenceLink.directive:referenceLink
+ * @restrict E
+ * @function
+ * @scope
+ *
+ * @description
  * Directive for link to resource reference.
+ * @param {object} resource Web API resource object with an external reference
+ * @param {[]} resource.links    Array of objects. This directive displays the href of the object having property,
+ * ```rel```, set to "reference".
  */
 angular.module('lcaApp.referenceLink.directive', [])
 .directive('referenceLink',

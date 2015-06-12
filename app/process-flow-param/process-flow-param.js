@@ -1,10 +1,16 @@
 'use strict';
-/* Controller for Process Flow Param view */
+/**
+ * @ngdoc controller
+ * @name lcaApp.process.flowParam:ProcessFlowParamController
+ * @description
+ *  Controller for LCIA Flow Details view.
+ *  Contains 2 instances of paramGrid.
+ */
 angular.module('lcaApp.process.flowParam',
     ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
         'lcaApp.format', 'lcaApp.paramGrid.directive',
         'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario', 'lcaApp.changeButtons.directive'])
-    .controller('ProcessFlowParamCtrl',
+    .controller('ProcessFlowParamController',
     ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
         'ProcessForFlowTypeService', 'ProcessFlowService',
         'LciaMethodService', 'LciaResultForProcessService',
