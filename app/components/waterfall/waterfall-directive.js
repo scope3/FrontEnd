@@ -15,8 +15,9 @@
  * @param {string} unit  Unit of measure to be displayed on horizontal axis.
  *
  */
-angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format'])
-    .directive('waterfallChart', ['WaterfallService', 'FormatService', function (WaterfallService, FormatService) {
+angular.module('lcaApp.waterfall.directive', ['d3', 'lcaApp.waterfall', 'lcaApp.format'])
+    .directive('waterfallChart', ['d3Service', 'WaterfallService', 'FormatService',
+        function (d3Service, WaterfallService, FormatService) {
 
         function link(scope, element) {
             var margin = {
@@ -39,7 +40,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
              * Initial preparation of svg element.
              */
             function createSvg() {
-                svg = d3.select(parentElement).append("svg");
+                svg = d3Service.select(parentElement).append("svg");
             }
 
             function prepareSvg() {
@@ -52,6 +53,21 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     .attr("class", "chart-group")
                     .attr("transform",
                     "translate(" + (margin.left + yAxisWidth) + "," + (titleHeight + margin.top + xAxisHeight) + ")");
+            }
+
+            function defineEndMarker() {
+                // Define marker as red triangle
+                svg.append("defs").append("marker")
+                    .attr("id", "arrowhead")
+                    .attr("viewBox", "0 0 10 10")
+                    .attr("refX", 10)
+                    .attr("refY", 5)
+                    .attr("markerWidth", 6)
+                    .attr("markerHeight", 6)
+                    .attr("orient", "auto")
+                    .append("path")
+                    .attr("d", "M 0 0 L 10 5 L 0 10 z")
+                    .style("fill", "#FF0000");
             }
 
             function addTitle() {
@@ -82,11 +98,11 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 svg.select(".top.axis").remove();
                 svg.select(".starting-line").remove();
                 if (waterfall.chartHeight > 0) {
-                    var xAxis = d3.svg.axis()
+                    var xAxis = d3Service.svg.axis()
                         .scale(waterfall.xScale)
                         .orient("top")
                         .tickValues([0])
-                        .tickFormat(d3.format("d")),
+                        .tickFormat(d3Service.format("d")),
                         x0 = waterfall.xScale(0),
                         chartGroup = svg.select(".chart-group");
 
@@ -108,13 +124,13 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 var tickValues = [], maxTickVal;
                 svg.select(".x.axis").remove();
                 if (waterfall.chartHeight > 0 && segments && segments.length > 0) {
-                    var xAxis = d3.svg.axis()
+                    var xAxis = d3Service.svg.axis()
                             .scale(waterfall.xScale)
                             .orient("bottom"),
-                        minVal = d3.min(segments, function (d) {
+                        minVal = d3Service.min(segments, function (d) {
                             return d.endVal;
                         }),
-                        maxVal = d3.max(segments, function (d) {
+                        maxVal = d3Service.max(segments, function (d) {
                             return d.endVal;
                         });
                     var lastVal = segments[segments.length-1].endVal;
@@ -135,7 +151,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     if (minVal !== 0) {
                         addTick(minVal, tickValues);
                     }
-                    maxTickVal = d3.max(tickValues);
+                    maxTickVal = d3Service.max(tickValues);
 
                     xAxis.tickValues(tickValues)
                         .tickFormat(function (d) {
@@ -163,7 +179,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function wrap(text, width) {
                 text.each(function () {
-                    var text = d3.select(this),
+                    var text = d3Service.select(this),
                         words = text.text().split(/\s+/).reverse(),
                         word,
                         line = [],
@@ -195,7 +211,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
             function drawYAxis() {
                 svg.select(".y.axis").remove();
                 if (waterfall.chartHeight > 0) {
-                    var yAxis = d3.svg.axis()
+                    var yAxis = d3Service.svg.axis()
                         .scale(waterfall.yScale)
                         .orient("left")
                         .tickSize(0);
@@ -211,7 +227,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
 
             function drawWaterfall() {
                 var chartGroup, barGroup,
-                    lineColor = d3.rgb(scope.color).darker(2);
+                    lineColor = d3Service.rgb(scope.color).darker(2);
 
                 chartGroup = svg.select(".chart-group");
                 if (segments && segments.length > 0) {
@@ -271,6 +287,15 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                 }
             }
 
+            function drawEndMarker() {
+                var connectors = svg.selectAll(".bar.line");
+                if (connectors.size() > 0) {
+                    var lastIndex = connectors.size() - 1;
+                    connectors.filter(function(d, i) { return i === lastIndex; })
+                                .attr("marker-end", "url(#arrowhead)");
+                }
+            }
+
             createSvg();
             scope.$watch("yAxisWidth", function (newVal) {
                 if (newVal) {
@@ -292,6 +317,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     waterfall = newVal;
                     segments = waterfall.segments[scope.index];
                     prepareSvg();
+                    defineEndMarker();
                     addTitle();
                     drawStartingLine();
                     if (yAxisWidth > 0) {
@@ -299,6 +325,7 @@ angular.module('lcaApp.waterfall.directive', ['lcaApp.waterfall', 'lcaApp.format
                     }
                     drawWaterfall();
                     drawXAxis();
+                    drawEndMarker();
                 } else {
                     if (svg) {
                         svg.remove();
