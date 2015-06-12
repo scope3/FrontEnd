@@ -1,5 +1,10 @@
 'use strict';
-/* Controller for LCIA Method Detail View */
+/**
+ * @ngdoc controller
+ * @name lcaApp.lciaMethod.detail:LciaMethodDetailController
+ * @description
+ * Controller for LCIA Method view
+ */
 angular.module('lcaApp.lciaMethod.detail',
     ['ui.router', 'lcaApp.resources.service', 'ui.bootstrap.accordion', 'lcaApp.paramGrid.directive', 'lcaApp.status.service',
         'lcaApp.models.param', 'lcaApp.models.scenario', 'lcaApp.referenceLink.directive'])
@@ -65,10 +70,14 @@ angular.module('lcaApp.lciaMethod.detail',
             };
 
             function setGridColumns() {
+                var factorHeader = "Factor";
+                if ($scope.lciaMethod["referenceFlowProperty"]["referenceUnit"]) {
+                    factorHeader = "Factor [" + $scope.lciaMethod["referenceFlowProperty"]["referenceUnit"] + "]";
+                }
                 $scope.gridColumns = [
-                    {field: 'category', displayName: 'Flow Category', enableCellEdit: false},
-                    {field: 'name', displayName: 'Flow Name', enableCellEdit: false},
-                    {field: 'factor', displayName: 'Factor', enableCellEdit: false}
+                    {field: "category", displayName: "Flow Category", enableCellEdit: false},
+                    {field: "name", displayName: "Flow Name", enableCellEdit: false},
+                    {field: "factor", displayName: factorHeader, enableCellEdit: false}
                 ];
                 $scope.params = { targetIndex : 2,
                     canUpdate : $scope.paramScenario && ScenarioModelService.canUpdate($scope.paramScenario) };
