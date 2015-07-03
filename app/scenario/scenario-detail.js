@@ -4,11 +4,11 @@ angular.module('lcaApp.scenario.detail',
                ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario', 'lcaApp.models.param',
                    'lcaApp.paramGrid.directive'])
 .controller('ScenarioDetailController', ['$scope', '$window', 'StatusService', '$state', '$stateParams',
-            'ScenarioModelService', 'FragmentService', 'ParamModelService', 'PARAM_TYPE_NAME',
-            'PARAM_VALUE_STATUS', '$q',
+            'ScenarioModelService', 'FragmentService', 'ParamModelService', 'FlowService', 'FlowPropertyMagnitudeService',
+        'PARAM_TYPE_NAME', 'PARAM_VALUE_STATUS', '$q',
     function($scope, $window, StatusService, $state, $stateParams,
-             ScenarioModelService, FragmentService, ParamModelService, PARAM_TYPE_NAME,
-             PARAM_VALUE_STATUS, $q) {
+             ScenarioModelService, FragmentService, ParamModelService, FlowService, FlowPropertyMagnitudeService,
+             PARAM_TYPE_NAME, PARAM_VALUE_STATUS, $q) {
 
         $scope.scenario = null;
         $scope.fragment = null;
@@ -123,6 +123,19 @@ angular.module('lcaApp.scenario.detail',
             $scope.gridData = gridData;
         }
 
+        function displayReferenceFlow() {
+            var flowProps = FlowPropertyMagnitudeService.getAll();
+            $scope.referenceFlow = FlowService.get($scope.scenario["referenceFlowID"]);
+            if (flowProps.length) {
+                $scope.unit = flowProps[0].unit;
+            }
+        }
+
+        function getReferenceFlow(flowID) {
+            $q.all([FlowService.load({flowID: flowID}), FlowPropertyMagnitudeService.load({flowID: flowID})])
+            .then(displayReferenceFlow);
+        }
+
         function displayScenario() {
             var scenario;
 
@@ -134,6 +147,9 @@ angular.module('lcaApp.scenario.detail',
                 StatusService.startWaiting();
                 ParamModelService.getResources(scenario.scenarioID).then(displayParameters,
                     StatusService.handleFailure);
+                if (scenario["referenceFlowID"]) {
+                    getReferenceFlow(scenario["referenceFlowID"]);
+                }
             } else {
                 StatusService.handleFailure("Invalid Scenario ID parameter.");
             }
