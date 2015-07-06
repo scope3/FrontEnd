@@ -5,10 +5,11 @@ angular.module('lcaApp.scenario.edit',
     ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service'])
     .controller('ScenarioEditController',
     ['$scope', '$state', '$stateParams', '$q', 'StatusService',
-     'ScenarioService', 'FragmentService',
+     'ScenarioService', 'FragmentService', 'FlowService', 'FlowPropertyMagnitudeService',
         function ($scope, $state, $stateParams, $q, StatusService,
-                  ScenarioService, FragmentService) {
-            var existingScenario = null;    // Existing scenario resource, updated on save.
+                  ScenarioService, FragmentService, FlowService, FlowPropertyMagnitudeService) {
+            var existingScenario = null, // Existing scenario resource, updated on save.
+                defaultName = "";       // Default scenario name
 
             /**
              * Action for Save button. Create new scenario or update existing scenario.
@@ -35,6 +36,25 @@ angular.module('lcaApp.scenario.edit',
                 goBack();
             };
 
+            $scope.onFragmentChange = changeFragmentFields;
+
+            /**
+             * Update fields impacted by fragment change
+             */
+            function changeFragmentFields() {
+                if ($scope.scenario.topLevelFragmentID) {
+                    var fragment = FragmentService.get($scope.scenario.topLevelFragmentID);
+                    if ($scope.scenario.name === defaultName || !$scope.scenario.name ) {
+                        defaultName = fragment.name;
+                        $scope.scenario.name = defaultName;
+                    }
+                    if (fragment["termFlowID"]) {
+                        $scope.scenario.referenceFlowID = fragment["termFlowID"];
+                        getReferenceFlow(fragment["termFlowID"]);
+                    }
+                }
+            }
+
             function goBack() {
                 if ( $stateParams.scenarioID) {
                     $state.go('^');
@@ -46,6 +66,19 @@ angular.module('lcaApp.scenario.edit',
             function handleSuccess() {
                 StatusService.stopWaiting();
                 goBack();
+            }
+
+            function displayReferenceFlow() {
+                var flowProps = FlowPropertyMagnitudeService.getAll();
+                $scope.referenceFlow = FlowService.get($scope.scenario["referenceFlowID"]);
+                if (flowProps.length) {
+                    $scope.unit = flowProps[0].unit;
+                }
+            }
+
+            function getReferenceFlow(flowID) {
+                $q.all([FlowService.load({flowID: flowID}), FlowPropertyMagnitudeService.load({flowID: flowID})])
+                    .then(displayReferenceFlow);
             }
 
             function setScope() {
@@ -60,13 +93,17 @@ angular.module('lcaApp.scenario.edit',
                             activityLevel: existingScenario.activityLevel,
                             topLevelFragmentID: existingScenario.topLevelFragmentID
                         };
+                        if (existingScenario["referenceFlowID"]) {
+                            $scope.scenario.referenceFlowID = existingScenario["referenceFlowID"];
+                            getReferenceFlow(existingScenario["referenceFlowID"]);
+                        }
                     } else {
                         StatusService.handleFailure("Invalid scenarioID : " + $stateParams.scenarioID);
                     }
                 }
                 else {
                     // Create scenario
-                    $scope.scenario = { name: "", activityLevel: 1, topLevelFragmentID: null};
+                    $scope.scenario = { name: defaultName, activityLevel: 1, topLevelFragmentID: null};
 
                 }
             }

@@ -1,6 +1,6 @@
 'use strict';
 
-describe('test lca-app', function () {
+describe('test lca-app anonymously', function () {
 
     it('should have a title', function () {
         browser.get('index.html');

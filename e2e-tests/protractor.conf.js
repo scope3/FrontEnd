@@ -4,13 +4,19 @@ exports.config = {
   seleniumAddress: 'http://localhost:4444/wd/hub',
 
   specs: [
-    'test_scenarios.js'
+    'test_*.js'
   ],
 
-  capabilities: {
-    'browserName': 'chrome',
-    'chromeOptions': {'args': ['--disable-extensions']}
-  },
+  //capabilities: {
+  //  'browserName': 'chrome',
+  //  'chromeOptions': {'args': ['--disable-extensions']}
+  //},
+
+  multiCapabilities: [{
+    'browserName': 'firefox'
+  }, {
+    'browserName': 'chrome'
+  }],
 
   baseUrl: 'http://localhost:8000/app/',
 
