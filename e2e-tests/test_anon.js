@@ -26,7 +26,7 @@ describe('test lca-app anonymously', function () {
 
         });
 
-        it('should display information messages', function() {
+        it('should display information messages', function () {
             var infoElements = element.all(by.css('.alert-info'));
             expect(infoElements.count()).toBe(3);
             expect(infoElements.get(0).getText()).toContain('home');
@@ -62,6 +62,25 @@ describe('test lca-app anonymously', function () {
 
             expect(gridOpts).toBeDefined();
             expect(grid.all(by.css('.ngHeaderSortColumn')).get(0).getText()).toEqual('Parameter Type');
+        });
+
+    });
+
+    describe('fragment-sankey view', function () {
+
+        beforeEach(function () {
+            browser.get('index.html#/home/fragment-sankey?scenarioID=1&fragmentID=1');
+        });
+
+        xit('should select scenario', function () {
+            var scenarioElement = element(by.model('scenario'));
+            expect(scenarioElement.getText()).toEqual('Model Base Case');
+
+        });
+
+        it('should contain sankey-diagram', function() {
+            var sankeyElement = element(by.css('sankey-diagram'));
+            expect(sankeyElement).toBeDefined();
         });
 
     });

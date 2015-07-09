@@ -8,16 +8,16 @@
 angular.module('lcaApp.fragment.sankey',
                 ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
-                    'lcaApp.selection.service', 'lcaApp.paramGrid.directive'])
+                    'lcaApp.selection.service', 'lcaApp.paramGrid.directive', 'lcaApp.name'])
     .controller('FragmentSankeyController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'ParamModelService',
-            'PARAM_HINT_CELL_TEMPLATE',
+            'PARAM_HINT_CELL_TEMPLATE', 'NameService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   FormatService, FragmentNavigationService, ParamModelService,
-                  PARAM_HINT_CELL_TEMPLATE) {
+                  PARAM_HINT_CELL_TEMPLATE, NameService) {
             var defaultScenarioID = ScenarioModelService.getBaseCaseID(),
                 defaultFragmentID = 0,
             //
@@ -119,7 +119,7 @@ angular.module('lcaApp.fragment.sankey',
 
             /**
              * Add graph node for fragment flow element
-             * @param {{fragmentFlowID:number}} element
+             * @param {{fragmentFlowID:number, isBackground:boolean, nodeType:string}} element
              */
             function addGraphNode(element) {
                 var node = {
@@ -174,6 +174,9 @@ angular.module('lcaApp.fragment.sankey',
                     flow = (element.hasOwnProperty("flowID") ? FlowForFragmentService.get(element.flowID) : null),
                     unit = $scope.selectedFlowProperty["referenceUnit"];
 
+                if (!flow) {
+                    throw new Error ("Flow with ID, " + flowID + ", was not found.");
+                }
                 if ("parentFragmentFlowID" in element) {
                     if (element.parentFragmentFlowID in reverseIndex) {
                         parentIndex = reverseIndex[element.parentFragmentFlowID];
@@ -182,34 +185,35 @@ angular.module('lcaApp.fragment.sankey',
                         return;
                     }
                 } else {
+                    // No parent, so link to root node and assign shortened flow name to root node.
+                    var rootNode = graph.nodes[0];
+
+                    rootNode.nodeName = NameService.shorten(flow.name, 30);
                     parentIndex = 0;
                 }
 
-                if (flow) {
-                    link = {
-                        nodeID: element.fragmentFlowID,
-                        flowID: element.flowID,
-                        value: value
-                    };
-                    if (magnitude === null) {
-                        link.unit = "N/A";
-                        link.toolTip = flow.name;
-                    } else {
-                        link.magnitude = magnitude;
-                        link.unit = unit;
-                        link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
-                    }
-                    if (element.direction === "Input") {
-                        link.source = nodeIndex;
-                        link.target = parentIndex;
-                    } else {
-                        link.source = parentIndex;
-                        link.target = nodeIndex;
-                    }
-                    graph.links.push(link);
+                link = {
+                    nodeID: element.fragmentFlowID,
+                    flowID: element.flowID,
+                    value: value
+                };
+                if (magnitude === null) {
+                    link.unit = "N/A";
+                    link.toolTip = flow.name;
                 } else {
-                    throw new Error ("Flow with ID, " + flowID + ", was not found.");
+                    link.magnitude = magnitude;
+                    link.unit = unit;
+                    link.toolTip = flow.name + " : " + magFormat(magnitude) + " " + unit;
                 }
+                if (element.direction === "Input") {
+                    link.source = nodeIndex;
+                    link.target = parentIndex;
+                } else {
+                    link.source = parentIndex;
+                    link.target = nodeIndex;
+                }
+                graph.links.push(link);
+
             }
 
             /**
