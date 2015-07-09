@@ -13,7 +13,6 @@ describe('test lca-app anonymously', function () {
             browser.get('index.html#/home');
         });
 
-
         it('should list scenarios', function () {
             var scenarioElements = element.all(by.repeater('scenario in scenarios'));
             expect(scenarioElements.count()).toBeGreaterThan(1);
@@ -21,10 +20,18 @@ describe('test lca-app anonymously', function () {
         });
 
         it('should list LCIA methods', function () {
-            var elts = element.all(by.repeater('method in lciaMethods'));
-            expect(elts.count()).toBeGreaterThan(1);
-            expect(elts.get(0).getText()).toContain('ILCD2011');
+            var methodElements = element.all(by.repeater('method in lciaMethods'));
+            expect(methodElements.count()).toBeGreaterThan(1);
+            expect(methodElements.get(0).getText()).toContain('ILCD2011');
 
+        });
+
+        it('should display information messages', function() {
+            var infoElements = element.all(by.css('.alert-info'));
+            expect(infoElements.count()).toBe(3);
+            expect(infoElements.get(0).getText()).toContain('home');
+            expect(infoElements.get(1).getText()).toContain('scenarios');
+            expect(infoElements.get(2).getText()).toContain('LCIA');
         });
 
     });

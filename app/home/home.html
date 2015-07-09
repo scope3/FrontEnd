@@ -1,14 +1,16 @@
 <!-- Partial html for home page -->
+<info msg="{{infoMsg.home.msg}}"></info>
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">Scenarios</span>
         <button class="btn btn-default btn-sm pull-right" ng-show="canCreate" ng-click="createScenario()">New</button>
         <div class="clearfix"></div>
     </div>
+    <info msg="{{infoMsg.home.scenarios.msg}}"></info>
     <table class="table table-condensed">
         <thead>
         <tr>
-            <th>Name</th>
+            <th>Scenario</th>
             <th>Activity Level</th>
             <th>Top Level Fragment</th>
         </tr>
@@ -45,6 +47,7 @@
     <div class="panel-heading">
         <span class="panel-title">LCIA Methods</span>
     </div>
+    <info msg="{{infoMsg.home.lciaMethods.msg}}"></info>
     <table class="table table-condensed">
         <thead>
         <tr>

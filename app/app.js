@@ -2,18 +2,19 @@
 // Declare app level module which depends on views, and components
 angular.module('lcaApp', [
         'lcaApp.config',
-    'LocalStorageModule',
-    'ui.router',
-    'lcaApp.html',
-    'lcaApp.home',
-    'lcaApp.fragment.sankey',
-    'lcaApp.process.instance',
-    'lcaApp.process.LCIA',
-    'lcaApp.process.flowParam',
-    'lcaApp.fragment.LCIA',
-    'lcaApp.lciaMethod.detail',
-    'lcaApp.scenario.detail',
-    'lcaApp.scenario.edit'
+        'lcaApp.info.directive',
+        'LocalStorageModule',
+        'ui.router',
+        'lcaApp.html',
+        'lcaApp.home',
+        'lcaApp.fragment.sankey',
+        'lcaApp.process.instance',
+        'lcaApp.process.LCIA',
+        'lcaApp.process.flowParam',
+        'lcaApp.fragment.LCIA',
+        'lcaApp.lciaMethod.detail',
+        'lcaApp.scenario.detail',
+        'lcaApp.scenario.edit'
     ]
 )
     .config(['$stateProvider', '$urlRouterProvider', 'localStorageServiceProvider',
@@ -134,9 +135,10 @@ angular.module('lcaApp', [
                 });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
         }])
-    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT',
-        function($rootScope, HELP_ROOT) {
+    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT', 'INFO_MSG',
+        function($rootScope, HELP_ROOT, INFO_MSG) {
             $rootScope.helpPage = HELP_ROOT;
+            $rootScope.infoMsg = INFO_MSG;
 
             $rootScope.$on('$stateChangeStart',
                 function(event, toState) {
