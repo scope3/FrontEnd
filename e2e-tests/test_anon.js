@@ -72,15 +72,15 @@ describe('test lca-app anonymously', function () {
             browser.get('index.html#/home/fragment-sankey?scenarioID=1&fragmentID=1');
         });
 
-        xit('should select scenario', function () {
+        it('should select scenario', function () {
             var scenarioElement = element(by.model('scenario'));
-            expect(scenarioElement.getText()).toEqual('Model Base Case');
+            expect(scenarioElement.element(by.cssContainingText('option', 'Model Base Case')).isSelected()).toBe(true);
 
         });
 
         it('should contain sankey-diagram', function() {
             var sankeyElement = element(by.css('sankey-diagram'));
-            expect(sankeyElement).toBeDefined();
+            expect(sankeyElement.isPresent()).toBe(true);
         });
 
     });

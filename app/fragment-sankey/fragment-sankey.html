@@ -1,6 +1,6 @@
 <!-- Partial html for fragment sankey view -->
 <div class="row">
-    <div class="col-md-9">
+    <div class="col-md-6">
         <dl class="dl-horizontal">
             <dt>Scenario</dt>
             <dd>
@@ -31,7 +31,14 @@
             <dd id="refUnitName">{{selectedFlowProperty.referenceUnit}}</dd>
         </dl>
     </div>
-    <div class="col-md-3">
+    <div class="col-md-4">
+        <svg>
+            <g>
+            <rect height="10" width="10" fill="{{color.range[0]}}"></rect>
+            </g>
+        </svg>
+    </div>
+    <div class="col-md-2">
         <button type="button" class="btn btn-link pull-right"
                 ui-sref=".fragment-lcia({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
             Display LCIA Results

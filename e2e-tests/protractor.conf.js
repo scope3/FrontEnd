@@ -7,23 +7,23 @@ exports.config = {
     'test_*.js'
   ],
 
-  //capabilities: {
-  //  'browserName': 'chrome',
-  //  'chromeOptions': {'args': ['--disable-extensions']}
-  //},
+  capabilities: {
+    'browserName': 'chrome',
+    'chromeOptions': {'args': ['--disable-extensions']}
+  },
 
-  multiCapabilities: [{
-    'browserName': 'firefox'
-  }, {
-    'browserName': 'chrome'
-  }],
+  //multiCapabilities: [{
+  //  'browserName': 'firefox'
+  //}, {
+  //  'browserName': 'chrome'
+  //}],
 
   baseUrl: 'http://localhost:8000/app/',
 
   framework: 'jasmine',
 
   jasmineNodeOpts: {
-    defaultTimeoutInterval: 30000
+    defaultTimeoutInterval: 60000
   }
 
 };

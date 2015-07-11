@@ -26,8 +26,9 @@ angular.module('lcaApp.fragment.sankey',
                 baseValue = 1E-14,  // sankey link base value (replaces 0).
                 magFormat = FormatService.format();
 
-
-            $scope.color = { domain: (["Fragment", "InputOutput", "Process", "Cutoff",  "Background"]), range: colorbrewer.Set2[5], property: "nodeType" };
+            // Color scale will be used for legend, so only include node types in the graph
+            // $scope.color = { domain: (["Fragment", "InputOutput", "Process", "Cutoff",  "Background"]), range: colorbrewer.Set2[5], property: "nodeType" };
+            $scope.color = { domain: (["Fragment", "InputOutput", "Process"]), range: colorbrewer.Set2[3], property: "nodeType" };
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
