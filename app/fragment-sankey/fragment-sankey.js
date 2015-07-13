@@ -39,6 +39,7 @@ angular.module('lcaApp.fragment.sankey',
 
             $scope.onScenarioChange = activateScenario;
             $scope.gridFlows = [];
+            $scope.legendSelector = "#sankeyLegend";
 
             /**
              * Temporary workaround for flows with problem properties. Hide them
@@ -517,13 +518,24 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function defineGraphColors () {
+
                 SankeyColorService.createColorSpec("node", FRAGMENT_NODE_TYPE_COLORS,
                     function(node) {
                         return node.nodeType;
-                    });
+                    },
+                    {
+                        Fragment: "Sub-fragment",
+                        InputOutput: "Input/Output",
+                        Process: "Process"
+                    }
+                );
                 SankeyColorService.createColorSpec("link", FRAGMENT_FLOW_COLORS,
                     function(link) {
                         return link.hasOwnProperty("magnitude") && link.magnitude > 0 ? "positive" : "negative";
+                    },
+                    {
+                        positive : "Flow",
+                        negative : "Negative magnitude flow"
                     });
                 $scope.color = SankeyColorService;
             }

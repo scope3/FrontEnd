@@ -32,10 +32,7 @@
         </dl>
     </div>
     <div class="col-md-4">
-        <svg>
-            <g>
-            <rect height="10" width="10" fill="green"></rect>
-            </g>
+        <svg id="sankeyLegend">
         </svg>
     </div>
     <div class="col-md-2">
@@ -49,8 +46,8 @@
 <div class="col-md-12">
     <div class="sankey-container">
         <!--suppress HtmlUnknownTag -->
-        <sankey-diagram graph="graph" selected-node="selectedNode"
-                        mouse-over-node="mouseOverNode"></sankey-diagram>
+        <sankey-diagram graph="graph" selected-node="selectedNode" color="color"
+                        mouse-over-node="mouseOverNode" legend-selector="legendSelector"></sankey-diagram>
     </div>
 </div>
 </div>

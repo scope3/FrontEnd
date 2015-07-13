@@ -31,3 +31,7 @@ sankey-diagram {
     display: block;
 }
 
+.legend-row text {
+    font: 10px sans-serif;
+}
+

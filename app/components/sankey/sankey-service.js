@@ -35,19 +35,25 @@ angular.module('lcaApp.sankey.service', ['d3'])
          * @param { string } p Property name ("node" or "link")
          * @param { object } c ColorCode constant
          * @param { function } a Function that returns domain value from the data object for a node or link.
+         * @param { object } l Associative array mapping domain value to label
          * @returns { object } the service singleton, enables method chaining
          */
-        sankeyColors.createColorSpec = function (p, c, a) {
-            sankeyColors[p] = {
-                colorScale : d3Service.scale.ordinal(),
-                getColor : function (d) {
-                    var val = a.call(sankeyColors[p], d);
-                    return sankeyColors[p].colorScale(val);
-                }
+        sankeyColors.createColorSpec = function (p, c, a, l) {
+            var thisSpec = {
+                colorScale : d3Service.scale.ordinal()
             };
-            sankeyColors[p].colorScale.domain(d3Service.keys(c));
-            sankeyColors[p].colorScale.range(d3Service.values(c));
-
+            thisSpec.colorScale.domain(d3Service.keys(c));
+            thisSpec.colorScale.range(d3Service.values(c));
+            thisSpec.getDomainVal = function(d) {
+                return a.call(thisSpec, d);
+            };
+            thisSpec.getColor = function(d) {
+                return thisSpec.colorScale(thisSpec.getDomainVal(d));
+            };
+            thisSpec.getLabel = function(d) {
+                return l[d];
+            };
+            sankeyColors[p] = thisSpec;
             return sankeyColors;
         };
 

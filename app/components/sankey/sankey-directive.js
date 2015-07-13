@@ -43,7 +43,8 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
             graph = {},
             baseValue = 1E-14,  // sankey link base value (replaces 0).
             minNodeHeight = 3,  // Minimum height of sankey node/link
-            opacity = { node: 1, link: 0.5 }; // default opacity settings
+            opacity = { node: 1, link: 0.5}, // default opacity settings
+            legend = null;
 
         /**
          * Initial preparation of svg element.
@@ -320,30 +321,79 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
                     if ("toolTip" in d) {
                         return d["toolTip"];
                     }
-                })
-                .style("background", function (d) {
-                    if (d && SankeyColorService.node.getColor) {
-                        return SankeyColorService.node.getColor(d);
-                    }
                 });
             svg.call(TipService);
             TipService.hide();
         }
 
-        function onColorChanged() {
-            prepareToolTip();
+        function appendLegend(cssClass, startY, colorSpec, rowHeight, rectDim) {
+            var aLegend = legend.append("g").attr("class", cssClass)
+                .attr("transform", "translate(0," + startY + ")");
+
+            aLegend = aLegend.selectAll("g")
+                .data(colorSpec.colorScale.domain())
+                .enter().append("g")
+                .attr("class", "legend-row")
+                .attr("transform", function (d, i) {
+                    return "translate(0," + i * rowHeight + ")";
+                });
+            aLegend.append("rect")
+                .attr("x", rectDim.x)
+                .attr("y", rectDim.y)
+                .attr("height", rectDim.height)
+                .attr("width", rectDim.width)
+                .style("fill", colorSpec.colorScale);
+
+            aLegend.append("text")
+                .attr("x", rowHeight+4)
+                .attr("y", 9)
+                .attr("dy", ".35em")
+                .text(function (d) {
+                    return colorSpec.getLabel(d);
+                });
+        }
+
+        function drawLegend() {
+
+            legend = d3.select(scope.legendSelector);
+
+            if (legend) {
+                var rowHeight = 20,
+                    startY = 0,
+                    nodeDim = { x : rowHeight/4 - 1, y : 0, width : rowHeight/2, height : rowHeight-2},
+                    linkDim = { x : 0, y : rowHeight/4, width : rowHeight-2, height : rowHeight/2};
+
+                appendLegend( "legend node", startY, SankeyColorService.node, rowHeight, nodeDim);
+                startY = SankeyColorService.node.colorScale.domain().length * rowHeight;
+                appendLegend( "legend link", startY, SankeyColorService.link, rowHeight, linkDim);
+            }
+        }
+
+        function onColorChanged(val) {
+            if (val) {
+                if (scope.legendSelector && !legend) {
+                    drawLegend();
+                }
+            }
+        }
+
+        function onLegendChanged(val) {
+            if (val && scope.color && !legend) {
+                drawLegend();
+            }
         }
 
         prepareSvg();
+        prepareToolTip();
 
         scope.$watch('color', onColorChanged);
         scope.$watch('graph.links', onGraphChanged);
-
+        scope.$watch('legendSelector', onLegendChanged);
     }
 
     return {
         restrict: 'E',
-        scope: { graph: '=', color: '=', selectedNode: '=selectedNode', mouseOverNode: '=mouseOverNode'},
+        scope: { graph: '=', color: '=', selectedNode: '=selectedNode', mouseOverNode: '=mouseOverNode', legendSelector: '='},
         link: link
     }
 }]);

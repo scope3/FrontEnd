@@ -1,14 +1,66 @@
 /**
- * Unit test directives
+ * Unit test sankey module
  */
+
+describe('Unit test d3.sankey service', function() {
+
+    // load modules
+    beforeEach(module('d3.sankey.service'));
+
+    // Test service availability
+    it('check the existence of SankeyService factory', inject(function(SankeyService) {
+        expect(SankeyService).toBeDefined();
+    }));
+});
+
+describe('Unit test SankeyColorService', function() {
+
+    var colorService;
+
+    // load modules
+    beforeEach(module('lcaApp.sankey.service'));
+
+    beforeEach(inject(function(_SankeyColorService_) {
+        colorService = _SankeyColorService_;
+    }));
+
+
+
+    // Test service availability
+    it('should create SankeyColorService', function() {
+        expect(colorService).toBeDefined();
+    });
+
+    it('should support color spec', function() {
+        var nodeObj = {
+                nodeType : "A"
+            },
+            colorMap = {
+                A : "red"
+            };
+
+        colorService.createColorSpec("node", colorMap, function(n) {
+            return n["nodeType"];
+        });
+        expect(colorService["node"]).toBeDefined();
+        expect(colorService["node"].colorScale).toBeDefined();
+        expect(colorService["node"].getColor(nodeObj)).toEqual("red");
+
+    });
+});
+
 describe('Unit test sankey diagram directive', function() {
-    var $compile;
-    var $rootScope;
+    var $compile,
+        $rootScope,
+        colorService;
 
 
 // Load the module which contains the directive
     beforeEach(module('lcaApp.sankey'));
 
+    beforeEach(inject(function(_SankeyColorService_) {
+        colorService = _SankeyColorService_;
+    }));
 
 // Store references to $rootScope and $compile
 // so they are available to all tests in this describe block
@@ -18,7 +70,7 @@ describe('Unit test sankey diagram directive', function() {
         $rootScope = _$rootScope_;
 
         $rootScope.graph = {"nodes": [
-            {"nodeType": "InputOutput", "nodeID": 151, "nodeName": ""},
+            {"nodeType": "InputOutput", "nodeID": 151, "nodeName": "Root Node"},
             {"nodeType": "Process", "nodeID": 152, "nodeName": "Scenario", "processID": 72},
             {"nodeType": "Fragment", "nodeID": 153, "nodeName": "Local Collection Mixer", "subFragmentID": 3},
             {"nodeType": "InputOutput", "nodeID": 154, "nodeName": ""},
@@ -78,28 +130,38 @@ describe('Unit test sankey diagram directive', function() {
             {"flowID": 446, "nodeID": 179, "magnitude": 0.175463, "value": 0.17546300000001, "source": 26, "target": 28}
         ]};
 
-        $rootScope.color = { domain: ([2, 3, 5, 1, 0]), range : colorbrewer.Set3[5], property: "nodeType" };
+    }));
 
+    function defineColors() {
+        var nodeColors =
+            {
+                Fragment: "green",
+                InputOutput: "yellow",
+                Process: "blue"
+            },
+            linkColors =
+            {
+                positive : "brown", negative : "grey"
+            };
 
-}));
+        colorService.createColorSpec("node", nodeColors, function(n) {
+            return n["nodeType"];
+        });
+        colorService.createColorSpec("link", linkColors, function(l) {
+            return l["magnitude"] ? "positive" : "negative";
+        });
+        $rootScope.colorService = colorService;
+    }
 
     it('Use the directive', function() {
         // Compile a piece of HTML containing the directive
-        var element = $compile("<sankey-diagram graph=\"graph\" link-display-value=\"d.magnitude\" color=\"color\"></sankey-diagram>")($rootScope);
-        // fire all the watches, so the scope expression {{1 + 1}} will be evaluated
-        element.scope().$digest();
-        // Check that the compiled element contains the templated content
-        //expect(element.html()).toNotContain("X");
+        var element = $compile("<div><sankey-diagram graph=\"graph\" color=\"colorService\"></sankey-diagram></div>")($rootScope);
+
+        defineColors();
+
+        $rootScope.$digest();
+        expect(element.html()).toBeDefined();
+        // Try testing with Protractor
+        //expect(element.html()).toContain($rootScope.graph.nodes[0].nodeName);
     });
-});
-
-describe('Unit test d3.sankey service', function() {
-
-    // load modules
-    beforeEach(module('d3.sankey.service'));
-
-    // Test service availability
-    it('check the existence of SankeyService factory', inject(function(SankeyService) {
-        expect(SankeyService).toBeDefined();
-    }));
 });
