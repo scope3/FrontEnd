@@ -7,7 +7,7 @@ describe('Unit test sankey diagram directive', function() {
 
 
 // Load the module which contains the directive
-    beforeEach(module('lcaApp.sankey.directive'));
+    beforeEach(module('lcaApp.sankey'));
 
 
 // Store references to $rootScope and $compile

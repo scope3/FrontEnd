@@ -1,3 +1,5 @@
+angular.module('lcaApp.sankey', ['d3.sankey.service', 'lcaApp.sankey.directive', 'lcaApp.sankey.service']);
+
 /**
  * @ngdoc directive
  * @name lcaApp.sankey.directive:sankeyDiagram
@@ -9,13 +11,14 @@
  * Sankey diagram directive.
  *
  * @param {object}  graph   Has nodes array and links array for SankeyService.
- * @param {object}  color   Has domain (array of node types) and range (array of fill colors).
+ * @param {object}  color   References SankeyColorService. Used to signal when colors have been defined.
  * @param {object}  selectedNode   Out - set to currently selected graph node.
  * @param {object}  mouseOverNode   Out - set to graph node where mouse is hovering.
  *
  */
-angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
-.directive('sankeyDiagram', ['SankeyService', 'TipService', function( SankeyService, TipService) {
+angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
+.directive('sankeyDiagram', ['d3Service', 'SankeyService', 'SankeyColorService', 'TipService',
+        function( d3Service, SankeyService, SankeyColorService, TipService) {
 
     function link(scope, element) {
 
@@ -30,9 +33,6 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
             height = parentElement.clientHeight - margin.top - margin.bottom,  // diagram height
             sankeyWidth = width - 150, // leave room for labels on right
             svg,
-            color = d3.scale.ordinal(),
-            // TODO : make sankey link colors configurable
-            linkColors = { positive : colorbrewer.Set2[8][6], negative : colorbrewer.Set2[8][7] },
             /**
              * sankey variables
              */
@@ -50,7 +50,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
          */
         function prepareSvg() {
 
-            svg = d3.select(parentElement)
+            svg = d3Service.select(parentElement)
                 .append("svg")
                 .attr("width", width + margin.left + margin.right)
                 .attr("height", height + margin.top + margin.bottom)
@@ -100,7 +100,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
         * @param {Object}  node    Reference to graph node data
         */
         function onNodeClick(node) {
-            d3.event.stopPropagation();
+            d3Service.event.stopPropagation();
             TipService.hide();
             scope.$apply(function(){
                 scope.selectedNode = node;
@@ -117,7 +117,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
         function onMouseOverNode(node, index) {
             var nodeSelection, linkSelection, linkLabels;
 
-            d3.event.stopPropagation();
+            d3Service.event.stopPropagation();
             nodeSelection = svg.selectAll(".node")
                 .transition()
                 .style("opacity", function (d, i) {
@@ -177,9 +177,9 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
          * @param {{ x: number, y: number }} d Reference to graph node data
 
         function onDragMove(d) {
-            d3.select(this).attr("transform",
+            d3Service.select(this).attr("transform",
                 "translate(" + d.x + "," + (
-                    d.y = Math.max(0, Math.min(height - d.dy, d3.event.y))
+                    d.y = Math.max(0, Math.min(height - d.dy, d3Service.event.y))
                 ) + ")");
             sankey.relayout();
             svg.select("#linkGroup").selectAll(".link").attr("d", sankey.link());
@@ -222,7 +222,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                     return (d.value === baseValue) ? "5,5" : null;
                 })
                 .style("stroke", function (d) {
-                    return (d.hasOwnProperty("magnitude") && d.magnitude > 0) ? linkColors.positive : linkColors.negative;
+                    return SankeyColorService.link.getColor(d);
                 })
                 .style("stroke-opacity", opacity.link)
                 .sort(function (a, b) {
@@ -253,7 +253,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 })
                 .style("opacity", opacity.node);
 
-            //node.call(d3.behavior.drag()
+            //node.call(d3Service.behavior.drag()
             //        .origin(function(d) { return d; })
             //        .on("dragstart", function() {
             //            this.parentNode.appendChild(this); })
@@ -268,14 +268,14 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                     width: sankey.nodeWidth()
                 })
                 .style("fill", function (n) {
-                    n.color = color(n[scope.color.property]);
+                    n.color = SankeyColorService.node.getColor(n);
                     return n.color;
                 });
 
             node.on('mouseover', onMouseOverNode);
 
             //
-            // Position fragment flow name to the right of node.
+            // Position node label to the right of node.
             //
             node.selectAll(".node-label")
                 .transition().duration(transitionTime)
@@ -306,7 +306,7 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                 //.style("cursor", "pointer")
                 .on("click", onNodeClick)
                 .style("stroke", function (n) {
-                    return d3.rgb(n.color).darker(1);
+                    return d3Service.rgb(n.color).darker(1);
                 });
 
         }
@@ -322,19 +322,22 @@ angular.module('lcaApp.sankey.directive', ['d3.sankey.service', 'd3.tip'])
                     }
                 })
                 .style("background", function (d) {
-                    if (d && scope.color.property in d) {
-                        return color(d[scope.color.property]);
+                    if (d && SankeyColorService.node.getColor) {
+                        return SankeyColorService.node.getColor(d);
                     }
                 });
             svg.call(TipService);
             TipService.hide();
         }
 
+        function onColorChanged() {
+            prepareToolTip();
+        }
+
         prepareSvg();
-        color.domain(scope.color.domain);
-        color.range(scope.color.range);
+
+        scope.$watch('color', onColorChanged);
         scope.$watch('graph.links', onGraphChanged);
-        prepareToolTip();
 
     }
 

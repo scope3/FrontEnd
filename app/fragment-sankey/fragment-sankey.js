@@ -6,18 +6,18 @@
  * Controller for Fragment Flows view
  */
 angular.module('lcaApp.fragment.sankey',
-                ['ui.router', 'lcaApp.sankey.directive', 'lcaApp.resources.service', 'lcaApp.status.service',
+                ['ui.router', 'lcaApp.sankey', 'lcaApp.resources.service', 'lcaApp.status.service',
                  'lcaApp.format', 'lcaApp.fragmentNavigation.service', 'lcaApp.models.param', 'lcaApp.models.scenario',
-                    'lcaApp.selection.service', 'lcaApp.paramGrid.directive', 'lcaApp.name'])
+                    'lcaApp.selection.service', 'lcaApp.paramGrid.directive', 'lcaApp.name', 'lcaApp.colorCode.service'])
     .controller('FragmentSankeyController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log',
         'ScenarioModelService', 'FragmentService', 'FragmentFlowService', 'FlowForFragmentService', 'ProcessService',
         'FlowPropertyForFragmentService', 'FormatService', 'FragmentNavigationService', 'ParamModelService',
-            'PARAM_HINT_CELL_TEMPLATE', 'NameService',
+            'PARAM_HINT_CELL_TEMPLATE', 'NameService', 'SankeyColorService', 'FRAGMENT_NODE_TYPE_COLORS', 'FRAGMENT_FLOW_COLORS',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService, FragmentService,
                   FragmentFlowService, FlowForFragmentService, ProcessService, FlowPropertyForFragmentService,
                   FormatService, FragmentNavigationService, ParamModelService,
-                  PARAM_HINT_CELL_TEMPLATE, NameService) {
+                  PARAM_HINT_CELL_TEMPLATE, NameService, SankeyColorService, FRAGMENT_NODE_TYPE_COLORS, FRAGMENT_FLOW_COLORS) {
             var defaultScenarioID = ScenarioModelService.getBaseCaseID(),
                 defaultFragmentID = 0,
             //
@@ -26,9 +26,9 @@ angular.module('lcaApp.fragment.sankey',
                 baseValue = 1E-14,  // sankey link base value (replaces 0).
                 magFormat = FormatService.format();
 
-            // Color scale will be used for legend, so only include node types in the graph
+            // Use new color service
             // $scope.color = { domain: (["Fragment", "InputOutput", "Process", "Cutoff",  "Background"]), range: colorbrewer.Set2[5], property: "nodeType" };
-            $scope.color = { domain: (["Fragment", "InputOutput", "Process"]), range: colorbrewer.Set2[3], property: "nodeType" };
+
             $scope.selectedFlowProperty = null;
             $scope.selectedNode = null;
             $scope.mouseOverNode = null;
@@ -516,6 +516,17 @@ angular.module('lcaApp.fragment.sankey',
                 defineGridColumns();
             }
 
+            function defineGraphColors () {
+                SankeyColorService.createColorSpec("node", FRAGMENT_NODE_TYPE_COLORS,
+                    function(node) {
+                        return node.nodeType;
+                    });
+                SankeyColorService.createColorSpec("link", FRAGMENT_FLOW_COLORS,
+                    function(link) {
+                        return link.hasOwnProperty("magnitude") && link.magnitude > 0 ? "positive" : "negative";
+                    });
+                $scope.color = SankeyColorService;
+            }
 
             function loadGrid() {
                 var gridFlows = [];
@@ -541,5 +552,6 @@ angular.module('lcaApp.fragment.sankey',
             getActiveScenarioID();
             getStateParams();
             defineGrids();
+            defineGraphColors();
             getData();
         }]);

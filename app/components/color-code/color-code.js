@@ -1,10 +1,12 @@
+/* global colorbrewer */
+
 /**
  * @ngdoc service
  * @module lcaApp.colorCode.service
  * @name ColorCodeService
- * @memberOf lcaApp.colorCode.service
+ * @memberOf lcaApp
  * @description
- * Factory service. Maps Impact Category ID to colorbrewer color scale
+ * Factory service. Maps resource values to colorbrewer color scale
  */
 angular.module('lcaApp.colorCode.service',
     [])
@@ -24,6 +26,16 @@ angular.module('lcaApp.colorCode.service',
         12: colorbrewer.YlGnBu,    // Photochemical ozone creation }
         13: colorbrewer.Greys,    // Respiratory inorganics
         14: colorbrewer.Greens    // Terrestrial Eutrophication
+    })
+    .constant('FRAGMENT_NODE_TYPE_COLORS',
+    {
+        Fragment: colorbrewer.Set2[3][0],
+        InputOutput: colorbrewer.Set2[3][1],
+        Process: colorbrewer.Set2[3][2]
+    })
+    .constant('FRAGMENT_FLOW_COLORS',
+    {
+        positive : colorbrewer.Set2[8][6], negative : colorbrewer.Set2[8][7]
     })
     .factory('ColorCodeService', ['IMPACT_CATEGORY_COLORS',
         function (IMPACT_CATEGORY_COLORS) {
