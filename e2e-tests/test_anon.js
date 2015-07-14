@@ -83,6 +83,10 @@ describe('test lca-app anonymously', function () {
             expect(sankeyElement.isPresent()).toBe(true);
         });
 
+        it('should contain legend with 5 rows', function() {
+            var rowElements = element.all(by.css('.legend-row'));
+            expect(rowElements.count()).toBe(5);
+        });
     });
 
 });

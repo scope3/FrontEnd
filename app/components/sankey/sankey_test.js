@@ -15,7 +15,19 @@ describe('Unit test d3.sankey service', function() {
 
 describe('Unit test SankeyColorService', function() {
 
-    var colorService;
+    var colorService,
+        nodeObj = {
+            nodeType : "A"
+        },
+        colorMap = {
+            A: "red"
+        },
+        labelMap = {
+            A : "A node"
+        },
+        nodeFunction = function (n) {
+            return n["nodeType"];
+        };
 
     // load modules
     beforeEach(module('lcaApp.sankey.service'));
@@ -25,28 +37,32 @@ describe('Unit test SankeyColorService', function() {
     }));
 
 
-
     // Test service availability
     it('should create SankeyColorService', function() {
         expect(colorService).toBeDefined();
     });
 
-    it('should support color spec', function() {
-        var nodeObj = {
-                nodeType : "A"
-            },
-            colorMap = {
-                A : "red"
-            };
-
-        colorService.createColorSpec("node", colorMap, function(n) {
-            return n["nodeType"];
-        });
+    it('should provide color for node object', function() {
+        colorService.createColorSpec("node", colorMap, nodeFunction);
         expect(colorService["node"]).toBeDefined();
         expect(colorService["node"].colorScale).toBeDefined();
-        expect(colorService["node"].getColor(nodeObj)).toEqual("red");
-
+        expect(colorService["node"].getColor(nodeObj)).toEqual(colorMap[nodeFunction(nodeObj)]);
     });
+
+    it('getLabel should return domain val if label was not provided', function() {
+        var domVal = "A";
+
+        colorService.createColorSpec("node", colorMap);
+        expect(colorService["node"].getLabel(domVal)).toEqual(domVal);
+    });
+
+    it('getLabel should return specified label', function() {
+        var domVal = "A";
+
+        colorService.createColorSpec("node", colorMap, nodeFunction, labelMap);
+        expect(colorService["node"].getLabel(domVal)).toEqual(labelMap[domVal]);
+    });
+
 });
 
 describe('Unit test sankey diagram directive', function() {

@@ -111,12 +111,13 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function createRootNode() {
-                return {
+                var node =  {
                     nodeType: "InputOutput",
                     nodeID: 0,
-                    nodeName: "Reference Flow",
-                    toolTip: "<strong>InputOutput</strong>"
-                }
+                    nodeName: "Reference Flow"
+                };
+                node.toolTip = "<strong>" + SankeyColorService.node.getLabel(node.nodeType) + "</strong>";
+                return node;
             }
 
             /**
@@ -142,7 +143,7 @@ angular.module('lcaApp.fragment.sankey',
                     node.toolTip = "<p>Background</p>"
                 }
                 if (node.nodeType) {
-                    node.toolTip += "<strong>" + node.nodeType + "</strong>";
+                    node.toolTip += "<strong>" + SankeyColorService.node.getLabel(node.nodeType) + "</strong>";
                 }
                 if ("processID" in element) {
                     refObj = ProcessService.get(element.processID);
