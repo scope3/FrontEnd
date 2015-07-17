@@ -238,12 +238,12 @@ angular.module('lcaApp.fragment.LCIA',
                         i, j;
 
                     for (j = 0; j < stages.length; j++) {
-                        var row = [m.name, refLink];
+                        var row = [m.name];
                         row.push(stages[j]);
                         for (i = 0; i < $scope.scenarios.length; i++) {
                             row.push(values[i][j]);
                         }
-                        row.push(refUnit);
+                        row.push([refUnit, refLink]);
                         rows.push(row);
                     }
                 }
@@ -260,8 +260,8 @@ angular.module('lcaApp.fragment.LCIA',
 
                     $scope.csvFileName = "Fragment_LCIA_" + $scope.fragment.name.split(" ").join("_") + ".csv";
 
-                    $scope.csvHeader = ["LCIA Method", "ILCD Reference", "Fragment Stage"]
-                        .concat(scenarioNames, "Unit");
+                    $scope.csvHeader = ["LCIA Method", "Fragment Stage"]
+                        .concat(scenarioNames, "Unit", "ILCD Reference");
                 }
                 $scope.csvData = rows;
             }
