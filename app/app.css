@@ -38,6 +38,10 @@
     height: 550px;
 }
 
+#sankeyLegend {
+    height: 100px;
+}
+
 .fragment-link {
     cursor: pointer;
 }

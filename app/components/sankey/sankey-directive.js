@@ -326,7 +326,36 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
             TipService.hide();
         }
 
-        function appendLegend(cssClass, startY, colorSpec, rowHeight, rectDim) {
+        function addNodeSymbol(colorSpec, rowHeight, nodeLegend) {
+            var x = rowHeight/4 - 1,
+                y = 0,
+                width = rowHeight/2,
+                height = rowHeight-2;
+
+            nodeLegend.append("rect")
+                .attr("x", x)
+                .attr("y", y)
+                .attr("height", height)
+                .attr("width", width)
+                .style("fill", colorSpec.colorScale)
+                .style("opacity", opacity.node)
+            ;
+        }
+
+        function addLinkSymbol(colorSpec, rowHeight, linkLegend) {
+            var y = rowHeight/2,
+                width = rowHeight - 2,
+                pathD = "M 0 " + y + " H " +  width;
+
+            linkLegend.append("path")
+                .attr("d", pathD)
+                .attr("stroke-width", y-2)
+                .style("stroke", colorSpec.colorScale)
+                .style("stroke-opacity", opacity.link)
+            ;
+        }
+
+        function appendLegend(cssClass, startY, colorSpec, rowHeight, addSymbol) {
             var aLegend = legend.append("g").attr("class", cssClass)
                 .attr("transform", "translate(0," + startY + ")");
 
@@ -337,12 +366,8 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
                 .attr("transform", function (d, i) {
                     return "translate(0," + i * rowHeight + ")";
                 });
-            aLegend.append("rect")
-                .attr("x", rectDim.x)
-                .attr("y", rectDim.y)
-                .attr("height", rectDim.height)
-                .attr("width", rectDim.width)
-                .style("fill", colorSpec.colorScale);
+
+            addSymbol(colorSpec, rowHeight, aLegend);
 
             aLegend.append("text")
                 .attr("x", rowHeight+4)
@@ -359,13 +384,11 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
 
             if (legend) {
                 var rowHeight = 20,
-                    startY = 0,
-                    nodeDim = { x : rowHeight/4 - 1, y : 0, width : rowHeight/2, height : rowHeight-2},
-                    linkDim = { x : 0, y : rowHeight/4, width : rowHeight-2, height : rowHeight/2};
+                    startY = 0;
 
-                appendLegend( "legend node", startY, SankeyColorService.node, rowHeight, nodeDim);
+                appendLegend( "legend node", startY, SankeyColorService.node, rowHeight, addNodeSymbol);
                 startY = SankeyColorService.node.colorScale.domain().length * rowHeight;
-                appendLegend( "legend link", startY, SankeyColorService.link, rowHeight, linkDim);
+                appendLegend( "legend link", startY, SankeyColorService.link, rowHeight, addLinkSymbol);
             }
         }
 
