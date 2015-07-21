@@ -139,6 +139,7 @@ angular.module('lcaApp', [
         function($rootScope, HELP_ROOT, INFO_MSG) {
             $rootScope.helpPage = HELP_ROOT;
             $rootScope.infoMsg = INFO_MSG;
+            $rootScope.displayInfo = true;
 
             $rootScope.$on('$stateChangeStart',
                 function(event, toState) {

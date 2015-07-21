@@ -39,12 +39,10 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
         function($compile) {
             return {
                 restrict: 'E',
-                template: '<div ng-show="msg"><alert type="info" close="close()">{{msg}}</alert></div>',
-                scope : { msg : '@' },
-                replace : true,
-                transclude : false,
+                template: '<div class="alert alert-info" role="alert"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
+                //replace : true,
+                transclude : true,
                 link : function (scope) {
-
                     scope.close = function () {
                         scope.msg = null;
                     }

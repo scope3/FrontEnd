@@ -24,9 +24,9 @@ describe('Unit test info directive', function() {
 
     // TODO: Figure out how to resolve the following error.
     // Error: Unexpected request: GET template/alert/alert.html
-    xit('should display msg', function() {
-        var htmlTemplate = '<info msg="infoMsg"></info>';
-        $rootScope.infoMsg = "Test message";
+    it('should display msg', function() {
+        var htmlTemplate = '<info ng-show="displayInfo">A test message</info>';
+        $rootScope.displayInfo = true;
         expect(compileDirective(htmlTemplate)).toBeDefined();
     });
 

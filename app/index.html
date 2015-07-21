@@ -103,6 +103,11 @@
                 <li ui-sref-active="active"><a ui-sref="home.fragment-sankey">Fragment Flows</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
+                <li>
+                <button type="button" class="btn btn-default navbar-btn active" data-toggle="button" ng-click="displayInfo=!displayInfo" aria-pressed="{{displayInfo}}">
+                    <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                </button>
+                </li>
                 <li><a href="{{helpPage}}" target="_blank">Help</a></li>
             </ul>
         </div>

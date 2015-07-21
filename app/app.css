@@ -109,6 +109,17 @@ waterfall-chart .y.axis path {
     margin: 1em;
 }
 
+info .alert-info {
+    background-color: #fff;
+    border-color: #fff;
+    padding: 5px;
+    margin: 0px;
+}
+
+info .glyphicon {
+    padding-right: 1em;
+}
+
 /* Override multiselect styles */
 /* Make it look like html select */
 .multiSelect > button {
