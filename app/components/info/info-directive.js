@@ -25,6 +25,15 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
         lciaMethods: {
             msg: "Potential environmental impacts are assessed using active LCIA Methods below."
         }
+      },
+      fragmentSankey : {
+	msg: "Fragments are parts of an inventory model built as a tree. Nodes in the tree are processes, sub-fragments, or inputs or outputs (unterminated flows).  Fragment flows are links between nodes.  Here the edges are shown as a sankey diagram.",
+	fragmentFlows: {
+	    msg: "Table of flows shown in the above diagram. "
+	}
+      },
+      processInstance : {
+	msg: "Detailed information on the flows coming in and out of this process.  Flows that link to other nodes in the fragment are shown in the first table. Below that are the results from each life cycle impact assessment method."
     }})
     .directive('info', ['$compile',
         function($compile) {
