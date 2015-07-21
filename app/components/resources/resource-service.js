@@ -36,6 +36,8 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "lciaMethodForImpactCategory" : API_ROOT + "impactcategories/:impactCategoryID/lciamethods",
                 "lciaResultForFragment" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/lciamethods/:lciaMethodID/lciaresults",
                 "lciaResultForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciamethods/:lciaMethodID/lciaresults",
+                "lciaTotalForFragment" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/lciaresults",
+                "lciaTotalForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciaresults",
                 "param" : API_ROOT + "scenarios/:scenarioID/params/:paramID",
                 "process" : API_ROOT + "processes",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
@@ -406,10 +408,13 @@ angular.module('lcaApp.resources.service')
     ]);
 
 /**
- * LCIA results for multiple methods are queried simultaneously.
- * Also, the query returns only one object, so no need to use IdMapService
+ * Simple GET services. Not cached nor extended in this module
  */
 angular.module('lcaApp.resources.service')
+/**
+ * Detailed LCIA results for multiple methods are queried simultaneously.
+ * The query returns only one object, so no need to use IdMapService
+ */
     .factory('LciaResultForProcessService', ['ResourceService',
         function(ResourceService){
             return ResourceService.createSimpleGetService("lciaResultForProcess");
@@ -418,5 +423,19 @@ angular.module('lcaApp.resources.service')
     .factory('LciaResultForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.createSimpleGetService("lciaResultForFragment");
+        }
+    ])
+/**
+ * Cumulative LCIA results for all methods.
+ * Caching is handled by model service
+ */
+    .factory('LciaTotalForProcessService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.createSimpleGetService("lciaTotalForProcess");
+        }
+    ])
+    .factory('LciaTotalForFragmentService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.createSimpleGetService("lciaTotalForFragment");
         }
     ]);
