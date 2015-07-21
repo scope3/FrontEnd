@@ -232,13 +232,14 @@ angular.module('lcaApp.process.instance',
 
             /**
              * Create object for grid row
-             * @param {{ fragmentFlowID: Number, shortName: String, nodeType: String, flowID: Number,
+             * @param {{ fragmentFlowID: Number, name: String, nodeType: String, flowID: Number,
              *          direction: String, parentFragmentFlowID : * , flowPropertyMagnitudes: []
              *      } } ff   Fragment flow resource
              */
             function addGridFlow(ff) {
                 var paramResource = ParamModelService.getFragmentFlowParam(scenarioID, ff.fragmentFlowID),
-                    gridFlow = { fragmentFlowID : ff.fragmentFlowID, direction : ff.direction, name : ff.name } ,
+                    ffName = ff.nodeType == "Cutoff" ? "(cutoff) " + ff.name : ff.name,
+                    gridFlow = { fragmentFlowID : ff.fragmentFlowID, direction : ff.direction, name : ffName } ,
                     nodeWeight = processFragmentFlow.hasOwnProperty("nodeWeight") ? processFragmentFlow.nodeWeight : 1;
                 
                 if (paramResource) {
