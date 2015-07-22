@@ -13,12 +13,12 @@ angular.module('lcaApp.process.instance',
                  'lcaApp.referenceLink.directive', 'lcaApp.paramGrid.directive'])
     .controller('ProcessInstanceController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
-         'ProcessService', 'ProcessFlowService',
+         'ProcessService', 'ProcessFlowService', 'FlowPropertyForFlowService', 'ProcessDissipationService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService', 'FragmentFlowService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
-                  ProcessService, ProcessFlowService,
+                  ProcessService, ProcessFlowService, FlowPropertyForFlowService, ProcessDissipationService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService, FragmentFlowService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService) {
@@ -37,7 +37,7 @@ angular.module('lcaApp.process.instance',
             $scope.canApply = function () {
                 return ($scope.scenario &&
                 ScenarioModelService.canUpdate($scope.scenario) &&
-                ParamModelService.canApplyChanges( $scope.gridFlows));
+                ParamModelService.canApplyChanges( $scope.fragmentFlows));
             };
             /**
              * Function to determine if Revert Changes button should be enabled.
@@ -46,10 +46,10 @@ angular.module('lcaApp.process.instance',
             $scope.canRevert = function () {
                 return ($scope.scenario &&
                 ScenarioModelService.canUpdate($scope.scenario) &&
-                ParamModelService.canRevertChanges( $scope.gridFlows));
+                ParamModelService.canRevertChanges( $scope.fragmentFlows));
             };
             $scope.canReturn = function () {
-                return ParamModelService.canAbandonChanges($scope.gridFlows);
+                return ParamModelService.canAbandonChanges($scope.fragmentFlows);
             };
 
             /**
@@ -57,12 +57,12 @@ angular.module('lcaApp.process.instance',
              */
             $scope.applyChanges = function () {
                 StatusService.startWaiting();
-                ParamModelService.applyFragmentFlowParamChanges($scope.scenario.scenarioID, $scope.gridFlows,
+                ParamModelService.applyFragmentFlowParamChanges($scope.scenario.scenarioID, $scope.fragmentFlows,
                     refreshFragmentFlowParams, StatusService.handleFailure);
             };
 
             $scope.revertChanges = function () {
-                ParamModelService.revertChanges($scope.gridFlows);
+                ParamModelService.revertChanges($scope.fragmentFlows);
             };
 
             /**
@@ -104,7 +104,7 @@ angular.module('lcaApp.process.instance',
             }
 
             function getLciaResults() {
-                StatusService.stopWaiting();  // Results will appear as they are processed
+                // Results will appear as they are processed
                 if ($scope.process["hasElementaryFlows"]) {
                     $scope.lciaMethods = LciaMethodService.getAll().filter(function (m) {
                         return m.getIsActive();
@@ -119,6 +119,7 @@ angular.module('lcaApp.process.instance',
              * Get results from process filtered queries
              */
             function getProcessResults() {
+                StatusService.stopWaiting();
                 getFlowRows();
                 getLciaResults();
             }
@@ -170,6 +171,7 @@ angular.module('lcaApp.process.instance',
              * Function called after requests for resources have been fulfilled.
              */
             function handleSuccess() {
+                StatusService.stopWaiting();
                 prepareViewWithFragmentNavigation();
                 if (processID) {
                     getDataFilteredByProcess();
@@ -186,9 +188,17 @@ angular.module('lcaApp.process.instance',
              * Get data filtered by processID
              */
             function getDataFilteredByProcess() {
-                $q.all([
+                var requests = [
                     ProcessFlowService.load({processID:processID}),
-                    FlowPropertyForProcessService.load({processID: processID})])
+                    FlowPropertyForProcessService.load({processID: processID})
+                ];
+                if ($scope.process && $scope.process["compositionFlowID"]) {
+                    var flowID = $scope.process["compositionFlowID"];
+                    requests.push(ProcessDissipationService.load({processID: processID }));
+                    requests.push(FlowPropertyForFlowService.load({flowID: flowID }));
+                }
+                StatusService.startWaiting();
+                $q.all(requests)
                     .then(getProcessResults,
                     StatusService.handleFailure);
             }
@@ -197,6 +207,7 @@ angular.module('lcaApp.process.instance',
              * Get all data, except for LCIA results
              */
             function getData() {
+                StatusService.startWaiting();
                 $q.all([ScenarioModelService.load(),
                     ProcessService.load(),
                     LciaMethodService.load(),
@@ -276,7 +287,7 @@ angular.module('lcaApp.process.instance',
                 inputFlows = [];
                 outputFlows = [];
                 processFlows.forEach( addGridFlow);
-                $scope.gridFlows = inputFlows.concat(outputFlows);
+                $scope.fragmentFlows = inputFlows.concat(outputFlows);
             }
 
             function refreshFragmentFlowParams() {
@@ -332,14 +343,13 @@ angular.module('lcaApp.process.instance',
             $scope.selection = {};
             $scope.elementaryFlows = {};
             $scope.options = { sortInfo: {fields:['direction'], directions:['asc']} };
-            $scope.gridFlows = [];
+            $scope.fragmentFlows = [];
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
             $scope.activityLevel = 1;
             $scope.lciaMsg = "";
             $scope.flowsVisible = true;
             getStateParams();
-            StatusService.startWaiting();
             getData();
 
         }]);

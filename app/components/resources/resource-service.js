@@ -27,6 +27,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "fragment" : API_ROOT + "fragments/:fragmentID",
                 "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
                 "fragmentStage" : API_ROOT + "fragments/:fragmentID/fragmentstages",
+                "flowPropertyForFlow" : API_ROOT + "flows/:flowID/flowproperties",
                 "flowPropertyForFragment" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "flowPropertyForProcess" : API_ROOT + "processes/:processID/flowproperties",
                 "flowPropertyMagnitude" : API_ROOT + "flows/:flowID/flowpropertymagnitudes",
@@ -40,6 +41,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "lciaTotalForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciaresults",
                 "param" : API_ROOT + "scenarios/:scenarioID/params/:paramID",
                 "process" : API_ROOT + "processes",
+                "processDissipation" : API_ROOT + "processes/:processID/dissipation",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
                 "processFlow" : API_ROOT + "processes/:processID/processflows",
                 "scenario" : API_ROOT + "scenarios/:scenarioID",
@@ -339,6 +341,11 @@ angular.module('lcaApp.resources.service')
             return ResourceService.getService('FlowService', "flow", "flowID");
         }
     ])
+    .factory('FlowPropertyForFlowService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('FlowPropertyForFlowService', "flowPropertyForFlow", "flowPropertyID");
+        }
+    ])
     .factory('FlowPropertyForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowPropertyForFragmentService', "flowPropertyForFragment", "flowPropertyID");
@@ -399,6 +406,11 @@ angular.module('lcaApp.resources.service')
     .factory('ParamService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ParamService', "param", "paramID");
+        }
+    ])
+    .factory('ProcessDissipationService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('ProcessDissipationService', "processDissipation", null);
         }
     ])
     .factory('ProcessFlowService', ['ResourceService',
