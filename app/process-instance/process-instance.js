@@ -120,7 +120,9 @@ angular.module('lcaApp.process.instance',
              */
             function getProcessResults() {
                 StatusService.stopWaiting();
+
                 getFlowRows();
+                $scope.paramGrid.dissipation.extractData();
                 getLciaResults();
             }
 
@@ -196,6 +198,7 @@ angular.module('lcaApp.process.instance',
                     var flowID = $scope.process["compositionFlowID"];
                     requests.push(ProcessDissipationService.load({processID: processID }));
                     requests.push(FlowPropertyForFlowService.load({flowID: flowID }));
+                    $scope.paramGrid.dissipation = createProcessDissipationParamGrid();
                 }
                 StatusService.startWaiting();
                 $q.all(requests)
@@ -268,7 +271,7 @@ angular.module('lcaApp.process.instance',
                     gridFlow.paramWrapper = ParamModelService.naParam("reference");
                 } else {
                     if (ff["isBalanceFlow"]) {
-                        gridFlow.paramWrapper = ParamModelService.naParam("balance");
+                        ParamModelService.naParam("balance");
                     } else {
                         gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
                     }
@@ -317,6 +320,107 @@ angular.module('lcaApp.process.instance',
                 }
             }
 
+            function canReturn() {
+                return ParamModelService.canAbandonChanges(gridData);
+            }
+
+            function createProcessDissipationParamGrid() {
+                var canUpdate = ScenarioModelService.canUpdate($scope.scenario),
+                    grid = {
+                        data: [],
+                        columns: [
+                            {field: 'flowPropertyName', displayName: 'Flow Property', enableCellEdit: false},
+                            {field: 'dissipationFactor', displayName: 'Dissipation Factor', enableCellEdit: false},
+                            {field: 'scale', displayName: 'Scale', cellFilter: 'numFormat', enableCellEdit: false},
+                            {field: 'flowName', displayName: 'Emission', cellFilter: 'numFormat', enableCellEdit: false}
+                        ],
+                        params: {targetIndex: 1, canUpdate: canUpdate}
+                    };
+
+                grid.canApply = ParamModelService.canApply( $scope.scenario, grid.data);
+                grid.canRevert = ParamModelService.canRevert(  $scope.scenario, grid.data);
+                /**
+                 * Gather changes and apply
+                 */
+                grid.applyChanges = function () {
+                    var changedParams = ParamModelService.getChangedData(grid.data);
+                    StatusService.startWaiting();
+                    ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
+                        handleAppliedChanges, StatusService.handleFailure);
+                };
+
+                grid.revertChanges = ParamModelService.revertChanges( grid.data);
+
+                grid.extractData = function () {
+                    var dissipationFlows = ProcessDissipationService.getAll();
+                    dissipationFlows.forEach(addGridRow);
+                };
+
+                function handleAppliedChanges() {
+                    //TODO
+                }
+
+                /**
+                 * Create row from process dissipation resource and add it to grid.
+                 * If a related resource is missing, log error to console and skip record.
+                 * @param {{dissipationFactor: number, flowPropertyID: number, scale: number, emissionFlowID: number}} df
+                 */
+                function addGridRow(df) {
+                    var errMsg = null, row = null;
+                    if (df.flowPropertyID) {
+                        var fp = FlowPropertyForFlowService.get(df.flowPropertyID);
+                        if (df.emissionFlowID) {
+                            var ef = $scope.elementaryFlows[(df.emissionFlowID)];
+                            if (ef) {
+                                var param = ParamModelService.getProcessFlowParam(scenarioID, processID, ef.flowID, 6),
+                                    wrappedParam = ParamModelService.wrapParam(param);
+                                row = df;
+                                row.flowPropertyName = fp.name;
+                                row.paramWrapper = wrappedParam;
+                                row.flowName = ef.name;
+
+                            } else {
+                                errMsg = "Emission flow was not found.";
+                            }
+                        } else {
+                            errMsg = "Flow property was not found.";
+                        }
+                    } else {
+                        errMsg = "Missing flowPropertyID.";
+                    }
+                    if (row){
+                        grid.data.push(row);
+                    } else {
+                        $log.error("Skipping process dissipation resource...");
+                        $log.error(JSON.stringify(df));
+                        if (errMsg) {
+                            $log.error(errMsg);
+                        }
+                    }
+                }
+
+                /**
+                 * Apply param change to resource
+                 * @param {{ flowID : Number, paramWrapper : object }} row Record containing change
+                 * @returns {*} New or updated param resource
+                 */
+                function changeParam(row) {
+                    var paramResource = ParamModelService.changeExistingParam(row.paramWrapper);
+                    if (!paramResource) {
+                        paramResource = {
+                            scenarioID : $scope.scenario.scenarioID,
+                            processID : $scope.process.processID,
+                            flowID : row.flowID,
+                            value: +row.paramWrapper.value,
+                            paramTypeID: 6
+                        };
+                    }
+                    return paramResource;
+                }
+
+                return grid;
+            }
+
             /**
              * Set fragment navigation state, and
              * go back to fragment sankey view
@@ -344,6 +448,7 @@ angular.module('lcaApp.process.instance',
             $scope.elementaryFlows = {};
             $scope.options = { sortInfo: {fields:['direction'], directions:['asc']} };
             $scope.fragmentFlows = [];
+            $scope.paramGrid = {};
             $scope.lciaResults = {};
             $scope.panelHeadingStyle = {};
             $scope.activityLevel = 1;

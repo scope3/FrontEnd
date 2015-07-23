@@ -57,7 +57,7 @@
  * @description
  * Factory service providing data model for scenario parameters.
  */
-angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service'] )
+angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario'] )
     // Status relevant to editor views.
     .constant('PARAM_VALUE_STATUS',
                 { unchanged: 1, // value did not change
@@ -74,8 +74,8 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
         8 : "Process Emission",
         10 : "LCIA Factor"
     })
-    .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q',
-        function(ParamService, PARAM_VALUE_STATUS, $q) {
+    .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q', 'ScenarioModelService',
+        function(ParamService, PARAM_VALUE_STATUS, $q, ScenarioModelService) {
             var svc = {},
                 model = { scenarios : {} },
                 origResources = { scenarios : {} };
@@ -494,6 +494,25 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     })
                 );
             };
+            // Share implementation of change button functions
+            /**
+             * Function to determine if Apply Changes button should be enabled.
+             * @returns {boolean}
+             */
+            svc.canApply = function (scenario, data) {
+                return (scenario &&
+                ScenarioModelService.canUpdate(scenario) &&
+                svc.canApplyChanges( data));
+            };
+            /**
+             * Function to determine if Revert Changes button should be enabled.
+             * @returns {boolean}
+             */
+            svc.canRevert = function (scenario, data) {
+                return (scenario &&
+                ScenarioModelService.canUpdate(scenario) &&
+                svc.canRevertChanges( data));
+            };
 
             /**
              * @ngdoc
@@ -551,6 +570,10 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
             };
 
+            svc.getChangedData = function (data){
+                return data.filter(svc.hasChangedParam);
+            };
+
             /**
              * @ngdoc
              * @name ParamModelService#applyFragmentFlowParamChanges
@@ -563,7 +586,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              * @param {function} errorCB    Function to call on error response
              */
             svc.applyFragmentFlowParamChanges = function (scenarioID, data, successCB, errorCB) {
-                var changedParams = data.filter(hasChangedParam);
+                var changedParams = data.filter(svc.hasChangedParam);
 
                 svc.updateResources(scenarioID, changedParams.map(svc.changeFragmentFlowParam),
                     successCB, errorCB);
