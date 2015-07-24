@@ -8,8 +8,6 @@
         <dl class="dl-horizontal">
             <dt>Name</dt>
             <dd>{{scenario["name"]}}</dd>
-            <dt>Description</dt>
-            <dd>{{scenario["description"]}}</dd>
             <dt>Top Level Fragment</dt>
             <dd><a ui-sref="home.fragment-sankey({scenarioID: scenario.scenarioID, fragmentID: scenario.topLevelFragmentID})">
                 {{fragment.name}}
@@ -21,6 +19,8 @@
             <dd>{{referenceFlow.name}}</dd>
             <dt>Reference Unit</dt>
             <dd>{{unit}}</dd>
+            <dt>Description</dt>
+            <dd><textarea readonly style="width: 800px; height: 150px" class="scenario-description">{{scenario["description"]}}</textarea></dd>
         </dl>
     </div>
 </div>
