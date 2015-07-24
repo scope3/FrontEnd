@@ -90,6 +90,7 @@ angular.module('lcaApp.scenario.edit',
                         $scope.scenario = {
                             scenarioID: existingScenario.scenarioID,
                             name: existingScenario.name,
+                            description: existingScenario.description,
                             activityLevel: existingScenario.activityLevel,
                             topLevelFragmentID: existingScenario.topLevelFragmentID
                         };
