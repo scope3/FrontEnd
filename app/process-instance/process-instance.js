@@ -13,12 +13,12 @@ angular.module('lcaApp.process.instance',
                  'lcaApp.referenceLink.directive', 'lcaApp.paramGrid.directive'])
     .controller('ProcessInstanceController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
-         'ProcessService', 'ProcessFlowService', 'FlowPropertyForFlowService', 'ProcessDissipationService',
+         'ProcessService', 'ProcessFlowService', 'FlowPropertyMagnitudeService', 'ProcessDissipationService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService', 'FragmentFlowService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
-                  ProcessService, ProcessFlowService, FlowPropertyForFlowService, ProcessDissipationService,
+                  ProcessService, ProcessFlowService, FlowPropertyMagnitudeService, ProcessDissipationService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService, FragmentFlowService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService) {
@@ -197,7 +197,7 @@ angular.module('lcaApp.process.instance',
                 if ($scope.process && $scope.process["compositionFlowID"]) {
                     var flowID = $scope.process["compositionFlowID"];
                     requests.push(ProcessDissipationService.load({processID: processID }));
-                    requests.push(FlowPropertyForFlowService.load({flowID: flowID }));
+                    requests.push(FlowPropertyMagnitudeService.load({flowID: flowID }));
                     $scope.paramGrid.dissipation = createProcessDissipationParamGrid();
                 }
                 StatusService.startWaiting();
@@ -329,7 +329,7 @@ angular.module('lcaApp.process.instance',
                             {field: 'flowPropertyName', displayName: 'Flow Property', enableCellEdit: false},
                             {field: 'dissipationFactor', displayName: 'Dissipation Factor', enableCellEdit: false},
                             {field: 'scale', displayName: 'Scale', cellFilter: 'numFormat', enableCellEdit: false},
-                            {field: 'flowName', displayName: 'Emission', cellFilter: 'numFormat', enableCellEdit: false}
+                            {field: 'flowName', displayName: 'Emission', enableCellEdit: false}
                         ],
                         params: {targetIndex: 1, canUpdate: canUpdate}
                     };
@@ -367,8 +367,9 @@ angular.module('lcaApp.process.instance',
                 function addGridRow(df) {
                     var errMsg = null, row = null;
                     if (df.flowPropertyID) {
-                        var fp = FlowPropertyForFlowService.get(df.flowPropertyID);
-                        if (fp) {
+                        var fp = FlowPropertyMagnitudeService.get(df.flowPropertyID);
+                        if (fp && fp["flowProperty"]) {
+                            fp = fp["flowProperty"];
                             if (df.emissionFlowID) {
                                 var ef = $scope.elementaryFlows[df.emissionFlowID];
                                 if (ef) {

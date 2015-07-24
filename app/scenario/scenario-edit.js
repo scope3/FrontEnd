@@ -72,7 +72,10 @@ angular.module('lcaApp.scenario.edit',
                 var flowProps = FlowPropertyMagnitudeService.getAll();
                 $scope.referenceFlow = FlowService.get($scope.scenario["referenceFlowID"]);
                 if (flowProps.length) {
-                    $scope.unit = flowProps[0].unit;
+                    var fp = flowProps[0]["flowProperty"];
+                    if (fp && fp.hasOwnProperty("referenceUnit")) {
+                        $scope.unit = fp.referenceUnit;
+                    }
                 }
             }
 

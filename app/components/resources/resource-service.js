@@ -6,7 +6,8 @@
  * @description
  * Factory service that creates other services based on $resource.
  */
-angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod', 'lcaApp.config' ])
+angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod'
+    , 'lcaApp.config' , 'lcaApp.resources.flowPropertyMagnitude'])
     .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
     .constant('BASE_SCENARIO_GROUP_ID', 1)
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q', '$location',
@@ -27,7 +28,6 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "fragment" : API_ROOT + "fragments/:fragmentID",
                 "fragmentFlow" : API_ROOT + "scenarios/:scenarioID/fragments/:fragmentID/fragmentflows",
                 "fragmentStage" : API_ROOT + "fragments/:fragmentID/fragmentstages",
-                "flowPropertyForFlow" : API_ROOT + "flows/:flowID/flowproperties",
                 "flowPropertyForFragment" : API_ROOT + "fragments/:fragmentID/flowproperties",
                 "flowPropertyForProcess" : API_ROOT + "processes/:processID/flowproperties",
                 "flowPropertyMagnitude" : API_ROOT + "flows/:flowID/flowpropertymagnitudes",
@@ -118,7 +118,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 svc.handleNewObjects = function(objects) {
                     if (svc.extensionFactory) {
                         objects.forEach( function (o) {
-                            angular.extend(o, svc.extensionFactory.createInstance())
+                            angular.extend(o, svc.extensionFactory.createInstance(o))
                         });
                     }
                     if (svc.idName) {
@@ -341,11 +341,6 @@ angular.module('lcaApp.resources.service')
             return ResourceService.getService('FlowService', "flow", "flowID");
         }
     ])
-    .factory('FlowPropertyForFlowService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('FlowPropertyForFlowService', "flowPropertyForFlow", "flowPropertyID");
-        }
-    ])
     .factory('FlowPropertyForFragmentService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('FlowPropertyForFragmentService', "flowPropertyForFragment", "flowPropertyID");
@@ -356,9 +351,10 @@ angular.module('lcaApp.resources.service')
             return ResourceService.getService('FlowPropertyForProcessService', "flowPropertyForProcess", "flowPropertyID");
         }
     ])
-    .factory('FlowPropertyMagnitudeService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('FlowPropertyMagnitudeService', "flowPropertyMagnitude", "flowPropertyID");
+    .factory('FlowPropertyMagnitudeService', ['ResourceService', 'FlowPropertyMagnitudeExtension',
+        function(ResourceService, FlowPropertyMagnitudeExtension){
+            return ResourceService.getService('FlowPropertyMagnitudeService', "flowPropertyMagnitude", "flowPropertyID")
+                .setExtensionFactory(FlowPropertyMagnitudeExtension);
         }
     ])
     .factory('FragmentFlowService', ['ResourceService',
