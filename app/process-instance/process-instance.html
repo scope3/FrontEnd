@@ -36,7 +36,25 @@
         <param-grid options="options" data="fragmentFlows" columns="columns" params="params"></param-grid>
     </div>
 </div>
-
+<div class="panel panel-default" ng-show="paramGrid.dissipation">
+    <div class="panel-heading">
+        <span class="panel-title">Dissipation of Composition Profile</span>
+        <span class="pull-right">
+            <change-buttons2 canApply="paramGrid.dissipation.canApply"
+                            applyChanges="paramGrid.dissipation.applyChanges"
+                            canRevert="paramGrid.dissipation.canRevert"
+                            revertChanges="paramGrid.dissipation.revertChanges">
+            </change-buttons2>
+        </span>
+    </div>
+    <div class="panel-body">
+        <param-grid options="paramGrid.dissipation.options"
+                    data="paramGrid.dissipation.data"
+                    columns="paramGrid.dissipation.columns"
+                    params="paramGrid.dissipation.params">
+        </param-grid>
+    </div>
+</div>
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">Process LCIA</span>

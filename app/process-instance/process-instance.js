@@ -320,12 +320,9 @@ angular.module('lcaApp.process.instance',
                 }
             }
 
-            function canReturn() {
-                return ParamModelService.canAbandonChanges(gridData);
-            }
-
             function createProcessDissipationParamGrid() {
                 var canUpdate = ScenarioModelService.canUpdate($scope.scenario),
+                    gridData = [], // Private var to hold rows as they added. Prevents directive from seeing data until its all there
                     grid = {
                         data: [],
                         columns: [
@@ -354,10 +351,12 @@ angular.module('lcaApp.process.instance',
                 grid.extractData = function () {
                     var dissipationFlows = ProcessDissipationService.getAll();
                     dissipationFlows.forEach(addGridRow);
+                    grid.data = gridData;
                 };
 
                 function handleAppliedChanges() {
-                    //TODO
+                    $scope.lciaResults = {};
+                    getLciaResults();
                 }
 
                 /**
@@ -369,18 +368,22 @@ angular.module('lcaApp.process.instance',
                     var errMsg = null, row = null;
                     if (df.flowPropertyID) {
                         var fp = FlowPropertyForFlowService.get(df.flowPropertyID);
-                        if (df.emissionFlowID) {
-                            var ef = $scope.elementaryFlows[(df.emissionFlowID)];
-                            if (ef) {
-                                var param = ParamModelService.getProcessFlowParam(scenarioID, processID, ef.flowID, 6),
-                                    wrappedParam = ParamModelService.wrapParam(param);
-                                row = df;
-                                row.flowPropertyName = fp.name;
-                                row.paramWrapper = wrappedParam;
-                                row.flowName = ef.name;
+                        if (fp) {
+                            if (df.emissionFlowID) {
+                                var ef = $scope.elementaryFlows[df.emissionFlowID];
+                                if (ef) {
+                                    var param = ParamModelService.getProcessFlowParam(scenarioID, processID, ef.flowID, 6),
+                                        wrappedParam = ParamModelService.wrapParam(param);
+                                    row = df;
+                                    row.flowPropertyName = fp.name;
+                                    row.paramWrapper = wrappedParam;
+                                    row.flowName = ef.name;
 
+                                } else {
+                                    errMsg = "Emission flow was not found.";
+                                }
                             } else {
-                                errMsg = "Emission flow was not found.";
+                                errMsg = "Missing emissionFlowID.";
                             }
                         } else {
                             errMsg = "Flow property was not found.";
@@ -389,7 +392,7 @@ angular.module('lcaApp.process.instance',
                         errMsg = "Missing flowPropertyID.";
                     }
                     if (row){
-                        grid.data.push(row);
+                        gridData.push(row);
                     } else {
                         $log.error("Skipping process dissipation resource...");
                         $log.error(JSON.stringify(df));
