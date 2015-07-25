@@ -122,7 +122,9 @@ angular.module('lcaApp.process.instance',
                 StatusService.stopWaiting();
 
                 getFlowRows();
-                $scope.paramGrid.dissipation.extractData();
+                if ( $scope.paramGrid.dissipation) {
+                    $scope.paramGrid.dissipation.extractData();
+                }
                 getLciaResults();
             }
 
@@ -244,6 +246,10 @@ angular.module('lcaApp.process.instance',
                     ff.parentFragmentFlowID === processFragmentFlow.fragmentFlowID);
             }
 
+            function getFirstFlowProperty(ff) {
+                return ff.flowPropertyMagnitudes[0]["flowProperty"];
+            }
+
             /**
              * Create object for grid row
              * @param {{ fragmentFlowID: Number, name: String, nodeType: String, flowID: Number,
@@ -264,17 +270,15 @@ angular.module('lcaApp.process.instance',
                     gridFlow.quantity =  gridFlow.hasOwnProperty("quantity") ?
                                             gridFlow.quantity : ffMagnitude / nodeWeight;
                     gridFlow.magnitude = ffMagnitude * fragmentActivityLevel;
-                    gridFlow.unit = ff.flowPropertyMagnitudes[0].unit;
+                    gridFlow.unit = getFirstFlowProperty(ff)["referenceUnit"];
                 }
                 if (ff.fragmentFlowID === processFragmentFlow.fragmentFlowID ) {
                     gridFlow.direction = (ff.direction === "Input") ? "Output" : "Input";
                     gridFlow.paramWrapper = ParamModelService.naParam("reference");
+                } else if (ff["isBalanceFlow"]) {
+                    gridFlow.paramWrapper = ParamModelService.naParam("balance");
                 } else {
-                    if (ff["isBalanceFlow"]) {
-                        ParamModelService.naParam("balance");
-                    } else {
-                        gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
-                    }
+                    gridFlow.paramWrapper = ParamModelService.wrapParam(paramResource);
                 }
                 if (gridFlow.direction === "Input") {
                     inputFlows.push(gridFlow);

@@ -55,10 +55,13 @@ angular.module('lcaApp.fragment.sankey',
                     !(fp["referenceUnit"] === "kgP" || fp["referenceUnit"] === "kg-Av" || fp["referenceUnit"] === "MJ-Av");
             }
 
+            function getFirstFlowProperty(ff) {
+                return ff.flowPropertyMagnitudes[0]["flowProperty"];
+            }
 
             function filterFragmentFlow(ff) {
                 return ff.nodeType !== "Cutoff" && ff.flowPropertyMagnitudes &&
-                    showFlowProperty(ff.flowPropertyMagnitudes[0]["flowPropertyID"]);
+                    showFlowProperty(getFirstFlowProperty(ff)["flowPropertyID"]);
             }
 
             /**
@@ -98,10 +101,10 @@ angular.module('lcaApp.fragment.sankey',
                 if ("flowPropertyMagnitudes" in link) {
                     flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
                         /**
-                         * @param {{flowPropertyID:number}}  lm
+                         * @param { {flowProperty: {flowPropertyID:number}} } lm
                          */
                             function (lm) {
-                            return +lm.flowPropertyID === flowPropertyID;
+                            return +lm.flowProperty.flowPropertyID === flowPropertyID;
                         });
                 }
                 if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {

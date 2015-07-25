@@ -378,7 +378,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
                         paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
                     }
-                    // Issue #203 - the following condition is not consdered an error
+                    // Issue #203 - the following condition is not considered an error
                     // else if (+paramWrapper.value === baseValue) {
                     //    msg = "Parameter value, " + paramWrapper.value + ", is the same as default value.";
                     //    paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
@@ -571,7 +571,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             };
 
             svc.getChangedData = function (data){
-                return data.filter(svc.hasChangedParam);
+                return data.filter(hasChangedParam);
             };
 
             /**
@@ -586,7 +586,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              * @param {function} errorCB    Function to call on error response
              */
             svc.applyFragmentFlowParamChanges = function (scenarioID, data, successCB, errorCB) {
-                var changedParams = data.filter(svc.hasChangedParam);
+                var changedParams = data.filter(hasChangedParam);
 
                 svc.updateResources(scenarioID, changedParams.map(svc.changeFragmentFlowParam),
                     successCB, errorCB);
