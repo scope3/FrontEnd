@@ -120,6 +120,14 @@ info .glyphicon {
     padding-right: 1em;
 }
 
+.scenario-description {
+    font-family: inherit;
+    font-size: inherit;
+    background-color: inherit;
+    padding: inherit;
+    border: inherit;
+}
+
 /* Override multiselect styles */
 /* Make it look like html select */
 .multiSelect > button {
