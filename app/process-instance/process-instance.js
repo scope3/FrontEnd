@@ -66,6 +66,41 @@ angular.module('lcaApp.process.instance',
             };
 
             /**
+             * Set fragment navigation state, and
+             * go back to fragment sankey view
+             * @param navIndex  Index to fragment navigation state selected by user
+             */
+            $scope.goBackToFragment = function(navIndex) {
+                var context = FragmentNavigationService.getContext();
+                FragmentNavigationService.setLast(navIndex);
+                $state.go('^', {
+                    scenarioID: context.scenarioID,
+                    fragmentID: context.fragmentID
+                });
+            };
+
+
+            $scope.viewProcessFlowParam = function (lciaMethodID) {
+                $state.go(".flow-param",
+                    {scenarioID: scenarioID, processID: processID, lciaMethodID: lciaMethodID});
+            };
+
+            $scope.process = null;
+            $scope.scenario = null;
+            $scope.selection = {};
+            $scope.elementaryFlows = {};
+            $scope.options = { sortInfo: {fields:['direction'], directions:['asc']} };
+            $scope.fragmentFlows = [];
+            $scope.paramGrid = {};
+            $scope.lciaResults = {};
+            $scope.panelHeadingStyle = {};
+            $scope.activityLevel = 1;
+            $scope.lciaMsg = "";
+            $scope.flowsVisible = true;
+            getStateParams();
+            getData();
+
+            /**
              * Extract LCIA results
              * @param {{ lciaMethodID : Number, lciaScore : Array }} result
              */
@@ -164,10 +199,10 @@ angular.module('lcaApp.process.instance',
                         $scope.process = ProcessService.get(processID);
                     }
                     else {
-                        StatusService.handleFailure("Invalid fragmentFlowID : ", fragmentFlowID);
+                        StatusService.handleFailure("Invalid fragmentFlowID : " + fragmentFlowID);
                     }
                 } else {
-                    StatusService.handleFailure("Invalid scenario ID : ", scenarioID);
+                    StatusService.handleFailure("Invalid scenario ID : " + scenarioID);
                 }
             }
 
@@ -324,6 +359,10 @@ angular.module('lcaApp.process.instance',
                 }
             }
 
+            /**
+             * Function module that defines and controls Process Dissipation Param Grid
+             * @returns {{data: Array, columns: *[], params: {targetIndex: number, canUpdate: (*|boolean)}}}
+             */
             function createProcessDissipationParamGrid() {
                 var canUpdate = ScenarioModelService.canUpdate($scope.scenario),
                     gridData = [], // Private var to hold rows as they added. Prevents directive from seeing data until its all there
@@ -338,19 +377,26 @@ angular.module('lcaApp.process.instance',
                         params: {targetIndex: 1, canUpdate: canUpdate}
                     };
 
-                grid.canApply = ParamModelService.canApply( $scope.scenario, grid.data);
-                grid.canRevert = ParamModelService.canRevert(  $scope.scenario, grid.data);
+                grid.canApply = function () {
+                    return ParamModelService.canApply( $scope.scenario, grid.data);
+                };
+
+                grid.canRevert = function () {
+                    return ParamModelService.canRevert(  $scope.scenario, grid.data);
+                };
                 /**
                  * Gather changes and apply
                  */
                 grid.applyChanges = function () {
                     var changedParams = ParamModelService.getChangedData(grid.data);
                     StatusService.startWaiting();
-                    ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
+                    return ParamModelService.updateResources($scope.scenario.scenarioID, changedParams.map(changeParam),
                         handleAppliedChanges, StatusService.handleFailure);
                 };
 
-                grid.revertChanges = ParamModelService.revertChanges( grid.data);
+                grid.revertChanges = function () {
+                    return ParamModelService.revertChanges( grid.data);
+                };
 
                 grid.extractData = function () {
                     var dissipationFlows = ProcessDissipationService.getAll();
@@ -359,8 +405,21 @@ angular.module('lcaApp.process.instance',
                 };
 
                 function handleAppliedChanges() {
+                    ParamModelService.load(scenarioID)
+                        .then(updateResults,
+                        StatusService.handleFailure);
+                }
+
+                function updateResults() {
+                    StatusService.stopWaiting();
+                    grid.data.forEach(updateGridRow);
                     $scope.lciaResults = {};
                     getLciaResults();
+                }
+
+                function updateGridRow(row) {
+                    row.paramWrapper = ParamModelService.wrapParam(
+                        ParamModelService.getProcessFlowParam(scenarioID, processID, row.emissionFlowID, 6));
                 }
 
                 /**
@@ -409,7 +468,7 @@ angular.module('lcaApp.process.instance',
 
                 /**
                  * Apply param change to resource
-                 * @param {{ flowID : Number, paramWrapper : object }} row Record containing change
+                 * @param {{ emissionFlowID: number, flowID : number, paramWrapper : object }} row Record containing change
                  * @returns {*} New or updated param resource
                  */
                 function changeParam(row) {
@@ -418,7 +477,7 @@ angular.module('lcaApp.process.instance',
                         paramResource = {
                             scenarioID : $scope.scenario.scenarioID,
                             processID : $scope.process.processID,
-                            flowID : row.flowID,
+                            flowID : row.emissionFlowID,
                             value: +row.paramWrapper.value,
                             paramTypeID: 6
                         };
@@ -429,40 +488,5 @@ angular.module('lcaApp.process.instance',
                 return grid;
             }
 
-            /**
-             * Set fragment navigation state, and
-             * go back to fragment sankey view
-             * @param navIndex  Index to fragment navigation state selected by user
-             */
-            $scope.goBackToFragment = function(navIndex) {
-                var context = FragmentNavigationService.getContext();
-                FragmentNavigationService.setLast(navIndex);
-                $state.go('^', {
-                    scenarioID: context.scenarioID,
-                    fragmentID: context.fragmentID
-                });
-            };
-
-
-            $scope.viewProcessFlowParam = function (lciaMethodID) {
-                $state.go(".flow-param",
-                    {scenarioID: scenarioID, processID: processID, lciaMethodID: lciaMethodID});
-            };
-
-
-            $scope.process = null;
-            $scope.scenario = null;
-            $scope.selection = {};
-            $scope.elementaryFlows = {};
-            $scope.options = { sortInfo: {fields:['direction'], directions:['asc']} };
-            $scope.fragmentFlows = [];
-            $scope.paramGrid = {};
-            $scope.lciaResults = {};
-            $scope.panelHeadingStyle = {};
-            $scope.activityLevel = 1;
-            $scope.lciaMsg = "";
-            $scope.flowsVisible = true;
-            getStateParams();
-            getData();
 
         }]);

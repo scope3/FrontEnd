@@ -155,25 +155,27 @@ angular.module('lcaApp.fragment.LCIA',
              * Get LCIA results for a scenario and method.
              * Multiply cumulativeResult by scenario's activity level.
              * Store in local cache indexed by (methodID, scenarioID, fragmentStageID).
-             * @param {{ lciaMethodID : Number, lciaScore : Array }} lciaResult
+             * @param {{ lciaMethodID : Number, scenarioID: number, lciaScore : Array }} lciaResult
              */
             function extractResult(lciaResult) {
-                var scenario = ScenarioModelService.get(lciaResult.scenarioID),
-                    result = {},
-                    activityLevel = scenario.activityLevel;
+                if (lciaResult && lciaResult.scenarioID) {
+                    var scenario = ScenarioModelService.get(lciaResult.scenarioID),
+                        result = {},
+                        activityLevel = scenario.activityLevel;
 
-                if ($scope.navigationService && $scope.fragment.hasOwnProperty("activityLevel")) {
-                    activityLevel = $scope.fragment.activityLevel;
+                    if ($scope.navigationService && $scope.fragment.hasOwnProperty("activityLevel")) {
+                        activityLevel = $scope.fragment.activityLevel;
+                    }
+                    lciaResult.lciaScore.forEach(
+                        /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
+                        function ( score) {
+                            result[score["fragmentStageID"]] = score.cumulativeResult * activityLevel;
+                        });
+                    if (! (lciaResult.lciaMethodID in results)) {
+                        results[lciaResult.lciaMethodID] = {};
+                    }
+                    results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
                 }
-                lciaResult.lciaScore.forEach(
-                    /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
-                    function ( score) {
-                        result[score["fragmentStageID"]] = score.cumulativeResult * activityLevel;
-                });
-                if (! (lciaResult.lciaMethodID in results)) {
-                    results[lciaResult.lciaMethodID] = {};
-                }
-                results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
             }
 
             function getName(o) {

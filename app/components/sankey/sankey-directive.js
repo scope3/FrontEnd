@@ -199,6 +199,7 @@ angular.module('lcaApp.sankey.directive', ['d3', 'd3.sankey.service', 'd3.tip'])
 
             if (rebuild) {
                 svg.selectAll("g").remove();
+                if (graph.links.length == 0) return;
                 svg.append("g").attr("id", "linkGroup");
                 transitionTime = 0;
             }
