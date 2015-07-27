@@ -46,7 +46,11 @@
                 ng-disabled="!canChangeScenario()"
                 ng-change="onScenarioChange()"></select>
         <span class="pull-right">
-            <change-buttons></change-buttons>
+            <change-buttons can-apply="canApply()"
+                            apply-changes="applyChanges()"
+                            can-revert="canRevert()"
+                            revert-changes="revertChanges()">
+            </change-buttons>
         </span>
     </div>
     <param-grid options="options" data="gridData" columns="gridColumns" params="params"></param-grid>

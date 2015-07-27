@@ -35,19 +35,11 @@ describe('Unit test change buttons directive', function () {
 
     }));
 
+
     it('Use the change-buttons directive', function () {
         // Compile a piece of HTML containing the directive
-        var element = $compile("<change-buttons></change-buttons>")(scope);
-        element.scope().$digest();
-        expect(element.find('button')).toBeDefined();
-        scope.applyChanges();
-        // TO DO : test that buttons have been disabled
-    });
-
-    it('Use the change-buttons 2 directive', function () {
-        // Compile a piece of HTML containing the directive
         var element = $compile(
-            '<change-buttons2 can-apply="scope.canApply()" can-revert="scope.canRevert()" apply-changes="scope.applyChanges()" revert-changes="scope.revertChanges()"></change-buttons2>'
+            '<change-buttons can-apply="scope.canApply()" can-revert="scope.canRevert()" apply-changes="scope.applyChanges()" revert-changes="scope.revertChanges()"></change-buttons>'
         )(scope);
         element.scope().$digest();
         expect(element.find('button')).toBeDefined();

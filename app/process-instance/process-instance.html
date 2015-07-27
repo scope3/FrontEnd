@@ -29,7 +29,11 @@
     <div class="panel-heading">
         <span class="panel-title">Fragment Flows</span>
         <span class="pull-right">
-            <change-buttons></change-buttons>
+            <change-buttons can-apply="canApply()"
+                             apply-changes="applyChanges()"
+                             can-revert="canRevert()"
+                             revert-changes="revertChanges()">
+            </change-buttons>
         </span>
     </div>
     <div class="panel-body">
@@ -40,11 +44,11 @@
     <div class="panel-heading">
         <span class="panel-title">Dissipation of Composition Profile</span>
         <span class="pull-right">
-            <change-buttons2 can-apply="paramGrid.dissipation.canApply()"
+            <change-buttons can-apply="paramGrid.dissipation.canApply()"
                             apply-changes="paramGrid.dissipation.applyChanges()"
                             can-revert="paramGrid.dissipation.canRevert()"
                             revert-changes="paramGrid.dissipation.revertChanges()">
-            </change-buttons2>
+            </change-buttons>
         </span>
     </div>
     <div class="panel-body">

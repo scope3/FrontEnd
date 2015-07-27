@@ -28,7 +28,11 @@
     <div class="panel-heading">
         <span class="panel-title">Scenario Parameters</span>
         <span class="pull-right">
-            <change-buttons></change-buttons>
+            <change-buttons can-apply="canApply()"
+                            apply-changes="applyChanges()"
+                            can-revert="canRevert()"
+                            revert-changes="revertChanges()">
+            </change-buttons>
         </span>
     </div>
     <div class="panel-body">
