@@ -261,7 +261,7 @@ angular.module('lcaApp.process.instance',
                 $scope.columns = [
                     {field: 'name', displayName: 'Name', enableCellEdit: false},
                     {field: 'direction', displayName: 'Direction', enableCellEdit: false, width: 70},
-                    {field: 'quantity', displayName: 'Quantity', enableCellEdit: false},
+                    {field: 'quantity', displayName: 'Quantity', cellFilter: 'numFormat', enableCellEdit: false},
                     {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false, width: 120},
                     {field: 'unit', displayName: 'Unit', enableCellEdit: false, width: 70}
                 ];

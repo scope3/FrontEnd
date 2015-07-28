@@ -367,22 +367,17 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              * @param {object} paramWrapper Param resource wrapper
              * @param {number} paramWrapper.editStatus Status property to be updated.
              * @param {?object} paramWrapper.paramResource ParamService resource
-             * @param {number} paramWrapper.value Edited param value
+             * @param {string} paramWrapper.value Edited param value
              * @returns {string}    Error message, if status is invalid.
              */
             svc.setParamWrapperStatus = function(baseValue, paramWrapper) {
                 var msg = null;
                 if (valueInput(paramWrapper)) {
                     // Value was input
-                    if (isNaN(paramWrapper.value) ) {
+                    if (isNaN(paramWrapper.value)) {
                         msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
                         paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
                     }
-                    // Issue #203 - the following condition is not considered an error
-                    // else if (+paramWrapper.value === baseValue) {
-                    //    msg = "Parameter value, " + paramWrapper.value + ", is the same as default value.";
-                    //    paramWrapper.editStatus = PARAM_VALUE_STATUS.invalid;
-                    //
                     else if (paramWrapper.paramResource) {
                         // Check if param value changed
                         if (paramWrapper.paramResource.value === +paramWrapper.value) {
@@ -392,7 +387,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         }
                     } else {
                         // No paramResource. Interpret this as create
-                        paramWrapper.editStatus = PARAM_VALUE_STATUS.changed;
+                        // unless value is default
+                        if (+paramWrapper.value === baseValue) {
+                            // Remove default value
+                            paramWrapper.value = "";
+                            paramWrapper.editStatus = PARAM_VALUE_STATUS.unchanged;
+                        } else {
+                            paramWrapper.editStatus = PARAM_VALUE_STATUS.changed;
+                        }
                     }
                 }
                 else {
@@ -404,6 +406,12 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     }
                 }
                 return msg;
+            };
+
+            svc.initParamWrapperValue = function(baseValue, paramWrapper) {
+                if (!valueInput(paramWrapper)) {
+                    paramWrapper.value = baseValue.toString();
+                }
             };
 
             /**

@@ -41,7 +41,8 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             $scope.changeClass = getChangeStatusClass;
             $scope.directionClass = getDirectionClass;
             $scope.paramHintStyle = getParamHintStyle;
-            $scope.$on('ngGridEventEndCellEdit', handleCellEdit);   // Cell edit event handler
+            $scope.$on('ngGridEventEndCellEdit', handleEndCellEdit);   // End cell edit event handler
+            $scope.$on('ngGridEventStartCellEdit', handleStartCellEdit);   // Start cell edit event handler
 
             /**
              * Get icon class for param change status
@@ -89,11 +90,22 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                    {'font-weight' : 'bold'} : {};
             }
 
+            function handleStartCellEdit(evt) {
+                var rowObj = evt.targetScope.row["entity"],
+                    targetField = getTargetField();
+
+                if (targetField) {
+                    ParamModelService.initParamWrapperValue(rowObj[targetField], rowObj.paramWrapper);
+
+                    $scope.$apply();    // Needed for IE
+                }
+            }
+
             /**
             * Handle changes to editable cell
             * @param evt   Event object containing row changed.
             */
-            function handleCellEdit(evt) {
+            function handleEndCellEdit(evt) {
                 var rowObj = evt.targetScope.row["entity"],
                     errMsg = "",
                     targetField = getTargetField();
