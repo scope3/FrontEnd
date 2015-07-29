@@ -77,7 +77,7 @@ angular.module('lcaApp.lciaMethod.detail',
                 $scope.gridColumns = [
                     {field: "category", displayName: "Flow Category", enableCellEdit: false},
                     {field: "name", displayName: "Flow Name", enableCellEdit: false},
-                    {field: "factor", displayName: factorHeader, enableCellEdit: false}
+                    {field: "factor", displayName: factorHeader, cellFilter: 'numFormat', enableCellEdit: false}
                 ];
                 $scope.params = { targetIndex : 2,
                     canUpdate : $scope.paramScenario && ScenarioModelService.canUpdate($scope.paramScenario) };

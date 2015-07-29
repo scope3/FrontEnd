@@ -9,7 +9,6 @@ angular.module('lcaApp.changeButtons.directive', [])
  * @description
  * Directive containing buttons to Apply and Revert Changes.
  * Controller provides functions implementing button behavior.
- * TODO: Replace directive above with this one.
  *
  * @param {function} canApply    Returns boolean indicating if Apply button should be enabled.
  * @param {function} canRevert   Returns boolean indicating if Revert button should be enabled.
