@@ -41,8 +41,15 @@ angular.module('lcaApp.compositionProfiles',
                     $scope.scenario = ScenarioModelService.getActiveScenario();
                     $scope.paramGrid = createParamGrid();
                     selectFlow();
-                    getDataFilteredByFlow();
+                    getFilteredData();
                 }
+            }
+
+            function getFilteredData() {
+                StatusService.startWaiting();
+                $q.all([FlowPropertyMagnitudeService.load({flowID:$scope.flow.flowID}),
+                    ParamModelService.load($scope.scenario.scenarioID)]).then(
+                    displayFlowProperties, StatusService.handleFailure);
             }
 
             function selectFlow() {
@@ -67,14 +74,12 @@ angular.module('lcaApp.compositionProfiles',
                 }
             }
 
-            /**
-             *
-             * @param {[{flowProperty: {flowPropertyID: number, referenceUnit: string, name: string}, magnitude: number}]} resources
-             */
-            function displayFlowProperties(resources) {
+            function displayFlowProperties() {
                 StatusService.stopWaiting();
+                var resources = FlowPropertyMagnitudeService.getAll();
                 if (resources.length) {
-                    $scope.referenceFlowProperty = resources[0].flowProperty;
+                    $scope.referenceFlowProperty = resources[0]["flowProperty"];
+                    $scope.flowMagnitudes = resources.slice(1);
                 }
                 $scope.paramGrid.extractData();
             }
@@ -124,7 +129,7 @@ angular.module('lcaApp.compositionProfiles',
                 };
 
                 grid.extractData = function () {
-                    var magnitudes = FlowPropertyMagnitudeService.getAll(),
+                    var magnitudes = $scope.flowMagnitudes,
                         gridData = [];
                     magnitudes.forEach(
                         /**
@@ -147,8 +152,8 @@ angular.module('lcaApp.compositionProfiles',
                 };
 
                 function handleAppliedChanges() {
-                    ParamModelService.load(scenarioID)
-                        .then(grid.extractParams,
+                    ParamModelService.load($scope.scenario.scenarioID)
+                        .then(displayParams,
                         StatusService.handleFailure);
                 }
 

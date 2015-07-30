@@ -97,12 +97,19 @@ angular.module('lcaApp.models.scenario', ['lcaApp.resources.service', 'LocalStor
              * @returns {object}  Active scenario.
              */
             svc.getActiveScenario = function () {
-                var scenarioID = svc.getActiveID();
-                if (!scenarioID) {
-                    scenarioID = svc.getBaseCaseID();
-                    svc.setActiveID(scenarioID);
+                var scenarioID = svc.getActiveID(),
+                    scenario = null;
+                if (scenarioID) {
+                    scenario = svc.get(scenarioID);
                 }
-                return svc.get(scenarioID);
+                if (!scenario) {
+                    scenarioID = svc.getBaseCaseID();
+                    scenario = svc.get(scenarioID);
+                    if (scenario) {
+                        svc.setActiveID(scenarioID);
+                    }
+                }
+                return scenario;
             };
 
             /**
