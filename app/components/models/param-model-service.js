@@ -2,12 +2,11 @@
  * Service providing data model for LCA parameters.
  * This model facilitates parameter lookup with a nested associative array.
  * Parameters are first indexed by scenarioID. Subsequent nesting depends on parameter type.
- * Currently, only parameter types affecting LCIA results and fragment flows are handled
- * (Characterization Factor, Emission Factor, Dissipation Factor, Dependency ).
- * Other parameter types are ignored until front end usage has been determined.
+ *
  * Characterization Factor parameters are indexed by scenarioID, lciaMethodID, flowID.
  * Dissipation and Emission Factor parameters are indexed by scenarioID, processID, flowID, paramTypeID.
  * Dependency parameters are indexed by fragmentFlowID.
+ * Flow property parameters are indexed by scenarioID, flowID, flowPropertyID.
  *
  * Example :
  *
@@ -99,21 +98,30 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 }
             }
 
+            /**
+             *
+             * @param scenarioID
+             * @param {[object]} params
+             */
             function updateModel(scenarioID, params) {
                 if ( params && params.length > 0) {
                     var m = {};
                     params.forEach( function (p) {
-                        if ("processID" in p ) {
+                        if ( p.hasOwnProperty("processID") ) {
                             nest( nest(m, "processes"), p.processID);
                             associateByFlow(m.processes[p.processID], p);
                         }
-                        else if ("lciaMethodID" in p ) {
+                        else if (p.hasOwnProperty("lciaMethodID") ) {
                             nest( nest(m, "lciaMethods"), p.lciaMethodID);
                             associateByFlow(m.lciaMethods[p.lciaMethodID], p);
                         }
                         else if (p.hasOwnProperty("fragmentFlowID")) {
                             nest(m, "fragmentFlows");
                             m.fragmentFlows[p.fragmentFlowID] = p;
+                        }
+                        else if (p.hasOwnProperty("flowPropertyID") && p.hasOwnProperty("flowID")) {
+                            nest( nest( nest( nest(m, "flows"), p.flowID), "flowProperties"), p.flowPropertyID);
+                            m.flows[p.flowID].flowProperties[p.flowPropertyID] = p;
                         }
                     });
                     model.scenarios[scenarioID] = m;
@@ -254,6 +262,29 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     sModel.processes.hasOwnProperty(processID) &&
                     sModel.processes[processID].hasOwnProperty("flows")) {
                     return sModel.processes[processID].flows;
+                }
+                else {
+                    return null;
+                }
+            };
+
+            /**
+             * @ngdoc
+             * @name ParamModelService#getFlowPropertyParams
+             * @methodOf ParamModelService
+             * @description
+             * Look up params by scenario and flow
+             * @param {number} scenarioID Scenario key
+             * @param {number} flowID Flow key
+             * @returns {?object} If found, associative array of params, keyed by flowPropertyID. Otherwise null.
+             */
+            svc.getFlowPropertyParams = function(scenarioID, flowID) {
+                var sModel = svc.getModel(scenarioID);
+                if ( sModel &&
+                    sModel.hasOwnProperty("flows") &&
+                    sModel.flows.hasOwnProperty(flowID) &&
+                    sModel.flows[flowID].hasOwnProperty("flowProperties")) {
+                    return sModel.flows[flowID].flowProperties;
                 }
                 else {
                     return null;
@@ -556,26 +587,30 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              * @param {function} errorCB    Function to call on error response
              */
             svc.updateResources = function (scenarioID, changes, successCB, errorCB) {
-                var params = origResources.scenarios[scenarioID].slice(0);
-                changes.forEach(function (changedParam) {
-                    if (changedParam.hasOwnProperty("paramID")) {
-                        var origParam = params.find(function (p) {
-                            return p.paramID === changedParam.paramID;
-                        });
-                        if (changedParam.value === null) {
-                            params.splice(params.indexOf(origParam), 1);
-                        } else {
-                            origParam.value = changedParam.value;
-                            if (changedParam.hasOwnProperty("name")){
-                                origParam.name = changedParam.name;
+                if (origResources && origResources.scenarios && origResources.scenarios.hasOwnProperty(scenarioID)) {
+                    var params = origResources.scenarios[scenarioID].slice(0);
+                    changes.forEach(function (changedParam) {
+                        if (changedParam.hasOwnProperty("paramID")) {
+                            var origParam = params.find(function (p) {
+                                return p.paramID === changedParam.paramID;
+                            });
+                            if (changedParam.value === null) {
+                                params.splice(params.indexOf(origParam), 1);
+                            } else {
+                                origParam.value = changedParam.value;
+                                if (changedParam.hasOwnProperty("name")){
+                                    origParam.name = changedParam.name;
+                                }
                             }
                         }
-                    }
-                    else {
-                        params.push(changedParam);
-                    }
-                });
-                return ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
+                        else {
+                            params.push(changedParam);
+                        }
+                    });
+                    return ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
+                } else {
+                    errorCB("Unable to find original parameters for scenarioID " + scenarioID);
+                }
             };
 
             svc.getChangedData = function (data){

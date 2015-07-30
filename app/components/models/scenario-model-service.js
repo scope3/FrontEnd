@@ -90,6 +90,23 @@ angular.module('lcaApp.models.scenario', ['lcaApp.resources.service', 'LocalStor
 
             /**
              * @ngdoc
+             * @name ScenarioModelService#getActiveScenario
+             * @methodOf ScenarioModelService
+             * @description
+             * Get active scenario. If none is active, activate the base case scenario.
+             * @returns {object}  Active scenario.
+             */
+            svc.getActiveScenario = function () {
+                var scenarioID = svc.getActiveID();
+                if (!scenarioID) {
+                    scenarioID = svc.getBaseCaseID();
+                    svc.setActiveID(scenarioID);
+                }
+                return svc.get(scenarioID);
+            };
+
+            /**
+             * @ngdoc
              * @name ScenarioModelService#selectFragmentScenarioIDs
              * @methodOf ScenarioModelService
              * @description

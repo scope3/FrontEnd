@@ -7,6 +7,7 @@ angular.module('lcaApp', [
         'ui.router',
         'lcaApp.html',
         'lcaApp.home',
+        'lcaApp.compositionProfiles',
         'lcaApp.fragment.sankey',
         'lcaApp.process.instance',
         'lcaApp.process.LCIA',
@@ -34,69 +35,78 @@ angular.module('lcaApp', [
                 templateUrl: 'home/home.html',
                 controller: 'HomeCtrl'
             })
-                .state('home.fragment-sankey', {
-                    url: '/fragment-sankey?scenarioID&fragmentID',
-                    views: {
-                        "@": {
-                            templateUrl: 'fragment-sankey/fragment-sankey.html',
-                            controller: 'FragmentSankeyController'
-                        }
+            .state('home.composition-profiles', {
+                url: '/composition-profiles',
+                views: {
+                    "@": {
+                        templateUrl: 'composition-profiles/composition-profiles.html',
+                        controller: 'CompositionProfilesController'
                     }
-                })
-                .state('home.fragment-sankey.process-instance', {
-                    url: '/process-instance/{fragmentFlowID}?activity',
-                    views: {
-                        "@": {
-                            templateUrl: 'process-instance/process-instance.html',
-                            controller: 'ProcessInstanceController'
-                        }
+                }
+            })
+            .state('home.fragment-sankey', {
+                url: '/fragment-sankey?scenarioID&fragmentID',
+                views: {
+                    "@": {
+                        templateUrl: 'fragment-sankey/fragment-sankey.html',
+                        controller: 'FragmentSankeyController'
                     }
-                })
-                .state('home.fragment-sankey.process-instance.flow-param', {
-                    url: '/flow-param/{processID}/{lciaMethodID}',
-                    views: {
-                        "@": {
-                            templateUrl: 'process-flow-param/process-flow-param.html',
-                            controller: 'ProcessFlowParamController'
-                        }
+                }
+            })
+            .state('home.fragment-sankey.process-instance', {
+                url: '/process-instance/{fragmentFlowID}?activity',
+                views: {
+                    "@": {
+                        templateUrl: 'process-instance/process-instance.html',
+                        controller: 'ProcessInstanceController'
                     }
-                })
-                .state('home.fragment-sankey.fragment-lcia', {
-                    url: '/fragment-lcia',
-                    views: {
-                        "@": {
-                            templateUrl: 'fragment-lcia/fragment-lcia.html',
-                            controller: 'FragmentLciaController'
-                        }
+                }
+            })
+            .state('home.fragment-sankey.process-instance.flow-param', {
+                url: '/flow-param/{processID}/{lciaMethodID}',
+                views: {
+                    "@": {
+                        templateUrl: 'process-flow-param/process-flow-param.html',
+                        controller: 'ProcessFlowParamController'
                     }
-                })
-                .state('home.process-lcia', {
-                    url: '/process-lcia',
-                    views: {
-                        "@": {
-                            templateUrl: 'process-lcia/process-lcia.html',
-                            controller: 'ProcessLciaController'
-                        }
+                }
+            })
+            .state('home.fragment-sankey.fragment-lcia', {
+                url: '/fragment-lcia',
+                views: {
+                    "@": {
+                        templateUrl: 'fragment-lcia/fragment-lcia.html',
+                        controller: 'FragmentLciaController'
                     }
-                })
-                .state('home.process-lcia.flow-param', {
-                    url: '/flow-param/{scenarioID}/{processID}/{lciaMethodID}',
-                    views: {
-                        "@": {
-                            templateUrl: 'process-flow-param/process-flow-param.html',
-                            controller: 'ProcessFlowParamController'
-                        }
+                }
+            })
+            .state('home.process-lcia', {
+                url: '/process-lcia',
+                views: {
+                    "@": {
+                        templateUrl: 'process-lcia/process-lcia.html',
+                        controller: 'ProcessLciaController'
                     }
-                })
-                .state('home.fragment-lcia', {
-                    url: '/fragment-lcia',
-                    views: {
-                        "@": {
-                            templateUrl: 'fragment-lcia/fragment-lcia.html',
-                            controller: 'FragmentLciaController'
-                        }
+                }
+            })
+            .state('home.process-lcia.flow-param', {
+                url: '/flow-param/{scenarioID}/{processID}/{lciaMethodID}',
+                views: {
+                    "@": {
+                        templateUrl: 'process-flow-param/process-flow-param.html',
+                        controller: 'ProcessFlowParamController'
                     }
-                })
+                }
+            })
+            .state('home.fragment-lcia', {
+                url: '/fragment-lcia',
+                views: {
+                    "@": {
+                        templateUrl: 'fragment-lcia/fragment-lcia.html',
+                        controller: 'FragmentLciaController'
+                    }
+                }
+            })
             .state('home.lcia-method', {
                 url: '/lcia-method/{lciaMethodID}',
                 views: {

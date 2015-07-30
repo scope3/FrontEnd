@@ -22,6 +22,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 };
 
             resourceService.ROUTES = {
+                "compositionFlow" : API_ROOT + "compositionflows",
                 "flow" : API_ROOT + "flows/:flowID",
                 "flowForFragment" : API_ROOT + "fragments/:fragmentID/flows",
                 "flowForLciaMethod" : API_ROOT + "lciamethods/:lciaMethodID/flows",
@@ -334,6 +335,11 @@ angular.module('lcaApp.resources.service')
     .factory('ProcessForFlowTypeService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ProcessForFlowTypeService', "processForFlowType", "processID");
+        }
+    ])
+    .factory('CompositionFlowService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService('CompositionFlowService', "compositionFlow", "flowID");
         }
     ])
     .factory('FlowService', ['ResourceService',

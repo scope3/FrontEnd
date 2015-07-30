@@ -1,0 +1,39 @@
+<div>
+    <dl class="dl-horizontal">
+        <dt>Composition Flow</dt>
+        <dd>
+            <select ng-model="flow" ng-options="f.name for f in flows"
+                    ng-change="onFlowChange()">
+            </select>
+        </dd>
+        <dt>Reference Property</dt>
+        <dd>
+            {{referenceFlowProperty.name}}
+        </dd>
+        <dt>Reference Unit</dt>
+        <dd>
+            {{referenceFlowProperty.referenceUnit}}
+        </dd>
+    </dl>
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title">Flow Property Magnitudes</span>
+    </div>
+    <div class="panel-body">
+        <label for="selectScenario">Scenario</label>
+        <select id="selectScenario" ng-model="scenario"
+                ng-options="s.name for s in scenarios"
+                ng-disabled="!paramGrid.canChangeScenario()"
+                ng-change="onScenarioChange()"></select>
+        <span class="pull-right">
+            <change-buttons can-apply="paramGrid.canApply()"
+                            apply-changes="paramGrid.applyChanges()"
+                            can-revert="paramGrid.canRevert()"
+                            revert-changes="paramGrid.revertChanges()">
+            </change-buttons>
+        </span>
+    </div>
+    <param-grid ng-if="paramGrid" options="paramGrid.options" data="paramGrid.data" columns="paramGrid.columns" params="paramGrid.params"></param-grid>
+</div>
+

@@ -100,11 +100,7 @@ angular.module('lcaApp.lciaMethod.detail',
             }
 
             function selectActiveScenario() {
-                var scenarioID = ScenarioModelService.getActiveID();
-                if (!scenarioID) {
-                    scenarioID = ScenarioModelService.getBaseCaseID();
-                }
-                $scope.paramScenario = ScenarioModelService.get(scenarioID);
+                $scope.paramScenario = ScenarioModelService.getActiveScenario();
             }
 
             /**

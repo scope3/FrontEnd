@@ -189,6 +189,26 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                 }
             }
 
+            function updateParamCols() {
+                if ($scope.columnDefs && $scope.params.targetIndex && (($scope.params.targetIndex + 1) < $scope.columnDefs.length)) {
+                    var paramIndex = $scope.params.targetIndex + 1,
+                        statusIndex = paramIndex + 1,
+                        cols = $scope.columnDefs;
+
+                    cols[paramIndex].visible = true;
+                    if ($scope.params.canUpdate) {
+                        // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
+                        cols[paramIndex].enableCellEdit = true;
+                        cols[statusIndex].cellTemplate =
+                            '<div class="cellIcon"><span class="glyphicon" ng-class="changeClass(row)"></span></div>';
+                        cols[statusIndex].visible = true;
+
+                    } else {
+                        cols[statusIndex].visible = false;
+                    }
+                }
+            }
+
             function getTargetField() {
                 if ( $scope.params.targetIndex && $scope.params.targetIndex < $scope.columns.length) {
                     var colDef = $scope.columns[$scope.params.targetIndex];
@@ -223,6 +243,13 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                 if (newVal && newVal.length > 0) {
                     setColWidths();
                     addParamCols();
+                }
+            });
+
+            // Handle change to canUpdate after columns and parameters are defined
+            $scope.$watch('params.canUpdate', function (newVal) {
+                if (newVal) {
+                    updateParamCols();
                 }
             });
 
