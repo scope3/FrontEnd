@@ -37,10 +37,10 @@ angular.module('lcaApp.compositionProfiles',
                 StatusService.stopWaiting();
                 $scope.scenarios = ScenarioModelService.getAll();
                 $scope.flows = CompositionFlowService.getAll();
-                if ($scope.flows.length) {
-                    $scope.scenario = ScenarioModelService.getActiveScenario();
-                    $scope.paramGrid = createParamGrid();
+                if ($scope.flows.length && $scope.scenarios.length) {
+                    selectScenario();
                     selectFlow();
+                    $scope.paramGrid = createParamGrid();
                     getFilteredData();
                 }
             }
@@ -53,7 +53,21 @@ angular.module('lcaApp.compositionProfiles',
             }
 
             function selectFlow() {
-                $scope.flow = $scope.flows[0];
+                if ( $stateParams["flowID"]) {
+                    $scope.flow = CompositionFlowService.get(+$stateParams.flowID);
+                }
+                if (!$scope.flow) {
+                    $scope.flow = $scope.flows[0];
+                }
+            }
+
+            function selectScenario() {
+                if ( $stateParams["scenarioID"]) {
+                    $scope.scenario = ScenarioModelService.get(+$stateParams.scenarioID);
+                }
+                if (!$scope.scenario) {
+                    $scope.scenario = ScenarioModelService.getActiveScenario();
+                }
             }
 
             function getDataFilteredByFlow() {

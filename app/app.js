@@ -7,6 +7,7 @@ angular.module('lcaApp', [
         'ui.router',
         'lcaApp.html',
         'lcaApp.home',
+        'lcaApp.format',
         'lcaApp.compositionProfiles',
         'lcaApp.fragment.sankey',
         'lcaApp.process.instance',
@@ -36,7 +37,7 @@ angular.module('lcaApp', [
                 controller: 'HomeCtrl'
             })
             .state('home.composition-profiles', {
-                url: '/composition-profiles',
+                url: '/composition-profiles?scenarioID&flowID',
                 views: {
                     "@": {
                         templateUrl: 'composition-profiles/composition-profiles.html',

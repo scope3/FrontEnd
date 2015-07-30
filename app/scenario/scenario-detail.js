@@ -99,7 +99,7 @@ angular.module('lcaApp.scenario.detail',
             $scope.gridColumns = [
                 {field: 'type', displayName: 'Parameter Type', enableCellEdit: false, width: 125},
                 {field: 'name', displayName: 'Parameter Name', enableCellEdit: canUpdate, width: 400},
-                {field: 'defaultValue', displayName: 'Default Value', enableCellEdit: false}
+                {field: 'defaultValue', displayName: 'Default Value', cellFilter: 'numFormat', enableCellEdit: false}
             ];
             $scope.params = { targetIndex : 2,
                 canUpdate : canUpdate };
