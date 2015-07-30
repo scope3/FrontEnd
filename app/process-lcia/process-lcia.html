@@ -34,8 +34,8 @@
             <p></p>
             <dt>Process</dt>
             <dd>
-                <select ng-model="selection.process" ng-options="p.name for p in processes"
-                        ng-change="onProcessChange()" style="width:70%">
+                <select ng-model="selection.process" ng-options="p.getLongName() for p in processes"
+                        ng-change="onProcessChange()" style="width:100%">
                 </select>
             </dd>
             <p></p>

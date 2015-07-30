@@ -6,8 +6,8 @@
  * @description
  * Factory service that creates other services based on $resource.
  */
-angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.resources.lciaMethod'
-    , 'lcaApp.config' , 'lcaApp.resources.flowPropertyMagnitude'])
+angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service', 'lcaApp.config',
+    'lcaApp.resources.lciaMethod', 'lcaApp.resources.flowPropertyMagnitude', 'lcaApp.resources.process'])
     .constant('MODEL_BASE_CASE_SCENARIO_ID', 1)
     .constant('BASE_SCENARIO_GROUP_ID', 1)
     .factory('ResourceService', ['$resource', 'API_ROOT', 'IdMapService', '$q', '$location',
@@ -327,14 +327,16 @@ angular.module('lcaApp.resources.service')
             return ResourceService.getService('FragmentService', "fragment", "fragmentID");
         }
     ])
-    .factory('ProcessService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('ProcessService', "process", "processID");
+    .factory('ProcessService', ['ResourceService', 'ProcessExtension',
+        function(ResourceService, ProcessExtension){
+            return ResourceService.getService('ProcessService', "process", "processID")
+                .setExtensionFactory(ProcessExtension);
         }
     ])
-    .factory('ProcessForFlowTypeService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.getService('ProcessForFlowTypeService', "processForFlowType", "processID");
+    .factory('ProcessForFlowTypeService', ['ResourceService', 'ProcessExtension',
+        function(ResourceService, ProcessExtension){
+            return ResourceService.getService('ProcessForFlowTypeService', "processForFlowType", "processID")
+                .setExtensionFactory(ProcessExtension);
         }
     ])
     .factory('CompositionFlowService', ['ResourceService',
