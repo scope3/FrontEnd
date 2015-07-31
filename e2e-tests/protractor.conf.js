@@ -7,6 +7,12 @@ exports.config = {
     'test_*.js'
   ],
 
+  suites: {
+    anon: 'test_anon.js',
+    auth: 'test_auth.js',
+    cp: 'test_CompositionProfiles.js'
+  },
+
   capabilities: {
     'browserName': 'firefox',
     'chromeOptions': {'args': ['--disable-extensions']}
@@ -18,10 +24,10 @@ exports.config = {
   //  'browserName': 'chrome'
   //}],
 
-  //baseUrl: 'http://localhost:8000/app/',
-  baseUrl: 'http://uo-lca.github.io/dist/',
+  baseUrl: 'http://localhost:8000/app/',
+  //baseUrl: 'http://uo-lca.github.io/dist/',
 
-  framework: 'jasmine',
+  framework: 'jasmine2',
 
   jasmineNodeOpts: {
     defaultTimeoutInterval: 60000
