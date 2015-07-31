@@ -1,22 +1,19 @@
-var CompositionProfilesPage = require("./CompositionProfilesPage");
-var capture = require("./capture");
+var CompositionProfilesPage = require("./CompositionProfilesPage"),
+    ParamGridDirective = require("./ParamGridDirective"),
+    capture = require("./capture");
 
 describe("Composition Profiles", function () {
 
-    var page = new CompositionProfilesPage();
-
-    beforeAll(function () {
-        page.get();
-        capture.takeScreenshot("CompositionProfilesPage-before");
-    });
-
-    afterAll(function () {
-        capture.takeScreenshot("CompositionProfilesPage-after");
-    });
+    var page = new CompositionProfilesPage(),
+        grid = new ParamGridDirective();
 
     describe("basics", function () {
         beforeAll(function () {
             page.get();
+            grid.get(0);
+        });
+
+        afterAll(function () {
             capture.takeScreenshot("CompositionProfilesPage-basics");
         });
 
@@ -36,8 +33,13 @@ describe("Composition Profiles", function () {
             expect(page.scenario.isPresent()).toBe(true);
         });
 
-        xit("should have a param grid", function () {
-            expect(page.paramGrid.isPresent()).toBe(true);
+        it("should have a param grid", function () {
+            expect(grid.gridOptions).toBeDefined();
+        });
+
+        it("should have grid rows", function () {
+            expect(grid.renderedRows).toBeDefined();
+            expect(grid.renderedRows.count()).toBeGreaterThan(0);
         });
     });
 });

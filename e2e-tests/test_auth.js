@@ -4,24 +4,6 @@ describe('test lca-app, authenticated mode', function () {
 
     var authParam = "?auth=2514bc8";
 
-    it('should have a title', function () {
-        browser.get('index.html' + authParam);
-        expect(browser.getTitle()).toEqual('Used Oil LCA');
-    });
-
-    describe('home view', function () {
-
-        beforeEach(function () {
-            browser.get('index.html#/home' + authParam);
-        });
-
-        it('should have a New scenario button', function () {
-            var newBtn = element(by.buttonText("New"));
-            newBtn.click();
-            expect(browser.getCurrentUrl()).toContain("new");
-        });
-    });
-
     describe('new scenario view', function () {
 
         beforeEach(function () {

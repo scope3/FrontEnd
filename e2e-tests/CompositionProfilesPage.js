@@ -3,7 +3,6 @@ function CompositionProfilesPage () {
     this.referenceFlowPropertyName = element(by.binding("referenceFlowProperty.name"));
     this.referenceUnit = element(by.binding("referenceFlowProperty.referenceUnit"));
     this.scenario = element(by.model("scenario"));
-    this.paramGrid = element(by.binding("paramGrid"));
 
     this.get = function () {
         browser.get("index.html#/home/composition-profiles");

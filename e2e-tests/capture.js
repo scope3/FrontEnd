@@ -3,7 +3,7 @@ var fs = require('fs');
 function capture (name) {
 
     browser.takeScreenshot().then(function (png) {
-        var stream = fs.createWriteStream('screenshots/' + name + '.png');
+        var stream = fs.createWriteStream('e2e-tests/screenshots/' + name + '.png');
         stream.write(new Buffer(png, 'base64'));
         stream.end();
     });

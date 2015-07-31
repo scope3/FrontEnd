@@ -1,33 +1,38 @@
 exports.config = {
   //allScriptsTimeout: 11000,
   // The address of a running selenium server.
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+  seleniumAddress: "http://localhost:4444/wd/hub",
+  
+  params: {
+    auth: "auth=bwTest"
+  },
 
   specs: [
-    'test_*.js'
+    "test_*.js"
   ],
 
   suites: {
-    anon: 'test_anon.js',
-    auth: 'test_auth.js',
-    cp: 'test_CompositionProfiles.js'
+    cp: "test_CompositionProfiles.js",
+    home: "test_Home.js",
+    fragment: "test_Fragment*.js",
+    scenario: "test_Scenario*.js"
   },
 
   capabilities: {
-    'browserName': 'firefox',
-    'chromeOptions': {'args': ['--disable-extensions']}
+    "browserName": "firefox",
+    "chromeOptions": {"args": ["--disable-extensions"]}
   },
 
   //multiCapabilities: [{
-  //  'browserName': 'firefox'
+  //  "browserName": "firefox"
   //}, {
-  //  'browserName': 'chrome'
+  //  "browserName": "chrome"
   //}],
 
-  baseUrl: 'http://localhost:8000/app/',
-  //baseUrl: 'http://uo-lca.github.io/dist/',
+  baseUrl: "http://localhost:8000/app/",
+  //baseUrl: "http://uo-lca.github.io/dist/",
 
-  framework: 'jasmine2',
+  framework: "jasmine2",
 
   jasmineNodeOpts: {
     defaultTimeoutInterval: 60000
