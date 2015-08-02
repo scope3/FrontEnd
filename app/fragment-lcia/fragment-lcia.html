@@ -32,13 +32,13 @@
 <div ng-if="navigationService">
     <div class="row">
         <div class="col-md-6">
-            <h4>Fragment LCIA</h4>
+            <h4>Fragment LCIA Results</h4>
         </div>
         <div class="col-md-6">
             <div class="pull-right">
                 <button type="button" class="btn btn-link "
                         ui-sref="^">
-                    Back to Sankey Diagram
+                    Show Sankey Diagram
                 </button>
                 <button type="button" class="btn btn-default btn-small" ng-csv="getCsvData()" csv-header="csvHeader"
                         filename="{{csvFileName}}" lazy-load="true" ng-disabled="disableExport()">
