@@ -16,12 +16,12 @@ angular.module('lcaApp.process.instance',
          'ProcessService', 'ProcessFlowService', 'FlowPropertyMagnitudeService', 'ProcessDissipationService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService', 'FragmentFlowService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
-         'LciaDetailService', 'ParamModelService',
+         'LciaDetailService', 'ParamModelService', 'CompositionFlowService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
                   ProcessService, ProcessFlowService, FlowPropertyMagnitudeService, ProcessDissipationService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService, FragmentFlowService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
-                  LciaDetailService, ParamModelService) {
+                  LciaDetailService, ParamModelService, CompositionFlowService) {
             var processID = 0,
                 fragmentFlowID = 0,
                 fragmentID = 0,
@@ -158,6 +158,7 @@ angular.module('lcaApp.process.instance',
 
                 getFlowRows();
                 if ( $scope.paramGrid.dissipation) {
+                    $scope.compositionFlow = CompositionFlowService.get($scope.process.compositionFlowID);
                     $scope.paramGrid.dissipation.extractData();
                 }
                 getLciaResults();
@@ -235,6 +236,7 @@ angular.module('lcaApp.process.instance',
                     var flowID = $scope.process["compositionFlowID"];
                     requests.push(ProcessDissipationService.load({processID: processID }));
                     requests.push(FlowPropertyMagnitudeService.load({flowID: flowID }));
+                    requests.push(CompositionFlowService.load());
                     $scope.paramGrid.dissipation = createProcessDissipationParamGrid();
                 }
                 StatusService.startWaiting();
