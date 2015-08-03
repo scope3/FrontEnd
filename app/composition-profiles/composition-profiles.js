@@ -112,9 +112,10 @@ angular.module('lcaApp.compositionProfiles',
                         data: [],
                         columns: [
                             {field: 'flowPropertyName', displayName: 'Flow Property', enableCellEdit: false},
+                            {field: 'referenceUnit', displayName: 'Reference Unit', enableCellEdit: false},
                             {field: 'magnitude', displayName: 'Magnitude', cellFilter: 'numFormat', enableCellEdit: false}
                         ],
-                        params: {targetIndex: 1, canUpdate: false}
+                        params: {targetIndex: 2, canUpdate: false}
                     };
 
                 grid.canApply = function () {
@@ -147,13 +148,14 @@ angular.module('lcaApp.compositionProfiles',
                         gridData = [];
                     magnitudes.forEach(
                         /**
-                         * @param {{ flowProperty : { flowPropertyID: number, name : string }, magnitude : number}} fpm
+                         * @param {{ flowProperty : { flowPropertyID: number, name : string, referenceUnit: string }, magnitude : number}} fpm
                          */
                         function (fpm) {
                         var row = {
                             flowPropertyID : fpm.flowProperty.flowPropertyID,
                             flowPropertyName : fpm.flowProperty.name,
-                            magnitude : fpm.magnitude
+                            magnitude : fpm.magnitude,
+                            referenceUnit : fpm.flowProperty.referenceUnit
                         };
                         gridData.push(row);
                     });

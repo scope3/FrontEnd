@@ -117,8 +117,11 @@ angular.module('lcaApp.lciaDetail.service', ['lcaApp.models.param'])
             };
 
             function flowHasParam(flowID) {
-                return (model.processFlowParams && flowID in model.processFlowParams) ||
-                       (model.methodFlowParams && flowID in model.methodFlowParams) ;
+                var fpParams = ParamModelService.getFlowPropertyParams(scenarioID, flowID);
+
+                return (fpParams && fpParams.length) ||
+                       (model.processFlowParams && flowID in model.processFlowParams) ||
+                       (model.methodFlowParams && flowID in model.methodFlowParams);
             }
 
             function getFlowParams() {
