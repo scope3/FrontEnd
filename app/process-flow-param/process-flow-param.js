@@ -187,6 +187,7 @@ angular.module('lcaApp.process.flowParam',
                             if (flow.hasOwnProperty("dissipation")) {
                                 paramResource = ParamModelService.getProcessFlowParam(scenarioID, processID, ld.flowID, 6);
                                 flow.paramWrapper = ParamModelService.wrapParam(paramResource);
+                                flow.content = ld.content;
                                 $scope.dissipation.flows.push(flow);
                             } else {
                                 paramResource = ParamModelService.getProcessFlowParam(scenarioID, processID, ld.flowID, 8);
@@ -208,7 +209,7 @@ angular.module('lcaApp.process.flowParam',
                         $scope.elementaryFlows[pf.flow.flowID] = pf.flow;
                         $scope.elementaryFlows[pf.flow.flowID].quantity = pf.quantity;
                         if (pf.hasOwnProperty("dissipation")) {
-                            $scope.elementaryFlows[pf.flow.flowID].content = pf.content;
+                            //$scope.elementaryFlows[pf.flow.flowID].content = pf.content;
                             $scope.elementaryFlows[pf.flow.flowID].dissipation = pf.dissipation;
                         }
                     }
