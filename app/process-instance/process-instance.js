@@ -282,7 +282,8 @@ angular.module('lcaApp.process.instance',
             }
 
             function getFirstFlowProperty(ff) {
-                return ff.flowPropertyMagnitudes[0]["flowProperty"];
+                var fpID = ff.flowPropertyMagnitudes[0]["flowPropertyID"];
+                return FlowPropertyForProcessService.get(fpID);
             }
 
             /**

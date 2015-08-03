@@ -56,7 +56,8 @@ angular.module('lcaApp.fragment.sankey',
             }
 
             function getFirstFlowProperty(ff) {
-                return ff.flowPropertyMagnitudes[0]["flowProperty"];
+                var fpID = ff.flowPropertyMagnitudes[0]["flowPropertyID"];
+                return FlowPropertyForFragmentService.get(fpID);
             }
 
             function filterFragmentFlow(ff) {
@@ -101,10 +102,10 @@ angular.module('lcaApp.fragment.sankey',
                 if ("flowPropertyMagnitudes" in link) {
                     flowPropertyMagnitudes = link.flowPropertyMagnitudes.filter(
                         /**
-                         * @param { {flowProperty: {flowPropertyID:number}} } lm
+                         * @param { {flowPropertyID:number} } lm
                          */
                             function (lm) {
-                            return +lm.flowProperty.flowPropertyID === flowPropertyID;
+                            return +lm.flowPropertyID === flowPropertyID;
                         });
                 }
                 if (flowPropertyMagnitudes && flowPropertyMagnitudes.length > 0) {
