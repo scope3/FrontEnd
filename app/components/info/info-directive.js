@@ -19,10 +19,11 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
     .constant('INFO_MSG',
     { sort: "Click on the column headers to sort by column.",
       home : {
-        msg: "This is the home page of Used Oil LCA, an online tool for assessing the potential environmental impacts of recycling motor oil.  The model is built from a network of 'proceses' linked by 'flows.'  The network can be broken down into 'fragments' that each describe different parts of the model, such as used oil collection or improper disposal.  Each fragment looks like a tree and can be visualized as a flow diagram.  Fragments can be nested inside other fragments, in which case they are called 'sub-fragments.'",
+        msg: "This is the home page of Used Oil LCA, an online tool for assessing the potential environmental impacts of recycling motor oil.  Use the navigation bar (above) to explore the model, view impact assessment results, and see other model information.",
+	  msg1: "The model is built from a network of 'proceses' linked by 'flows.'  The network can be broken down into 'fragments' that each describe different parts of the model, such as used oil collection or improper disposal.  Each fragment looks like a tree and can be visualized as a flow diagram.  Fragments can be nested inside other fragments, in which case they are called 'sub-fragments.'",
 	msg2: "Every process has input and output flows, such as oil, concrete, or transportation services.  Some processes also have environmental emissions, such as cobalt released into fresh water or carbon dioxide released to air.  These emissions, also called 'elementary flows,' are the source of all environmental impacts.",
 	msg3: "The purpose of life cycle assessment is to analyze a process-flow network, compute the environmental emissions that result from the included processes, and then estimate the potential environmental impacts of the resulting emissions. Environmental impacts are estimated using life cycle impact assessment methods, or LCIA methods.  The LCIA methods implemented by this tool are shown in a table at the bottom of this page.",
-	help: "Most of the features in this app are documented with information messages in blue type (such as this one).  You can toggle the display these messages using the 'i' button at the end of the navigation panel on the top of the page.",
+	help: "Most of the features in this app are documented with information messages in blue type.  You can toggle the display of these messages using the 'i' button at the end of the navigation panel on the top of the page.",
         scenarios: {
             msg: "A scenario is a view of a particular 'top-level' fragment at a specific activity level.  The 'model base case' scenario describes the reference version of the models.  Other scenarios can include modifications of the default settings known as 'parameters.'  The following scenarios are available to be viewed. If you have authorized access, you can create a new scenario ('New' button on title bar) or clone an existing scenario ('copy' button on the right).",
 	    msg2: "Click on a scenario name to view details about the scenario, or on the top-level fragment to view the process-flow network.",
@@ -36,14 +37,16 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
 	    lcParam: "LCIA Factor parameters modify the characterization factor for a certain emission with respect to a certain LCIA method."
         },
         lciaMethods: {
-            msg: "Potential environmental impacts are assessed using the LCIA Methods below.  Methods marked as 'active' will show up in LCIA result screens, while other methods will be hidden. Click on a method name to view details about it.",
+            msg: "Potential environmental impacts are assessed using the LCIA Methods below.  Methods marked as 'active' will show up in LCIA result screens, while other methods will be hidden.",
+	    msg1: "Click on a method name to view details and characterization factors.",
 	    detail: "These are the details of the selected LCIA method. Click on the ILCD reference link to view the ILCD data file.",
 	    factors: "The flows listed below are the potential environmental stressors for this LCIA method.  Characterization factors are the impact scores that the LCIA method assigns to each stressor.  These can be modified on a scenario-specific basis for scenarios you are authorized to edit."
         }
       },
       fragmentSankey : {
-	  msg: "Fragments are parts of an inventory model built as a tree. Nodes in the tree are processes or sub-fragments. Fragment flows are links between nodes.  Flows that don't connect to nodes at one end or the other become inputs or outputs that cross the fragment's system boundary.  Here the flows are shown as a sankey diagram.  You can view detailed environmental impacts for the fragment by clicking 'Show fragment LCIA.'",
-	  msg2: "The scenario selector can be used to navigate through any scenario model, starting at its top-level fragment.  Hover the mouse over a node to view the magnitudes of the flows entering and leaving that node.  Click on a process node (blue) to view details about the process. Click on a sub-fragment (green) to descend into the sub-fragment.  As you navigate through the model, click on the fragment name in the header block to return to a parent fragment.  You can view flows in different units of measure by using the Flow Property selector.",
+	  msg: "This view allows you to explore and navigate the inventory model.  Click on a process node (blue) to view details about the process. Click on a sub-fragment (green) to descend into the sub-fragment.  ",
+	  msg1: "Fragments are parts of an inventory model built as a tree. Nodes in the tree are processes or sub-fragments. Fragment flows are links between nodes.  Flows that don't connect to nodes at one end or the other become inputs or outputs that cross the fragment's system boundary.  Here the flows are shown as a sankey diagram.  You can view detailed environmental impacts for the fragment by clicking 'Show fragment LCIA.'",
+	  msg2: "The scenario selector can be used to navigate through any scenario model, starting at its top-level fragment.  Hover the mouse over a node to view the magnitudes of the flows entering and leaving that node.  As you navigate through the model, click on the fragment name in the header block to return to a parent fragment.  You can view flows in different units of measure by using the Flow Property selector.",
 	  msg3: "",
 	fragmentFlows: {
 	    msg: "Table of flows shown in the above diagram.  Flow magnitudes are reported in the units selected by the Flow Property selector."
@@ -51,9 +54,11 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
       },
       processInstance : {
 	msg: "Detailed information on the flows coming in and out of this process.  Flows that link to other nodes in the fragment are shown in the first table. Below that are detailed life cycle impact assessment results.  Click on a fragment name to return to the flow diagram. Click on the ILCD reference link to view the ILCD data file that describes the process, which may provide more information.",
-	  flows: "This table shows the set of fragment flows that form inputs and outputs of this process.  Each flow listed here corresponds to a flow on the sankey diagram (though 'cutoff' flows are not displayed on the sankey diagram).  The process 'activity level' is determined by the magnitude of the reference flow.  Other flow magnitudes equal the activity level times the flow 'quantity.'  If you are authorized to edit the scenario, you can modify the quantity values.  ",
+	  flows: "This table shows the set of fragment flows that form inputs and outputs of this process.  ",
+	  flows1: "Each flow listed here corresponds to a flow on the sankey diagram (though 'cutoff' flows are not displayed on the sankey diagram).  The process 'activity level' is determined by the magnitude of the reference flow.  Other flow magnitudes equal the activity level times the flow 'quantity.'  If you are authorized to edit the scenario, you can modify the quantity values.  ",
 	  balance: "If the process is a conservation process, then the inflows to the process will equal the outflows.  The flow marked 'balance' is computed from the other flows to enforce the balance. The balance flow's reference unit is the property that's conserved.",
-	  dissipation: "This process includes some emissions that are calculated based on the composition of an inflow.  These are called 'dissipation flows.'  The composition model referenced by the process is linked in the title above. Here you can view and edit dissipation factors for the process.  ",
+	  dissipation: "This process includes some emissions derived from the dissipation of flow constituents.",
+	  diss1: "Dissipation flows are calculated based on the composition of an inflow.  The composition model referenced by the process is linked in the title above. Here you can view and edit dissipation factors for the process.  ",
 	  diss2: "The emission quantity equals the composition content (flow property value), times the dissipation factor, times the scale. 'Scale' is the stoichiometric ratio between the flow property and the emission: e.g. during combustion, carbon (molecular weight 12) becomes carbon dioxide (molecular weight  44; scale = 44/12 = 3.667).",
 	  lcia: "Here the environmental impacts that result directly from this process are visualized.  Each active LCIA method is used to estimate the impacts from the process's emissions and the results are shown on a panel below. If the process is not private, the contributions of individual emissions will be shown in a colored horizontal bar.  Clicking on 'Flow Details' will show details of the computation."
       },
@@ -83,7 +88,7 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
         function($compile) {
             return {
                 restrict: 'E',
-                template: '<div class="alert alert-info" role="alert"><span class="glyphicon glyphicon-info-sign" aria-hidden="true" ></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
+                template: '<div class="alert alert-info" role="alert" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
                 //replace : true,
                 transclude : true,
                 link : function (scope) {

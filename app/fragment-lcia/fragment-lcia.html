@@ -1,8 +1,8 @@
 <!-- HTML template for Fragment Flows view-->
 <div ng-if="navigationService===null">
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.msgScenario}}</info>
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.xport}}</info>
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.lcia}}</info>
+    <p class="desc">{{infoMsg.fragmentLcia.msgScenario}}</p>
+    <info>{{infoMsg.fragmentLcia.xport}}</info>
+    <info>{{infoMsg.fragmentLcia.lcia}}</info>
     <dl class="dl-horizontal">
         <dt>Fragment</dt>
         <dd>
@@ -33,9 +33,9 @@
     </dl>
 </div>
 <div ng-if="navigationService">
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.msgFragment}}</info>
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.xport}}</info>
-    <info ng-show="displayInfo">{{infoMsg.fragmentLcia.lcia}}</info>
+    <p class="desc">{{infoMsg.fragmentLcia.msgFragment}}</p>
+    <info>{{infoMsg.fragmentLcia.xport}}</info>
+    <info>{{infoMsg.fragmentLcia.lcia}}</info>
     <div class="row">
         <div class="col-md-6">
             <h4>Fragment LCIA Results</h4>
@@ -85,7 +85,7 @@
         <dd>{{fragment.activityLevel | numFormat }}</dd>
     </dl>
 </div>
-<info ng-show="displayInfo">{{infoMsg.fragmentLcia.waterfall}}</info>
+<info>{{infoMsg.fragmentLcia.waterfall}}</info>
 <div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">

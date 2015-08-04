@@ -1,16 +1,17 @@
 <!-- Partial html for home page -->
-<info ng-show="displayInfo">{{infoMsg.home.msg}}</info>
-<info ng-show="displayInfo">{{infoMsg.home.msg2}}</info>
-<info ng-show="displayInfo">{{infoMsg.home.msg3}}</info>
-<info ng-show="displayInfo">{{infoMsg.home.help}}</info>
+<p class="desc">{{infoMsg.home.msg}}</p>
+<info>{{infoMsg.home.help}}</info>
+<info>{{infoMsg.home.msg1}}</info>
+<info>{{infoMsg.home.msg2}}</info>
+<info>{{infoMsg.home.msg3}}</info>
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">Scenarios</span>
         <button class="btn btn-default btn-sm pull-right" ng-show="canCreate" ng-click="createScenario()">New</button>
         <div class="clearfix"></div>
     </div>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.msg}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.msg2}}</info>
+    <info>{{infoMsg.home.scenarios.msg}}</info>
+    <p class="desc">{{infoMsg.home.scenarios.msg2}}</p>
     <table class="table table-condensed">
         <thead>
         <tr>
@@ -51,7 +52,8 @@
     <div class="panel-heading">
         <span class="panel-title">LCIA Methods</span>
     </div>
-    <info ng-show="displayInfo">{{infoMsg.home.lciaMethods.msg}}</info>
+    <info>{{infoMsg.home.lciaMethods.msg}}</info>
+    <p class="desc">{{infoMsg.home.lciaMethods.msg1}}</p>
     <table class="table table-condensed">
         <thead>
         <tr>

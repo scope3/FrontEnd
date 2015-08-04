@@ -23,7 +23,7 @@ describe('Unit test info directive', function() {
     }
 
     it('should display msg', function() {
-        var htmlTemplate = '<info ng-show="displayInfo">A test message</info>';
+        var htmlTemplate = '<info>A test message</info>';
         $rootScope.displayInfo = true;
         expect(compileDirective(htmlTemplate)).toBeDefined();
     });

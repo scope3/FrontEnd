@@ -152,4 +152,7 @@ info .glyphicon {
     color: #337ab7;
 }
 
-
+.desc {
+   padding: 5px;
+   margin: 0px;
+}

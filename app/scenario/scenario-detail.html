@@ -5,7 +5,7 @@
             <div class="clearfix"></div>
         </div>
     <div class="panel-body">
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.detail}}</info>
+    <info>{{infoMsg.home.scenarios.detail}}</info>
         <dl class="dl-horizontal">
             <dt>Name</dt>
             <dd>{{scenario.name}}</dd>
@@ -37,14 +37,14 @@
         </span>
     </div>
     <div class="panel-body">
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.params}}</info>
-    <info ng-show="displayInfo">{{infoMsg.sort}}</info>
+    <info>{{infoMsg.home.scenarios.params}}</info>
+    <p class="desc">{{infoMsg.sort}}</p>
         <param-grid options="options" data="gridData" columns="gridColumns" params="params"></param-grid>
+    <info>{{infoMsg.home.scenarios.paramTypes}}</info>
+    <info>{{infoMsg.home.scenarios.ffParam}}</info>
+    <info>{{infoMsg.home.scenarios.fpParam}}</info>
+    <info>{{infoMsg.home.scenarios.peParam}}</info>
+    <info>{{infoMsg.home.scenarios.pdParam}}</info>
+    <info>{{infoMsg.home.scenarios.lcParam}}</info>
     </div>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.paramTypes}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.ffParam}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.fpParam}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.peParam}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.pdParam}}</info>
-    <info ng-show="displayInfo">{{infoMsg.home.scenarios.lcParam}}</info>
 </div>

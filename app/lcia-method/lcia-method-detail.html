@@ -5,7 +5,7 @@
             <i class="pull-right glyphicon"
                ng-class="{'glyphicon-chevron-down': accordionStatus.attributesOpen, 'glyphicon-chevron-right': !accordionStatus.attributesOpen}"></i>
         </accordion-heading>
-	<info ng-show="displayInfo">{{infoMsg.home.lciaMethods.detail}}</info>
+	<info>{{infoMsg.home.lciaMethods.detail}}</info>
         <dl class="dl-horizontal">
             <dt>Name</dt>
             <dd>{{lciaMethod["name"]}}</dd>
@@ -40,7 +40,7 @@
     <div class="panel-heading">
         <span class="panel-title">LCIA Characterization Factors</span>
     </div>
-    <info ng-show="displayInfo">{{infoMsg.home.lciaMethods.factors}}</info>
+    <info>{{infoMsg.home.lciaMethods.factors}}</info>
     <div class="panel-body">
         <label for="selectScenario">Scenario</label>
         <select id="selectScenario" ng-model="paramScenario"

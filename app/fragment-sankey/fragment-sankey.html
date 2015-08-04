@@ -1,8 +1,9 @@
 <!-- Partial html for fragment sankey view -->
 <div class="row">
-    <info ng-show="displayInfo">{{infoMsg.fragmentSankey.msg}}</info>
-    <info ng-show="displayInfo">{{infoMsg.fragmentSankey.msg2}}</info>
+    <p class="desc">{{infoMsg.fragmentSankey.msg}}</p>
     <div class="col-md-8">
+    <info>{{infoMsg.fragmentSankey.msg1}}</info>
+    <info>{{infoMsg.fragmentSankey.msg2}}</info>
         <dl class="dl-horizontal">
             <dt>Scenario</dt>
             <dd>
@@ -59,8 +60,8 @@
         <span class="panel-title">Fragment Flows</span>
     </div>
     <div class="panel-body">
-      <info ng-show="displayInfo">{{infoMsg.fragmentSankey.fragmentFlows.msg}}</info>
-      <info ng-show="displayInfo">{{infoMsg.sort}}</info>
+      <info>{{infoMsg.fragmentSankey.fragmentFlows.msg}}</info>
+      <p class="desc">{{infoMsg.sort}}</p>
         <param-grid options="options" data="gridFlows" columns="columns" params="params"></param-grid>
     </div>
 </div>

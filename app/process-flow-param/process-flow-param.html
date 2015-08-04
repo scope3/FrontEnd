@@ -1,6 +1,6 @@
 <!-- Partial html for process LCIA view -->
 <div>
-    <info ng-show="displayInfo">{{infoMsg.processFlowParam.msg}}</info>
+    <info>{{infoMsg.processFlowParam.msg}}</info>
     <h4>Process Emission Details</h4>
     <dl class="dl-horizontal">
         <dt>Scenario</dt>
@@ -29,8 +29,8 @@
         <span class="panel-title">Emission</span>
     </div>
     <div class="panel-body">
-      <info ng-show="displayInfo">{{infoMsg.processFlowParam.emission}}</info>
-      <info ng-show="displayInfo">{{infoMsg.sort}}</info>
+      <info>{{infoMsg.processFlowParam.emission}}</info>
+      <p class="desc">{{infoMsg.sort}}</p>
         <param-grid options="emission.options" data="emission.flows" columns="emission.columns" params="emission.params"></param-grid>
     </div>
 </div>
@@ -39,8 +39,8 @@
         <span class="panel-title">Dissipation</span>
     </div>
     <div class="panel-body">
-      <info ng-show="displayInfo">{{infoMsg.processFlowParam.dissipation}}</info>
-      <info ng-show="displayInfo">{{infoMsg.sort}}</info>
+      <info>{{infoMsg.processFlowParam.dissipation}}</info>
+      <p class="desc">{{infoMsg.sort}}</p>
     <param-grid options="dissipation.options" data="dissipation.flows" columns="dissipation.columns" params="dissipation.params"></param-grid>
     </div>
 </div>
