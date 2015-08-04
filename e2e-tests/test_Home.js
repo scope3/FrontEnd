@@ -30,10 +30,7 @@ describe("Home", function () {
         });
 
         it('should display information messages', function () {
-            expect(page.infoMessages.count()).toBe(3);
-            expect(page.infoMessages.get(0).getText()).toContain('home');
-            expect(page.infoMessages.get(1).getText()).toContain('scenarios');
-            expect(page.infoMessages.get(2).getText()).toContain('LCIA');
+            expect(page.infoMessages.count()).toBeGreaterThan(1);
         });
     });
 
