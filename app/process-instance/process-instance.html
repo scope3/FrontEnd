@@ -36,6 +36,9 @@
             </change-buttons>
         </span>
     </div>
+    <info ng-show="displayInfo">{{infoMsg.processInstance.flows}}</info>
+    <info ng-show="displayInfo">{{infoMsg.processInstance.balance}}</info>
+    <info ng-show="displayInfo">{{infoMsg.sort}}</info>
     <div class="panel-body">
         <param-grid options="options" data="fragmentFlows" columns="columns" params="params"></param-grid>
     </div>
@@ -57,6 +60,9 @@
         </span>
     </div>
     <div class="panel-body">
+    <info ng-show="displayInfo">{{infoMsg.processInstance.dissipation}}</info>
+    <info ng-show="displayInfo">{{infoMsg.processInstance.diss2}}</info>
+    <info ng-show="displayInfo">{{infoMsg.sort}}</info>
         <param-grid options="paramGrid.dissipation.options"
                     data="paramGrid.dissipation.data"
                     columns="paramGrid.dissipation.columns"
@@ -69,6 +75,7 @@
         <span class="panel-title">Process LCIA</span>
     </div>
     <div class="panel-body">
+      <info ng-show="displayInfo">{{infoMsg.processInstance.lcia}}</info>
         <span>{{lciaMsg}}</span>
         <ul class="list-unstyled">
             <li ng-repeat="method in lciaMethods" class="lcia-method">
