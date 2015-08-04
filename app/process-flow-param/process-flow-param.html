@@ -30,6 +30,7 @@
     </div>
     <div class="panel-body">
       <info ng-show="displayInfo">{{infoMsg.processFlowParam.emission}}</info>
+      <info ng-show="displayInfo">{{infoMsg.sort}}</info>
         <param-grid options="emission.options" data="emission.flows" columns="emission.columns" params="emission.params"></param-grid>
     </div>
 </div>
@@ -39,6 +40,7 @@
     </div>
     <div class="panel-body">
       <info ng-show="displayInfo">{{infoMsg.processFlowParam.dissipation}}</info>
+      <info ng-show="displayInfo">{{infoMsg.sort}}</info>
     <param-grid options="dissipation.options" data="dissipation.flows" columns="dissipation.columns" params="dissipation.params"></param-grid>
     </div>
 </div>
