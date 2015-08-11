@@ -407,6 +407,20 @@ angular.module('lcaApp.resources.service')
                 "lciaMethodID");
         }
     ])
+/**
+ * Cumulative LCIA results for all methods.
+ * Caching is handled by model service
+ */
+    .factory('LciaTotalForFragmentService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService("LciaTotalForFragmentService", "lciaTotalForFragment", null);
+        }
+    ])
+    .factory('LciaTotalForProcessService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.getService("LciaTotalForProcessService", "lciaTotalForProcess", null);
+        }
+    ])
     .factory('ParamService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ParamService', "param", "paramID");
@@ -441,17 +455,4 @@ angular.module('lcaApp.resources.service')
             return ResourceService.createSimpleGetService("lciaResultForFragment");
         }
     ])
-/**
- * Cumulative LCIA results for all methods.
- * Caching is handled by model service
- */
-    .factory('LciaTotalForProcessService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.createSimpleGetService("lciaTotalForProcess");
-        }
-    ])
-    .factory('LciaTotalForFragmentService', ['ResourceService',
-        function(ResourceService){
-            return ResourceService.createSimpleGetService("lciaTotalForFragment");
-        }
-    ]);
+  ;

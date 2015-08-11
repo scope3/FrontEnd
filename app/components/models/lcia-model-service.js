@@ -11,7 +11,7 @@ angular.module("lcaApp.models.lcia", ["lcaApp.resources.service", "lcaApp.status
     .factory("LciaModelService", ["LciaTotalForProcessService", "LciaTotalForFragmentService", "$q",
         function(LciaTotalForProcessService, LciaTotalForFragmentService, $q) {
             var svc = {},
-                scenarios = { };
+                scenarios = { };    // Associative array of cached LCIA results
 
             /**
              * @ngdoc
@@ -34,16 +34,76 @@ angular.module("lcaApp.models.lcia", ["lcaApp.resources.service", "lcaApp.status
                     deferred.reject("Invalid filter : " + filter);
                 }
                 if (resourceSvc ) {
-                    resourceSvc.load(filter)
-                        .then(function(response) {
-                            deferred.resolve(updateModel(filter, response));
-                        },
-                        function(err) {
-                            deferred.reject("LCIA Model load failed. " + err);
-                        });
+                    var loaded = svc.get(filter);
+                    if (loaded) {
+                        deferred.resolve(loaded);
+                    }
+                    else {
+                        resourceSvc.reload(filter)
+                            .then(function(response) {
+                                updateModel(filter, response);
+                                deferred.resolve(response);
+                            },
+                            function(err) {
+                                deferred.reject("LCIA Model load failed. " + err);
+                            });
+                    }
+
                 }
                 return deferred.promise;
             };
+
+            /**
+             * @ngdoc
+             * @name LciaModelService#get
+             * @methodOf LciaModelService
+             * @description
+             * Get cached LCIA results
+             * @param {object} filter   Web API request filter
+             * @returns {[] | null} cached results, if they exist
+             */
+            svc.get = function(filter) {
+                var results = null;
+                if (filter && filter.hasOwnProperty("scenarioID") && scenarios.hasOwnProperty(filter["scenarioID"])) {
+                    var sr = scenarios[filter["scenarioID"]];
+                    if (filter.hasOwnProperty("processID")) {
+                        results = getNestedResults( sr, filter["processID"], "processes");
+                    } else if (filter.hasOwnProperty("fragmentID")) {
+                        results = getNestedResults( sr, filter["fragmentID"], "fragments");
+                    }
+                }
+                return results;
+            };
+
+            /**
+             * @ngdoc
+             * @name LciaModelService#clearCache
+             * @methodOf LciaModelService
+             * @description
+             * Clear scenario cache
+             * @param { number } scenarioID
+             */
+            svc.clearCache = function (scenarioID) {
+                if (scenarios.hasOwnProperty(scenarioID)) {
+                    scenarios[scenarioID] = {};
+                }
+            };
+
+            /**
+             * Internal functions
+             */
+            function getNestedResults(parent, filter, type) {
+                if (parent.hasOwnProperty(type) && parent[type].hasOwnProperty(filter)) {
+                    return parent[type][filter];
+                } else {
+                    return null;
+                }
+            }
+
+            function setNestedResults(parent, filter, type, results) {
+                var p = nest(parent, type);
+                p[filter] = results;
+            }
 
             function nest(parent, property) {
                 if (! (property in parent)) {
@@ -52,18 +112,14 @@ angular.module("lcaApp.models.lcia", ["lcaApp.resources.service", "lcaApp.status
                 return parent[property];
             }
 
-            /**
-             * Internal functions
-             */
             function updateModel(filter, response) {
-
                 if (filter && filter.hasOwnProperty("scenarioID")) {
                     var m = nest( scenarios, filter.scenarioID);
                     if (filter.hasOwnProperty("processID")) {
-                        m = nest( nest(m, "processes"), filter.processID);
+                        setNestedResults(m, filter["processID"], "processes", response);
                     } else {
                         if (filter.hasOwnProperty("fragmentID")) {
-                           m = nest(nest(m, "fragments"), filter.fragmentID);
+                            setNestedResults(m, filter["fragmentID"], "fragments", response);
                         }
                     }
                 }

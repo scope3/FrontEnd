@@ -1,26 +1,27 @@
 {
   "name": "lca-app",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "dependencies": {
     "angular": "1.3.x",
-    "angular-bootstrap": null,
-    "angular-local-storage": null,
+    "angular-bootstrap": "0.12.x",
+    "angular-local-storage": "0.1.x",
     "angular-resource": "1.3.x",
-    "angular-spinner": null,
+    "angular-spinner": "0.6.x",
     "angular-mocks": "1.3.x",
     "angular-ui-router": "0.2.x",
     "array.prototype.find": null,
     "bootstrap": "3.x",
-    "colorbrewer": null,
+    "colorbrewer": "1.x",
     "d3": "~3",
     "d3-plugins": null,
-    "d3-tip": null,
+    "d3-tip": "0.6.x",
     "isteven-angular-multiselect": "4.x",
     "jquery": "2.1.3",
-    "ng-csv": null,
+    "ng-csv": "0.3.x",
     "ng-grid": "2.x",
-    "normalize.css": null
+    "normalize.css": "3.0.x",
+    "plottable": "~1.5.2"
   },
   "resolutions": {
     "angular": "1.3.x"

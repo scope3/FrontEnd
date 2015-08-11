@@ -56,7 +56,8 @@
  * @description
  * Factory service providing data model for scenario parameters.
  */
-angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario'] )
+angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.scenario',
+               'lcaApp.models.lcia'] )
     // Status relevant to editor views.
     .constant('PARAM_VALUE_STATUS',
                 { unchanged: 1, // value did not change
@@ -73,8 +74,8 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
         8 : "Process Emission",
         10 : "LCIA Factor"
     })
-    .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q', 'ScenarioModelService',
-        function(ParamService, PARAM_VALUE_STATUS, $q, ScenarioModelService) {
+    .factory('ParamModelService', ['ParamService', 'PARAM_VALUE_STATUS', '$q', 'ScenarioModelService', 'LciaModelService',
+        function(ParamService, PARAM_VALUE_STATUS, $q, ScenarioModelService, LciaModelService) {
             var svc = {},
                 model = { scenarios : {} },
                 origResources = { scenarios : {} };
@@ -607,6 +608,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                             params.push(changedParam);
                         }
                     });
+                    LciaModelService.clearCache(scenarioID);
                     return ParamService.replace({scenarioID: scenarioID}, params, successCB, errorCB);
                 } else {
                     errorCB("Unable to find original parameters for scenarioID " + scenarioID);

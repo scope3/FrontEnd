@@ -6,19 +6,19 @@
  * Controller for Fragment LCIA view
  */
 angular.module('lcaApp.fragment.LCIA',
-                ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service',
+                ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.lcia',
                  'lcaApp.colorCode.service', 'lcaApp.waterfall',
                     'isteven-multi-select', 'lcaApp.selection.service',
                     'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario','ngSanitize', 'ngCsv'])
     .controller('FragmentLciaController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService',
          'FragmentService', 'FragmentStageService', 'FragmentFlowService',
-         'LciaMethodService', 'LciaResultForFragmentService',
+         'LciaMethodService', 'LciaModelService',
          'ColorCodeService', 'WaterfallService',
             'FragmentNavigationService',
         function ($scope, $stateParams, $state, StatusService, $q, ScenarioModelService,
                   FragmentService, FragmentStageService, FragmentFlowService,
-                  LciaMethodService, LciaResultForFragmentService,
+                  LciaMethodService, LciaModelService,
                   ColorCodeService, WaterfallService,
                   FragmentNavigationService ) {
 
@@ -82,17 +82,31 @@ angular.module('lcaApp.fragment.LCIA',
                 clearWaterfalls();
                 loadSubFragments();
             };
-
             /**
              * Watch for changes to scenario selections
              */
-            $scope.$watch('scenarioSelection.model', function() {
-                clearWaterfalls();
-                if ($scope.hasOwnProperty("scenarioSelection") && $scope.scenarioSelection.hasOwnProperty("model")) {
-                    $scope.scenarios = $scope.scenarioSelection.model;
-                    getSelectionResults();
+            $scope.$watch('scenarioSelection.model', function(newVal, oldVal) {
+                if (scenarioSelectionChanged(newVal, oldVal)) {
+                    clearWaterfalls();
+                    $scope.scenarios = [];
+                    if (newVal) {
+                        $scope.scenarios = newVal;
+                        getSelectionResults();
+                    }
                 }
             });
+
+            /**
+             * Handle change to scenario selections
+             */
+            //$scope.onScenariosChange = function () {
+            //    var selectedScenarios = $scope.scenarioSelection.model;
+            //    if (scenarioSelectionChanged(selectedScenarios, $scope.scenarios)) {
+            //        clearWaterfalls();
+            //        $scope.scenarios = selectedScenarios;
+            //        getSelectionResults();
+            //    }
+            //};
 
             /**
              * Get array of LCIA results to download
@@ -129,8 +143,15 @@ angular.module('lcaApp.fragment.LCIA',
                     // Save selections for return to view in same session. Also used for default selections in
                     // Fragment Sankey view.
                     ScenarioModelService.selectFragmentScenarioIDs($scope.fragment.fragmentID,
-                                                                    $scope.scenarioSelection.model);
+                                                                    $scope.scenarios);
                 }
+            }
+
+            function scenarioSelectionChanged(newModel, oldModel) {
+                return ( newModel.length !== oldModel.length )
+                    || ! newModel.every(function(element, index) {
+                        return element.scenarioID === oldModel[index].scenarioID;
+                    });
             }
 
             /**
@@ -152,29 +173,33 @@ angular.module('lcaApp.fragment.LCIA',
             }
 
             /**
-             * Get LCIA results for a scenario and method.
+             * Get LCIA results for a scenario.
              * Multiply cumulativeResult by scenario's activity level.
              * Store in local cache indexed by (methodID, scenarioID, fragmentStageID).
-             * @param {{ lciaMethodID : Number, scenarioID: number, lciaScore : Array }} lciaResult
+             * @param {[{ lciaMethodID : Number, scenarioID: number, lciaScore : Array }]} lciaResults
              */
-            function extractResult(lciaResult) {
-                if (lciaResult && lciaResult.scenarioID) {
-                    var scenario = ScenarioModelService.get(lciaResult.scenarioID),
-                        result = {},
-                        activityLevel = scenario.activityLevel;
+            function extractResult(lciaResults) {
+                if (lciaResults) {
+                    lciaResults.forEach( function (lciaResult) {
+                        if (lciaResult && lciaResult.scenarioID) {
+                            var scenario = ScenarioModelService.get(lciaResult.scenarioID),
+                                result = {},
+                                activityLevel = scenario.activityLevel;
 
-                    if ($scope.navigationService && $scope.fragment.hasOwnProperty("activityLevel")) {
-                        activityLevel = $scope.fragment.activityLevel;
-                    }
-                    lciaResult.lciaScore.forEach(
-                        /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
-                        function ( score) {
-                            result[score["fragmentStageID"]] = score.cumulativeResult * activityLevel;
-                        });
-                    if (! (lciaResult.lciaMethodID in results)) {
-                        results[lciaResult.lciaMethodID] = {};
-                    }
-                    results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
+                            if ($scope.navigationService && $scope.fragment.hasOwnProperty("activityLevel")) {
+                                activityLevel = $scope.fragment.activityLevel;
+                            }
+                            lciaResult.lciaScore.forEach(
+                                /* @param score {{ fragmentStageID : Number,  cumulativeResult : Number }} */
+                                function ( score) {
+                                    result[score["fragmentStageID"]] = score.cumulativeResult * activityLevel;
+                                });
+                            if (! (lciaResult.lciaMethodID in results)) {
+                                results[lciaResult.lciaMethodID] = {};
+                            }
+                            results[lciaResult.lciaMethodID][lciaResult.scenarioID] = result;
+                        }
+                    });
                 }
             }
 
@@ -197,6 +222,10 @@ angular.module('lcaApp.fragment.LCIA',
                 stages = FragmentStageService.getAll();
                 stageNames = stages.map(getName);
                 StatusService.stopWaiting();
+                $scope.scenarios.forEach( function (scenario) {
+                    extractResult(LciaModelService.get(
+                        {scenarioID: scenario.scenarioID, fragmentID: $scope.fragment.fragmentID}));
+                });
                 $scope.methods.forEach( function (m) {
                     var wf;
                     if (m.lciaMethodID in results) {
@@ -270,7 +299,7 @@ angular.module('lcaApp.fragment.LCIA',
 
             /**
              * Request fragment stages, then
-             * for each scenario and method combination, request LCIA results.
+             * for each scenario, request LCIA results.
              * When all results are in, build waterfalls.
              */
             function getLciaResults() {
@@ -279,18 +308,18 @@ angular.module('lcaApp.fragment.LCIA',
                 if ($scope.fragment) {
                     StatusService.startWaiting();
                     result = FragmentStageService.load({fragmentID: $scope.fragment.fragmentID});
-                    promises.push(result.$promise);
-                    $scope.methods.forEach(function (method) {
+                    promises.push(result);
+                    //$scope.methods.forEach(function (method) {
                         $scope.scenarios.forEach( function (scenario){
-                            result = LciaResultForFragmentService
-                                .get({ scenarioID: scenario.scenarioID,
-                                    lciaMethodID: method.lciaMethodID,
-                                    fragmentID: $scope.fragment.fragmentID },
-                                extractResult);
-                            promises.push(result.$promise);
+                            result = LciaModelService
+                                .load({ scenarioID: scenario.scenarioID,
+                                    //lciaMethodID: method.lciaMethodID,
+                                    fragmentID: $scope.fragment.fragmentID });
+                            promises.push(result);
                         });
-                    });
-                    $q.all(promises).then(buildWaterfalls, StatusService.handleFailure);
+                    //});
+                    $q.all(promises)
+                        .then(buildWaterfalls, StatusService.handleFailure);
                 }
             }
 
