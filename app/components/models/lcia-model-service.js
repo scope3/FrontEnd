@@ -81,7 +81,7 @@ angular.module("lcaApp.models.lcia", ["lcaApp.resources.service", "lcaApp.status
              * @methodOf LciaModelService
              * @description
              * Clear scenario cache
-             * @param { number } scenarioID
+             * @param {number} scenarioID   Scenario ID
              */
             svc.clearCache = function (scenarioID) {
                 if (scenarios.hasOwnProperty(scenarioID)) {

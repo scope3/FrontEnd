@@ -4,7 +4,7 @@ exports.config = {
   seleniumAddress: "http://localhost:4444/wd/hub",
   
   params: {
-    auth: "auth=bwTest"
+    auth: "auth=4e49337"
   },
 
   specs: [
@@ -29,9 +29,8 @@ exports.config = {
   //  "browserName": "chrome"
   //}],
 
-  baseUrl: "http://localhost:8000/app/",
-  //baseUrl: "http://uo-lca.github.io/dist/",
-
+  //baseUrl: "http://localhost:8000/app/",
+  baseUrl: "http://uo-lca.github.io/dist/",
   framework: "jasmine2",
 
   jasmineNodeOpts: {

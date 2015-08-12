@@ -2,7 +2,7 @@
 
 describe('test lca-app, authenticated mode', function () {
 
-    var authParam = "?auth=2514bc8";
+    var authParam = "?auth=4e49337";
 
     describe('new scenario view', function () {
 
