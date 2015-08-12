@@ -26,13 +26,18 @@ angular.module('lcaApp', [
             $urlRouterProvider.otherwise(function($injector, $location){
                 var homeURL = "/home",
                     searchObject = $location.search();
-                if ( searchObject && searchObject.hasOwnProperty("auth")) {
-                    homeURL = "/home?auth=" + searchObject.auth;
+                if ( searchObject ) {
+                    if (searchObject.hasOwnProperty("auth")) {
+                        homeURL = "/home?auth=" + searchObject.auth;
+                    }
+                    if (searchObject.hasOwnProperty("di"))  {
+                        homeURL = homeURL + "&di=" + searchObject["di"];
+                    }
                 }
                 return homeURL;
             });
             $stateProvider.state('home', {
-                url: "/home?auth",
+                url: "/home?auth&di",
                 templateUrl: 'home/home.html',
                 controller: 'HomeCtrl'
             })
@@ -146,12 +151,17 @@ angular.module('lcaApp', [
                 });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
         }])
-    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT', 'INFO_MSG',
-        function($rootScope, HELP_ROOT, INFO_MSG) {
+    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT', 'INFO_MSG', '$location',
+        function($rootScope, HELP_ROOT, INFO_MSG, $location) {
+            var urlParam = $location.search();
+
             $rootScope.helpPage = HELP_ROOT;
             $rootScope.infoMsg = INFO_MSG;
-            $rootScope.displayInfo = true;
-
+            if ( urlParam.hasOwnProperty("di") && urlParam["di"].toLowerCase()[0] == "n") {
+                $rootScope.displayInfo = false;
+            } else {
+                $rootScope.displayInfo = true;
+            }
             $rootScope.$on('$stateChangeStart',
                 function(event, toState) {
                     //

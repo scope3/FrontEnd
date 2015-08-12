@@ -23,7 +23,8 @@ angular.module('lcaApp.fragment.LCIA',
                   FragmentNavigationService ) {
 
             var stages = [],    // Current fragment stages
-                results = {};   // Fragment LCIA results
+                results = {},   // Fragment LCIA results
+                fragmentScenarios;
 
             /**
              * Top-level fragment selection change handler
@@ -86,12 +87,14 @@ angular.module('lcaApp.fragment.LCIA',
              * Watch for changes to scenario selections
              */
             $scope.$watch('scenarioSelection.model', function(newVal, oldVal) {
-                if (scenarioSelectionChanged(newVal, oldVal)) {
-                    clearWaterfalls();
-                    $scope.scenarios = [];
-                    if (newVal) {
-                        $scope.scenarios = newVal;
-                        getSelectionResults();
+                if (typeof newVal !== 'undefined' && typeof newVal !== 'undefined') {
+                    if (scenarioSelectionChanged(newVal, oldVal)) {
+                        clearWaterfalls();
+                        $scope.scenarios = [];
+                        if (newVal) {
+                            $scope.scenarios = newVal;
+                            getSelectionResults();
+                        }
                     }
                 }
             });
@@ -139,7 +142,7 @@ angular.module('lcaApp.fragment.LCIA',
 
             function getSelectionResults() {
                 if ($scope.scenarios.length > 0) {
-                    getLciaResults();
+                    getResults();
                     // Save selections for return to view in same session. Also used for default selections in
                     // Fragment Sankey view.
                     ScenarioModelService.selectFragmentScenarioIDs($scope.fragment.fragmentID,
@@ -149,8 +152,8 @@ angular.module('lcaApp.fragment.LCIA',
 
             function scenarioSelectionChanged(newModel, oldModel) {
                 return ( newModel.length !== oldModel.length )
-                    || ! newModel.every(function(element, index) {
-                        return element.scenarioID === oldModel[index].scenarioID;
+                    || newModel.some(function(element, index) {
+                        return element.scenarioID !== oldModel[index].scenarioID;
                     });
             }
 
@@ -219,6 +222,11 @@ angular.module('lcaApp.fragment.LCIA',
              */
             function buildWaterfalls() {
                 var stageNames;
+                // Workaround for multi-select problem : populate options after API request response
+                if ($scope.hasOwnProperty("scenarioSelection")) {
+                    $scope.scenarioSelection.options = fragmentScenarios;
+                }
+                //
                 stages = FragmentStageService.getAll();
                 stageNames = stages.map(getName);
                 StatusService.stopWaiting();
@@ -302,30 +310,29 @@ angular.module('lcaApp.fragment.LCIA',
              * for each scenario, request LCIA results.
              * When all results are in, build waterfalls.
              */
-            function getLciaResults() {
-                var promises = [],
-                    result;
+            function getResults() {
                 if ($scope.fragment) {
                     StatusService.startWaiting();
-                    result = FragmentStageService.load({fragmentID: $scope.fragment.fragmentID});
-                    promises.push(result);
-                    //$scope.methods.forEach(function (method) {
-                        $scope.scenarios.forEach( function (scenario){
-                            result = LciaModelService
-                                .load({ scenarioID: scenario.scenarioID,
-                                    //lciaMethodID: method.lciaMethodID,
-                                    fragmentID: $scope.fragment.fragmentID });
-                            promises.push(result);
-                        });
-                    //});
-                    $q.all(promises)
-                        .then(buildWaterfalls, StatusService.handleFailure);
+                    FragmentStageService.load({fragmentID: $scope.fragment.fragmentID})
+                        .then(getLciaResults, StatusService.handleFailure);
                 }
             }
 
+            function getLciaResults() {
+                var promises = [];
+                    $scope.scenarios.forEach( function (scenario){
+                        promises.push(
+                            LciaModelService
+                            .load({ scenarioID: scenario.scenarioID,
+                                fragmentID: $scope.fragment.fragmentID })
+                        );
+                    });
+                    $q.all(promises)
+                        .then(buildWaterfalls, StatusService.handleFailure);
+            }
+
             function getFragmentScenarios() {
-                var scenarios = ScenarioModelService.getAll(),
-                    fragmentScenarios;
+                var scenarios = ScenarioModelService.getAll();
 
                 fragmentScenarios = scenarios.filter(function (s) {
                     return (s.topLevelFragmentID === $scope.fragment.fragmentID);
@@ -341,7 +348,8 @@ angular.module('lcaApp.fragment.LCIA',
                     defaultSelection.selected = true;
                     $scope.scenarios = [ defaultSelection ];
                 }
-                $scope.scenarioSelection.options = fragmentScenarios;
+                // Workaround multi-select problem : defer updating options
+                //$scope.scenarioSelection.options = fragmentScenarios;
             }
 
             function getTopLevelFragments(scenarios) {
@@ -358,7 +366,7 @@ angular.module('lcaApp.fragment.LCIA',
                 $scope.navigationSelection.options = fragmentFlows.filter(function (ff) {
                     return ff.nodeType === "Fragment";
                 });
-                getLciaResults();
+                getResults();
             }
 
             function loadSubFragments() {
@@ -436,7 +444,7 @@ angular.module('lcaApp.fragment.LCIA',
                 topLevelFragments.sort(FragmentService.compareByName);
                 $scope.fragmentSelection.options = topLevelFragments;
                 if ($scope.fragment) {
-                    var fragmentScenarios = scenarios.filter(function (s) {
+                    fragmentScenarios = scenarios.filter(function (s) {
                         return (s.topLevelFragmentID === $scope.fragment.fragmentID);
                     });
                     if (selectScenarioIDs.length > 0) {
@@ -451,9 +459,9 @@ angular.module('lcaApp.fragment.LCIA',
                                 fs.selected = false;
                             }
                         });
-
                     }
-                    $scope.scenarioSelection.options = fragmentScenarios;
+                    // Workaround to multi-select problem : defer populating options
+                    //$scope.scenarioSelection.options = fragmentScenarios;
                 }
             }
 
@@ -522,7 +530,7 @@ angular.module('lcaApp.fragment.LCIA',
                 else {
                     displayTopLevelFragmentScenarios();
                     if ($scope.scenarios.length >  0) {
-                        getLciaResults();
+                        getResults();
                     }
                 }
             }
