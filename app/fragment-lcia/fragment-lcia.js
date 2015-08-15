@@ -7,19 +7,19 @@
  */
 angular.module('lcaApp.fragment.LCIA',
                 ['ui.router', 'lcaApp.resources.service', 'lcaApp.status.service', 'lcaApp.models.lcia',
-                 'lcaApp.colorCode.service', 'lcaApp.waterfall',
+                 'lcaApp.waterfall',
                     'isteven-multi-select', 'lcaApp.selection.service',
                     'lcaApp.fragmentNavigation.service', 'lcaApp.models.scenario','ngSanitize', 'ngCsv'])
     .controller('FragmentLciaController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', 'ScenarioModelService',
          'FragmentService', 'FragmentStageService', 'FragmentFlowService',
          'LciaMethodService', 'LciaModelService',
-         'ColorCodeService', 'WaterfallService',
+         'WaterfallService',
             'FragmentNavigationService',
         function ($scope, $stateParams, $state, StatusService, $q, ScenarioModelService,
                   FragmentService, FragmentStageService, FragmentFlowService,
                   LciaMethodService, LciaModelService,
-                  ColorCodeService, WaterfallService,
+                  WaterfallService,
                   FragmentNavigationService ) {
 
             var stages = [],    // Current fragment stages

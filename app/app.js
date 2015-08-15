@@ -10,6 +10,7 @@ angular.module('lcaApp', [
         'lcaApp.format',
         'lcaApp.compositionProfiles',
         'lcaApp.fragment.sankey',
+        'lcaApp.LCIA.comparison',
         'lcaApp.process.instance',
         'lcaApp.process.LCIA',
         'lcaApp.process.flowParam',
@@ -83,6 +84,15 @@ angular.module('lcaApp', [
                     "@": {
                         templateUrl: 'fragment-lcia/fragment-lcia.html',
                         controller: 'FragmentLciaController'
+                    }
+                }
+            })
+            .state('home.lcia-comparison', {
+                url: '/lcia-comparison',
+                views: {
+                    "@": {
+                        templateUrl: 'lcia-comparison/lcia-comparison.html',
+                        controller: 'LciaComparisonController'
                     }
                 }
             })

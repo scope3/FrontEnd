@@ -27,6 +27,7 @@ module.exports = function(config){
           'app/fragment-lcia/**/*.js',
           'app/fragment-sankey/**/*.js',
           'app/home/**/*.js',
+          'app/lcia-comparison/**/*.js',
           'app/lcia-method/**/*.js',
           'app/process-instance/**/*.js',
           'app/process-lcia/**/*.js',
@@ -47,8 +48,9 @@ module.exports = function(config){
           'karma-junit-reporter'
       ],
 
-    browsers : ['Chrome', 'Firefox'
-      //',IE'
+    browsers : ['Chrome'
+        //, 'Firefox'
+      ,'IE'
       //,'Safari'
     ],
 
