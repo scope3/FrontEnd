@@ -6,7 +6,7 @@
  * Controller for LCIA comparison view
  */
 angular.module("lcaApp.LCIA.comparison",
-    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service",
+    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid",
         "lcaApp.models.lcia", "lcaApp.models.scenario"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q",
@@ -17,6 +17,7 @@ angular.module("lcaApp.LCIA.comparison",
                   ScenarioModelService, LciaModelService) {
 
             $scope.selection = createSelectionComponent();
+            $scope.gridData = [];
             $scope.gridOpts = createGrid();
             $scope.lciaMethods = [];
             /**
@@ -45,6 +46,22 @@ angular.module("lcaApp.LCIA.comparison",
                 $scope.lciaMethods = LciaMethodService.getAll();
             }
 
+            function addGridRow() {
+                var gridData = $scope.gridData,
+                    row = {
+                        componentType : $scope.selection.type,
+                        componentName : $scope.selection.isFragment() ?
+                            $scope.selection.fragment.name :
+                            $scope.selection.process.getLongName(),
+                        scenario: $scope.selection.scenario.name,
+                        activityLevel : 1,
+                        chartLabel : ($scope.gridData.length + 1).toString()
+                    };
+                $scope.gridData = []; // Need to change reference in order to trigger height change
+                gridData.push(row);
+                $scope.gridData = gridData;
+            }
+
             function createSelectionComponent() {
                 var selection = {
                     type: "Fragment",
@@ -54,6 +71,7 @@ angular.module("lcaApp.LCIA.comparison",
                     processOptions: [],
                     scenario: null,
                     scenarioOptions: [],
+                    add : addGridRow,
                     displayData : displayData,
                     isFragment : isFragment
                 };
@@ -69,6 +87,10 @@ angular.module("lcaApp.LCIA.comparison",
                         if (selection.fragmentOptions.length) {
                             selection.fragment = FragmentService.get(selection.scenario.topLevelFragmentID);
                         }
+                        if (selection.processOptions.length) {
+                            selection.processOptions.sort(ProcessService.compareByName);
+                            selection.process = selection.processOptions[0];
+                        }
                     }
                 }
 
@@ -78,8 +100,21 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function createGrid() {
-                var grid = {
-                    data: []
+                var columnDefs = [
+                        { field: "componentType", displayName: "Component Type", enableCellEdit: false},
+                        { field: "componentName", displayName: "Component Name", enableCellEdit: false},
+                        { field: "scenario", displayName: "Scenario", enableCellEdit: false},
+                        { field: "activityLevel", displayName: "Activity Level", enableCellEdit: true},
+                        { field: "chartLabel", displayName: "Chart Label", enableCellEdit: true}
+                ],
+                    grid = {
+                        columnDefs : columnDefs,
+                        data: "gridData",
+                        enableRowSelection: false,
+                        enableCellEditOnFocus: true,
+                        enableHighlighting: true,
+                        enableColumnResize: true,
+                        plugins: [new ngGridFlexibleHeightPlugin()]
                 };
                 return grid;
             }

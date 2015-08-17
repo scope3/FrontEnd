@@ -25,22 +25,20 @@
         Add
     </button>
 </form>
-<div id="selection-grid" ui-grid="gridOpts" class="grid"></div>
-<div class="row" ng-if="gridOpts.data.length">
+<p></p>
+<div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
+<p></p>
+<div class="row" ng-if="gridData.length">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">
                 <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
-                <dl>
-                <dt>
                     <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
                         {{method.getShortName()}}
                     </a>
-                </dt>
-                <dd>{{method.referenceFlowProperty.name}} in {{method.referenceFlowProperty.referenceUnit}}</dd>
-                </dl>
+                <p>{{method.referenceFlowProperty.name}}</p>
             </div>
             <div class="panel-body">
                 <!--<plot type="bar" orientation="horizontal" data="lciaResults[method.lciaMethodID]"-->
