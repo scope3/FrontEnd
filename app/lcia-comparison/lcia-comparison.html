@@ -1,33 +1,30 @@
 <!-- HTML template for LCIA comparison view-->
-<div class="btn-group">
-<dl class="dl-horizontal">
-<dt>
-    <select id="select-type" ng-model=selection.type>
-        <option value="Fragment" selected>Fragment</option>
-        <option value="Process">Process</option>
-    </select>
-</dt>
-    <dd>
-    <select ng-show="selection.isFragment()" ng-model="selection.fragment"
-            ng-options="f.name for f in selection.fragmentOptions">
-    </select>
-    <select ng-hide="selection.isFragment()" ng-model="selection.process" style="width:100%"
-            ng-options="p.getLongName() for p in selection.processOptions">
-    </select>
-    </dd>
-    <p></p>
-    <dt><label for="select-scenario">Scenario</label></dt>
-    <dd>
-    <select id="select-scenario" ng-model="selection.scenario"
-            ng-options="scenario.name for scenario in selection.scenarioOptions">
-    </select>
-
-    <button type="button" class="btn btn-sm pull-right" ng-click="selection.add()" aria-label="Add" title="Add to selections">
-            Add
-        </button>
-    </dd>
-</dl>
-</div>
+<form class="form-inline" >
+    <div class="form-group">
+        <label>
+            <select id="select-type" ng-model=selection.type>
+                <option value="Fragment" selected>Fragment</option>
+                <option value="Process">Process</option>
+            </select>
+        </label>
+        <select ng-show="selection.isFragment()" ng-model="selection.fragment" style="width:30em"
+                ng-options="f.name for f in selection.fragmentOptions">
+        </select>
+        <select ng-hide="selection.isFragment()" ng-model="selection.process" style="width:30em"
+                ng-options="p.getLongName() for p in selection.processOptions">
+        </select>
+    </div>
+    <div class="form-group">
+        <label style="margin-bottom:0" for="select-scenario">Scenario</label>
+        <select id="select-scenario" ng-model="selection.scenario"
+                ng-options="scenario.name for scenario in selection.scenarioOptions">
+        </select>
+    </div>
+    <button type="button" class="btn btn-sm" ng-click="selection.add()" aria-label="Add"
+            title="Add to selections">
+        Add
+    </button>
+</form>
 <div id="selection-grid" ui-grid="gridOpts" class="grid"></div>
 <div class="row" ng-if="gridOpts.data.length">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
@@ -36,12 +33,14 @@
                 <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
+                <dl>
                 <dt>
                     <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
                         {{method.getShortName()}}
                     </a>
                 </dt>
                 <dd>{{method.referenceFlowProperty.name}} in {{method.referenceFlowProperty.referenceUnit}}</dd>
+                </dl>
             </div>
             <div class="panel-body">
                 <!--<plot type="bar" orientation="horizontal" data="lciaResults[method.lciaMethodID]"-->
