@@ -1,19 +1,23 @@
 /**
- * Axis service for plot
+ * @ngdoc service
+ * @module lcaApp.plot.axis.service
+ * @name PlotAxisService
+ * @description
+ * Factory Service. Creates objects that hold axis settings.
  */
-angular.module('lcaApp.axis.service', ['d3'])
-    .factory('AxisService', [ 'd3Service', function(d3Service) {
+angular.module('lcaApp.plot.axis.service', ['d3'])
+    .factory('PlotAxisService', [ 'd3Service', function(d3Service) {
         function Instance() {
             var axis = {},
-                width,
-                orientation;
+                margin = 21,
+                orientation = "bottom";
 
-            axis.width = function (_) {
+            axis.margin = function (_) {
                 if (!arguments.length) {
-                    return width;
+                    return margin;
                 }
-                width = _;
-                return scale;
+                margin = _;
+                return axis;
             };
 
             axis.orientation = function (_) {
@@ -21,7 +25,7 @@ angular.module('lcaApp.axis.service', ['d3'])
                     return orientation;
                 }
                 orientation = _;
-                return orientation;
+                return axis;
             };
 
             return axis;
@@ -30,8 +34,8 @@ angular.module('lcaApp.axis.service', ['d3'])
         return {
             /**
              * @ngdoc
-             * @name AxisService#createInstance
-             * @methodOf DimensionService
+             * @name PlotAxisService#createInstance
+             * @methodOf PlotAxisService
              * @description
              * Creates axis object
              * @returns {object}    axis object
