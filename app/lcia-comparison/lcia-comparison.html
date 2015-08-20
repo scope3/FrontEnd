@@ -41,13 +41,11 @@
                 <p>{{method.referenceFlowProperty.name}}</p>
             </div>
             <div class="panel-body">
-                <!--<plot type="bar" orientation="horizontal" data="lciaResults[method.lciaMethodID]"-->
-                      <!--color="method.getDefaultColor()" x="resultDim" y="selectionDim"></plot>-->
-                <p>Here is where the plot will go</p>
-                <svg></svg>
-            </div>
-
-        </div>
-    </div>
-</div>
+                <svg>
+                    <plot config="plot.config" data="plot.data[method.lciaMethodID]"></plot>
+                  </svg>
+              </div>
+          </div>
+      </div>
+  </div>
 

@@ -6,13 +6,13 @@
  * Controller for LCIA comparison view
  */
 angular.module("lcaApp.LCIA.comparison",
-    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid",
+    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot",
         "lcaApp.models.lcia", "lcaApp.models.scenario"])
     .controller("LciaComparisonController",
-    ["$scope", "$stateParams", "$state", "StatusService", "$q",
+    ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService",
         "FragmentService", "LciaMethodService", "ProcessService",
         "ScenarioModelService", "LciaModelService",
-        function ($scope, $stateParams, $state, StatusService, $q,
+        function ($scope, $stateParams, $state, StatusService, $q, PlotService,
                   FragmentService, LciaMethodService, ProcessService,
                   ScenarioModelService, LciaModelService) {
 
@@ -20,6 +20,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.gridData = [];
             $scope.gridOpts = createGrid();
             $scope.lciaMethods = [];
+            $scope.plot = createPlot();
             /**
              * Remove LCIA method. Used to close panel.
              * @param m Method displayed by panel to be closed
@@ -47,8 +48,7 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function addGridRow() {
-                var gridData = $scope.gridData,
-                    row = {
+                var row = {
                         componentType : $scope.selection.type,
                         componentName : $scope.selection.isFragment() ?
                             $scope.selection.fragment.name :
@@ -57,9 +57,7 @@ angular.module("lcaApp.LCIA.comparison",
                         activityLevel : 1,
                         chartLabel : ($scope.gridData.length + 1).toString()
                     };
-                $scope.gridData = []; // Need to change reference in order to trigger height change
-                gridData.push(row);
-                $scope.gridData = gridData;
+                $scope.gridData.push(row);
             }
 
             function createSelectionComponent() {
@@ -117,5 +115,15 @@ angular.module("lcaApp.LCIA.comparison",
                         plugins: [new ngGridFlexibleHeightPlugin()]
                 };
                 return grid;
+            }
+
+            function createPlot() {
+                var commonConfig = PlotService.createInstance(),
+                    content = PlotService.createBar(),
+                    margin = PlotService.createMargin(),
+                    xDim = PlotService.createDimension(),
+                    yDim = PlotService.createDimension(),
+                    yAxis = PlotService.createAxis();
+
             }
         }]);

@@ -253,7 +253,7 @@ angular.module('lcaApp.fragment.LCIA',
                             });
                             values.push(stageValues.slice(0));
                         });
-                        wf = new WaterfallService.createInstance();
+                        wf = WaterfallService.createInstance();
                         wf.scenarios($scope.scenarios)
                             .stages(stageNames)
                             .values(values.slice(0))
