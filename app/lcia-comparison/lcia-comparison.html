@@ -1,18 +1,19 @@
 <!-- HTML template for LCIA comparison view-->
+<div style="padding-bottom:1em">
 <form class="form-inline" >
     <div class="form-group">
-        <label>
+        <label for="component-select">
             <select id="select-type" ng-model=selection.type>
                 <option value="Fragment" selected>Fragment</option>
                 <option value="Process">Process</option>
             </select>
         </label>
-        <select ng-show="selection.isFragment()" ng-model="selection.fragment" style="width:30em"
+        <select id="component-select" ng-show="selection.isFragment()" ng-model="selection.fragment" style="width:30em"
                 ng-options="f.name for f in selection.fragmentOptions">
         </select>
-        <select ng-hide="selection.isFragment()" ng-model="selection.process" style="width:30em"
+        <span ng-hide="selection.isFragment()" ng-model="selection.process" style="width:30em"
                 ng-options="p.getLongName() for p in selection.processOptions">
-        </select>
+        </span>
     </div>
     <div class="form-group">
         <label style="margin-bottom:0" for="select-scenario">Scenario</label>
@@ -20,15 +21,25 @@
                 ng-options="scenario.name for scenario in selection.scenarioOptions">
         </select>
     </div>
-    <button type="button" class="btn btn-sm" ng-click="selection.add()" aria-label="Add"
-            title="Add to selections">
+    <button type="submit" class="btn btn-default" ng-click="selection.add()" aria-label="Add"
+            title="Add to LCIA selections">
         Add
     </button>
 </form>
-<p></p>
-<div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
-<p></p>
-<div class="row" ng-if="gridData.length">
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">
+        <span class="panel-title" title="Components selected for LCIA comparison">LCIA selections</span>
+        <button type="button" class="btn btn-sm btn-success pull-right" title="Click to display LCIA results"
+                ng-disabled="invalidSelection()" ng-click="plot.getResults()">
+            Display Results
+        </button>
+    </div>
+    <div class="panel-body">
+        <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
+    </div>
+</div>
+<div class="row">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
         <div class="panel panel-default">
             <div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">
@@ -42,7 +53,7 @@
             </div>
             <div class="panel-body">
                 <svg>
-                    <plot config="plot.config" data="plot.data[method.lciaMethodID]"></plot>
+                    <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
                   </svg>
               </div>
           </div>

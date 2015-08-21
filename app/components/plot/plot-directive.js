@@ -17,22 +17,29 @@ angular.module('lcaApp.plot', [
  * @param {[]} data Array of objects providing data
  */
 angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.format'])
-    .directive('plot', ['d3Service', 'FormatService',
-        function (d3Service, FormatService) {
+    .directive('plot', ['d3Service', 'FormatService', 'PlotService',
+        function (d3Service, FormatService, PlotService) {
 
         function link(scope, element) {
             var parentElement = element[0],
-                svg;
+                svg,
+                width = 0,
+                height = 0;
 
             function getSvg() {
                 svg = d3Service.select(parentElement);
             }
 
-            function prepareSvg() {
-
+            function prepareSvg(config) {
+                var margin = config.margin();
+                width = parentElement.clientWidth - margin.left - margin.right;
+                height = parentElement.clientHeight - margin.top - margin.bottom;
+                svg.select(".chart-group").remove();
+                svg.append("g")
+                    .attr("class", "chart-group")
+                    .attr("transform",
+                    "translate(" + margin.left + "," + margin.top + ")");
             }
-
-
 
             function drawAxes() {
 
@@ -42,16 +49,20 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             function drawContents() {
             }
 
+            function initConfig(config) {
+                if (!config.margin()) {
+                    var margin = PlotService.createMargin();
+                    margin.top = margin.bottom = margin.left = margin.right = 0;
+                    config.margin(margin);
+                }
+            }
+
             getSvg();
 
-            scope.$watch('config', function (newVal, oldVal) {
-                if (svg && (newVal || oldVal)) {
-                    svg.select("g").remove();
-                }
+            scope.$watch('config', function (newVal) {
                 if (newVal) {
-                    prepareSvg();
-                    drawContents();
-                    drawAxes();
+                    initConfig(newVal);
+                    prepareSvg(newVal);
                 }
             });
 

@@ -6,19 +6,20 @@
  * Controller for LCIA comparison view
  */
 angular.module("lcaApp.LCIA.comparison",
-    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot",
+    ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
         "lcaApp.models.lcia", "lcaApp.models.scenario"])
     .controller("LciaComparisonController",
-    ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService",
+    ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessService",
         "ScenarioModelService", "LciaModelService",
-        function ($scope, $stateParams, $state, StatusService, $q, PlotService,
+        function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
                   FragmentService, LciaMethodService, ProcessService,
                   ScenarioModelService, LciaModelService) {
 
             $scope.selection = createSelectionComponent();
             $scope.gridData = [];
             $scope.gridOpts = createGrid();
+            $scope.invalidSelection = invalidSelection();
             $scope.lciaMethods = [];
             $scope.plot = createPlot();
             /**
@@ -45,19 +46,30 @@ angular.module("lcaApp.LCIA.comparison",
                 StatusService.stopWaiting();
                 $scope.selection.displayData();
                 $scope.lciaMethods = LciaMethodService.getAll();
+                $scope.plot.addConfig();
             }
 
             function addGridRow() {
                 var row = {
                         componentType : $scope.selection.type,
-                        componentName : $scope.selection.isFragment() ?
-                            $scope.selection.fragment.name :
-                            $scope.selection.process.getLongName(),
-                        scenario: $scope.selection.scenario.name,
+                        scenario: $scope.selection.scenario,
                         activityLevel : 1,
-                        chartLabel : ($scope.gridData.length + 1).toString()
+                        chartLabel : ($scope.gridData.length + 1).toString(),
+                        lciaResults : []
                     };
+                if ( $scope.selection.isFragment() ) {
+                    row.fragmentID = $scope.selection.fragment.fragmentID;
+                    row.componentName = $scope.selection.fragment.name;
+                } else {
+                    row.processID = $scope.selection.process.processID;
+                    row.componentName = $scope.selection.process.getLongName();
+                }
                 $scope.gridData.push(row);
+            }
+
+            function invalidSelection() {
+                // TODO - implement this validation
+                return false;
             }
 
             function createSelectionComponent() {
@@ -101,29 +113,105 @@ angular.module("lcaApp.LCIA.comparison",
                 var columnDefs = [
                         { field: "componentType", displayName: "Component Type", enableCellEdit: false},
                         { field: "componentName", displayName: "Component Name", enableCellEdit: false},
-                        { field: "scenario", displayName: "Scenario", enableCellEdit: false},
+                        { field: "scenario.name", displayName: "Scenario", enableCellEdit: false},
                         { field: "activityLevel", displayName: "Activity Level", enableCellEdit: true},
                         { field: "chartLabel", displayName: "Chart Label", enableCellEdit: true}
-                ],
-                    grid = {
-                        columnDefs : columnDefs,
-                        data: "gridData",
-                        enableRowSelection: false,
-                        enableCellEditOnFocus: true,
-                        enableHighlighting: true,
-                        enableColumnResize: true,
-                        plugins: [new ngGridFlexibleHeightPlugin()]
+                ];
+
+                return {
+                    columnDefs : columnDefs,
+                    data: "gridData",
+                    enableRowSelection: false,
+                    enableCellEditOnFocus: true,
+                    enableHighlighting: true,
+                    enableColumnResize: true,
+                    plugins: [new ngGridFlexibleHeightPlugin()]
                 };
-                return grid;
             }
 
             function createPlot() {
-                var commonConfig = PlotService.createInstance(),
-                    content = PlotService.createBar(),
-                    margin = PlotService.createMargin(),
-                    xDim = PlotService.createDimension(),
-                    yDim = PlotService.createDimension(),
-                    yAxis = PlotService.createAxis();
+                var plot = { data: null, config: null};
 
+                plot.addConfig = addConfig;
+
+                plot.getResults = function () {
+                    var promises = [];
+                    promises.push($scope.gridData.forEach(getLciaResults));
+                    $q.all(promises)
+                        .then(plotData, StatusService.handleFailure);
+                };
+
+                function addConfig() {
+                    var config = {};
+
+                    $scope.lciaMethods.forEach( function (m) {
+                        var mc = createCommonConfig();
+                        mc.content().color(m.getDefaultColor());
+                        config[m.lciaMethodID] = mc;
+                    });
+                    plot.config = config;
+
+                }
+
+                function createCommonConfig() {
+                    var xDim = PlotService.createDimension()
+                            .scale(PlotService.scale.linear())
+                            .valueFn("x"),
+                        yDim = PlotService.createDimension()
+                            .scale(PlotService.scale.ordinal())
+                            .valueFn("y")
+                            .axis(PlotService.createAxis());
+
+                    return PlotService.createInstance()
+                        .content(PlotService.createBar())
+                        .margin(PlotService.createMargin())
+                            .x(xDim)
+                            .y(yDim);
+                }
+
+                function getLciaResults(gridRow) {
+                    var promise = gridRow.hasOwnProperty("fragmentID") ?
+                            LciaModelService
+                                .load({
+                                    scenarioID: gridRow.scenario.scenarioID,
+                                    fragmentID: gridRow.fragmentID
+                                }) :
+                            LciaModelService
+                                .load({
+                                    scenarioID: gridRow.scenario.scenarioID,
+                                    processID: gridRow.processID
+                                });
+                    promise.then( function (results) {
+                        gridRow.lciaResults = results;
+                    });
+                    return promise;
+                }
+
+                /**
+                 * Populate plot data.
+                 * Multiply total by activity level.
+                 * Store in associative array indexed by lciaMethodID.
+                 */
+                function plotData() {
+                    var data = {};
+                    /**
+                     * @param {{ chartLabel : string, activityLevel : string | number, lciaResults : [] }} gridRow
+                     */
+                    $scope.gridData.forEach(function (gridRow) {
+                        /**
+                         * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
+                         */
+                        gridRow.lciaResults.forEach(function (result) {
+                            var plotRow = { y: gridRow.chartLabel };
+                            if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] = [];
+                            plotRow.x = result.total * +gridRow.activityLevel;
+                            data[result.lciaMethodID].push(plotRow);
+                        });
+
+                    });
+                    plot.data = data;
+                }
+
+                return plot;
             }
         }]);
