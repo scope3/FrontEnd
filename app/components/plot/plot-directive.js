@@ -22,18 +22,11 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
         function link(scope, element) {
             var parentElement = element[0],
-                svg, plot,
-                width = 0,
-                height = 0;
-
-            function getSvg() {
-                var svgEl = parentElement.parentNode;
-                width = svgEl.clientWidth;
-                height = svgEl.clientHeight;
-                svg = d3Service.select(svgEl);
-                plot = svg.select("plot");
-                return svg;
-            }
+                svgElement = parentElement.parentNode,
+                svg =  d3Service.select(svgElement),
+                plot = svg.select("plot"),
+                width = svgElement.clientWidth,
+                height = svgElement.clientHeight;
 
             function prepareSvg(config) {
                 var margin = config.margin(),
@@ -52,15 +45,23 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 }
             }
 
-            function resizeSvg(data) {
-                if (data) {
-                    var content = scope.config.content();
+            function resizeSvg(config, data) {
+                if (config.resizeSvg && data) {
+                    var content = config.content(),
+                        margin = config.margin(),
+                        svgSize;
 
-                    if ( content.width()) width = Math.max(content.width() * data.length, width);
-                    if ( content.height()) height = Math.max(content.height() * data.length, height);
-                    svg.attr("width", width).attr("height", height);
+                    if ( content.width()) {
+                        width = content.width() * data.length;
+                        svgSize = margin ? width + margin.left + margin.right : width;
+                        svg.attr("width", svgSize);
+                    }
+                    if ( content.height()) {
+                        height = content.height() * data.length;
+                        svgSize = margin ? height + margin.top + margin.bottom : height;
+                        svg.attr("height", svgSize);
+                    }
                 }
-
             }
 
             function drawAxes() {
@@ -77,16 +78,18 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
             scope.$watch('config', function (newVal) {
                 if (newVal) {
-                    if ( getSvg()) {
+                    if ( svg ) {
                         prepareSvg(newVal);
-                        if (scope.data && scope.data.length) {
-                            resizeSvg(scope.data);
-                        }
                     }
                 }
             });
 
-            scope.$watch('data', resizeSvg, true);
+            scope.$watch('data', function (newVal, oldVal) {
+                if (svg && scope.config) {
+                    resizeSvg(scope.config, newVal);
+                }
+            },
+                true);
 
         }
 

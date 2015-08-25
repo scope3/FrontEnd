@@ -2,7 +2,6 @@
 * @ngdoc service
 * @module lcaApp.plot.service
 * @name PlotService
-* @memberOf lcaApp.plot.service
 * @description
 * Factory Service. Creates objects used in plot directive.
 */
@@ -14,7 +13,8 @@ angular.module('lcaApp.plot.service', ['d3'])
                 content = null,
                 x = null,
                 y = null,
-                margin = null;
+                margin = null,
+                resizeSvg = true;
 
             obj.content = function (_) {
                 if (!arguments.length) return content;
@@ -37,6 +37,12 @@ angular.module('lcaApp.plot.service', ['d3'])
             obj.margin = function (_) {
                 if (!arguments.length) return margin;
                 margin = _;
+                return obj;
+            };
+
+            obj.resizeSvg = function (_) {
+                if (!arguments.length) return resizeSvg;
+                resizeSvg = _;
                 return obj;
             };
 
