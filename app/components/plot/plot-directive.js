@@ -22,23 +22,45 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
         function link(scope, element) {
             var parentElement = element[0],
-                svg,
+                svg, plot,
                 width = 0,
                 height = 0;
 
             function getSvg() {
-                svg = d3Service.select(parentElement);
+                var svgEl = parentElement.parentNode;
+                width = svgEl.clientWidth;
+                height = svgEl.clientHeight;
+                svg = d3Service.select(svgEl);
+                plot = svg.select("plot");
+                return svg;
             }
 
             function prepareSvg(config) {
-                var margin = config.margin();
-                width = parentElement.clientWidth - margin.left - margin.right;
-                height = parentElement.clientHeight - margin.top - margin.bottom;
-                svg.select(".chart-group").remove();
-                svg.append("g")
-                    .attr("class", "chart-group")
-                    .attr("transform",
-                    "translate(" + margin.left + "," + margin.top + ")");
+                var margin = config.margin(),
+                    cg;
+
+                if (margin) {
+                    width = width - margin.left - margin.right;
+                    height = height - margin.top - margin.bottom;
+                }
+                plot.select(".chart-group").remove();
+                cg = plot.append("g")
+                    .attr("class", "chart-group");
+                if (margin) {
+                    cg.attr("transform",
+                        "translate(" + margin.left + "," + margin.top + ")");
+                }
+            }
+
+            function resizeSvg(data) {
+                if (data) {
+                    var content = scope.config.content();
+
+                    if ( content.width()) width = Math.max(content.width() * data.length, width);
+                    if ( content.height()) height = Math.max(content.height() * data.length, height);
+                    svg.attr("width", width).attr("height", height);
+                }
+
             }
 
             function drawAxes() {
@@ -50,21 +72,21 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             function initConfig(config) {
-                if (!config.margin()) {
-                    var margin = PlotService.createMargin();
-                    margin.top = margin.bottom = margin.left = margin.right = 0;
-                    config.margin(margin);
-                }
-            }
 
-            getSvg();
+            }
 
             scope.$watch('config', function (newVal) {
                 if (newVal) {
-                    initConfig(newVal);
-                    prepareSvg(newVal);
+                    if ( getSvg()) {
+                        prepareSvg(newVal);
+                        if (scope.data && scope.data.length) {
+                            resizeSvg(scope.data);
+                        }
+                    }
                 }
             });
+
+            scope.$watch('data', resizeSvg, true);
 
         }
 

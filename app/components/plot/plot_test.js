@@ -47,7 +47,6 @@ describe('Unit test plot module', function() {
         var bar = plotService.createBar();
 
         expect(bar.shape()).toBeTruthy();  // Has a default shape
-        expect(bar.width()).toBeTruthy();  // Has default width
         expect(bar.color()).toBeTruthy();  // Has default color
         expect(bar.orientation()).toBeTruthy();  // Has default color
         // defaults, other than shape, can be overridden

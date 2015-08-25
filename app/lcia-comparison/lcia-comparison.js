@@ -135,8 +135,7 @@ angular.module("lcaApp.LCIA.comparison",
                 plot.addConfig = addConfig;
 
                 plot.getResults = function () {
-                    var promises = [];
-                    promises.push($scope.gridData.forEach(getLciaResults));
+                    var promises = $scope.gridData.map(getLciaResults);
                     $q.all(promises)
                         .then(plotData, StatusService.handleFailure);
                 };

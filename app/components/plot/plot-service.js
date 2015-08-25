@@ -14,7 +14,7 @@ angular.module('lcaApp.plot.service', ['d3'])
                 content = null,
                 x = null,
                 y = null,
-                margin;
+                margin = null;
 
             obj.content = function (_) {
                 if (!arguments.length) return content;
@@ -111,7 +111,8 @@ angular.module('lcaApp.plot.service', ['d3'])
                 shape = "rect",
                 color = "green",
                 orientation = "horizontal",
-                width = 10;
+                height = 20,
+                width = null;
 
             elt.color = function (_) {
                 if (!arguments.length) return color;
@@ -126,6 +127,12 @@ angular.module('lcaApp.plot.service', ['d3'])
             elt.orientation = function (_) {
                 if (!arguments.length) return orientation;
                 orientation = _;
+                return elt;
+            };
+
+            elt.height = function (_) {
+                if (!arguments.length) return height;
+                height = _;
                 return elt;
             };
 
