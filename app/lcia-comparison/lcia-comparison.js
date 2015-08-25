@@ -149,21 +149,30 @@ angular.module("lcaApp.LCIA.comparison",
                         config[m.lciaMethodID] = mc;
                     });
                     plot.config = config;
+                }
 
+                function getX(d) {
+                    return d.x;
+                }
+
+                function getY(d) {
+                    return d.y;
                 }
 
                 function createCommonConfig() {
                     var xDim = PlotService.createDimension()
-                            .scale(PlotService.scale.linear())
-                            .valueFn("x"),
+                            .scale("linear")
+                            .valueFn(getX),
                         yDim = PlotService.createDimension()
-                            .scale(PlotService.scale.ordinal())
-                            .valueFn("y")
-                            .axis(PlotService.createAxis());
+                            .scale("ordinal")
+                            .valueFn(getY)
+                            .axis(PlotService.createAxis()),
+                        margin = PlotService.createMargin();
 
+                    margin.top = margin.bottom = margin.left = margin.right = 10;
                     return PlotService.createInstance()
                         .content(PlotService.createBar())
-                        .margin(PlotService.createMargin())
+                        .margin(margin)
                             .x(xDim)
                             .y(yDim);
                 }

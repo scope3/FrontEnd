@@ -68,11 +68,12 @@ describe('Unit test plot module', function() {
     it('should create a dimension object', function() {
         var di = plotService.createDimension(),
             ai = plotService.createAxis(),
-            s = plotService.scale.linear();
+            s = "linear",
+            dom = [0,1];
 
         expect(di.axis(ai).axis()).toBe(ai);
         expect(di.scale(s).scale()).toBe(s);
-        expect(di.data(data).data()).toBe(data);
+        expect(di.domain(dom).domain()).toBe(dom);
         expect(di.unit("kg").unit()).toBe("kg");
         expect(di.valueFn(getValue).valueFn()).toBe(getValue);
         expect(di.labelFn(getNumLabel).labelFn()).toBe(getNumLabel);

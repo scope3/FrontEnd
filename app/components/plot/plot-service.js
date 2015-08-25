@@ -68,7 +68,7 @@ angular.module('lcaApp.plot.service', ['d3'])
             var dimension = {},
                 scale = null,
                 axis = null,
-                data = null,
+                domain = null,
                 unit = null,
                 labelFn = null,
                 valueFn = null;
@@ -85,9 +85,9 @@ angular.module('lcaApp.plot.service', ['d3'])
                 return dimension;
             };
 
-            dimension.data = function (_) {
-                if (!arguments.length) return data;
-                data = _;
+            dimension.domain = function (_) {
+                if (!arguments.length) return domain;
+                domain = _;
                 return dimension;
             };
 
@@ -182,8 +182,6 @@ angular.module('lcaApp.plot.service', ['d3'])
             createMargin: function () {
                 return new Margin();
             },
-
-            scale: d3Service.scale,
 
             createInstance: function () {
                 return new Instance();
