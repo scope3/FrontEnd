@@ -34,16 +34,25 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 var margin = config.margin(),
                     cg;
 
-                if (margin) {
-                    width = width - margin.left - margin.right;
-                    height = height - margin.top - margin.bottom;
+                cg = plot.select(".chart-group");
+                if (cg.empty()) {
+                    cg = plot.append("g")
+                        .attr("class", "chart-group");
                 }
-                plot.select(".chart-group").remove();
-                cg = plot.append("g")
-                    .attr("class", "chart-group");
                 if (margin) {
                     cg.attr("transform",
                         "translate(" + margin.left + "," + margin.top + ")");
+                }
+            }
+
+            function updateSize( config) {
+                var margin = config.margin();
+
+                width = svgElement.clientWidth;
+                height = svgElement.clientHeight;
+                if (margin) {
+                    width = width - margin.left - margin.right;
+                    height = height - margin.top - margin.bottom;
                 }
             }
 
@@ -105,16 +114,18 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 barGroups = svg.select(".chart-group").selectAll("g").data(barData);
                 newGroups = barGroups.enter().append("g");
                 barGroups.exit().remove();
-                newGroups.attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+                barGroups.attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
 
-                newGroups.append(shape)
+                newGroups.append(shape);
+                barGroups.select(shape)
                     .style("fill", content.color())
                     .attr("x", function(d) { return d.s.x; })
                     .attr("y", 0)
                     .attr("width", function(d) { return d.s.width; })
                     .attr("height", barHeight-1);
 
-                newGroups.append("text")
+                newGroups.append("text");
+                barGroups.select("text")
                     .attr("x", function(d) { return d.l.x; })
                     .attr("y", barHeight / 2)
                     .attr("dy", ".35em")
@@ -179,6 +190,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
             scope.$watch('data', function (newVal, oldVal) {
                 if (svg && scope.config && newVal) {
+                    updateSize(scope.config);
                     resizeSvg(scope.config, newVal);
                     prepareScales(scope.config, newVal);
                     drawContents(scope.config, newVal);
