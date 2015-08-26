@@ -17,14 +17,14 @@ angular.module('lcaApp.plot', [
  * @param {[]} data Array of objects providing data
  */
 angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.format'])
-    .directive('plot', ['d3Service', 'FormatService', 'PlotService',
-        function (d3Service, FormatService, PlotService) {
+    .directive('plot', ['d3Service', 'FormatService',
+        function (d3Service, FormatService) {
 
         function link(scope, element) {
             var parentElement = element[0],
                 svgElement = parentElement.parentNode,
                 svg =  d3Service.select(svgElement),
-                plot = svg.select("plot"),
+                plot = svg.select("g.lcia-bar-container"),
                 width = svgElement.clientWidth,
                 height = svgElement.clientHeight,
                 xScale, yScale,
@@ -87,12 +87,11 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     label.anchor = "end";
                 }
                 label.text = xFormat(xVal(d));
-                return { s: shape, l: label};
+                return { d: d, s: shape, l: label};
             }
 
             function drawHorizontalBars(content, data) {
                 var shape = content.shape(),
-                    xVal = scope.config.x().valueFn(),
                     barHeight = yScale.rangeBand(),
                     barData;
 
@@ -108,7 +107,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     .attr("x", function(d) { return d.s.x; })
                     .attr("y", 0)
                     .attr("width", function(d) { return d.s.width; })
-                    .attr("height", barHeight);
+                    .attr("height", barHeight-1);
 
                 bar.append("text")
                     .attr("x", function(d) { return d.l.x; })
@@ -185,7 +184,10 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
         return {
             restrict: 'E',
-            scope: { config: '=', data: '=' },
-            link: link
+            scope: { config: "=", data: "=", transform: "@" },
+            link: link,
+            templateNamespace: "svg",
+            replace: true,
+            template: "<g class='lcia-bar-container' ng-attr-transform='{{transform}}'></g>"
         }
     }]);
