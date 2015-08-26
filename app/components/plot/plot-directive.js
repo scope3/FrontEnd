@@ -79,12 +79,17 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     },
                     label = { x : 0, y : 0, anchor : 0 };
                 if (shape.width < labelWidth) {
-                    label.x = shape.x + shape.width + 5;
-                    label.anchor = "start";
+                    if (width - shape.width - shape.x < labelWidth) {
+                        label.x = shape.x - 5;
+                        label.anchor = "end";
+                    } else {
+                        label.x = shape.x + shape.width + 5;
+                        label.anchor = "start";
+                    }
                 }
                 else {
-                    label.x = shape.x + shape.width - 5;
-                    label.anchor = "end";
+                    label.x = shape.x + shape.width /2 ;
+                    label.anchor = "middle";
                 }
                 label.text = xFormat(xVal(d));
                 return { d: d, s: shape, l: label};
@@ -141,12 +146,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         } else {
                             domain = d3Service.extent(domain);
                             if (domain[0] > 0) domain[0] = 0;
+                            else if (domain[1] < 0) domain[1] = 0;
                         }
                     }
                 }
                 if (dim.scale() === "linear") {
                     scale = d3Service.scale.linear();
-                    scale.domain(domain).nice();
+                    scale.domain(domain);
                     scale.range(range);
                 } else if (dim.scale() === "ordinal") {
                     scale = d3Service.scale.ordinal();
