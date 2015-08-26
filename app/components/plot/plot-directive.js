@@ -98,23 +98,23 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             function drawHorizontalBars(content, data) {
                 var shape = content.shape(),
                     barHeight = yScale.rangeBand(),
-                    barData;
+                    barData, barGroups, newGroups;
 
                 barData = data.map( createHBarData);
 
-                var bar = svg.select(".chart-group").selectAll("g")
-                    .data(barData)
-                    .enter().append("g")
-                    .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+                barGroups = svg.select(".chart-group").selectAll("g").data(barData);
+                newGroups = barGroups.enter().append("g");
+                barGroups.exit().remove();
+                newGroups.attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
 
-                bar.append(shape)
+                newGroups.append(shape)
                     .style("fill", content.color())
                     .attr("x", function(d) { return d.s.x; })
                     .attr("y", 0)
                     .attr("width", function(d) { return d.s.width; })
                     .attr("height", barHeight-1);
 
-                bar.append("text")
+                newGroups.append("text")
                     .attr("x", function(d) { return d.l.x; })
                     .attr("y", barHeight / 2)
                     .attr("dy", ".35em")
