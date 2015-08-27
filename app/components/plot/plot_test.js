@@ -83,10 +83,22 @@ describe('Unit test plot module', function() {
     it('should create margin object', function() {
         var margin = plotService.createMargin();
 
-        expect(margin.top).toBeDefined();
-        expect(margin.bottom).toBeDefined();
-        expect(margin.left).toBeDefined();
-        expect(margin.right).toBeDefined();
+        expect(margin.top).toBe(0);
+        expect(margin.bottom).toBe(0);
+        expect(margin.left).toBe(0);
+        expect(margin.right).toBe(0);
+
+        margin = plotService.createMargin(1, 2, 3, 4);
+        expect(margin.top).toBe(1);
+        expect(margin.right).toBe(2);
+        expect(margin.bottom).toBe(3);
+        expect(margin.left).toBe(4);
+
+        margin = plotService.createMargin(5);
+        expect(margin.top).toBe(5);
+        expect(margin.right).toBe(5);
+        expect(margin.bottom).toBe(5);
+        expect(margin.left).toBe(5);
     });
 
     // Test complete definition

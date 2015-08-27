@@ -25,24 +25,33 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 svgElement = parentElement.parentNode,
                 svg =  d3Service.select(svgElement),
                 plot = svg.select("g.lcia-bar-container"),
-                chart,
+                chart, xAxis = null, yAxis = null,
                 width = svgElement.clientWidth,
                 height = svgElement.clientHeight,
+                offset = { width: 0, height: 0},
                 xScale, yScale,
                 xFormat = FormatService.format("^.2g");
 
-            function prepareSvg(config) {
-                var margin = config.margin();
+            function createChart(config) {
+                var margin = config.margin(),
+                    xDim = config.x(),
+                    yDim = config.y(),
+                    leftOffset = 0,
+                    topOffset = 0;
 
+                if (!xDim ) throw Error ("x dimension must be defined.");
+                if (!yDim ) throw Error ("y dimension must be defined.");
+                xAxis = xDim.axis();
+                yAxis = yDim.axis();
+                if (xAxis) topOffset = xAxis.getOffset("top");
+                if (yAxis) leftOffset = yAxis.getOffset("left");
                 chart = plot.select(".chart-group");
                 if (chart.empty()) {
                     chart = plot.append("g")
                         .attr("class", "chart-group");
                 }
-                if (margin) {
-                    chart.attr("transform",
-                        "translate(" + margin.left + "," + margin.top + ")");
-                }
+                chart.attr("transform",
+                        "translate(" + (margin.left + leftOffset) + "," + (margin.top + topOffset) + ")");
             }
 
             function updateSize( config) {
@@ -50,10 +59,10 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
                 width = svgElement.clientWidth;
                 height = svgElement.clientHeight;
-                if (margin) {
-                    width = width - margin.left - margin.right;
-                    height = height - margin.top - margin.bottom;
-                }
+                if (yAxis) offset.width = yAxis.offset();
+                if (xAxis) offset.height = xAxis.offset();
+                width = width - margin.left - margin.right - offset.width;
+                height = height - margin.top - margin.bottom - offset.height;
             }
 
             function resizeSvg(config, data) {
@@ -64,12 +73,12 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
                     if ( content.width()) {
                         width = content.width() * data.length;
-                        svgSize = margin ? width + margin.left + margin.right : width;
+                        svgSize = width + margin.left + margin.right + offset.width;
                         svg.attr("width", svgSize);
                     }
                     if ( content.height()) {
                         height = content.height() * data.length;
-                        svgSize = margin ? height + margin.top + margin.bottom : height;
+                        svgSize = height + margin.top + margin.bottom + offset.height;
                         svg.attr("height", svgSize);
                     }
                 }
@@ -201,23 +210,18 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 yScale = createScale(config.y(), data, [0, height]);
             }
 
-            scope.$watch('config', function (newVal) {
-                if (newVal) {
-                    if ( svg ) {
-                        prepareSvg(newVal);
-                    }
-                }
-            });
-
             scope.$watch('data', function (newVal, oldVal) {
                 if (svg && scope.config && newVal) {
                     var config = scope.config;
 
-                    updateSize(config);
-                    resizeSvg(config, newVal);
-                    prepareScales(config, newVal);
-                    drawAxes(config);
-                    drawContents(config, newVal);
+                    createChart(config);
+                    if (chart) {
+                        updateSize(config);
+                        resizeSvg(config, newVal);
+                        prepareScales(config, newVal);
+                        drawAxes(config);
+                        drawContents(config, newVal);
+                    }
                 }
             },
                 true);

@@ -52,14 +52,29 @@ angular.module('lcaApp.plot.service', ['d3'])
         function Axis() {
             var axis = {},
                 orientation = "left",
-                linePosition = 0;
+                linePosition = 0,
+                offset = 50;
 
             axis.orientation = function (_) {
-                if (!arguments.length) {
-                    return orientation;
-                }
+                if (!arguments.length) return orientation;
                 orientation = _;
                 return axis;
+            };
+
+            axis.linePosition = function (_) {
+                if (!arguments.length) return linePosition;
+                linePosition = _;
+                return axis;
+            };
+
+            axis.offset = function (_) {
+                if (!arguments.length) return offset;
+                offset = _;
+                return axis;
+            };
+
+            axis.getOffset = function (o) {
+                return o == orientation ? offset : 0;
             };
 
             return axis;
@@ -153,10 +168,10 @@ angular.module('lcaApp.plot.service', ['d3'])
 
         function Margin() {
             return {
-                top: 5,
-                right: 5,
-                bottom: 5,
-                left: 5
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
             };
         }
 
@@ -180,8 +195,32 @@ angular.module('lcaApp.plot.service', ['d3'])
                 return new Dimension();
             },
 
-            createMargin: function () {
-                return new Margin();
+            createMargin: function ( top, right, bottom, left) {
+                var margin = new Margin();
+                if (arguments.length) {
+                    margin.top = top;
+                    if (arguments.length > 1) {
+                        margin.right = right;
+                        if (arguments.length > 2) {
+                            margin.bottom = bottom;
+                            if (arguments.length > 3) {
+                                margin.left = left;
+                            }
+                            else {
+                                margin.left = right;
+                            }
+                        }
+                        else {
+                            margin.bottom = top;
+                            margin.left = right;
+                        }
+                    }
+                    else {
+                        //noinspection JSSuspiciousNameCombination
+                        margin.right = margin.bottom = margin.left = top;
+                    }
+                }
+                return margin;
             },
 
             createInstance: function () {

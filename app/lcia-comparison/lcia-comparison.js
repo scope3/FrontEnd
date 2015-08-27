@@ -163,13 +163,13 @@ angular.module("lcaApp.LCIA.comparison",
                     var xDim = PlotService.createDimension()
                             .scale("linear")
                             .valueFn(getX),
+                        yAxis = PlotService.createAxis(),
                         yDim = PlotService.createDimension()
                             .scale("ordinal")
                             .valueFn(getY)
-                            .axis(PlotService.createAxis()),
-                        margin = PlotService.createMargin();
+                            .axis(yAxis.offset(50)),
+                        margin = PlotService.createMargin(5);
 
-                    margin.left = 50;
                     return PlotService.createInstance()
                         .content(PlotService.createBar())
                         .margin(margin)
