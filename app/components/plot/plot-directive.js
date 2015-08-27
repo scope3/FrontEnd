@@ -25,22 +25,22 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 svgElement = parentElement.parentNode,
                 svg =  d3Service.select(svgElement),
                 plot = svg.select("g.lcia-bar-container"),
+                chart,
                 width = svgElement.clientWidth,
                 height = svgElement.clientHeight,
                 xScale, yScale,
                 xFormat = FormatService.format("^.2g");
 
             function prepareSvg(config) {
-                var margin = config.margin(),
-                    cg;
+                var margin = config.margin();
 
-                cg = plot.select(".chart-group");
-                if (cg.empty()) {
-                    cg = plot.append("g")
+                chart = plot.select(".chart-group");
+                if (chart.empty()) {
+                    chart = plot.append("g")
                         .attr("class", "chart-group");
                 }
                 if (margin) {
-                    cg.attr("transform",
+                    chart.attr("transform",
                         "translate(" + margin.left + "," + margin.top + ")");
                 }
             }
@@ -75,8 +75,29 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 }
             }
 
-            function drawAxes() {
+            function drawAxes(config) {
+                drawAxisY(config.y().axis());
+            }
 
+            function drawAxisY(axisConfig) {
+                if (axisConfig) {
+                    var g = chart.select(".y.axis"),
+                        orientation = axisConfig.orientation(),
+                        axis = d3Service.svg.axis()
+                                .scale(yScale)
+                                .orient(orientation);
+
+                    if (g.empty()) {
+                        g = chart.append("g").attr("class", "y axis");
+                    }
+                    if (orientation === "right") {
+                        g.attr("transform", "translate(" + width + ", 0)");
+                    }
+                    if (scope.config.y().scale() === "ordinal") {
+                        axis.tickSize(0);
+                    }
+                    g.call(axis);
+                }
             }
 
             function createHBarData(d) {
@@ -111,8 +132,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
                 barData = data.map( createHBarData);
 
-                barGroups = svg.select(".chart-group").selectAll("g").data(barData);
-                newGroups = barGroups.enter().append("g");
+                barGroups = chart.selectAll(".bar.g").data(barData);
+                newGroups = barGroups.enter().append("g").attr("class", "bar g");
                 barGroups.exit().remove();
                 barGroups.attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
 
@@ -190,10 +211,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
             scope.$watch('data', function (newVal, oldVal) {
                 if (svg && scope.config && newVal) {
-                    updateSize(scope.config);
-                    resizeSvg(scope.config, newVal);
-                    prepareScales(scope.config, newVal);
-                    drawContents(scope.config, newVal);
+                    var config = scope.config;
+
+                    updateSize(config);
+                    resizeSvg(config, newVal);
+                    prepareScales(config, newVal);
+                    drawAxes(config);
+                    drawContents(config, newVal);
                 }
             },
                 true);

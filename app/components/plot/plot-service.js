@@ -51,7 +51,8 @@ angular.module('lcaApp.plot.service', ['d3'])
 
         function Axis() {
             var axis = {},
-                orientation = "left";
+                orientation = "left",
+                linePosition = 0;
 
             axis.orientation = function (_) {
                 if (!arguments.length) {

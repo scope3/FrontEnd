@@ -84,7 +84,7 @@
     stroke: #000;
 }
 
-waterfall-chart .y.axis path {
+.lcia-bar-container .y.axis path {
     display: none;
     /*stroke-opacity: 0.2;*/
 }

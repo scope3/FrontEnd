@@ -169,7 +169,7 @@ angular.module("lcaApp.LCIA.comparison",
                             .axis(PlotService.createAxis()),
                         margin = PlotService.createMargin();
 
-                    //margin.top = margin.bottom = margin.left = margin.right = 10;
+                    margin.left = 50;
                     return PlotService.createInstance()
                         .content(PlotService.createBar())
                         .margin(margin)
