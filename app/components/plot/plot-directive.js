@@ -30,7 +30,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 height = svgElement.clientHeight,
                 offset = { width: 0, height: 0},
                 xScale, yScale,
-                xFormat = FormatService.format("^.2g");
+                numFormat = FormatService.format("^.2g"),
+                numWidth = 55;
 
             function createChart(config) {
                 var margin = config.margin(),
@@ -86,9 +87,61 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
             function drawAxes(config) {
                 drawAxisY(config.y().axis());
+                drawAxisX(config.x().axis());
+            }
+
+            function prepareAxisTicks(axis, hasOrdinalScale) {
+                if (hasOrdinalScale) {
+                    axis.tickSize(0);
+                } else {
+                    //var tickValues = domain.slice();
+                    //tickValues.push(0);
+                    // TODO : refine this, like in waterfall chart
+                    axis.tickValues([0]);
+                    axis.tickFormat(FormatService.format("^.1g"));
+                }
+            }
+
+            function drawAxisX(axisConfig) {
+                var hasOrdinalScale = scope.config.x().hasOrdinalScale();
+
+                if (axisConfig) {
+                    var g = chart.select(".x.axis"),
+                        orientation = axisConfig.orientation(),
+                        axis = d3Service.svg.axis()
+                            .scale(xScale)
+                            .orient(orientation);
+
+                    if (g.empty()) {
+                        g = chart.append("g").attr("class", "x axis");
+                    }
+                    if (orientation === "bottom") {
+                        g.attr("transform", "translate(0," + height + ")");
+                    }
+                    prepareAxisTicks(axis, hasOrdinalScale);
+                    g.call(axis);
+                    if (hasOrdinalScale) {
+                        //g.selectAll(".tick text")
+                        //    .call(d3Service.textWrap, axisConfig.offset());
+                    } else if (axisConfig.addLine) {
+                        var line = chart.select(".starting-line"),
+                            x0 = xScale(0);
+
+                        if (line.empty()) {
+                            line = chart.append("line")
+                                .attr("class", "starting-line");
+                        }
+                        line.attr("x1", x0)
+                            .attr("y1", 0)
+                            .attr("x2", x0)
+                            .attr("y2", height);
+                    }
+                }
             }
 
             function drawAxisY(axisConfig) {
+                var hasOrdinalScale = scope.config.y().hasOrdinalScale();
+
                 if (axisConfig) {
                     var g = chart.select(".y.axis"),
                         orientation = axisConfig.orientation(),
@@ -102,23 +155,36 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     if (orientation === "right") {
                         g.attr("transform", "translate(" + width + ", 0)");
                     }
-                    if (scope.config.y().scale() === "ordinal") {
-                        axis.tickSize(0);
-                    }
+                    prepareAxisTicks(axis, hasOrdinalScale);
                     g.call(axis);
+                    if (hasOrdinalScale) {
+                        //g.selectAll(".tick text")
+                        //    .call(d3Service.textWrap, axisConfig.offset());
+                    } else if (axisConfig.addLine) {
+                        var line = chart.select(".starting-line"),
+                            y0 = yScale(0);
+
+                        if (line.empty()) {
+                            line = chart.append("line")
+                                .attr("class", "starting-line");
+                        }
+                        line.attr("x1", 0)
+                            .attr("y1", y0)
+                            .attr("x2", width)
+                            .attr("y2", y0);
+                    }
                 }
             }
 
             function createHBarData(d) {
                 var xVal = scope.config.x().valueFn(),
-                    labelWidth = 55,
                     shape = {
                         x : xScale(Math.min(0, xVal(d))),
                         width : Math.abs(xScale(xVal(d)) - xScale(0))
                     },
                     label = { x : 0, y : 0, anchor : 0 };
-                if (shape.width < labelWidth) {
-                    if (width - shape.width - shape.x < labelWidth) {
+                if (shape.width < numWidth) {
+                    if (width - shape.width - shape.x < numWidth) {
                         label.x = shape.x - 5;
                         label.anchor = "end";
                     } else {
@@ -130,13 +196,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     label.x = shape.x + shape.width /2 ;
                     label.anchor = "middle";
                 }
-                label.text = xFormat(xVal(d));
+                label.text = numFormat(xVal(d));
                 return { d: d, s: shape, l: label};
             }
 
             function drawHorizontalBars(content, data) {
                 var shape = content.shape(),
-                    barHeight = yScale.rangeBand(),
+                    barHeight = content.height(),
                     barData, barGroups, newGroups;
 
                 barData = data.map( createHBarData);
@@ -193,8 +259,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 }
                 if (dim.scale() === "linear") {
                     scale = d3Service.scale.linear();
-                    scale.domain(domain);
-                    scale.range(range);
+                    scale.domain(domain).range(range).nice();
                 } else if (dim.scale() === "ordinal") {
                     scale = d3Service.scale.ordinal();
                     scale.domain(domain).rangeRoundBands(range, .1);
@@ -219,8 +284,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         updateSize(config);
                         resizeSvg(config, newVal);
                         prepareScales(config, newVal);
-                        drawAxes(config);
                         drawContents(config, newVal);
+                        drawAxes(config);
                     }
                 }
             },

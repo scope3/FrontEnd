@@ -52,7 +52,7 @@ angular.module('lcaApp.plot.service', ['d3'])
         function Axis() {
             var axis = {},
                 orientation = "left",
-                linePosition = 0,
+                addLine = true,
                 offset = 50;
 
             axis.orientation = function (_) {
@@ -61,9 +61,9 @@ angular.module('lcaApp.plot.service', ['d3'])
                 return axis;
             };
 
-            axis.linePosition = function (_) {
-                if (!arguments.length) return linePosition;
-                linePosition = _;
+            axis.addLine = function (_) {
+                if (!arguments.length) return addLine;
+                addLine = _;
                 return axis;
             };
 
@@ -123,6 +123,10 @@ angular.module('lcaApp.plot.service', ['d3'])
                 if (!arguments.length) return valueFn;
                 valueFn = _;
                 return dimension;
+            };
+
+            dimension.hasOrdinalScale = function () {
+                return scale === "ordinal";
             };
 
             return dimension;

@@ -160,15 +160,17 @@ angular.module("lcaApp.LCIA.comparison",
                 }
 
                 function createCommonConfig() {
-                    var xDim = PlotService.createDimension()
+                    var xAxis = PlotService.createAxis(),
+                        xDim = PlotService.createDimension()
                             .scale("linear")
-                            .valueFn(getX),
+                            .valueFn(getX)
+                            .axis(xAxis.orientation("bottom").offset(20)),
                         yAxis = PlotService.createAxis(),
                         yDim = PlotService.createDimension()
                             .scale("ordinal")
                             .valueFn(getY)
-                            .axis(yAxis.offset(50)),
-                        margin = PlotService.createMargin(5);
+                            .axis(yAxis.offset(25)),
+                        margin = PlotService.createMargin(0, 10);
 
                     return PlotService.createInstance()
                         .content(PlotService.createBar())
