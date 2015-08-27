@@ -26,8 +26,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 svg =  d3Service.select(svgElement),
                 plot = svg.select("g.lcia-bar-container"),
                 chart, xAxis = null, yAxis = null,
-                width = svgElement.clientWidth,
-                height = svgElement.clientHeight,
+                width = 0,
+                height = 0,
                 offset = { width: 0, height: 0},
                 xScale, yScale,
                 numFormat = FormatService.format("^.2g"),
@@ -56,14 +56,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             function updateSize( config) {
-                var margin = config.margin();
+                var margin = config.margin(),
+                    svgStyle = svgElement.getBoundingClientRect();    // better firefox workaround
 
-                width = svgElement.clientWidth;
-                height = svgElement.clientHeight;
                 if (yAxis) offset.width = yAxis.offset();
                 if (xAxis) offset.height = xAxis.offset();
-                width = width - margin.left - margin.right - offset.width;
-                height = height - margin.top - margin.bottom - offset.height;
+                width = svgStyle.width - margin.left - margin.right - offset.width;
+                height = svgStyle.height - margin.top - margin.bottom - offset.height;
             }
 
             function resizeSvg(config, data) {
@@ -124,14 +123,12 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         //g.selectAll(".tick text")
                         //    .call(d3Service.textWrap, axisConfig.offset());
                     } else if (axisConfig.addLine) {
-                        var line = chart.select(".starting-line"),
-                            x0 = xScale(0);
-
-                        if (line.empty()) {
-                            line = chart.append("line")
-                                .attr("class", "starting-line");
-                        }
-                        line.attr("x1", x0)
+                        var x0 = xScale(0);
+                        // Need to recreate so that it will always be on top
+                        chart.select(".starting-line").remove();
+                        chart.append("line")
+                            .attr("class", "starting-line")
+                            .attr("x1", x0)
                             .attr("y1", 0)
                             .attr("x2", x0)
                             .attr("y2", height);
@@ -275,7 +272,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 yScale = createScale(config.y(), data, [0, height]);
             }
 
-            scope.$watch('data', function (newVal, oldVal) {
+            scope.$watch('data', function (newVal) {
                 if (svg && scope.config && newVal) {
                     var config = scope.config;
 
