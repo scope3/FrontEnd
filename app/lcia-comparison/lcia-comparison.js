@@ -50,12 +50,13 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function addGridRow() {
-                var row = {
+                var index = $scope.gridData.length,
+                    row = {
                         componentType : $scope.selection.type,
                         scenario: $scope.selection.scenario,
                         activityLevel : 1,
-                        chartLabel : ($scope.gridData.length + 1).toString(),
-                        lciaResults : []
+                        index : index,
+                        chartLabel : (index+1).toString()
                     };
                 if ( $scope.selection.isFragment() ) {
                     row.fragmentID = $scope.selection.fragment.fragmentID;
@@ -65,8 +66,7 @@ angular.module("lcaApp.LCIA.comparison",
                     row.componentName = $scope.selection.process.getLongName();
                 }
                 $scope.gridData.push(row);
-                // TODO : create function to operate on added row only
-                $scope.plot.getResults();
+                $scope.plot.getResult(row);
             }
 
             function invalidSelection() {
@@ -132,9 +132,17 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function createPlot() {
-                var plot = { data: null, config: null};
+                var plot = { data: {}, config: null};
 
                 plot.addConfig = addConfig;
+
+                plot.getResult = function (gridRow) {
+                    StatusService.startWaiting();
+                    getLciaResults(gridRow)
+                        .then(function (results) {
+                            plotRow(gridRow, results)
+                        }, StatusService.handleFailure);
+                };
 
                 plot.getResults = function () {
                     StatusService.startWaiting();
@@ -183,7 +191,7 @@ angular.module("lcaApp.LCIA.comparison",
                 }
 
                 function getLciaResults(gridRow) {
-                    var promise = gridRow.hasOwnProperty("fragmentID") ?
+                    return gridRow.hasOwnProperty("fragmentID") ?
                             LciaModelService
                                 .load({
                                     scenarioID: gridRow.scenario.scenarioID,
@@ -194,10 +202,36 @@ angular.module("lcaApp.LCIA.comparison",
                                     scenarioID: gridRow.scenario.scenarioID,
                                     processID: gridRow.processID
                                 });
-                    promise.then( function (results) {
-                        gridRow.lciaResults = results;
-                    });
-                    return promise;
+                }
+
+                function newArray(length) {
+                    var a = [];
+                    while (length-- > 0) {
+                        a.push(null);
+                    }
+                    return a;
+                }
+
+                function plotRow(gridRow, results) {
+                    if (results.length) {
+                        var data = plot.data;
+                        StatusService.stopWaiting();
+                        /**
+                         * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
+                         */
+                        results.forEach(function (result) {
+                            var plotRow = {y: gridRow.chartLabel};
+                            if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] =
+                                newArray($scope.gridData.length);
+                            plotRow.x = result.total * +gridRow.activityLevel;
+                            data[result.lciaMethodID][gridRow.index] = plotRow;
+                        });
+                    } else {
+                        var msg = "No LCIA results for "
+                            + gridRow.componentName + " and " + gridRow.scenario.name;
+                        StatusService.handleFailure(msg);
+                        $scope.gridData.splice(gridRow.index, 1);
+                    }
                 }
 
                 /**
