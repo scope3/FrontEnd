@@ -8,11 +8,13 @@
                 <option value="Process">Process</option>
             </select>
         </label>
-        <select id="component-select" ng-show="selection.isFragment()" ng-model="selection.fragment" style="width:30em"
-                ng-options="f.name for f in selection.fragmentOptions">
-        </select>
-        <span ng-hide="selection.isFragment()" ng-model="selection.process" style="width:30em"
-                ng-options="p.getLongName() for p in selection.processOptions">
+        <span id="component-select">
+            <select ng-if="selection.isFragment()" ng-model="selection.fragment" style="width:20em"
+                    ng-options="f.name for f in selection.fragmentOptions">
+            </select>
+            <select ng-if="!selection.isFragment()" ng-model="selection.process" style="width:20em"
+                    ng-options="p.getLongName() for p in selection.processOptions">
+            </select>
         </span>
     </div>
     <div class="form-group">
