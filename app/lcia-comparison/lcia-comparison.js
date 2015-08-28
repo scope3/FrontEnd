@@ -65,6 +65,8 @@ angular.module("lcaApp.LCIA.comparison",
                     row.componentName = $scope.selection.process.getLongName();
                 }
                 $scope.gridData.push(row);
+                // TODO : create function to operate on added row only
+                $scope.plot.getResults();
             }
 
             function invalidSelection() {
@@ -135,6 +137,7 @@ angular.module("lcaApp.LCIA.comparison",
                 plot.addConfig = addConfig;
 
                 plot.getResults = function () {
+                    StatusService.startWaiting();
                     var promises = $scope.gridData.map(getLciaResults);
                     $q.all(promises)
                         .then(plotData, StatusService.handleFailure);
@@ -203,6 +206,7 @@ angular.module("lcaApp.LCIA.comparison",
                  * Store in associative array indexed by lciaMethodID.
                  */
                 function plotData() {
+                    StatusService.stopWaiting();
                     var data = {};
                     /**
                      * @param {{ chartLabel : string, activityLevel : string | number, lciaResults : [] }} gridRow
