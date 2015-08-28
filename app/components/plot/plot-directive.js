@@ -66,7 +66,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             function resizeSvg(config, data) {
-                if (config.resizeSvg) {
+                if (config.resizeSvg && data.length) {
                     var content = config.content(),
                         margin = config.margin(),
                         svgSize;
@@ -104,7 +104,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             function drawAxisX(axisConfig) {
                 var hasOrdinalScale = scope.config.x().hasOrdinalScale();
 
-                if (axisConfig) {
+                if (axisConfig && scope.data.length) {
                     var g = chart.select(".x.axis"),
                         orientation = axisConfig.orientation(),
                         axis = d3Service.svg.axis()
@@ -125,21 +125,25 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     } else if (axisConfig.addLine) {
                         var x0 = xScale(0);
                         // Need to recreate so that it will always be on top
-                        chart.select(".starting-line").remove();
+                        chart.select(".x.starting-line").remove();
                         chart.append("line")
-                            .attr("class", "starting-line")
+                            .attr("class", "x starting-line")
                             .attr("x1", x0)
                             .attr("y1", 0)
                             .attr("x2", x0)
                             .attr("y2", height);
                     }
                 }
+                else {
+                    chart.select(".x.axis").remove();
+                    chart.select(".x.starting-line").remove();
+                }
             }
 
             function drawAxisY(axisConfig) {
                 var hasOrdinalScale = scope.config.y().hasOrdinalScale();
 
-                if (axisConfig) {
+                if (axisConfig && scope.data.length) {
                     var g = chart.select(".y.axis"),
                         orientation = axisConfig.orientation(),
                         axis = d3Service.svg.axis()
@@ -158,18 +162,22 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         //g.selectAll(".tick text")
                         //    .call(d3Service.textWrap, axisConfig.offset());
                     } else if (axisConfig.addLine) {
-                        var line = chart.select(".starting-line"),
+                        var line = chart.select(".y.starting-line"),
                             y0 = yScale(0);
 
                         if (line.empty()) {
                             line = chart.append("line")
-                                .attr("class", "starting-line");
+                                .attr("class", "y starting-line");
                         }
                         line.attr("x1", 0)
                             .attr("y1", y0)
                             .attr("x2", width)
                             .attr("y2", y0);
                     }
+                }
+                else {
+                    chart.select(".y.axis").remove();
+                    chart.select(".y.starting-line").remove();
                 }
             }
 
@@ -244,7 +252,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
 
                 if (!domain) {
                     domain = plotData.map(valueFn);
-                    if (dim.scale() === "linear") {
+                    if (dim.scale() === "linear" && domain.length) {
                         if (domain.length === 1 && domain[0]) {
                             domain = domain[0] > 0 ? [0, domain[0]] : [domain[0], 0];
                         } else {

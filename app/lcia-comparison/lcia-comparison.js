@@ -33,6 +33,12 @@ angular.module("lcaApp.LCIA.comparison",
                 }
             };
 
+            $scope.removeRow = function(r) {
+                var index = $scope.gridData.indexOf(r.entity);
+                $scope.plot.removeRow(index);
+                $scope.gridData.splice(index, 1);
+            };
+
             getData();
 
             function getData() {
@@ -112,12 +118,15 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function createGrid() {
-                var columnDefs = [
+                var cellTemplate =
+'<button type="button" class="close" ng-click="removeRow(row)" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>',
+                    columnDefs = [
                         { field: "componentType", displayName: "Component Type", enableCellEdit: false},
                         { field: "componentName", displayName: "Component Name", enableCellEdit: false},
                         { field: "scenario.name", displayName: "Scenario", enableCellEdit: false},
                         { field: "activityLevel", displayName: "Activity Level", enableCellEdit: true},
-                        { field: "chartLabel", displayName: "Chart Label", enableCellEdit: true}
+                        { field: "chartLabel", displayName: "Chart Label", enableCellEdit: true},
+                        { field: '', cellTemplate: cellTemplate, enableCellEdit: false, width: 20 }
                 ];
 
                 return {
@@ -142,6 +151,15 @@ angular.module("lcaApp.LCIA.comparison",
                         .then(function (results) {
                             plotRow(gridRow, results)
                         }, StatusService.handleFailure);
+                };
+
+                plot.removeRow = function(index) {
+                    var data = plot.data;
+                    $scope.lciaMethods.forEach( function (m) {
+                        if (data.hasOwnProperty(m.lciaMethodID)) {
+                            data[m.lciaMethodID].splice(index, 1);
+                        }
+                    });
                 };
 
                 plot.getResults = function () {
@@ -213,9 +231,11 @@ angular.module("lcaApp.LCIA.comparison",
                 }
 
                 function plotRow(gridRow, results) {
+                    StatusService.stopWaiting();
+                    var index = $scope.gridData.indexOf(gridRow);
                     if (results.length) {
                         var data = plot.data;
-                        StatusService.stopWaiting();
+
                         /**
                          * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
                          */
@@ -224,13 +244,11 @@ angular.module("lcaApp.LCIA.comparison",
                             if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] =
                                 newArray($scope.gridData.length);
                             plotRow.x = result.total * +gridRow.activityLevel;
-                            data[result.lciaMethodID][gridRow.index] = plotRow;
+                            data[result.lciaMethodID][index] = plotRow;
                         });
                     } else {
-                        var msg = "No LCIA results for "
-                            + gridRow.componentName + " and " + gridRow.scenario.name;
-                        StatusService.handleFailure(msg);
-                        $scope.gridData.splice(gridRow.index, 1);
+                        StatusService.displayInfo("The fragment is outside the scope of this scenario.");
+                        $scope.gridData.splice(index, 1);
                     }
                 }
 

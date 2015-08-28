@@ -63,5 +63,9 @@ angular.module('lcaApp.status.service', ['angularSpinner', 'ui.bootstrap.alert']
                     }
             };
 
+            svc.displayInfo = function (infoMsg) {
+                $rootScope.alert = { type: "info", msg: infoMsg };
+            };
+
             return svc;
     }]);
