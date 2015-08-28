@@ -161,3 +161,15 @@ info .glyphicon {
     width : 100%
 }
 
+.pad-bottom {
+    padding-bottom: 1em;
+}
+
+#component-select select {
+    width : 20em;
+}
+
+#activity-level {
+    width : 5em;
+}
+

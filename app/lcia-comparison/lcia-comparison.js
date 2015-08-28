@@ -60,7 +60,7 @@ angular.module("lcaApp.LCIA.comparison",
                     row = {
                         componentType : $scope.selection.type,
                         scenario: $scope.selection.scenario,
-                        activityLevel : 1,
+                        activityLevel : $scope.selection.activityLevel,
                         index : index,
                         chartLabel : (index+1).toString()
                     };
@@ -91,7 +91,8 @@ angular.module("lcaApp.LCIA.comparison",
                     scenarioOptions: [],
                     add : addGridRow,
                     displayData : displayData,
-                    isFragment : isFragment
+                    isFragment : isFragment,
+                    activityLevel : 1
                 };
 
                 return selection;
@@ -121,19 +122,19 @@ angular.module("lcaApp.LCIA.comparison",
                 var cellTemplate =
 '<button type="button" class="close" ng-click="removeRow(row)" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>',
                     columnDefs = [
-                        { field: "componentType", displayName: "Component Type", enableCellEdit: false},
-                        { field: "componentName", displayName: "Component Name", enableCellEdit: false},
-                        { field: "scenario.name", displayName: "Scenario", enableCellEdit: false},
-                        { field: "activityLevel", displayName: "Activity Level", enableCellEdit: true},
-                        { field: "chartLabel", displayName: "Chart Label", enableCellEdit: true},
-                        { field: '', cellTemplate: cellTemplate, enableCellEdit: false, width: 20 }
+                        { field: "componentType", displayName: "Component Type"},
+                        { field: "componentName", displayName: "Component Name"},
+                        { field: "scenario.name", displayName: "Scenario"},
+                        { field: "activityLevel", displayName: "Activity Level"},
+                        { field: "chartLabel", displayName: "Chart Label"},
+                        { field: '', cellTemplate: cellTemplate, width: 20 }
                 ];
 
                 return {
                     columnDefs : columnDefs,
                     data: "gridData",
                     enableRowSelection: false,
-                    enableCellEditOnFocus: true,
+                    enableCellEditOnFocus: false,
                     enableHighlighting: true,
                     enableColumnResize: true,
                     plugins: [new ngGridFlexibleHeightPlugin()]

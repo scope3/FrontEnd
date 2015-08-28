@@ -1,43 +1,41 @@
 <!-- HTML template for LCIA comparison view-->
-<div style="padding-bottom:1em">
-<form class="form-inline" >
-    <div class="form-group">
-        <label for="component-select">
-            <select id="select-type" ng-model=selection.type>
-                <option value="Fragment" selected>Fragment</option>
-                <option value="Process">Process</option>
-            </select>
-        </label>
+<div class="pad-bottom" id="lcia-selection">
+    <form class="form-inline">
+        <div class="form-group">
+            <label for="component-select">
+                <select id="select-type" ng-model=selection.type>
+                    <option value="Fragment" selected>Fragment</option>
+                    <option value="Process">Process</option>
+                </select>
+            </label>
         <span id="component-select">
-            <select ng-if="selection.isFragment()" ng-model="selection.fragment" style="width:20em"
+            <select ng-if="selection.isFragment()" ng-model="selection.fragment"
                     ng-options="f.name for f in selection.fragmentOptions">
             </select>
-            <select ng-if="!selection.isFragment()" ng-model="selection.process" style="width:20em"
+            <select ng-if="!selection.isFragment()" ng-model="selection.process"
                     ng-options="p.getLongName() for p in selection.processOptions">
             </select>
         </span>
-    </div>
-    <div class="form-group">
-        <label style="margin-bottom:0" for="select-scenario">Scenario</label>
-        <select id="select-scenario" ng-model="selection.scenario"
-                ng-options="scenario.name for scenario in selection.scenarioOptions">
-        </select>
-    </div>
-    <button type="submit" class="btn btn-default" ng-click="selection.add()" aria-label="Add"
-            title="Display LCIA results">
-        Add
-    </button>
-</form>
+        </div>
+        <div class="form-group">
+            <label for="select-scenario">Scenario</label>
+            <select id="select-scenario" ng-model="selection.scenario"
+                    ng-options="scenario.name for scenario in selection.scenarioOptions">
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="activity-level">Activity Level</label>
+            <input type="number" step="any" class="form-control input-sm" id="activity-level"
+                   ng-model="selection.activityLevel">
+        </div>
+        <button type="submit" class="btn btn-default" ng-click="selection.add()" aria-label="Add"
+                title="Display LCIA results">
+            Add
+        </button>
+    </form>
 </div>
 <div class="panel panel-default">
-    <!--<div class="panel-heading">-->
-        <!--<span class="panel-title" title="Components selected for LCIA comparison">LCIA selections</span>-->
-        <!--<button type="button" class="btn btn-sm btn-success pull-right" title="Click to display LCIA results"-->
-                <!--ng-disabled="invalidSelection()" ng-click="plot.getResults()">-->
-            <!--Display Results-->
-        <!--</button>-->
-    <!--</div>-->
-        <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
+    <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
 </div>
 <div class="row">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
@@ -46,17 +44,18 @@
                 <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
-                    <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
-                        {{method.getShortName()}}
-                    </a>
+                <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
+                    {{method.getShortName()}}
+                </a>
+
                 <p>{{method.referenceFlowProperty.name}}</p>
             </div>
             <div class="panel-body">
                 <svg class="plot-container">
                     <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
-                  </svg>
-              </div>
-          </div>
-      </div>
-  </div>
+                </svg>
+            </div>
+        </div>
+    </div>
+</div>
 
