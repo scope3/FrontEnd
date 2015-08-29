@@ -56,13 +56,11 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function addGridRow() {
-                var index = $scope.gridData.length,
-                    row = {
+                var row = {
                         componentType : $scope.selection.type,
                         scenario: $scope.selection.scenario,
                         activityLevel : $scope.selection.activityLevel,
-                        index : index,
-                        chartLabel : (index+1).toString()
+                        chartLabel : $scope.selection.chartLabel
                     };
                 if ( $scope.selection.isFragment() ) {
                     row.fragmentID = $scope.selection.fragment.fragmentID;
@@ -73,6 +71,11 @@ angular.module("lcaApp.LCIA.comparison",
                 }
                 $scope.gridData.push(row);
                 $scope.plot.getResult(row);
+                resetInput();
+            }
+
+            function resetInput() {
+                $scope.selection.chartLabel = null;
             }
 
             function invalidSelection() {
@@ -82,17 +85,18 @@ angular.module("lcaApp.LCIA.comparison",
 
             function createSelectionComponent() {
                 var selection = {
-                    type: "Fragment",
-                    fragment: null,
-                    fragmentOptions: [],
-                    process: null,
-                    processOptions: [],
-                    scenario: null,
-                    scenarioOptions: [],
-                    add : addGridRow,
-                    displayData : displayData,
-                    isFragment : isFragment,
-                    activityLevel : 1
+                        type: "Fragment",
+                        fragment: null,
+                        fragmentOptions: [],
+                        process: null,
+                        processOptions: [],
+                        scenario: null,
+                        scenarioOptions: [],
+                        add : addGridRow,
+                        displayData : displayData,
+                        isFragment : isFragment,
+                        activityLevel : 1,
+                        chartLabel: null
                 };
 
                 return selection;
@@ -161,13 +165,6 @@ angular.module("lcaApp.LCIA.comparison",
                             data[m.lciaMethodID].splice(index, 1);
                         }
                     });
-                };
-
-                plot.getResults = function () {
-                    StatusService.startWaiting();
-                    var promises = $scope.gridData.map(getLciaResults);
-                    $q.all(promises)
-                        .then(plotData, StatusService.handleFailure);
                 };
 
                 function addConfig() {
@@ -241,7 +238,7 @@ angular.module("lcaApp.LCIA.comparison",
                          * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
                          */
                         results.forEach(function (result) {
-                            var plotRow = {y: gridRow.chartLabel};
+                            var plotRow = {y: index };
                             if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] =
                                 newArray($scope.gridData.length);
                             plotRow.x = result.total * +gridRow.activityLevel;
@@ -253,31 +250,6 @@ angular.module("lcaApp.LCIA.comparison",
                     }
                 }
 
-                /**
-                 * Populate plot data.
-                 * Multiply total by activity level.
-                 * Store in associative array indexed by lciaMethodID.
-                 */
-                function plotData() {
-                    StatusService.stopWaiting();
-                    var data = {};
-                    /**
-                     * @param {{ chartLabel : string, activityLevel : string | number, lciaResults : [] }} gridRow
-                     */
-                    $scope.gridData.forEach(function (gridRow) {
-                        /**
-                         * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
-                         */
-                        gridRow.lciaResults.forEach(function (result) {
-                            var plotRow = { y: gridRow.chartLabel };
-                            if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] = [];
-                            plotRow.x = result.total * +gridRow.activityLevel;
-                            data[result.lciaMethodID].push(plotRow);
-                        });
-
-                    });
-                    plot.data = data;
-                }
 
                 return plot;
             }
