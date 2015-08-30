@@ -21,6 +21,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.gridOpts = createGrid();
             $scope.invalidSelection = invalidSelection();
             $scope.lciaMethods = [];
+            $scope.maxLabelLen = 4;
             $scope.plot = createPlot();
             /**
              * Remove LCIA method. Used to close panel.
@@ -33,10 +34,14 @@ angular.module("lcaApp.LCIA.comparison",
                 }
             };
 
-            $scope.removeRow = function(r) {
-                var index = $scope.gridData.indexOf(r.entity);
+            $scope.removeGridRow = function(r) {
+                var rows = $scope.gridData,
+                    index = r.index;
                 $scope.plot.removeRow(index);
-                $scope.gridData.splice(index, 1);
+                rows.splice(index, 1);
+                for (var i=index; i < rows.length; ++i) {
+                    --(rows[i].index);
+                }
             };
 
             getData();
@@ -58,6 +63,7 @@ angular.module("lcaApp.LCIA.comparison",
             function addGridRow() {
                 var row = {
                         componentType : $scope.selection.type,
+                        index : $scope.gridData.length,
                         scenario: $scope.selection.scenario,
                         activityLevel : $scope.selection.activityLevel,
                         chartLabel : $scope.selection.chartLabel
@@ -123,22 +129,24 @@ angular.module("lcaApp.LCIA.comparison",
             }
 
             function createGrid() {
-                var cellTemplate =
-'<button type="button" class="close" ng-click="removeRow(row)" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>',
+                var removeTemplate =
+'<button type="button" class="close" ng-click="removeGridRow(row.entity)" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>',
+                    numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
+                    labelTemplate = '<input type="text" maxlength={{maxLabelLen}} ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     columnDefs = [
-                        { field: "componentType", displayName: "Component Type"},
-                        { field: "componentName", displayName: "Component Name"},
-                        { field: "scenario.name", displayName: "Scenario"},
-                        { field: "activityLevel", displayName: "Activity Level"},
-                        { field: "chartLabel", displayName: "Chart Label"},
-                        { field: '', cellTemplate: cellTemplate, width: 20 }
+                        { field: "componentType", displayName: "Component Type", enableCellEdit: false },
+                        { field: "componentName", displayName: "Component Name", enableCellEdit: false },
+                        { field: "scenario.name", displayName: "Scenario", enableCellEdit: false },
+                        { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
+                        { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
+                        { field: '', cellTemplate: removeTemplate, width: 20, enableCellEdit: false }
                 ];
 
                 return {
                     columnDefs : columnDefs,
                     data: "gridData",
                     enableRowSelection: false,
-                    enableCellEditOnFocus: false,
+                    enableCellEditOnFocus: true,
                     enableHighlighting: true,
                     enableColumnResize: true,
                     plugins: [new ngGridFlexibleHeightPlugin()]
@@ -183,11 +191,15 @@ angular.module("lcaApp.LCIA.comparison",
                 }
 
                 function getY(d) {
-                    return d.row;
+                    return d.row.index;
                 }
 
-                function getLabel(r) {
-                    return r.chartLabel;
+                function getLabel(index) {
+                    var label = $scope.gridData[index].chartLabel;
+                    if (!label) {
+                        label = (index + 1).toString();
+                    }
+                    return label;
                 }
 
                 function createCommonConfig() {
@@ -201,7 +213,7 @@ angular.module("lcaApp.LCIA.comparison",
                             .scale("ordinal")
                             .valueFn(getY)
                             .labelFn(getLabel)
-                            .axis(yAxis.offset(20)),
+                            .axis(yAxis.offset($scope.maxLabelLen*7.5)),
                         margin = PlotService.createMargin(0, 15);
 
                     return PlotService.createInstance()
@@ -235,7 +247,7 @@ angular.module("lcaApp.LCIA.comparison",
 
                 function plotRow(gridRow, results) {
                     StatusService.stopWaiting();
-                    var index = $scope.gridData.indexOf(gridRow);
+                    var index = gridRow.index;
                     if (results.length) {
                         var data = plot.data;
 
@@ -250,7 +262,7 @@ angular.module("lcaApp.LCIA.comparison",
                         });
                     } else {
                         StatusService.displayInfo("The fragment is outside the scope of this scenario.");
-                        $scope.gridData.splice(index, 1);
+                        $scope.removeGridRow(gridRow);
                     }
                 }
 
