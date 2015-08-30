@@ -89,8 +89,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 drawAxisX(config.x().axis());
             }
 
-            function prepareAxisTicks(axis, hasOrdinalScale) {
-                if (hasOrdinalScale) {
+            function prepareAxisTicks(axis, dim) {
+                if (dim.hasOrdinalScale()) {
                     axis.tickSize(0);
                 } else {
                     //var tickValues = domain.slice();
@@ -99,10 +99,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     axis.tickValues([0]);
                     axis.tickFormat(FormatService.format("^.1g"));
                 }
+                if (dim.labelFn()) {
+                    axis.tickFormat(dim.labelFn());
+                }
             }
 
             function drawAxisX(axisConfig) {
-                var hasOrdinalScale = scope.config.x().hasOrdinalScale();
+                var dim = scope.config.x();
 
                 if (axisConfig && scope.data.length) {
                     var g = chart.select(".x.axis"),
@@ -117,9 +120,9 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     if (orientation === "bottom") {
                         g.attr("transform", "translate(0," + height + ")");
                     }
-                    prepareAxisTicks(axis, hasOrdinalScale);
+                    prepareAxisTicks(axis, dim);
                     g.call(axis);
-                    if (hasOrdinalScale) {
+                    if (dim.hasOrdinalScale()) {
                         //g.selectAll(".tick text")
                         //    .call(d3Service.textWrap, axisConfig.offset());
                     } else if (axisConfig.addLine) {
@@ -141,7 +144,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             function drawAxisY(axisConfig) {
-                var hasOrdinalScale = scope.config.y().hasOrdinalScale();
+                var dim = scope.config.y();
 
                 if (axisConfig && scope.data.length) {
                     var g = chart.select(".y.axis"),
@@ -156,9 +159,9 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     if (orientation === "right") {
                         g.attr("transform", "translate(" + width + ", 0)");
                     }
-                    prepareAxisTicks(axis, hasOrdinalScale);
+                    prepareAxisTicks(axis, dim);
                     g.call(axis);
-                    if (hasOrdinalScale) {
+                    if (dim.hasOrdinalScale()) {
                         //g.selectAll(".tick text")
                         //    .call(d3Service.textWrap, axisConfig.offset());
                     } else if (axisConfig.addLine) {

@@ -179,11 +179,15 @@ angular.module("lcaApp.LCIA.comparison",
                 }
 
                 function getX(d) {
-                    return d.x;
+                    return d.value * +d.row.activityLevel;
                 }
 
                 function getY(d) {
-                    return d.y;
+                    return d.row;
+                }
+
+                function getLabel(r) {
+                    return r.chartLabel;
                 }
 
                 function createCommonConfig() {
@@ -196,6 +200,7 @@ angular.module("lcaApp.LCIA.comparison",
                         yDim = PlotService.createDimension()
                             .scale("ordinal")
                             .valueFn(getY)
+                            .labelFn(getLabel)
                             .axis(yAxis.offset(20)),
                         margin = PlotService.createMargin(0, 15);
 
@@ -238,10 +243,9 @@ angular.module("lcaApp.LCIA.comparison",
                          * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
                          */
                         results.forEach(function (result) {
-                            var plotRow = {y: index };
+                            var plotRow = { row : gridRow, value: result.total };
                             if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] =
                                 newArray($scope.gridData.length);
-                            plotRow.x = result.total * +gridRow.activityLevel;
                             data[result.lciaMethodID][index] = plotRow;
                         });
                     } else {
