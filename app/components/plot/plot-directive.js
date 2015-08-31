@@ -112,7 +112,8 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         orientation = axisConfig.orientation(),
                         axis = d3Service.svg.axis()
                             .scale(xScale)
-                            .orient(orientation);
+                            .orient(orientation),
+                        unit = dim.unit();
 
                     if (g.empty()) {
                         g = chart.append("g").attr("class", "x axis");
@@ -135,6 +136,16 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                             .attr("y1", 0)
                             .attr("x2", x0)
                             .attr("y2", height);
+                    }
+                    if (unit) {
+                        var unitLabel = g.select(".x.unit");
+                        if (unitLabel.empty()){
+                            unitLabel = g.append("text")
+                                .attr("class", "x unit");
+                        }
+                        unitLabel.attr("text-anchor", "middle")
+                            .attr("transform", "translate(" + width/2 + "," + axisConfig.offset() + ")")
+                            .text(unit);
                     }
                 }
                 else {

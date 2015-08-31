@@ -181,6 +181,7 @@ angular.module("lcaApp.LCIA.comparison",
                     $scope.lciaMethods.forEach( function (m) {
                         var mc = createCommonConfig();
                         mc.content().color(m.getDefaultColor());
+                        mc.x().unit(m.getReferenceUnit());
                         config[m.lciaMethodID] = mc;
                     });
                     plot.config = config;
@@ -207,14 +208,14 @@ angular.module("lcaApp.LCIA.comparison",
                         xDim = PlotService.createDimension()
                             .scale("linear")
                             .valueFn(getX)
-                            .axis(xAxis.orientation("bottom").offset(20)),
+                            .axis(xAxis.orientation("bottom").offset(30)),
                         yAxis = PlotService.createAxis(),
                         yDim = PlotService.createDimension()
                             .scale("ordinal")
                             .valueFn(getY)
                             .labelFn(getLabel)
                             .axis(yAxis.offset($scope.maxLabelLen*7.5)),
-                        margin = PlotService.createMargin(0, 15);
+                        margin = PlotService.createMargin(0, 15, 5);
 
                     return PlotService.createInstance()
                         .content(PlotService.createBar())
