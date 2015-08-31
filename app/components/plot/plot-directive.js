@@ -214,7 +214,9 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             function createHBarData(d) {
-                var xVal = scope.config.x().valueFn(),
+                var dim = scope.config.x(),
+                    xVal = dim.valueFn(),
+                    formatter = dim.labelFn() ? dim.labelFn() : numFormat,
                     shape = {
                         x : xScale(Math.min(0, xVal(d))),
                         width : Math.abs(xScale(xVal(d)) - xScale(0))
@@ -233,7 +235,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     label.x = shape.x + shape.width /2 ;
                     label.anchor = "middle";
                 }
-                label.text = numFormat(xVal(d));
+                label.text = formatter(xVal(d));
                 return { d: d, s: shape, l: label};
             }
 
