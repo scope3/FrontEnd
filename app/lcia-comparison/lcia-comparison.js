@@ -208,13 +208,13 @@ angular.module("lcaApp.LCIA.comparison",
                         xDim = PlotService.createDimension()
                             .scale("linear")
                             .valueFn(getX)
-                            .axis(xAxis.orientation("bottom").offset(30)),
+                            .labelFn(FormatService.format("^.2g"))
+                            .axis(xAxis.orientation("bottom").offset(30).tickFormat(FormatService.format("^.1g"))),
                         yAxis = PlotService.createAxis(),
                         yDim = PlotService.createDimension()
                             .scale("ordinal")
                             .valueFn(getY)
-                            .labelFn(getLabel)
-                            .axis(yAxis.offset($scope.maxLabelLen*7.5)),
+                            .axis(yAxis.offset($scope.maxLabelLen*7.5).tickFormat(getLabel)),
                         margin = PlotService.createMargin(0, 15, 5);
 
                     return PlotService.createInstance()

@@ -31,7 +31,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 offset = { width: 0, height: 0},
                 xScale, yScale,
                 numFormat = FormatService.format("^.2g"),
-                numWidth = 55;
+                numWidth = 55, labelPadding = 5;
 
             function createChart(config) {
                 var margin = config.margin(),
@@ -89,19 +89,37 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 drawAxisX(config.x().axis());
             }
 
-            function prepareAxisTicks(axis, dim) {
+            function prepareAxisTicks(axis, dim, formatter) {
+                if (formatter) axis.tickFormat(formatter);
                 if (dim.hasOrdinalScale()) {
                     axis.tickSize(0);
                 } else {
-                    //var tickValues = domain.slice();
-                    //tickValues.push(0);
-                    // TODO : refine this, like in waterfall chart
-                    axis.tickValues([0]);
-                    axis.tickFormat(FormatService.format("^.1g"));
+                    var scale = axis.scale(),
+                        range = scale.range(),
+                        tickCount = Math.floor((range[1]-range[0])/(numWidth+labelPadding));
+                    axis.ticks(tickCount);
+
+                    //   var tickValues = [];
+                    //
+                    //if (domain[0] > 0) {
+                    //    tickValues.push(0);
+                    //    if (scale(domain[0]) > labelPadding ) {
+                    //        tickValues.push(domain[0]);
+                    //    }
+                    //} else if (domain[0] === 0 ) {
+                    //    tickValues.push(0);
+                    //} else {
+                    //    if ((scale(0) - scale(domain[0])) > labelPadding ) {
+                    //        tickValues.push(domain[0]);
+                    //    }
+                    //    tickValues.push(0);
+                    //}
+                    //if ( (scale(domain[1]) - scale(tickValues[tickValues.length-1])) > labelPadding) {
+                    //    tickValues.push(domain[1]);
+                    //}
+                    //axis.tickValues(tickValues);
                 }
-                if (dim.labelFn()) {
-                    axis.tickFormat(dim.labelFn());
-                }
+
             }
 
             function drawAxisX(axisConfig) {
@@ -121,7 +139,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     if (orientation === "bottom") {
                         g.attr("transform", "translate(0," + height + ")");
                     }
-                    prepareAxisTicks(axis, dim);
+                    prepareAxisTicks(axis, dim, axisConfig.tickFormat());
                     g.call(axis);
                     if (dim.hasOrdinalScale()) {
                         //g.selectAll(".tick text")
@@ -170,7 +188,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     if (orientation === "right") {
                         g.attr("transform", "translate(" + width + ", 0)");
                     }
-                    prepareAxisTicks(axis, dim);
+                    prepareAxisTicks(axis, dim, axisConfig.tickFormat());
                     g.call(axis);
                     if (dim.hasOrdinalScale()) {
                         //g.selectAll(".tick text")
@@ -204,10 +222,10 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     label = { x : 0, y : 0, anchor : 0 };
                 if (shape.width < numWidth) {
                     if (width - shape.width - shape.x < numWidth) {
-                        label.x = shape.x - 5;
+                        label.x = shape.x - labelPadding;
                         label.anchor = "end";
                     } else {
-                        label.x = shape.x + shape.width + 5;
+                        label.x = shape.x + shape.width + labelPadding;
                         label.anchor = "start";
                     }
                 }

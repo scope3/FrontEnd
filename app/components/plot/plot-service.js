@@ -53,7 +53,8 @@ angular.module('lcaApp.plot.service', ['d3'])
             var axis = {},
                 orientation = "left",
                 addLine = true,
-                offset = 50;
+                offset = 30,
+                tickFormat = null;
 
             axis.orientation = function (_) {
                 if (!arguments.length) return orientation;
@@ -70,6 +71,12 @@ angular.module('lcaApp.plot.service', ['d3'])
             axis.offset = function (_) {
                 if (!arguments.length) return offset;
                 offset = _;
+                return axis;
+            };
+
+            axis.tickFormat = function (_) {
+                if (!arguments.length) return tickFormat;
+                tickFormat = _;
                 return axis;
             };
 
