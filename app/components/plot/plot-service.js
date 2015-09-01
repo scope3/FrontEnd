@@ -144,7 +144,8 @@ angular.module('lcaApp.plot.service', ['d3'])
                 shape = "rect",
                 color = "green",
                 orientation = "horizontal",
-                height = 20,
+                height = 19,
+                padding = 1,
                 width = null;
 
             elt.color = function (_) {
@@ -166,6 +167,12 @@ angular.module('lcaApp.plot.service', ['d3'])
             elt.height = function (_) {
                 if (!arguments.length) return height;
                 height = _;
+                return elt;
+            };
+
+            elt.padding = function (_) {
+                if (!arguments.length) return padding;
+                padding = _;
                 return elt;
             };
 

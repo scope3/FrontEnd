@@ -21,7 +21,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.gridOpts = createGrid();
             $scope.invalidSelection = invalidSelection();
             $scope.lciaMethods = [];
-            $scope.maxLabelLen = 4;
+            $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
             /**
              * Remove LCIA method. Used to close panel.
@@ -215,10 +215,11 @@ angular.module("lcaApp.LCIA.comparison",
                             .scale("ordinal")
                             .valueFn(getY)
                             .axis(yAxis.offset($scope.maxLabelLen*7.5).tickFormat(getLabel)),
-                        margin = PlotService.createMargin(0, 15, 5);
+                        margin = PlotService.createMargin(0, 15, 5),
+                        bar = PlotService.createBar();
 
                     return PlotService.createInstance()
-                        .content(PlotService.createBar())
+                        .content(bar.padding(2))
                         .margin(margin)
                             .x(xDim)
                             .y(yDim);

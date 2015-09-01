@@ -31,6 +31,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 offset = { width: 0, height: 0},
                 xScale, yScale,
                 numFormat = FormatService.format("^.2g"),
+            // Future enhancement: make these hard-coded values configurable
                 numWidth = 55, labelPadding = 5;
 
             function createChart(config) {
@@ -242,6 +243,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             function drawHorizontalBars(content, data) {
                 var shape = content.shape(),
                     barHeight = content.height(),
+                    barPadding = content.padding(),
                     barData, barGroups, newGroups;
 
                 barData = data.map( createHBarData);
@@ -257,7 +259,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     .attr("x", function(d) { return d.s.x; })
                     .attr("y", 0)
                     .attr("width", function(d) { return d.s.width; })
-                    .attr("height", barHeight-1);
+                    .attr("height", barHeight-barPadding);
 
                 newGroups.append("text");
                 barGroups.select("text")
