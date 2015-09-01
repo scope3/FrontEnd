@@ -13,12 +13,12 @@ angular.module('lcaApp.process.instance',
                  'lcaApp.referenceLink.directive', 'lcaApp.paramGrid.directive'])
     .controller('ProcessInstanceController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
-         'ProcessService', 'ProcessFlowService', 'FlowPropertyMagnitudeService', 'ProcessDissipationService',
+         'ProcessService', 'ProcessCommentService', 'ProcessFlowService', 'FlowPropertyMagnitudeService', 'ProcessDissipationService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService', 'FragmentFlowService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService', 'CompositionFlowService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
-                  ProcessService, ProcessFlowService, FlowPropertyMagnitudeService, ProcessDissipationService,
+                  ProcessService, ProcessCommentService, ProcessFlowService, FlowPropertyMagnitudeService, ProcessDissipationService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService, FragmentFlowService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService, CompositionFlowService) {
@@ -86,6 +86,7 @@ angular.module('lcaApp.process.instance',
             };
 
             $scope.process = null;
+            $scope.processComment = null;
             $scope.scenario = null;
             $scope.selection = {};
             $scope.elementaryFlows = {};
@@ -155,7 +156,6 @@ angular.module('lcaApp.process.instance',
              */
             function getProcessResults() {
                 StatusService.stopWaiting();
-
                 getFlowRows();
                 if ( $scope.paramGrid.dissipation) {
                     $scope.compositionFlow = CompositionFlowService.get($scope.process.compositionFlowID);
@@ -232,6 +232,7 @@ angular.module('lcaApp.process.instance',
                     ProcessFlowService.load({processID:processID}),
                     FlowPropertyForProcessService.load({processID: processID})
                 ];
+                $scope.processComment = ProcessCommentService.get({processID:processID});
                 if ($scope.process && $scope.process["compositionFlowID"]) {
                     var flowID = $scope.process["compositionFlowID"];
                     requests.push(ProcessDissipationService.load({processID: processID }));

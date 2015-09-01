@@ -42,6 +42,7 @@ angular.module('lcaApp.resources.service', ['ngResource', 'lcaApp.idmap.service'
                 "lciaTotalForProcess" : API_ROOT + "scenarios/:scenarioID/processes/:processID/lciaresults",
                 "param" : API_ROOT + "scenarios/:scenarioID/params/:paramID",
                 "process" : API_ROOT + "processes",
+                "processComment" : API_ROOT + "processes/:processID/comment",
                 "processDissipation" : API_ROOT + "processes/:processID/dissipation",
                 "processForFlowType" : API_ROOT + "flowtypes/:flowTypeID/processes",
                 "processFlow" : API_ROOT + "processes/:processID/processflows",
@@ -424,6 +425,10 @@ angular.module('lcaApp.resources.service')
     .factory('ParamService', ['ResourceService',
         function(ResourceService){
             return ResourceService.getService('ParamService', "param", "paramID");
+        }
+    ]).factory('ProcessCommentService', ['ResourceService',
+        function(ResourceService){
+            return ResourceService.createSimpleGetService("processComment");
         }
     ])
     .factory('ProcessDissipationService', ['ResourceService',

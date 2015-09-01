@@ -23,6 +23,8 @@
     <dd><reference-link resource="process">Process Data Set</reference-link></dd>
     <dt>Data Source</dt>
     <dd>{{process.dataSource}}<span ng-if="process.isPrivate"> (private) </span></dd>
+    <dt ng-show="processComment.comment">Comment</dt>
+    <dd>{{processComment.comment}}</dd>
 </dl>
 
 <div class="panel panel-default" ng-show="flowsVisible">
