@@ -7,14 +7,14 @@
  */
 angular.module("lcaApp.LCIA.comparison",
     ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
-        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3"])
+        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessService",
-        "ScenarioModelService", "LciaModelService", "d3Service",
+        "ScenarioModelService", "LciaModelService", "d3Service", "SelectionService",
         function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
                   FragmentService, LciaMethodService, ProcessService,
-                  ScenarioModelService, LciaModelService, d3Service) {
+                  ScenarioModelService, LciaModelService, d3Service, SelectionService) {
 
             var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
 
@@ -25,6 +25,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.lciaMethods = [];
             $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
+            $scope.$on("$destroy", $scope.selection.savePrevious);
             /**
              * Remove LCIA method. Used to close panel.
              * @param m Method displayed by panel to be closed
@@ -62,6 +63,16 @@ angular.module("lcaApp.LCIA.comparison",
                 $scope.selection.displayData();
                 $scope.lciaMethods = LciaMethodService.getAll();
                 $scope.plot.addConfig();
+                addGridData();
+            }
+
+            function addGridData() {
+                $scope.selection.restorePrevious();
+                if ($scope.gridData.length) {
+                    $scope.gridData.forEach($scope.plot.getResult);
+                } else {
+                    addGridRow();
+                }
             }
 
             function addGridRow() {
@@ -117,8 +128,11 @@ angular.module("lcaApp.LCIA.comparison",
                         add : addGridRow,
                         displayData : displayData,
                         isFragment : isFragment,
+                        restorePrevious : restorePrevious,
+                        savePrevious : savePrevious,
                         activityLevel : 1,
-                        chartLabel: null
+                        chartLabel: null,
+                        key : "LciaComparisonGrid"
                 };
 
                 return selection;
@@ -141,6 +155,16 @@ angular.module("lcaApp.LCIA.comparison",
 
                 function isFragment() {
                     return selection.type === "Fragment";
+                }
+
+                function restorePrevious() {
+                    if ( SelectionService.contains(selection.key)) {
+                        $scope.gridData = SelectionService.get(selection.key);
+                    }
+                }
+
+                function savePrevious() {
+                    SelectionService.set(selection.key, $scope.gridData);
                 }
             }
 
