@@ -7,14 +7,16 @@
  */
 angular.module("lcaApp.LCIA.comparison",
     ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
-        "lcaApp.models.lcia", "lcaApp.models.scenario"])
+        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessService",
-        "ScenarioModelService", "LciaModelService",
+        "ScenarioModelService", "LciaModelService", "d3Service",
         function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
                   FragmentService, LciaMethodService, ProcessService,
-                  ScenarioModelService, LciaModelService) {
+                  ScenarioModelService, LciaModelService, d3Service) {
+
+            var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
 
             $scope.selection = createSelectionComponent();
             $scope.gridData = [];
@@ -42,8 +44,10 @@ angular.module("lcaApp.LCIA.comparison",
                 for (var i=index; i < rows.length; ++i) {
                     --(rows[i].index);
                 }
+                //resetGridHeight();
             };
 
+            //resetGridHeight();
             getData();
 
             function getData() {
@@ -77,11 +81,23 @@ angular.module("lcaApp.LCIA.comparison",
                 }
                 $scope.gridData.push(row);
                 $scope.plot.getResult(row);
+                resetGridHeight();
                 resetInput();
             }
 
             function resetInput() {
                 $scope.selection.chartLabel = null;
+            }
+
+            function resetGridHeight() {
+                // Fruitless attempts to work around Chrome resize problem
+                //var height = $scope.gridData.length*30 + 32;
+                //
+                //d3Service.select("#selection-grid")
+                //    .attr("height", height);
+                //resizeGridPlugin.rHD();
+                //$scope.gridData = $scope.gridData.slice();
+                //$scope.$apply($scope.gridData.length);
             }
 
             function invalidSelection() {
@@ -130,17 +146,17 @@ angular.module("lcaApp.LCIA.comparison",
 
             function createGrid() {
                 var removeTemplate =
-'<button type="button" class="close" ng-click="removeGridRow(row.entity)" aria-label="Close"><span class="glyphicon glyphicon-remove"></span></button>',
+'<button type="button" class="btn btn-sm" ng-click="removeGridRow(row.entity)" aria-label="Remove"><span class="glyphicon glyphicon-remove"></span></button>',
                     numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     labelTemplate = '<input type="text" maxlength={{maxLabelLen}} ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     columnDefs = [
-                        { field: "componentType", displayName: "Component Type", enableCellEdit: false },
-                        { field: "componentName", displayName: "Component Name", enableCellEdit: false },
+                        { field: "componentType", displayName: "Type", width: 100, enableCellEdit: false },
+                        { field: "componentName", displayName: "Name", enableCellEdit: false },
                         { field: "scenario.name", displayName: "Scenario", enableCellEdit: false },
                         { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
                         { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
-                        { field: '', cellTemplate: removeTemplate, width: 20, enableCellEdit: false }
-                ];
+                        { field: "", cellTemplate: removeTemplate, width: 30, enableCellEdit: false }
+                    ];
 
                 return {
                     columnDefs : columnDefs,
@@ -149,7 +165,8 @@ angular.module("lcaApp.LCIA.comparison",
                     enableCellEditOnFocus: true,
                     enableHighlighting: true,
                     enableColumnResize: true,
-                    plugins: [new ngGridFlexibleHeightPlugin()]
+                    jqueryUITheme: true,
+                    plugins: [resizeGridPlugin]
                 };
             }
 

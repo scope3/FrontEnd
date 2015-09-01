@@ -1,5 +1,9 @@
 <!-- HTML template for LCIA comparison view-->
-<div class="pad-bottom" id="lcia-selection">
+<div class="panel panel-default" id="lcia-selection">
+    <div class="panel-body">
+    <div class="panel panel-default">
+        <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
+    </div>
     <form class="form-inline">
         <div class="form-group">
             <label for="component-select">
@@ -38,10 +42,9 @@
             Add
         </button>
     </form>
+        </div>
 </div>
-<div class="pad-bottom">
-    <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
-</div>
+
 <div ng-show="gridData.length" class="row">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
         <div class="panel panel-default">
