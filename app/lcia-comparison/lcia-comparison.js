@@ -48,6 +48,16 @@ angular.module("lcaApp.LCIA.comparison",
                 //resetGridHeight();
             };
 
+            $scope.navigateComponent = function(row) {
+                if (row.hasOwnProperty("fragmentID")) {
+                    $state.go( "home.fragment-lcia" ,
+                        {fragmentID: row.fragmentID , scenarioID: row.scenario.scenarioID });
+                } else {
+                    $state.go( "home.process-lcia" ,
+                        {processID: row.processID , scenarioID: row.scenario.scenarioID, activity: row.activityLevel });
+                }
+            };
+
             //resetGridHeight();
             getData();
 
@@ -83,9 +93,11 @@ angular.module("lcaApp.LCIA.comparison",
                         activityLevel : $scope.selection.activityLevel,
                         chartLabel : $scope.selection.chartLabel
                     };
+                row.scenarioRef = "home.scenario({scenarioID: " + row.scenario.scenarioID + "})";
                 if ( $scope.selection.isFragment() ) {
                     row.fragmentID = $scope.selection.fragment.fragmentID;
                     row.componentName = $scope.selection.fragment.name;
+
                 } else {
                     row.processID = $scope.selection.process.processID;
                     row.componentName = $scope.selection.process.getLongName();
@@ -173,10 +185,14 @@ angular.module("lcaApp.LCIA.comparison",
 '<button type="button" class="btn btn-sm" ng-click="removeGridRow(row.entity)" aria-label="Remove"><span class="glyphicon glyphicon-remove"></span></button>',
                     numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     labelTemplate = '<input type="text" maxlength={{maxLabelLen}} ng-input="COL_FIELD" ng-model="COL_FIELD" />',
+                    compTemplate =
+'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to LCIA detail view" ng-click="navigateComponent(row.entity)">{{COL_FIELD}}</a></div>',
+                    scenarioTemplate =
+'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to scenario detail view" ui-sref={{row.entity.scenarioRef}}>{{COL_FIELD}}</a></div>',
                     columnDefs = [
                         { field: "componentType", displayName: "Type", width: 100, enableCellEdit: false },
-                        { field: "componentName", displayName: "Name", enableCellEdit: false },
-                        { field: "scenario.name", displayName: "Scenario", enableCellEdit: false },
+                        { field: "componentName",  cellTemplate: compTemplate, displayName: "Name", enableCellEdit: false },
+                        { field: "scenario.name", cellTemplate: scenarioTemplate, displayName: "Scenario", enableCellEdit: false },
                         { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
                         { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
                         { field: "", cellTemplate: removeTemplate, width: 30, enableCellEdit: false }
@@ -189,7 +205,6 @@ angular.module("lcaApp.LCIA.comparison",
                     enableCellEditOnFocus: true,
                     enableHighlighting: true,
                     enableColumnResize: true,
-                    jqueryUITheme: true,
                     plugins: [resizeGridPlugin]
                 };
             }

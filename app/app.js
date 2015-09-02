@@ -97,7 +97,7 @@ angular.module('lcaApp', [
                 }
             })
             .state('home.process-lcia', {
-                url: '/process-lcia',
+                url: '/process-lcia?scenarioID&processID&activity',
                 views: {
                     "@": {
                         templateUrl: 'process-lcia/process-lcia.html',
@@ -115,7 +115,7 @@ angular.module('lcaApp', [
                 }
             })
             .state('home.fragment-lcia', {
-                url: '/fragment-lcia',
+                url: '/fragment-lcia?scenarioID&fragmentID',
                 views: {
                     "@": {
                         templateUrl: 'fragment-lcia/fragment-lcia.html',

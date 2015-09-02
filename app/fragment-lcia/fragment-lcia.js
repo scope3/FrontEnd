@@ -69,6 +69,7 @@ angular.module('lcaApp.fragment.LCIA',
              * If null, then current view supports selection of top-level fragment and associated scenarios.
              */
             $scope.navigationService = null;
+            $scope.parentStateIsSankey = $state.includes("home.fragment-sankey");
 
 
             /**
