@@ -133,9 +133,9 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 origResources.scenarios[scenarioID] = params;
             }
 
-            function valueInput(paramWrapper) {
+            svc.valueInput = function(paramWrapper) {
                 return paramWrapper.enableEdit && paramWrapper.value !== "";
-            }
+            };
 
             /**
              * @ngdoc
@@ -182,7 +182,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
             svc.changeExistingParam = function (paramWrapper) {
                 var paramResource = paramWrapper.paramResource;
                 if (paramResource) {
-                    if (valueInput(paramWrapper)) {
+                    if (svc.valueInput(paramWrapper)) {
                         paramResource.value = +paramWrapper.value;
                     } else {
                         paramResource.value = null;
@@ -404,7 +404,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
              */
             svc.setParamWrapperStatus = function(baseValue, paramWrapper) {
                 var msg = null;
-                if (valueInput(paramWrapper)) {
+                if (svc.valueInput(paramWrapper)) {
                     // Value was input
                     if (isNaN(paramWrapper.value)) {
                         msg = "Parameter value, " + paramWrapper.value + ", is not numeric.";
@@ -419,8 +419,8 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                         }
                     } else {
                         // No paramResource. Interpret this as create
-                        // unless value is default
-                        if (+paramWrapper.value === baseValue) {
+                        // unless value is default and not an explicit copy
+                        if (+paramWrapper.value === baseValue && !paramWrapper.copy) {
                             // Remove default value
                             paramWrapper.value = "";
                             paramWrapper.editStatus = PARAM_VALUE_STATUS.unchanged;
@@ -440,11 +440,14 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return msg;
             };
 
-            svc.initParamWrapperValue = function(baseValue, paramWrapper) {
-                if (!valueInput(paramWrapper)) {
+            function copyValue( baseValue, paramWrapper, copy) {
+                if (!svc.valueInput(paramWrapper)) {
                     paramWrapper.value = baseValue.toString();
+                    paramWrapper.copy = copy;
                 }
-            };
+            }
+
+            svc.initParamWrapperValue = copyValue;
 
             /**
              * @ngdoc
@@ -461,6 +464,7 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                     paramResource : paramResource,
                     value : paramResource ? paramResource.value : "",
                     enableEdit : true,
+                    copy : false,
                     editStatus : PARAM_VALUE_STATUS.unchanged
                 };
             };

@@ -37,8 +37,20 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
         };
 
         function paramGridController($scope) {
+            var buttonTemplate =
+'<button ng-show=row.entity.paramWrapper.enableEdit type="button" class="btn btn-sm" ng-click="ddParam(row.entity)" aria-label="duplicate or delete" title="{{ddTitle(row)}}"><span ng-class="ddClass(row)"></span></button>',
+                paramTemplate =
+'<div class="ngCellText" ng-class="col.colIndex() + editClass(row)"><span ng-cell-text>{{COL_FIELD}}</span></div>';
+
             $scope.gridOptions = {};
-            $scope.changeClass = getChangeStatusClass;
+            $scope.editClass = getValidationStatusClass;
+            $scope.ddClass = function( row) {
+                return ParamModelService.valueInput(row.entity.paramWrapper)  ? "glyphicon glyphicon-trash" : "glyphicon glyphicon-duplicate";
+            };
+            $scope.ddTitle = function( row) {
+                return ParamModelService.valueInput(row.entity.paramWrapper)  ? "Delete modified value" : "Copy default value";
+            };
+            $scope.ddParam = duplicateOrDeleteParam;
             $scope.directionClass = getDirectionClass;
             $scope.paramHintStyle = getParamHintStyle;
             $scope.$on('ngGridEventEndCellEdit', handleEndCellEdit);   // End cell edit event handler
@@ -49,17 +61,27 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
              * @param {{ entity : {paramWrapper : {editStatus : Number}} }} row
              * @returns {string}
              */
-            function getChangeStatusClass( row) {
+            function getValidationStatusClass( row) {
                 var iconClass = "";
                 switch (row.entity.paramWrapper.editStatus) {
                     case PARAM_VALUE_STATUS.changed :
-                        iconClass = "glyphicon-ok";
+                        iconClass = " has-success";
                         break;
                     case PARAM_VALUE_STATUS.invalid :
-                        iconClass = "glyphicon-exclamation-sign";
+                        iconClass = " has-error";
                         break;
                 }
                 return iconClass;
+            }
+
+            function duplicateOrDeleteParam(entity) {
+                if (ParamModelService.valueInput(entity.paramWrapper)) {
+                    entity.paramWrapper.value = "";
+                    entity.paramWrapper.copy = false;
+                } else {
+                    copyDefaultValue(entity, true);
+                }
+                updateStatus(entity);
             }
 
             /**
@@ -90,14 +112,33 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                    {'font-weight' : 'bold'} : {};
             }
 
+            function copyDefaultValue(entity, saveCopy) {
+                var targetField = getTargetField();
+                if (targetField) {
+                    ParamModelService.initParamWrapperValue(entity[targetField], entity.paramWrapper, saveCopy);
+                    //$scope.$apply();    // Needed for IE
+                }
+            }
+
             function handleStartCellEdit(evt) {
-                var rowObj = evt.targetScope.row["entity"],
+                var entity = evt.targetScope.row["entity"];
+                if (entity.paramWrapper.enableEdit) {
+                    copyDefaultValue(entity, false);
+                }
+            }
+
+            function updateStatus( entity) {
+                var errMsg = "",
                     targetField = getTargetField();
 
                 if (targetField) {
-                    ParamModelService.initParamWrapperValue(rowObj[targetField], rowObj.paramWrapper);
+                    errMsg = ParamModelService.setParamWrapperStatus(entity[targetField], entity.paramWrapper);
 
-                    $scope.$apply();    // Needed for IE
+                    //$scope.$apply();    // Needed for IE
+
+                    if (entity.paramWrapper.editStatus === PARAM_VALUE_STATUS.invalid) {
+                        $window.alert(errMsg);
+                    }
                 }
             }
 
@@ -106,19 +147,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             * @param evt   Event object containing row changed.
             */
             function handleEndCellEdit(evt) {
-                var rowObj = evt.targetScope.row["entity"],
-                    errMsg = "",
-                    targetField = getTargetField();
-
-                if (targetField) {
-                    errMsg = ParamModelService.setParamWrapperStatus(rowObj[targetField], rowObj.paramWrapper);
-
-                    $scope.$apply();    // Needed for IE
-
-                    if (rowObj.paramWrapper.editStatus === PARAM_VALUE_STATUS.invalid) {
-                        $window.alert(errMsg);
-                    }
-                }
+                updateStatus(evt.targetScope.row["entity"]);
             }
 
             function setColWidths() {
@@ -151,22 +180,24 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
 
             function addParamCols() {
                 var paramCol = [
-                        {field: 'paramWrapper.value', displayName: 'Modified Value',
-                         enableCellEdit: false, cellEditableCondition: 'row.getProperty(\'paramWrapper.enableEdit\')',
-                            sortFn: sortParam },
-                        {field: 'paramWrapper.editStatus', displayName: '', enableCellEdit: false, width: 20}
+                        {
+                            field: 'paramWrapper.value',
+                            displayName: 'Modified Value',
+                            cellTemplate: paramTemplate,
+                            enableCellEdit: false,
+                            cellEditableCondition: 'row.getProperty(\'paramWrapper.enableEdit\')',
+                            sortFn: sortParam
+                        },
+                        {field: 'paramWrapper.editStatus', displayName: '', enableCellEdit: false, width: 35}
                     ],
                     cols = $scope.columns;
 
                 if ($scope.params) {
                     paramCol[0].visible = true;
                     if ($scope.params.canUpdate) {
-                        // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
                         paramCol[0].enableCellEdit = true;
-                        paramCol[1].cellTemplate =
-                            '<div class="cellIcon"><span class="glyphicon" ng-class="changeClass(row)"></span></div>';
+                        paramCol[1].cellTemplate = buttonTemplate;
                         paramCol[1].visible = true;
-
                     } else {
                         paramCol[1].visible = false;
                     }
@@ -197,10 +228,8 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
 
                     cols[paramIndex].visible = true;
                     if ($scope.params.canUpdate) {
-                        // Unable to load cell template from file without browser error. Appears to be an ng-grid glitch.
                         cols[paramIndex].enableCellEdit = true;
-                        cols[statusIndex].cellTemplate =
-                            '<div class="cellIcon"><span class="glyphicon" ng-class="changeClass(row)"></span></div>';
+                        cols[statusIndex].cellTemplate = buttonTemplate;
                         cols[statusIndex].visible = true;
 
                     } else {

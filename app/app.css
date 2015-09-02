@@ -99,6 +99,14 @@
     font-size: 12px;
 }
 
+.gridStyle .has-success {
+    background-color: #dff0d8;
+}
+
+.gridStyle .has-error {
+    background-color: #f2dede;
+}
+
 .cellIcon {
     text-align: center;
     line-height: 30px;
