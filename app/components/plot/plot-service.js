@@ -3,12 +3,12 @@
 * @module lcaApp.plot.service
 * @name PlotService
 * @description
-* Factory Service. Creates objects used in plot directive.
+* Factory Service. Creates configuration objects used in plot directive.
 */
-angular.module('lcaApp.plot.service', ['d3'])
-    .factory('PlotService', [ 'd3Service', function(d3Service) {
+angular.module('lcaApp.plot.service', [])
+    .factory('PlotService', function() {
 
-        function Instance() {
+        function Config() {
             var obj = {},
                 content = null,
                 x = null,
@@ -194,6 +194,14 @@ angular.module('lcaApp.plot.service', ['d3'])
         }
 
         return {
+            /**
+             * @ngdoc
+             * @name PlotService#createAxis
+             * @methodOf PlotService
+             * @description
+             * Creates object used to configure axis
+             * @returns {Axis}    object created
+             */
             createAxis: function () {
                 return new Axis();
             },
@@ -202,17 +210,37 @@ angular.module('lcaApp.plot.service', ['d3'])
              * @name PlotService#createBar
              * @methodOf PlotService
              * @description
-             * Creates objects to be used in plot configuration
-             * @returns {object}    object created
+             * Creates object used to configure content for bar chart
+             * @returns {Bar}    object created
              */
             createBar: function () {
                 return new Bar();
             },
-
+            /**
+             * @ngdoc
+             * @name PlotService#createDimension
+             * @methodOf PlotService
+             * @description
+             * Creates object used to configure a dimension
+             * @returns {Dimension}    object created
+             */
             createDimension: function () {
                 return new Dimension();
             },
 
+            /**
+             * @ngdoc
+             * @name PlotService#createDimension
+             * @methodOf PlotService
+             * @description
+             * Creates object used to configure a plot margin
+             * Like CSS margin, arguments after the first are optional
+             * @param {number} top      If last argument, all sides set to top
+             * @param {number} right    If last argument, bottom = top and left = right
+             * @param {number} bottom   If last argument, left = right
+             * @param {number} left     Left side of margin
+             * @returns {Margin} object created
+             */
             createMargin: function ( top, right, bottom, left) {
                 var margin = new Margin();
                 if (arguments.length) {
@@ -241,8 +269,16 @@ angular.module('lcaApp.plot.service', ['d3'])
                 return margin;
             },
 
-            createInstance: function () {
-                return new Instance();
+            /**
+             * @ngdoc
+             * @name PlotService#createConfig
+             * @methodOf PlotService
+             * @description
+             * Creates object used to configure a plot
+             * @returns {Config}    object created
+             */
+            createConfig: function () {
+                return new Config();
             }
         }
-    }]);
+    });

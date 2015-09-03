@@ -274,7 +274,7 @@ angular.module("lcaApp.LCIA.comparison",
                         margin = PlotService.createMargin(0, 15, 5),
                         bar = PlotService.createBar();
 
-                    return PlotService.createInstance()
+                    return PlotService.createConfig()
                         .content(bar.padding(2))
                         .margin(margin)
                             .x(xDim)

@@ -440,6 +440,12 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 return msg;
             };
 
+            /**
+             * Copy default value to param wrapper value.
+             * @param {number} baseValue
+             * @param {{ value: string, copy: boolean}} paramWrapper
+             * @param {boolean} copy    Indicates if copy can be saved
+             */
             function copyValue( baseValue, paramWrapper, copy) {
                 if (!svc.valueInput(paramWrapper)) {
                     paramWrapper.value = baseValue.toString();
@@ -447,6 +453,13 @@ angular.module('lcaApp.models.param', ['lcaApp.resources.service', 'lcaApp.statu
                 }
             }
 
+            /**
+             * @ngdoc
+             * @name ParamModelService#initParamWrapperValue
+             * @methodOf ParamModelService
+             * @description
+             * Copy default value to param wrapper value.
+             */
             svc.initParamWrapperValue = copyValue;
 
             /**

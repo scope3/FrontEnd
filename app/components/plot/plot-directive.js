@@ -13,7 +13,7 @@ angular.module('lcaApp.plot', [
  * @description
  * Plot directive.
  *
- * @param {object} config Object created by PlotService.createInstance
+ * @param {object} config Object created by PlotService.createConfig
  * @param {[]} data Array of objects providing data
  */
 angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.format'])

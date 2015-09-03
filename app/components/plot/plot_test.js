@@ -103,7 +103,7 @@ describe('Unit test plot module', function() {
 
     // Test complete definition
     it('should create complete definition object', function() {
-        var instance = plotService.createInstance(),
+        var instance = plotService.createConfig(),
             x = plotService.createDimension(),
             y = plotService.createDimension(),
             m = plotService.createMargin(),
@@ -117,7 +117,7 @@ describe('Unit test plot module', function() {
     });
 
     it('should be able to compile and digest the directive', function() {
-        var plot = plotService.createInstance(),
+        var plot = plotService.createConfig(),
             data = [];
 
         // Compile a piece of HTML containing the directive
