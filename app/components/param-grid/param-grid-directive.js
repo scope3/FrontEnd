@@ -38,7 +38,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
 
         function paramGridController($scope) {
             var buttonTemplate =
-'<button ng-show=row.entity.paramWrapper.enableEdit type="button" class="btn btn-sm" ng-click="ddParam(row.entity)" aria-label="duplicate or delete" title="{{ddTitle(row)}}"><span ng-class="ddClass(row)"></span></button>',
+'<button ng-show=row.entity.paramWrapper.enableEdit type="button" class="ngCell btn btn-default btn-sm" ng-click="ddParam(row.entity)" aria-label="duplicate or delete" title="{{ddTitle(row)}}"><span ng-class="ddClass(row)"></span></button>',
                 paramTemplate =
 '<div class="ngCellText" ng-class="col.colIndex() + editClass(row)"><span ng-cell-text>{{COL_FIELD}}</span></div>';
 
@@ -54,7 +54,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             $scope.directionClass = getDirectionClass;
             $scope.paramHintStyle = getParamHintStyle;
             $scope.$on('ngGridEventEndCellEdit', handleEndCellEdit);   // End cell edit event handler
-            $scope.$on('ngGridEventStartCellEdit', handleStartCellEdit);   // Start cell edit event handler
+            //$scope.$on('ngGridEventStartCellEdit', handleStartCellEdit);   // Start cell edit event handler
 
             /**
              * Get icon class for param change status
@@ -117,13 +117,6 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
                 if (targetField) {
                     ParamModelService.initParamWrapperValue(entity[targetField], entity.paramWrapper, saveCopy);
                     //$scope.$apply();    // Needed for IE
-                }
-            }
-
-            function handleStartCellEdit(evt) {
-                var entity = evt.targetScope.row["entity"];
-                if (entity.paramWrapper.enableEdit) {
-                    copyDefaultValue(entity, false);
                 }
             }
 
