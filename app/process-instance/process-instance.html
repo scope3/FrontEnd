@@ -24,7 +24,7 @@
     <dt>Data Source</dt>
     <dd>{{process.dataSource}}<span ng-if="process.isPrivate"> (private) </span></dd>
     <dt ng-show="processComment.comment">Comment</dt>
-    <dd>{{processComment.comment}}</dd>
+    <dd><div class="scenario-description">{{processComment.comment}}</div></dd>
 </dl>
 
 <div class="panel panel-default" ng-show="flowsVisible">

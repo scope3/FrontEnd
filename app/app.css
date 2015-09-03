@@ -134,6 +134,8 @@ info .glyphicon {
     background-color: inherit;
     padding: inherit;
     border: inherit;
+    word-wrap: normal;
+    white-space: pre-wrap;
 }
 
 /* Override multiselect styles */
