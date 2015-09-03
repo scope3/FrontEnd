@@ -185,4 +185,16 @@ info .glyphicon {
     width : 7em;
 }
 
+/* Disable ng-grid scroll bars */
+
+.ngViewport{
+    height:auto !important;
+}
+.ngCanvas, .ngViewport, .ngRow, .ngFooterPanel, .ngTopPanel   {
+    width: 100% !important;
+}
+.ngRow {
+    border-bottom:none !important;
+}
+
 
