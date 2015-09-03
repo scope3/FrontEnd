@@ -1,48 +1,48 @@
 <!-- HTML template for LCIA comparison view-->
 <div class="panel panel-default" id="lcia-selection">
     <div class="panel-body">
-    <div class="panel panel-default">
-        <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
-    </div>
-    <form class="form-inline">
-        <div class="form-group">
-            <label for="component-select">
-                <select id="select-type" ng-model=selection.type>
-                    <option value="Fragment" selected>Fragment</option>
-                    <option value="Process">Process</option>
+        <div class="panel panel-default">
+            <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
+        </div>
+        <form class="form-inline">
+            <div class="form-group">
+                <label for="component-select">
+                    <select id="select-type" ng-model=selection.type>
+                        <option value="Fragment" selected>Fragment</option>
+                        <option value="Process">Process</option>
+                    </select>
+                </label>
+                <span id="component-select">
+                    <select ng-if="selection.isFragment()" ng-model="selection.fragment"
+                            ng-options="f.name for f in selection.fragmentOptions">
+                    </select>
+                    <select ng-if="!selection.isFragment()" ng-model="selection.process"
+                            ng-options="p.getLongName() for p in selection.processOptions">
+                    </select>
+                </span>
+            </div>
+            <div class="form-group">
+                <label for="select-scenario">Scenario</label>
+                <select id="select-scenario" ng-model="selection.scenario"
+                        ng-options="scenario.name for scenario in selection.scenarioOptions">
                 </select>
-            </label>
-        <span id="component-select">
-            <select ng-if="selection.isFragment()" ng-model="selection.fragment"
-                    ng-options="f.name for f in selection.fragmentOptions">
-            </select>
-            <select ng-if="!selection.isFragment()" ng-model="selection.process"
-                    ng-options="p.getLongName() for p in selection.processOptions">
-            </select>
-        </span>
-        </div>
-        <div class="form-group">
-            <label for="select-scenario">Scenario</label>
-            <select id="select-scenario" ng-model="selection.scenario"
-                    ng-options="scenario.name for scenario in selection.scenarioOptions">
-            </select>
-        </div>
-        <div class="form-group">
-            <label for="activity-level">Activity Level</label>
-            <input type="number" step="any" class="form-control input-sm" id="activity-level"
-                   ng-model="selection.activityLevel">
-        </div>
-        <div class="form-group">
-            <label for="chart-label">Chart Label</label>
-            <input type="text" maxlength={{maxLabelLen}} class="form-control input-sm" id="chart-label"
-                   ng-model="selection.chartLabel">
-        </div>
-        <button type="submit" class="btn btn-default" ng-click="selection.add()" aria-label="Add"
-                title="Display LCIA results">
-            Add
-        </button>
-    </form>
-        </div>
+            </div>
+            <div class="form-group">
+                <label for="activity-level">Activity Level</label>
+                <input type="number" step="any" class="form-control input-sm" id="activity-level"
+                       ng-model="selection.activityLevel">
+            </div>
+            <div class="form-group">
+                <label for="chart-label">Chart Label</label>
+                <input type="text" maxlength={{maxLabelLen}} class="form-control input-sm" id="chart-label"
+                       ng-model="selection.chartLabel">
+            </div>
+            <button type="submit" class="btn btn-default btn-sm" ng-click="selection.add()" aria-label="Add"
+                    title="Display LCIA results" accesskey="a">
+                Add
+            </button>
+        </form>
+    </div>
 </div>
 
 <div ng-show="gridData.length" class="row">

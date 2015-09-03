@@ -21,7 +21,6 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.selection = createSelectionComponent();
             $scope.gridData = [];
             $scope.gridOpts = createGrid();
-            $scope.invalidSelection = invalidSelection();
             $scope.lciaMethods = [];
             $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
@@ -45,20 +44,8 @@ angular.module("lcaApp.LCIA.comparison",
                 for (var i=index; i < rows.length; ++i) {
                     --(rows[i].index);
                 }
-                //resetGridHeight();
             };
 
-            $scope.navigateComponent = function(row) {
-                if (row.hasOwnProperty("fragmentID")) {
-                    $state.go( "home.fragment-lcia" ,
-                        {fragmentID: row.fragmentID , scenarioID: row.scenario.scenarioID });
-                } else {
-                    $state.go( "home.process-lcia" ,
-                        {processID: row.processID , scenarioID: row.scenario.scenarioID, activity: row.activityLevel });
-                }
-            };
-
-            //resetGridHeight();
             getData();
 
             function getData() {
@@ -97,35 +84,22 @@ angular.module("lcaApp.LCIA.comparison",
                 if ( $scope.selection.isFragment() ) {
                     row.fragmentID = $scope.selection.fragment.fragmentID;
                     row.componentName = $scope.selection.fragment.name;
+                    row.componentRef = "home.fragment-lcia({fragmentID: " + row.fragmentID + ", scenarioID: "
+                                    + row.scenario.scenarioID + "})";
 
                 } else {
                     row.processID = $scope.selection.process.processID;
                     row.componentName = $scope.selection.process.getLongName();
+                    row.componentRef = "home.process-lcia({processID: " + row.processID + ", scenarioID: "
+                                    + row.scenario.scenarioID + ", activity: " + row.activityLevel + " })";
                 }
                 $scope.gridData.push(row);
                 $scope.plot.getResult(row);
-                resetGridHeight();
                 resetInput();
             }
 
             function resetInput() {
                 $scope.selection.chartLabel = null;
-            }
-
-            function resetGridHeight() {
-                // Fruitless attempts to work around Chrome resize problem
-                //var height = $scope.gridData.length*30 + 32;
-                //
-                //d3Service.select("#selection-grid")
-                //    .attr("height", height);
-                //resizeGridPlugin.rHD();
-                //$scope.gridData = $scope.gridData.slice();
-                //$scope.$apply($scope.gridData.length);
-            }
-
-            function invalidSelection() {
-                // TODO - implement this validation
-                return false;
             }
 
             function createSelectionComponent() {
@@ -186,7 +160,7 @@ angular.module("lcaApp.LCIA.comparison",
                     numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     labelTemplate = '<input type="text" maxlength={{maxLabelLen}} ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     compTemplate =
-'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to LCIA detail view" ng-click="navigateComponent(row.entity)">{{COL_FIELD}}</a></div>',
+'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to LCIA detail view" ui-sref={{row.entity.componentRef}}>{{COL_FIELD}}</a></div>',
                     scenarioTemplate =
 '<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to scenario detail view" ui-sref={{row.entity.scenarioRef}}>{{COL_FIELD}}</a></div>',
                     columnDefs = [
