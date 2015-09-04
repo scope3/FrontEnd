@@ -171,7 +171,7 @@ angular.module("lcaApp.LCIA.comparison",
                         { field: "scenario.name", cellTemplate: scenarioTemplate, displayName: "Scenario", enableCellEdit: false },
                         { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
                         { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
-                        { field: "", cellTemplate: removeTemplate, width: 30, enableCellEdit: false }
+                        { field: "", cellTemplate: removeTemplate, width: 35, enableCellEdit: false }
                     ];
 
                 return {
