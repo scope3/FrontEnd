@@ -55,7 +55,7 @@
     </div>
     <dl class="dl-horizontal">
         <dt>Scenario</dt>
-        <dd>{{navigationScenario.name}}</dd>
+        <dd><a ui-sref="home.scenario({scenarioID: navigationScenario.scenarioID})">{{navigationScenario.name}}</a></dd>
         <dt>Fragment</dt>
         <dd>
                 <span ng-repeat="navFrag in navigationService.getAll()">
