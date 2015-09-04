@@ -1,7 +1,7 @@
 function HomePage () {
     this.scenarios = element.all(by.repeater("scenario in scenarios"));
     this.lciaMethods = element.all(by.repeater("method in lciaMethods"));
-    this.infoMessages = element.all(by.css(".alert-info"));
+    this.infoMessages = element.all(by.css("info"));
     this.newButton = element(by.buttonText("New"));
 
     this.get = function (auth) {

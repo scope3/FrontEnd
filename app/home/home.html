@@ -1,15 +1,18 @@
 <!-- Partial html for home page -->
 <p class="desc">{{infoMsg.home.msg}}</p>
-<info>{{infoMsg.home.help}}</info>
-<info>{{infoMsg.home.msg1}}</info>
-<info>{{infoMsg.home.msg2}}</info>
-<info>{{infoMsg.home.msg3}}</info>
+<info>{{infoMsg.home.help}}
+    <p></p>
+    <p>{{infoMsg.home.msg1}}</p>
+    <p>{{infoMsg.home.msg2}}</p>
+    <p>{{infoMsg.home.msg3}}</p>
+</info>
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">Scenarios</span>
         <button class="btn btn-default btn-sm pull-right" ng-show="canCreate" ng-click="createScenario()">New</button>
         <div class="clearfix"></div>
     </div>
+    <div class="panel-body">
     <info>{{infoMsg.home.scenarios.msg}}</info>
     <p class="desc">{{infoMsg.home.scenarios.msg2}}</p>
     <table class="table table-condensed">
@@ -46,12 +49,13 @@
         </tr>
         </tbody>
     </table>
-
+    </div>
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">
         <span class="panel-title">LCIA Methods</span>
     </div>
+    <div class="panel-body">
     <info>{{infoMsg.home.lciaMethods.msg}}</info>
     <p class="desc">{{infoMsg.home.lciaMethods.msg1}}</p>
     <table class="table table-condensed">
@@ -76,4 +80,5 @@
         </tr>
         </tbody>
     </table>
+    </div>
 </div>

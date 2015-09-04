@@ -15,7 +15,7 @@
  *
  * @param {string} msg Value of one of the msg properties in INFO_MSG
  */
-angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
+angular.module('lcaApp.info.directive', [])
     .constant('INFO_MSG',
     { sort: "Click on the column headers to sort by column.",
       home : {
@@ -88,7 +88,7 @@ angular.module('lcaApp.info.directive', ['ui.bootstrap.alert'])
         function($compile) {
             return {
                 restrict: 'E',
-                template: '<div class="alert alert-info" role="alert" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
+                template: '<div class="well well-sm" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign glyphicon-info-color" aria-hidden="true"></span><span class="sr-only">Information:</span><small><span ng-transclude></span></small></div>',
                 //replace : true,
                 transclude : true,
                 link : function (scope) {

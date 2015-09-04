@@ -38,10 +38,11 @@
             </change-buttons>
         </span>
     </div>
-    <p class="desc">{{infoMsg.processInstance.flows}} {{infoMsg.sort}}</p>
-    <info>{{infoMsg.processInstance.flows1}}</info>
-    <info>{{infoMsg.processInstance.balance}}</info>
     <div class="panel-body">
+        <p class="desc">{{infoMsg.processInstance.flows}} {{infoMsg.sort}}</p>
+        <info>{{infoMsg.processInstance.flows1}}<p></p>
+              {{infoMsg.processInstance.balance}}
+        </info>
         <param-grid options="options" data="fragmentFlows" columns="columns" params="params"></param-grid>
     </div>
 </div>
@@ -63,8 +64,9 @@
     </div>
     <div class="panel-body">
     <p class="desc">{{infoMsg.processInstance.dissipation}} {{infoMsg.sort}}</p>
-    <info>{{infoMsg.processInstance.diss1}}</info>
-    <info>{{infoMsg.processInstance.diss2}}</info>
+    <info>{{infoMsg.processInstance.diss1}}<p></p>
+          {{infoMsg.processInstance.diss2}}
+    </info>
         <param-grid options="paramGrid.dissipation.options"
                     data="paramGrid.dissipation.data"
                     columns="paramGrid.dissipation.columns"

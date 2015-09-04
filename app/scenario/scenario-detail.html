@@ -37,14 +37,18 @@
         </span>
     </div>
     <div class="panel-body">
-    <info>{{infoMsg.home.scenarios.params}}</info>
+    <info>{{infoMsg.home.scenarios.params}}<p></p>
+          {{infoMsg.home.scenarios.paramTypes}}
+        <ol>
+            <li>{{infoMsg.home.scenarios.ffParam}}</li>
+            <li>{{infoMsg.home.scenarios.fpParam}}</li>
+            <li>{{infoMsg.home.scenarios.peParam}}</li>
+            <li>{{infoMsg.home.scenarios.pdParam}}</li>
+            <li>{{infoMsg.home.scenarios.lcParam}}</li>
+        </ol>
+    </info>
     <p class="desc">{{infoMsg.sort}}</p>
-        <param-grid options="options" data="gridData" columns="gridColumns" params="params"></param-grid>
-    <info>{{infoMsg.home.scenarios.paramTypes}}</info>
-    <info>{{infoMsg.home.scenarios.ffParam}}</info>
-    <info>{{infoMsg.home.scenarios.fpParam}}</info>
-    <info>{{infoMsg.home.scenarios.peParam}}</info>
-    <info>{{infoMsg.home.scenarios.pdParam}}</info>
-    <info>{{infoMsg.home.scenarios.lcParam}}</info>
+        <param-grid options="options" data="gridData" columns="gridColumns" params="params">
+        </param-grid>
     </div>
 </div>

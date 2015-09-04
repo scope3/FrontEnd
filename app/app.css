@@ -187,6 +187,10 @@ info .glyphicon {
     width : 7em;
 }
 
+.glyphicon-info-color {
+    color: #31b0d5;
+}
+
 /* Disable ng-grid scroll bars */
 
 .ngViewport{
