@@ -161,17 +161,28 @@ angular.module('lcaApp', [
                 });
             localStorageServiceProvider.setPrefix('UsedOilLCA');
         }])
-    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT', 'INFO_MSG', '$location',
-        function($rootScope, HELP_ROOT, INFO_MSG, $location) {
-            var urlParam = $location.search();
+    .controller('LcaAppController', ['$rootScope', 'HELP_ROOT', 'INFO_MSG', '$location', 'localStorageService',
+        function($rootScope, HELP_ROOT, INFO_MSG, $location, localStorageService) {
+            var urlParam = $location.search(),
+                diStorageKey = "displayInfo",
+                displayInfo = true;
 
             $rootScope.helpPage = HELP_ROOT;
             $rootScope.infoMsg = INFO_MSG;
-            if ( urlParam.hasOwnProperty("di") && urlParam["di"].toLowerCase()[0] == "n") {
-                $rootScope.displayInfo = false;
+
+            // URL parameter or local storage can change displayInfo to false
+            if ( urlParam.hasOwnProperty("di")) {
+                if (urlParam["di"].toLowerCase()[0] == "n") displayInfo = false;
             } else {
-                $rootScope.displayInfo = true;
+                displayInfo = localStorageService.get(diStorageKey) !== "false";
             }
+            $rootScope.displayInfo = displayInfo;
+
+            $rootScope.toggleDisplayInfo = function () {
+                $rootScope.displayInfo=!$rootScope.displayInfo;
+                localStorageService.set(diStorageKey, $rootScope.displayInfo);
+            };
+
             $rootScope.$on('$stateChangeStart',
                 function(event, toState) {
                     //
