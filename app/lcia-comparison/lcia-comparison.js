@@ -58,7 +58,9 @@ angular.module("lcaApp.LCIA.comparison",
             function displayData() {
                 StatusService.stopWaiting();
                 $scope.selection.displayData();
-                $scope.lciaMethods = LciaMethodService.getAll();
+                $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
+                    return m.getIsActive();
+                });
                 $scope.plot.addConfig();
                 addGridData();
             }
