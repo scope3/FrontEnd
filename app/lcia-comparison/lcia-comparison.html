@@ -16,7 +16,7 @@
                     <select ng-if="selection.isFragment()" ng-model="selection.fragment"
                             ng-options="f.name for f in selection.fragmentOptions">
                     </select>
-                    <select ng-if="!selection.isFragment()" ng-model="selection.process"
+                    <select ng-if="!selection.isFragment()" ng-model="selection.process" title="Processes with elementary flows"
                             ng-options="p.getLongName() for p in selection.processOptions">
                     </select>
                 </span>

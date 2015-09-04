@@ -12,12 +12,12 @@ angular.module('lcaApp.process.LCIA',
         'lcaApp.lciaDetail.service', 'lcaApp.models.param', 'lcaApp.models.scenario', 'LocalStorageModule'])
     .controller('ProcessLciaController',
         ['$scope', '$stateParams', '$state', 'StatusService', '$q', '$log', 'ScenarioModelService',
-         'ProcessService', 'ProcessFlowService',
+         'ProcessForFlowTypeService', 'ProcessFlowService',
          'LciaMethodService', 'FlowPropertyForProcessService', 'LciaResultForProcessService',
          'ColorCodeService', 'FragmentNavigationService', 'MODEL_BASE_CASE_SCENARIO_ID',
          'LciaDetailService', 'ParamModelService', 'localStorageService',
         function ($scope, $stateParams, $state, StatusService, $q, $log, ScenarioModelService,
-                  ProcessService, ProcessFlowService,
+                  ProcessForFlowTypeService, ProcessFlowService,
                   LciaMethodService, FlowPropertyForProcessService, LciaResultForProcessService,
                   ColorCodeService, FragmentNavigationService, MODEL_BASE_CASE_SCENARIO_ID,
                   LciaDetailService, ParamModelService, localStorageService) {
@@ -117,8 +117,8 @@ angular.module('lcaApp.process.LCIA',
                     $scope.selection.scenario = $scope.scenario = $scope.scenarios.find(function (element) {
                         return (element["scenarioID"] === scenario.scenarioID);
                     });
-                    processes = ProcessService.getAll();
-                    processes.sort(ProcessService.compareByName);
+                    processes = ProcessForFlowTypeService.getAll();
+                    processes.sort(ProcessForFlowTypeService.compareByName);
                     $scope.processes = processes;
                     $scope.selection.process = $scope.process = $scope.processes.find(function (element) {
                         return (element["processID"] === processID);
@@ -168,7 +168,7 @@ angular.module('lcaApp.process.LCIA',
              */
             function getData() {
                 $q.all([ScenarioModelService.load(),
-                    ProcessService.load(),
+                    ProcessForFlowTypeService.load({flowTypeID:2}),
                     LciaMethodService.load(),
                     ProcessFlowService.load({processID:processID}),
                     FlowPropertyForProcessService.load({processID: processID})])

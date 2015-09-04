@@ -10,10 +10,10 @@ angular.module("lcaApp.LCIA.comparison",
         "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
-        "FragmentService", "LciaMethodService", "ProcessService",
+        "FragmentService", "LciaMethodService", "ProcessForFlowTypeService",
         "ScenarioModelService", "LciaModelService", "d3Service", "SelectionService",
         function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
-                  FragmentService, LciaMethodService, ProcessService,
+                  FragmentService, LciaMethodService, ProcessForFlowTypeService,
                   ScenarioModelService, LciaModelService, d3Service, SelectionService) {
 
             var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
@@ -50,7 +50,7 @@ angular.module("lcaApp.LCIA.comparison",
 
             function getData() {
                 StatusService.startWaiting();
-                $q.all([ScenarioModelService.load(), FragmentService.load(), ProcessService.load(),
+                $q.all([ScenarioModelService.load(), FragmentService.load(), ProcessForFlowTypeService.load({flowTypeID:2}),
                     LciaMethodService.load()]).then(
                     displayData, StatusService.handleFailure);
             }
@@ -125,7 +125,7 @@ angular.module("lcaApp.LCIA.comparison",
 
                 function displayData() {
                     selection.fragmentOptions = FragmentService.getAll();
-                    selection.processOptions = ProcessService.getAll();
+                    selection.processOptions = ProcessForFlowTypeService.getAll();
                     selection.scenarioOptions = ScenarioModelService.getAll();
                     if (selection.scenarioOptions.length) {
                         selection.scenario = ScenarioModelService.getActiveScenario();
@@ -133,7 +133,7 @@ angular.module("lcaApp.LCIA.comparison",
                             selection.fragment = FragmentService.get(selection.scenario.topLevelFragmentID);
                         }
                         if (selection.processOptions.length) {
-                            selection.processOptions.sort(ProcessService.compareByName);
+                            selection.processOptions.sort(ProcessForFlowTypeService.compareByName);
                             selection.process = selection.processOptions[0];
                         }
                     }
@@ -156,7 +156,7 @@ angular.module("lcaApp.LCIA.comparison",
 
             function createGrid() {
                 var removeTemplate =
-'<button type="button" class="btn btn-sm" ng-click="removeGridRow(row.entity)" aria-label="Remove"><span class="glyphicon glyphicon-remove"></span></button>',
+'<button type="button" class="ngCell btn btn-default btn-sm" ng-click="removeGridRow(row.entity)" aria-label="Remove"><span class="glyphicon glyphicon-remove"></span></button>',
                     numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     labelTemplate = '<input type="text" maxlength={{maxLabelLen}} ng-input="COL_FIELD" ng-model="COL_FIELD" />',
                     compTemplate =
