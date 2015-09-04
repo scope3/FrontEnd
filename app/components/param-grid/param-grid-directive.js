@@ -140,7 +140,7 @@ angular.module('lcaApp.paramGrid.directive', ['ngGrid', 'lcaApp.models.param', '
             * @param evt   Event object containing row changed.
             */
             function handleEndCellEdit(evt) {
-                updateStatus(evt.targetScope.row["entity"]);
+                $scope.$apply(updateStatus(evt.targetScope.row["entity"]));
             }
 
             function setColWidths() {
