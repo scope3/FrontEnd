@@ -1,5 +1,11 @@
 <!-- HTML template for LCIA comparison view-->
 <div class="panel panel-default" id="lcia-selection">
+    <div class="panel-heading">
+        <button class="btn btn-default btn-small" ng-csv="csv.getData()" csv-header="csv.header"
+                filename="{{csv.fileName}}" lazy-load="true" ng-disabled="true">
+            Export to CSV
+        </button>
+    </div>
     <div class="panel-body">
         <div class="panel panel-default">
             <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
@@ -16,7 +22,8 @@
                     <select ng-if="selection.isFragment()" ng-model="selection.fragment"
                             ng-options="f.name for f in selection.fragmentOptions">
                     </select>
-                    <select ng-if="!selection.isFragment()" ng-model="selection.process" title="Processes with elementary flows"
+                    <select ng-if="!selection.isFragment()" ng-model="selection.process"
+                            title="Processes with elementary flows"
                             ng-options="p.getLongName() for p in selection.processOptions">
                     </select>
                 </span>
@@ -50,15 +57,18 @@
         <div class="panel panel-default">
             <!--<div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">-->
 
-                <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+            <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
             <div class="panel-body">
                 <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
                     {{method.getShortName()}}
                 </a>
-                <p><small>{{method.referenceFlowProperty.name}}</small></p>
-            <!--</div>-->
+
+                <p>
+                    <small>{{method.referenceFlowProperty.name}}</small>
+                </p>
+                <!--</div>-->
                 <svg class="plot-container">
                     <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
                 </svg>

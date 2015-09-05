@@ -7,7 +7,7 @@
  */
 angular.module("lcaApp.LCIA.comparison",
     ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
-        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service"])
+        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service", "ngCsv"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessForFlowTypeService",
@@ -25,6 +25,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
             $scope.$on("$destroy", $scope.selection.savePrevious);
+            $scope.csv = createCsvComponent();
             /**
              * Remove LCIA method. Used to close panel.
              * @param m Method displayed by panel to be closed
@@ -303,4 +304,48 @@ angular.module("lcaApp.LCIA.comparison",
 
                 return plot;
             }
+
+            function createCsvComponent() {
+                var columnDefs = $scope.gridOpts.columnDefs.slice(0,4),
+                    csv = {
+                        header : getHeader(),
+                        fileName : "LCIA_Comparison.csv",
+                        disableExport : function () {
+                            return !$scope.gridData.length || !$scope.lciaMethods.length;
+                        },
+                        getData : getData
+                    };
+
+                function getHeader() {
+                    var header = ["LCIA Method"];
+
+                    header.push(columnDefs.map( function(d) {
+                        return d.displayName;
+                    }));
+                    header.push(["Unit Score", "Total"]);
+                    return header;
+                }
+
+                function getData() {
+                    return $scope.lciaMethods.map( getMethodData);
+                }
+
+                function getMethodData(m) {
+                    var data = $scope.plot.data[m.lciaMethodID],
+                        rows = data.map( getRowData);
+                    return rows;
+                }
+
+                function getRowData(plotRow) {
+                    var gridRow = plotRow.row,
+                        score = plotRow.value,
+                        csvData = columnDefs.map( function(d) {
+                            return gridRow[d.field];
+                        });
+                    csvData.push([score, (score * +gridRow.activityLevel)]);
+                }
+
+                return csv;
+            }
+
         }]);
