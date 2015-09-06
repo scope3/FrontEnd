@@ -236,9 +236,9 @@ angular.module('lcaApp.plot.service', [])
              * Creates object used to configure a plot margin
              * Like CSS margin, arguments after the first are optional
              * @param {number} top      If last argument, all sides set to top
-             * @param {number} right    If last argument, bottom = top and left = right
-             * @param {number} bottom   If last argument, left = right
-             * @param {number} left     Left side of margin
+             * @param {number=} right    If last argument, bottom = top and left = right
+             * @param {number=} bottom   If last argument, left = right
+             * @param {number=} left     Left side of margin
              * @returns {Margin} object created
              */
             createMargin: function ( top, right, bottom, left) {
