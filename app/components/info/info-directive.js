@@ -88,7 +88,7 @@ angular.module('lcaApp.info.directive', [])
         function($compile) {
             return {
                 restrict: 'E',
-                template: '<div class="well well-sm" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign glyphicon-info-color" aria-hidden="true"></span><span class="sr-only">Information:</span><small><span ng-transclude></span></small></div>',
+                template: '<div class="well well-sm" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign glyphicon-info-color" aria-hidden="true"></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
                 //replace : true,
                 transclude : true,
                 link : function (scope) {
