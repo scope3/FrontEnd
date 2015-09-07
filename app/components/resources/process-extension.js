@@ -20,6 +20,9 @@ angular.module('lcaApp.resources.process', [])
                         if (this.geography) {
                             longName = longName + " [" + this.geography + "]";
                         }
+			if (this.version != "00.00.000") {
+			    longName = longName + " (" +this.version +")";
+			}
                     }
                     return longName;
                 };
