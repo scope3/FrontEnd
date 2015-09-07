@@ -1,16 +1,39 @@
 <!-- HTML template for LCIA comparison view-->
-<div>
-<button class="btn btn-default btn-small pull-right" ng-csv="csv.getData()" csv-header="csvHeader"
-filename="{{csvFileName}}" lazy-load="true" ng-disabled="!gridData.length || !lciaMethods.length">
-Export to CSV
-</button>
-<div class="clearfix"></div>
+<div class="row">
+    <div class="col-md-10">
+        <info>
+            This view allows you to compare LCIA results for various combinations of fragments, processes, scenarios and activity levels.
+            <p></p>
+            Results can be saved to a CSV file by clicking on the <b>Export to CSV</b> button.
+        </info>
+    </div>
+    <div class="col-md-2">
+        <button id="export-lcia-results" class="btn btn-default btn-small pull-right" ng-csv="csv.getData()" csv-header="csvHeader"
+                filename="{{csvFileName}}" lazy-load="true" ng-disabled="!gridData.length || !lciaMethods.length">
+            Export to CSV
+        </button>
+    </div>
+    <div class="clearfix"></div>
 </div>
 <div class="panel panel-default" id="lcia-selection">
     <div class="panel-body">
+        <info>
+            This table controls the vertical dimension of the bar charts below.
+            Each bar corresponds to an LCIA result for a table row.
+            If a chart label is provided, it will appear on the vertical axis. Otherwise, the row number will appear.
+            <p></p>
+            You may change activity level and chart label entries. A row can be removed by clicking on the <b>x</b> button
+            at the end of the row.
+        </info>
         <div class="panel panel-default">
             <div id="selection-grid" ng-grid="gridOpts" class="gridStyle"></div>
         </div>
+        <info>
+            Select Fragment or Process type, then select an instance of that type and a scenario.
+            When <b>Process</b> is selected, the adjacent selection list only contains processes having elementary flows.
+            You may change the activity level (default is 1) and add a chart label (maximum length is 7 characters).
+            Then click on the <b>Add</b> button to add your selection to the table above.
+        </info>
         <form class="form-inline">
             <div class="form-group">
                 <label for="component-select">
@@ -46,34 +69,38 @@ Export to CSV
                        ng-model="selection.chartLabel">
             </div>
             <button type="submit" class="btn btn-primary btn-sm" ng-click="selection.add()" aria-label="Add"
-                    title="Display LCIA results" accesskey="a">
-                Add
+                    title="Display LCIA results" accesskey="A">
+                <U>A</U>dd
             </button>
         </form>
     </div>
 </div>
-<div ng-if="gridData.length" class="row">
-    <div ng-repeat="method in lciaMethods" class="col-md-4">
-        <div class="panel panel-default">
-            <!--<div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">-->
+<div ng-if="gridData.length">
+    <info>
+        A bar chart of LCIA results is shown for every active LCIA Method. You can remove a chart by clicking on the <b>x</b> at the top right corner.
+    </info>
+    <div class="row">
+        <div ng-repeat="method in lciaMethods" class="col-md-4">
+            <div class="panel panel-default">
+                <!--<div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">-->
 
-            <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
-                <span aria-hidden="true">×</span>
-            </button>
-            <div class="panel-body">
-                <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
-                    {{method.getShortName()}}
-                </a>
+                <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+                <div class="panel-body">
+                    <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
+                        {{method.getShortName()}}
+                    </a>
 
-                <p>
-                    <small>{{method.referenceFlowProperty.name}}</small>
-                </p>
-                <!--</div>-->
-                <svg class="plot-container">
-                    <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
-                </svg>
+                    <p>
+                        <small>{{method.referenceFlowProperty.name}}</small>
+                    </p>
+                    <!--</div>-->
+                    <svg class="plot-container">
+                        <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
+                    </svg>
+                </div>
             </div>
         </div>
     </div>
 </div>
-
