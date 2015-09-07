@@ -7,14 +7,14 @@
  */
 angular.module("lcaApp.LCIA.comparison",
     ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
-        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service", "ngCsv"])
+        "lcaApp.models.lcia", "lcaApp.models.scenario", "lcaApp.selection.service", "ngCsv"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessForFlowTypeService",
-        "ScenarioModelService", "LciaModelService", "d3Service", "SelectionService",
+        "ScenarioModelService", "LciaModelService", "SelectionService",
         function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
                   FragmentService, LciaMethodService, ProcessForFlowTypeService,
-                  ScenarioModelService, LciaModelService, d3Service, SelectionService) {
+                  ScenarioModelService, LciaModelService, SelectionService) {
 
             //noinspection JSPotentiallyInvalidConstructorUsage
             var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
@@ -217,8 +217,10 @@ angular.module("lcaApp.LCIA.comparison",
                     var config = {};
 
                     $scope.lciaMethods.forEach( function (m) {
-                        var mc = createCommonConfig();
-                        mc.content().color(m.getDefaultColor());
+                        var mc = createCommonConfig(),
+                            barColorScales = m.getColorScales(),
+                            barColor = barColorScales.hasOwnProperty("9") ? barColorScales[9][2] : m.getDefaultColor();
+                        mc.content().color(barColor);
                         mc.x().unit(m.getReferenceUnit());
                         config[m.lciaMethodID] = mc;
                     });
