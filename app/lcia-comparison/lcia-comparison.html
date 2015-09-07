@@ -52,7 +52,7 @@ Export to CSV
         </form>
     </div>
 </div>
-<div ng-show="gridData.length" class="row">
+<div ng-if="gridData.length" class="row">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
         <div class="panel panel-default">
             <!--<div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">-->
