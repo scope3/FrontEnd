@@ -1,4 +1,11 @@
 <!-- HTML template for LCIA comparison view-->
+<div>
+<button class="btn btn-default btn-small pull-right" ng-csv="csv.getData()" csv-header="csvHeader"
+filename="{{csvFileName}}" lazy-load="true" ng-disabled="!gridData.length || !lciaMethods.length">
+Export to CSV
+</button>
+<div class="clearfix"></div>
+</div>
 <div class="panel panel-default" id="lcia-selection">
     <div class="panel-body">
         <div class="panel panel-default">
@@ -16,7 +23,8 @@
                     <select ng-if="selection.isFragment()" ng-model="selection.fragment"
                             ng-options="f.name for f in selection.fragmentOptions">
                     </select>
-                    <select ng-if="!selection.isFragment()" ng-model="selection.process" title="Processes with elementary flows"
+                    <select ng-if="!selection.isFragment()" ng-model="selection.process"
+                            title="Processes with elementary flows"
                             ng-options="p.getLongName() for p in selection.processOptions">
                     </select>
                 </span>
@@ -37,28 +45,30 @@
                 <input type="text" maxlength={{maxLabelLen}} class="form-control input-sm" id="chart-label"
                        ng-model="selection.chartLabel">
             </div>
-            <button type="submit" class="btn btn-default btn-sm" ng-click="selection.add()" aria-label="Add"
+            <button type="submit" class="btn btn-primary btn-sm" ng-click="selection.add()" aria-label="Add"
                     title="Display LCIA results" accesskey="a">
                 Add
             </button>
         </form>
     </div>
 </div>
-
-<div ng-show="gridData.length" class="row">
+<div ng-if="gridData.length" class="row">
     <div ng-repeat="method in lciaMethods" class="col-md-4">
         <div class="panel panel-default">
             <!--<div class="panel-heading" ng-style="{'background-color' : method.getDefaultColor()}">-->
 
-                <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
+            <button type="button" class="close" ng-click="removeMethod(method)" aria-label="Close">
+                <span aria-hidden="true">×</span>
+            </button>
             <div class="panel-body">
                 <a ui-sref="home.lcia-method({lciaMethodID: method.lciaMethodID})">
                     {{method.getShortName()}}
                 </a>
-                <p><small>{{method.referenceFlowProperty.name}}</small></p>
-            <!--</div>-->
+
+                <p>
+                    <small>{{method.referenceFlowProperty.name}}</small>
+                </p>
+                <!--</div>-->
                 <svg class="plot-container">
                     <plot config="plot.config[method.lciaMethodID]" data="plot.data[method.lciaMethodID]"></plot>
                 </svg>

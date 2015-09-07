@@ -2,7 +2,6 @@
 <div ng-if="navigationService===null">
     <p class="desc">{{infoMsg.fragmentLcia.msgScenario}}</p>
     <info>{{infoMsg.fragmentLcia.xport}}</info>
-    <info>{{infoMsg.fragmentLcia.lcia}}</info>
     <dl class="dl-horizontal">
         <dt>Fragment</dt>
         <dd>
@@ -35,7 +34,6 @@
 <div ng-if="navigationService">
     <p class="desc">{{infoMsg.fragmentLcia.msgFragment}}</p>
     <info>{{infoMsg.fragmentLcia.xport}}</info>
-    <info>{{infoMsg.fragmentLcia.lcia}}</info>
     <div class="row">
         <div class="col-md-6">
             <h4>Fragment LCIA Results</h4>
@@ -85,7 +83,9 @@
         <dd>{{fragment.activityLevel | numFormat }}</dd>
     </dl>
 </div>
-<info>{{infoMsg.fragmentLcia.waterfall}}</info>
+<info>{{infoMsg.fragmentLcia.waterfall}}<p></p>
+      {{infoMsg.fragmentLcia.lcia}}
+</info>
 <div class="row" ng-if="scenarios.length">
     <div ng-repeat="method in methods" class="col-md-6">
         <div class="panel panel-default">

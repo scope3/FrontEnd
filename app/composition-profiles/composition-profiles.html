@@ -22,8 +22,9 @@
         <span class="panel-title">Flow Property Magnitudes</span>
     </div>
     <div class="panel-body">
-    <info>{{infoMsg.compositionProfile.content}}</info>
-    <info>{{infoMsg.compositionProfile.ncv}}</info>
+    <info>{{infoMsg.compositionProfile.content}}<p></p>
+        {{infoMsg.compositionProfile.ncv}}
+    </info>
         <label for="selectScenario">Scenario</label>
         <select id="selectScenario" ng-model="scenario"
                 ng-options="s.name for s in scenarios"

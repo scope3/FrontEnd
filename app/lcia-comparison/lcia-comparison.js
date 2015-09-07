@@ -7,15 +7,16 @@
  */
 angular.module("lcaApp.LCIA.comparison",
     ["ui.router", "lcaApp.resources.service", "lcaApp.status.service", "ngGrid", "lcaApp.plot", "lcaApp.format",
-        "lcaApp.models.lcia", "lcaApp.models.scenario", "d3", "lcaApp.selection.service"])
+        "lcaApp.models.lcia", "lcaApp.models.scenario", "lcaApp.selection.service", "ngCsv"])
     .controller("LciaComparisonController",
     ["$scope", "$stateParams", "$state", "StatusService", "$q", "PlotService", "FormatService",
         "FragmentService", "LciaMethodService", "ProcessForFlowTypeService",
-        "ScenarioModelService", "LciaModelService", "d3Service", "SelectionService",
+        "ScenarioModelService", "LciaModelService", "SelectionService",
         function ($scope, $stateParams, $state, StatusService, $q, PlotService, FormatService,
                   FragmentService, LciaMethodService, ProcessForFlowTypeService,
-                  ScenarioModelService, LciaModelService, d3Service, SelectionService) {
+                  ScenarioModelService, LciaModelService, SelectionService) {
 
+            //noinspection JSPotentiallyInvalidConstructorUsage
             var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
 
             $scope.selection = createSelectionComponent();
@@ -25,6 +26,11 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
             $scope.$on("$destroy", $scope.selection.savePrevious);
+            $scope.csv = createCsvComponent();
+            //
+            // Workaround - directive unable to read nested properties
+            $scope.csvHeader = $scope.csv.header;
+            $scope.csvFileName = $scope.csv.fileName;
             /**
              * Remove LCIA method. Used to close panel.
              * @param m Method displayed by panel to be closed
@@ -58,7 +64,9 @@ angular.module("lcaApp.LCIA.comparison",
             function displayData() {
                 StatusService.stopWaiting();
                 $scope.selection.displayData();
-                $scope.lciaMethods = LciaMethodService.getAll();
+                $scope.lciaMethods = LciaMethodService.getAll().filter( function (m) {
+                    return m.getIsActive();
+                });
                 $scope.plot.addConfig();
                 addGridData();
             }
@@ -169,7 +177,7 @@ angular.module("lcaApp.LCIA.comparison",
                         { field: "scenario.name", cellTemplate: scenarioTemplate, displayName: "Scenario", enableCellEdit: false },
                         { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
                         { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
-                        { field: "", cellTemplate: removeTemplate, width: 30, enableCellEdit: false }
+                        { field: "", cellTemplate: removeTemplate, width: 35, enableCellEdit: false }
                     ];
 
                 return {
@@ -209,8 +217,10 @@ angular.module("lcaApp.LCIA.comparison",
                     var config = {};
 
                     $scope.lciaMethods.forEach( function (m) {
-                        var mc = createCommonConfig();
-                        mc.content().color(m.getDefaultColor());
+                        var mc = createCommonConfig(),
+                            barColorScales = m.getColorScales(),
+                            barColor = barColorScales.hasOwnProperty("9") ? barColorScales[9][2] : m.getDefaultColor();
+                        mc.content().color(barColor);
                         mc.x().unit(m.getReferenceUnit());
                         config[m.lciaMethodID] = mc;
                     });
@@ -301,4 +311,40 @@ angular.module("lcaApp.LCIA.comparison",
 
                 return plot;
             }
+
+            function createCsvComponent() {
+                var allData = [];
+
+                function getHeader() {
+                    return ["LCIA Method", "Type", "Name", "Scenario", "Unit Score", "Activity Level", "Total",
+                           "Reference Unit", "ILCD Reference"];
+                }
+
+                function getData() {
+                    allData = [];
+                    $scope.lciaMethods.forEach( getMethodData);
+                    return allData;
+
+                }
+
+                function getMethodData(m) {
+                    var data = $scope.plot.data[m.lciaMethodID];
+
+                    data.forEach(function (d) {
+                        var gridRow = d.row,
+                            score = d.value;
+
+                        allData.push([m.name, gridRow.componentType, gridRow.componentName, gridRow.scenario.name, score,
+                                    gridRow.activityLevel, score * +gridRow.activityLevel,
+                                    m.getReferenceUnit(), m.getReferenceLink() ] );
+                    });
+                }
+
+                return {
+                    header : getHeader(),
+                    fileName : "LCIA_Comparison.csv",
+                    getData : getData
+                };
+            }
+
         }]);
