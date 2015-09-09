@@ -1,8 +1,7 @@
 # Front End of the LCA Tool
 
-Single Page Application for data visualization. We expect this page to be loaded in a CalRecycle web page iframe. 
 This is an AngularJS app bootstrapped from [angular-seed](https://github.com/angular/angular-seed).
-It communicates with the back end via the [web API](https://github.com/uo-lca/CalRecycleLCA/tree/master/vs/LCIAToolAPI).
+It communicates with the back end via the [web API](https://github.com/uo-lca/CalRecycleLCA/tree/master/LCIAToolAPI).
 
 ## Getting Started
 
@@ -88,11 +87,13 @@ See also this issue report: https://github.com/bower/bower/issues/689
         * format                --> Formatting service and filter
         * fragment-navigation   --> Service for keeping track of fragment navigation state
         * idmap                 --> Maps resource ID to resource
+        * info                  --> Directive for embedding information in a view
         * lcia-detail           --> LCIA bar chart directive, service, and css
         * modal                 --> template html and controller used with UI Bootstrap modal window service
         * models                --> Services providing models for resource data
         * name                  --> Resource name transformation service
         * param-grid            --> Param grid directive
+        * plot                  --> Plot service and directive
         * reference-link/       --> Directive for displaying resource link reference (ILCD XML)
         * resources-mocks/      --> Mock resource data for unit tests
         * resources/            --> Web API resource service
@@ -101,9 +102,11 @@ See also this issue report: https://github.com/bower/bower/issues/689
         * status/               --> Service for updating shared spinner and alert message
         * version/              --> version related components (came with angular-seed)
         * waterfall/            --> Directive, service, and css used to draw waterfall charts
+    * composition-profiles/ --> Composition Profiles view and controller
     * fragment-lcia/        --> Fragment LCIA view and controller
-    * fragment-sankey/      --> Fragment sankey view and controller
+    * fragment-sankey/      --> Fragment Flows view and controller
     * home/                 --> Main view and controller
+    * lcia-comparison       --> LCIA Comparison view and controller
     * lcia-method/          --> LCIA Method Detail view and controller
     * process-flow-param/   --> Process Flow Detail view and controller
     * process-instance/     --> Process Instance view and controller
@@ -111,12 +114,12 @@ See also this issue report: https://github.com/bower/bower/issues/689
     * scenario/             --> Scenario Editing view and controller
     * template/             --> Contains placeholder for file generated during grunt build
 * karma.conf.js         --> config file for running unit tests with Karma
-* e2e-tests/            --> end-to-end protractor tests (WIP)
+* e2e-tests/            --> end-to-end protractor tests
 
 
 ## Testing
 
-Unit tests have been created for almost all modules in this project. End to end tests have not yet been developed.
+Unit tests have been created for all components. End to end tests have been developed to test application views.
 
 ### Running Unit Tests
 
@@ -149,12 +152,15 @@ npm run test-single-run
 
 ### End to end testing
 
-The angular-seed app came with end-to-end tests, again written in [Jasmine][jasmine]. These tests
+End-to-end tests, again written in [Jasmine][jasmine], 
 are run with the [Protractor][protractor] End-to-End test runner.  It uses native events and has
 special features for Angular applications.
 
 * the configuration is found at `e2e-tests/protractor-conf.js`
-* the end-to-end tests will be created under `e2e-tests`
+* the end-to-end tests are found in `e2e-tests`
+* 
+
+Page objects are used to encapsulate dependencies on HTML elements. These are implemented in files named `..._Page.js` while the test specifications are named `test_.....js`.
 
 Protractor simulates interaction with our web app and verifies that the application responds
 correctly. Therefore, our web server needs to be serving up the application, so that Protractor
