@@ -15,11 +15,13 @@ exports.config = {
     cp: "test_CompositionProfiles.js",
     home: "test_Home.js",
     fragment: "test_Fragment*.js",
+    lc: "test_LciaComparison.js",
     scenario: "test_Scenario*.js"
   },
 
   capabilities: {
     "browserName": "firefox",
+    //"browserName": "internet explorer", no good support for this browser
     "chromeOptions": {"args": ["--disable-extensions"]}
   },
 
@@ -30,7 +32,9 @@ exports.config = {
   //}],
 
   //baseUrl: "http://localhost:8000/app/",
-  baseUrl: "http://uo-lca.github.io/dist/",
+  baseUrl: "http://localhost:8000/dist/",
+  //baseUrl: "http://uo-lca.github.io/dist/",
+  //baseUrl: "http://publictest.calrecycle.ca.gov/LCAToolFrontEnd/",
   framework: "jasmine2",
 
   jasmineNodeOpts: {
