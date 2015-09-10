@@ -16,9 +16,6 @@ angular.module("lcaApp.LCIA.comparison",
                   FragmentService, LciaMethodService, ProcessForFlowTypeService,
                   ScenarioModelService, LciaModelService, SelectionService) {
 
-            //noinspection JSPotentiallyInvalidConstructorUsage
-            var resizeGridPlugin = new ngGridFlexibleHeightPlugin();
-
             $scope.selection = createSelectionComponent();
             $scope.gridData = [];
             $scope.gridOpts = createGrid();
@@ -92,14 +89,12 @@ angular.module("lcaApp.LCIA.comparison",
                 if ( $scope.selection.isFragment() ) {
                     row.fragmentID = $scope.selection.fragment.fragmentID;
                     row.componentName = $scope.selection.fragment.name;
-                    row.componentRef = "home.fragment-lcia({fragmentID: " + row.fragmentID + ", scenarioID: "
-                                    + row.scenario.scenarioID + "})";
+                    row.componentRef = "home.fragment-lcia({fragmentID: row.entity.fragmentID, scenarioID: row.entity.scenario.scenarioID})";
 
                 } else {
                     row.processID = $scope.selection.process.processID;
                     row.componentName = $scope.selection.process.getLongName();
-                    row.componentRef = "home.process-lcia({processID: " + row.processID + ", scenarioID: "
-                                    + row.scenario.scenarioID + ", activity: " + row.activityLevel + " })";
+                    row.componentRef = "home.process-lcia({processID: row.entity.processID, scenarioID: row.entity.scenario.scenarioID, activity: row.entity.activityLevel})";
                 }
                 $scope.gridData.push(row);
                 $scope.plot.getResult(row);
@@ -162,7 +157,9 @@ angular.module("lcaApp.LCIA.comparison",
                 }
             }
 
+            // Configure ng-grid
             function createGrid() {
+                // Cell templates
                 var removeTemplate =
 '<button type="button" class="ngCell btn btn-default btn-sm" ng-click="removeGridRow(row.entity)" aria-label="Remove"><span class="glyphicon glyphicon-remove"></span></button>',
                     numTemplate = '<input type="number" step="any" ng-input="COL_FIELD" ng-model="COL_FIELD" />',
@@ -170,7 +167,7 @@ angular.module("lcaApp.LCIA.comparison",
                     compTemplate =
 '<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to LCIA detail view" ui-sref={{row.entity.componentRef}}>{{COL_FIELD}}</a></div>',
                     scenarioTemplate =
-'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to scenario detail view" ui-sref={{row.entity.scenarioRef}}>{{COL_FIELD}}</a></div>',
+'<div class="ngCellText" ng-class="col.colIndex()"><a title="Navigate to scenario detail view" ui-sref="home.scenario({scenarioID: row.entity.scenario.scenarioID})">{{COL_FIELD}}</a></div>',
                     columnDefs = [
                         { field: "componentType", displayName: "Type", width: 100, enableCellEdit: false },
                         { field: "componentName",  cellTemplate: compTemplate, displayName: "Name", enableCellEdit: false },
@@ -178,11 +175,14 @@ angular.module("lcaApp.LCIA.comparison",
                         { field: "activityLevel", cellTemplate: numTemplate, displayName: "Activity Level", enableCellEdit: true },
                         { field: "chartLabel", cellTemplate: labelTemplate, displayName: "Chart Label", enableCellEdit: true },
                         { field: "", cellTemplate: removeTemplate, width: 35, enableCellEdit: false }
-                    ];
+                    ],
+                    // Plugin for changing grid height to fit all rows
+                    //noinspection JSPotentiallyInvalidConstructorUsage
+                    resizeGridPlugin = new ngGridFlexibleHeightPlugin();
 
                 return {
                     columnDefs : columnDefs,
-                    data: "gridData",
+                    data: "gridData",   // scope property containing data to be displayed in grid
                     enableRowSelection: false,
                     enableCellEditOnFocus: true,
                     enableHighlighting: true,
