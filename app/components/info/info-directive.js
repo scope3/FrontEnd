@@ -7,13 +7,11 @@
  *
  * @description
  * Directive for embedding information about a UI component.
- * Wraps ui.bootstrap.alert -  {@link https://github.com/angular-ui/bootstrap/tree/master/src/alert}.
  *
  * Constant, INFO_MSG, is an object containing information about views and panels.
  * @example
  * Information about the scenarios panel in the home view is in INFO_MSG.home.scenarios.msg.
  *
- * @param {string} msg Value of one of the msg properties in INFO_MSG
  */
 angular.module('lcaApp.info.directive', [])
     .constant('INFO_MSG',
@@ -90,12 +88,7 @@ angular.module('lcaApp.info.directive', [])
                 restrict: 'E',
                 template: '<div class="well well-sm" ng-show="displayInfo"><span class="glyphicon glyphicon-info-sign glyphicon-info-color" aria-hidden="true"></span><span class="sr-only">Information:</span><span ng-transclude></span></div>',
                 //replace : true,
-                transclude : true,
-                link : function (scope) {
-                    scope.close = function () {
-                        scope.msg = null;
-                    }
-                }
+                transclude : true
             };
 
         }]);
