@@ -1,5 +1,5 @@
 /**
- * Unit test waterfall
+ * Unit test plot
  */
 describe('Unit test plot module', function() {
     var $compile;
@@ -12,6 +12,7 @@ describe('Unit test plot module', function() {
         {name: "E", value: .12702},
         {name: "F", value: .02288}
     ];
+    var template = "<svg><plot config=\"config\" data=\"data\"></plot></svg>";
     var plotService, d3Service;
 
 // Load the module
@@ -31,6 +32,10 @@ describe('Unit test plot module', function() {
 
     function getValue(d) {
         return d.value;
+    }
+
+    function getName(d) {
+        return d.name;
     }
 
     function getNumLabel(d) {
@@ -117,13 +122,23 @@ describe('Unit test plot module', function() {
     });
 
     it('should be able to compile and digest the directive', function() {
-        var plot = plotService.createConfig(),
-            data = [];
+        var config = plotService.createConfig();
+
+        config.x(plotService.createDimension().scale("ordinal").valueFn(getName))
+              .y(plotService.createDimension().scale("linear").valueFn(getValue))
+            .margin(plotService.createMargin())
+            .content(plotService.createBar());
+
+        $rootScope.config = config;
+        $rootScope.data = data;
 
         // Compile a piece of HTML containing the directive
-        var element = $compile("<plot config=\"plot\" data=\"data\"></plot>")($rootScope);
+        var element = $compile(template)($rootScope);
         // fire all the watches, so the scope will be evaluated
         element.scope().$digest();
+        var replaceElt = element.find("g").eq(0);
+        expect(replaceElt).toBeDefined();
+        //expect(angular.element(replaceElt).hasClass("lcia-bar-container")).toBe(true);
     });
 
 });
