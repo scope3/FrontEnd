@@ -21,19 +21,24 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
         function (d3Service, FormatService) {
 
         function link(scope, element) {
-            var parentElement = element[0],
-                svgElement = parentElement.parentNode,
+            var parentElement = element[0],             // Directive template element
+                svgElement = parentElement.parentNode,  // Parent of template element must be an svg element
                 svg =  d3Service.select(svgElement),
                 plot = svg.select("g.lcia-bar-container"),
                 chart, xAxis = null, yAxis = null,
-                width = 0,
-                height = 0,
+                width = 0,                              // chart width, without margins and offsets
+                height = 0,                             // chart height, without margins and offsets
                 offset = { width: 0, height: 0},
                 xScale, yScale,
                 numFormat = FormatService.format("^.2g"),
             // Future enhancement: make these hard-coded values configurable
                 numWidth = 55, labelPadding = 5;
 
+            /**
+             * Create chart group, if it does not already exist.
+             * Translate to position x = left margin and offset, y = top margin and offset
+             * @param { object } config    plot configuration, contains margins and offsets
+             */
             function createChart(config) {
                 var margin = config.margin(),
                     xDim = config.x(),
@@ -56,9 +61,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         "translate(" + (margin.left + leftOffset) + "," + (margin.top + topOffset) + ")");
             }
 
+            /**
+             * Calculate chart width and height by subtracting margins and offsets from current svg size
+             * @param { object } config
+             */
             function updateSize( config) {
                 var margin = config.margin(),
-                    svgStyle = svgElement.getBoundingClientRect();    // better firefox workaround
+                    svgStyle = svgElement.getBoundingClientRect();
 
                 if (yAxis) offset.width = yAxis.offset();
                 if (xAxis) offset.height = xAxis.offset();
@@ -66,6 +75,11 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 height = svgStyle.height - margin.top - margin.bottom - offset.height;
             }
 
+            /**
+             * If plot is configured to resize, then resize according to content (bar) size and data length
+             * @param { object } config
+             * @param { [] } data
+             */
             function resizeSvg(config, data) {
                 if (config.resizeSvg && data.length) {
                     var content = config.content(),
@@ -90,6 +104,12 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 drawAxisX(config.x().axis());
             }
 
+            /**
+             * Override d3 default tick settings
+             * @param { object } axis
+             * @param { object } dim    Dimension configuration
+             * @param { function } formatter
+             */
             function prepareAxisTicks(axis, dim, formatter) {
                 if (formatter) axis.tickFormat(formatter);
                 if (dim.hasOrdinalScale()) {
@@ -99,30 +119,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                         range = scale.range(),
                         tickCount = Math.floor((range[1]-range[0])/(numWidth+labelPadding));
                     axis.ticks(tickCount);
-
-                    //   var tickValues = [];
-                    //
-                    //if (domain[0] > 0) {
-                    //    tickValues.push(0);
-                    //    if (scale(domain[0]) > labelPadding ) {
-                    //        tickValues.push(domain[0]);
-                    //    }
-                    //} else if (domain[0] === 0 ) {
-                    //    tickValues.push(0);
-                    //} else {
-                    //    if ((scale(0) - scale(domain[0])) > labelPadding ) {
-                    //        tickValues.push(domain[0]);
-                    //    }
-                    //    tickValues.push(0);
-                    //}
-                    //if ( (scale(domain[1]) - scale(tickValues[tickValues.length-1])) > labelPadding) {
-                    //    tickValues.push(domain[1]);
-                    //}
-                    //axis.tickValues(tickValues);
                 }
-
             }
 
+            /**
+             * If x dimension has axis configuration, then draw x axis accordingly
+             * @param { object } axisConfig
+             */
             function drawAxisX(axisConfig) {
                 var dim = scope.config.x();
 
@@ -172,7 +175,10 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                     chart.select(".x.starting-line").remove();
                 }
             }
-
+            /**
+             * If y dimension has axis configuration, then draw y axis accordingly
+             * @param { object } axisConfig
+             */
             function drawAxisY(axisConfig) {
                 var dim = scope.config.y();
 
@@ -214,6 +220,13 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 }
             }
 
+            /**
+             * Create object containing original data record (d), shape (s), and label (l).
+             * Shape has x and width properties.
+             * Label has x, y, and anchor properties.
+             * @param { object } d  Data record
+             * @returns {{d: { object }, s: {x: number, width: number}, l: {x: number, y: number, anchor: number}}}
+             */
             function createHBarData(d) {
                 var dim = scope.config.x(),
                     xVal = dim.valueFn(),
@@ -316,6 +329,9 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 yScale = createScale(config.y(), data, [0, height]);
             }
 
+            /**
+             * When scope data changes, create/update chart
+             */
             scope.$watch('data', function (newVal) {
                 if (svg && scope.config && newVal) {
                     var config = scope.config;
