@@ -69,8 +69,9 @@
                        ng-model="selection.chartLabel">
             </div>
             <button type="submit" class="btn btn-primary btn-sm" ng-click="selection.add()" aria-label="Add"
-                    title="Display LCIA results" accesskey="A">
-                <U>A</U>dd
+                    title="Display LCIA results" accesskey="A" ng-disabled="!canAdd">
+                <!--suppress HtmlDeprecatedTag -->
+                <u>A</u>dd
             </button>
         </form>
     </div>

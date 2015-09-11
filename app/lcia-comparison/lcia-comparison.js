@@ -24,6 +24,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.plot = createPlot();
             $scope.$on("$destroy", $scope.selection.savePrevious);
             $scope.csv = createCsvComponent();
+            $scope.canAdd = false;      // use to disable Add button until after initial data load
             //
             // Workaround - directive unable to read nested properties
             $scope.csvHeader = $scope.csv.header;
@@ -66,6 +67,7 @@ angular.module("lcaApp.LCIA.comparison",
                 });
                 $scope.plot.addConfig();
                 addGridData();
+                $scope.canAdd = true;
             }
 
             function addGridData() {
@@ -278,7 +280,6 @@ angular.module("lcaApp.LCIA.comparison",
                                     processID: gridRow.processID
                                 });
                 }
-
                 function newArray(length) {
                     var a = [];
                     while (length-- > 0) {
@@ -287,20 +288,35 @@ angular.module("lcaApp.LCIA.comparison",
                     return a;
                 }
 
+                /**
+                 * Put results for added grid row in plot data for each active method.
+                 * @param { object } gridRow    Row added to grid
+                 * @param { [] } results        Response to request for LCIA results
+                 */
                 function plotRow(gridRow, results) {
                     StatusService.stopWaiting();
                     var index = gridRow.index;
                     if (results.length) {
-                        var data = plot.data;
-
-                        /**
-                         * @param {{ lciaMethodID : number, scenarioID: number, total : number }} result
-                         */
-                        results.forEach(function (result) {
-                            var plotRow = { row : gridRow, value: result.total };
-                            if (!data.hasOwnProperty(result.lciaMethodID.toString())) data[result.lciaMethodID] =
+                        var data = plot.data,
+                            aaResults = {};
+                        results.forEach(
+                            /**
+                             * Put results in associative array to facilitate lookup.
+                             * Not every method will have a result.
+                             * @param {{ lciaMethodID : number, scenarioID: number, total : number }} r
+                             */
+                            function(r) {
+                                aaResults[r.lciaMethodID] = r.total;
+                            }
+                        );
+                        $scope.lciaMethods.forEach(function (m) {
+                            var plotRow = { row : gridRow, value: 0 };
+                            if (aaResults.hasOwnProperty(m.lciaMethodID)) {
+                                plotRow.value = aaResults[m.lciaMethodID];
+                            }
+                            if (!data.hasOwnProperty(m.lciaMethodID.toString())) data[m.lciaMethodID] =
                                 newArray($scope.gridData.length);
-                            data[result.lciaMethodID][index] = plotRow;
+                            data[m.lciaMethodID][index] = plotRow;
                         });
                     } else {
                         StatusService.displayInfo("The fragment is outside the scope of this scenario.");
