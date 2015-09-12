@@ -124,8 +124,9 @@ describe('Unit test plot module', function() {
     it('should be able to compile and digest the directive', function() {
         var config = plotService.createConfig();
 
-        config.x(plotService.createDimension().scale("ordinal").valueFn(getName))
-              .y(plotService.createDimension().scale("linear").valueFn(getValue))
+        // Currently, only horizontal bars have been implemented
+        config.y(plotService.createDimension().scale("ordinal").valueFn(getName))
+              .x(plotService.createDimension().scale("linear").valueFn(getValue))
             .margin(plotService.createMargin())
             .content(plotService.createBar());
 

@@ -19,7 +19,7 @@ angular.module("lcaApp.LCIA.comparison",
             $scope.selection = createSelectionComponent();
             $scope.gridData = [];
             $scope.gridOpts = createGrid();
-            $scope.lciaMethods = [];
+            $scope.lciaMethods = [];    // Active LCIA methods
             $scope.maxLabelLen = 7;
             $scope.plot = createPlot();
             $scope.$on("$destroy", $scope.selection.savePrevious);
@@ -29,6 +29,7 @@ angular.module("lcaApp.LCIA.comparison",
             // Workaround - directive unable to read nested properties
             $scope.csvHeader = $scope.csv.header;
             $scope.csvFileName = $scope.csv.fileName;
+
             /**
              * Remove LCIA method. Used to close panel.
              * @param m Method displayed by panel to be closed
@@ -40,6 +41,10 @@ angular.module("lcaApp.LCIA.comparison",
                 }
             };
 
+            /**
+             * Remove row from plot data and grid data.
+             * @param { object } r  Grid data record
+             */
             $scope.removeGridRow = function(r) {
                 var rows = $scope.gridData,
                     index = r.index;
@@ -79,6 +84,9 @@ angular.module("lcaApp.LCIA.comparison",
                 }
             }
 
+            /**
+             * Add grid data record with current selections and request LCIA results.
+             */
             function addGridRow() {
                 var row = {
                         componentType : $scope.selection.type,
@@ -107,6 +115,10 @@ angular.module("lcaApp.LCIA.comparison",
                 $scope.selection.chartLabel = null;
             }
 
+            /**
+             * Create module for handling selections
+             * @returns { object }
+             */
             function createSelectionComponent() {
                 var selection = {
                         type: "Fragment",
@@ -128,6 +140,9 @@ angular.module("lcaApp.LCIA.comparison",
 
                 return selection;
 
+                /**
+                 * Populate select controls
+                 */
                 function displayData() {
                     selection.fragmentOptions = FragmentService.getAll();
                     selection.processOptions = ProcessForFlowTypeService.getAll();
@@ -148,18 +163,27 @@ angular.module("lcaApp.LCIA.comparison",
                     return selection.type === "Fragment";
                 }
 
+                /**
+                 * If returning to this view, restore grid contents from prior visit
+                 */
                 function restorePrevious() {
                     if ( SelectionService.contains(selection.key)) {
                         $scope.gridData = SelectionService.get(selection.key);
                     }
                 }
 
+                /**
+                 * Save grid contents before leaving view
+                 */
                 function savePrevious() {
                     SelectionService.set(selection.key, $scope.gridData);
                 }
             }
 
-            // Configure ng-grid
+            /**
+             * Create ng-grid configuration object
+             * @returns {{columnDefs: [], data: string, enableRowSelection: boolean, enableCellEditOnFocus: boolean, enableHighlighting: boolean, enableColumnResize: boolean, plugins: []}}
+             */
             function createGrid() {
                 // Cell templates
                 var removeTemplate =
@@ -193,11 +217,21 @@ angular.module("lcaApp.LCIA.comparison",
                 };
             }
 
+            /**
+             * Create module that prepares input to plots
+             * @returns {{data: {}, config: null}}
+             */
             function createPlot() {
+                // Both data and config are associative arrays indexed by lciaMethodID.
                 var plot = { data: {}, config: null};
 
+                // Creates plot.config object. Execute after methods have been loaded.
                 plot.addConfig = addConfig;
 
+                /**
+                 * Request LCIA results for selections in a grid row
+                 * @param { object } gridRow
+                 */
                 plot.getResult = function (gridRow) {
                     StatusService.startWaiting();
                     getLciaResults(gridRow)
@@ -206,6 +240,10 @@ angular.module("lcaApp.LCIA.comparison",
                         }, StatusService.handleFailure);
                 };
 
+                /**
+                 * For all active methods, remove plot data record corresponding to a removed grid row
+                 * @param { number } index  Grid row index
+                 */
                 plot.removeRow = function(index) {
                     var data = plot.data;
                     $scope.lciaMethods.forEach( function (m) {
@@ -215,6 +253,10 @@ angular.module("lcaApp.LCIA.comparison",
                     });
                 };
 
+                /**
+                 * Configure plot for every LCIA method.
+                 * Plots have a common configuration except for bar color and unit.
+                 */
                 function addConfig() {
                     var config = {};
 
@@ -229,14 +271,29 @@ angular.module("lcaApp.LCIA.comparison",
                     plot.config = config;
                 }
 
+                /**
+                 * Get x domain value from a plot data record
+                 * @param { object } d  Plot data record
+                 * @returns {number}    LCIA result * activity level
+                 */
                 function getX(d) {
                     return d.value * +d.row.activityLevel;
                 }
 
+                /**
+                 * Get y domain value from a plot data record
+                 * @param { object } d  Plot data record
+                 * @returns {number}    Grid row index
+                 */
                 function getY(d) {
                     return d.row.index;
                 }
 
+                /**
+                 * Get chart label.
+                 * @param { number } index  Grid row index
+                 * @returns { string }  Grid row chart label, if it exists. Otherwise, index as string.
+                 */
                 function getLabel(index) {
                     var label = $scope.gridData[index].chartLabel;
                     if (!label) {
@@ -245,6 +302,11 @@ angular.module("lcaApp.LCIA.comparison",
                     return label;
                 }
 
+                /**
+                 * Create a plot configuration that is common to all LCIA methods.
+                 * Configured to contain horizontal bars, margins, x axis with linear scale, y axis with ordinal scale.
+                 * @returns { PlotService.Config }
+                 */
                 function createCommonConfig() {
                     var xAxis = PlotService.createAxis(),
                         xDim = PlotService.createDimension()

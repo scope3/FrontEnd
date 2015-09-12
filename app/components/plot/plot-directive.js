@@ -221,7 +221,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             }
 
             /**
-             * Create object containing original data record (d), shape (s), and label (l).
+             * Create horizontal bar data object containing original data record (d), shape (s), and label (l).
              * Shape has x and width properties.
              * Label has x, y, and anchor properties.
              * @param { object } d  Data record
@@ -292,6 +292,14 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
                 //Future enhancement - vertical bars and other content types
             }
 
+            /**
+             * Create d3 scale. Domain is derived from plot data values, unless provided in dimension
+             * configuration.
+             * @param { object } dim        Dimension configuration
+             * @param { object } plotData   Plot data
+             * @param { [] } range          Scale range
+             * @returns { d3.scale }
+             */
             function createScale(dim, plotData, range) {
                 if (!dim.valueFn()) throw Error("Plot dimension must provide valueFn");
                 if (!dim.scale()) throw Error("Plot dimension must provide scale type");
@@ -354,7 +362,7 @@ angular.module('lcaApp.plot.directive', ['lcaApp.plot.service', 'd3', 'lcaApp.fo
             restrict: 'E',
             scope: { config: "=", data: "=", transform: "@" },
             link: link,
-            templateNamespace: "svg",
+            templateNamespace: "svg",   // svg requires special handling in angular
             replace: true,
             template: "<g class='lcia-bar-container' ng-attr-transform='{{transform}}'></g>"
         }
