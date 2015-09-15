@@ -156,11 +156,22 @@ End-to-end tests, again written in [Jasmine][jasmine],
 are run with the [Protractor][protractor] End-to-End test runner.  It uses native events and has
 special features for Angular applications.
 
-* the configuration is found at `e2e-tests/protractor-conf.js`
-* the end-to-end tests are found in `e2e-tests`
-* 
+The end-to-end tests are found in `e2e-tests`.
 
-Page objects are used to encapsulate dependencies on HTML elements. These are implemented in files named `..._Page.js` while the test specifications are named `test_.....js`.
+#### Configuration 
+   
+The protractor configuration file is found at `e2e-tests/protractor-conf.js`
+* params contains the auth URL parameter for the sandbox scenario group set up on kbcalr.isber.ucsb.edu.
+* test specifications have name pattern, `test_*.js`
+* the tests can be configured to run in firefox or chrome. Getting the tests to run in internet explorer requires additional effort. The Selenium Internet Explorer Driver needs to be downloaded and installed (have not tried doing this yet).
+* baseURL specifies the path to the app to be tested. 
+
+
+#### Page Objects
+
+Page objects are used to encapsulate dependencies on HTML elements. These are implemented in files named `..._Page.js`.
+
+#### Running protractor
 
 Protractor simulates interaction with our web app and verifies that the application responds
 correctly. Therefore, our web server needs to be serving up the application, so that Protractor
@@ -193,8 +204,7 @@ npm run protractor
 ```
 
 This script will execute the end-to-end tests against the application being hosted on the
-development server.
-
+development server. Note: It is not unusual for the first test to end with timeout failure because initial web API responses are slow. The problem goes away in subsequent runs.
 
 ## Updating Angular
 
